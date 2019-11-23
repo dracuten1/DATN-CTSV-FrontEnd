@@ -13,6 +13,9 @@
       "import/imports-first": ["error", "absolute-first"],
       "import/newline-after-import": "error",
       "import/prefer-default-export": 0,
+      "import/no-unresolved": "off",
+      "no-console":"off",
+      "react/no-array-index-key":"off",
       "semi": "error"
     },
     "globals": {
