@@ -8,7 +8,7 @@ import {
 
 import history from 'historyConfig';
 import StudentCertification from 'pages/studentCertification/StudentCertification';
-
+import DashboardDRL from 'pages/DRL/DashboardDRL';
 
 
 class Routers extends React.PureComponent {
@@ -19,6 +19,9 @@ class Routers extends React.PureComponent {
                 <Switch >
                     <Route exact path="/">
                         <StudentCertification />
+                    </Route>
+                    <Route exact path="/drl">
+                        <DashboardDRL />
                     </Route>
                 </Switch>
             </Router>

@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     },
     textField: {
         marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
+        marginRight: theme.spacing(1),   
         width: 200,
     },
 }));
@@ -113,7 +113,7 @@ export default function CustomizedDialogs() {
                         <TextFieldWithLabel />
                     </div>
                 </DialogContent>
-                <Divider className={classes.divider} />
+                 <Divider className={classes.divider} />
                 <DialogContent >
                     <div>
                         <Filter label='Ngôn ngữ' data={['Tiếng Việt', 'Tiếng Anh']} />
