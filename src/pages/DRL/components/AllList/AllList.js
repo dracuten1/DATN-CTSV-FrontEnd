@@ -16,6 +16,7 @@ import {
 import mockData from './data';
 import icons from '../icons';
 import Actions from '../../../../reduxs/reducers/DRL/action';
+import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -42,6 +43,7 @@ const AllList = props => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: mockData,
     columns: [
@@ -56,6 +58,9 @@ const AllList = props => {
           2: '2017-2018',
           3: '2018-2019',
           4: '2019-2020'
+        },
+        filterCellStyle: {
+          paddingTop: 1
         }
       },
       {
@@ -65,6 +70,9 @@ const AllList = props => {
           1: '1',
           2: '2',
           3: 'Cả năm'
+        },
+        filterCellStyle: {
+          paddingTop: 1
         }
       },
       {
@@ -81,6 +89,9 @@ const AllList = props => {
           4: 'Trung bình',
           5: 'Yếu',
           6: 'Kém'
+        },
+        filterCellStyle: {
+          paddingTop: 1
         }
       },
       {
@@ -90,6 +101,15 @@ const AllList = props => {
       }
     ]
   });
+
+  const handleAdd = newData => {
+    setState(prevState => {
+      const data = [...prevState.data];
+      data.push(newData);
+      return { ...prevState, data };
+    });
+    setOpen(false);
+  };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -184,10 +204,39 @@ const AllList = props => {
         >
           Danh sách in
         </Button>
+        <Button
+          onClick={() => setOpen(true)}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Thêm sinh viên in
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Import
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Export
+        </Button>
         <Button disabled variant="contained" color="primary" size="small">
           In theo trường hợp
         </Button>
       </CardActions>
+      <AddDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        handleAdd={handleAdd}
+      />
     </Card>
   );
 };

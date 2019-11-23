@@ -13,11 +13,11 @@ const userReducer = (state = INIT_STATE, action) => {
       return { ...state, isAllList: true, isPrintList: false };
     case ActionTypes.PRINT_LIST:
       return { ...state, isAllList: false, isPrintList: true };
-    case ActionTypes.DATA_PRINT: {
-      const data = [...state.dataPrint];
-      data.push(action.newData);
-      return { ...state, dataPrint: data };
-    }
+    // case ActionTypes.DATA_PRINT: {
+    //   const data = [...state.dataPrint];
+    //   data.push(action.newData);
+    //   return { ...state, dataPrint: data };
+    // }
     default:
       return { ...state };
   }

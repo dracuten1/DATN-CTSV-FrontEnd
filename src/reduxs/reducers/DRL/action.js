@@ -8,15 +8,15 @@ const handlePrintList = () => async dispatch => {
   dispatch({ type: Types.PRINT_LIST });
 };
 
-const handleAdd = newData => async dispatch => {
-  dispatch({ type: Types.DATA_PRINT, newData });
-};
+// const handleAdd = newData => async dispatch => {
+//   dispatch({ type: Types.DATA_PRINT, newData });
+// };
 
 const handlePrint = () => {};
 
 export default {
   handleAllList,
   handlePrintList,
-  handlePrint,
-  handleAdd
+  handlePrint
+  // handleAdd
 };

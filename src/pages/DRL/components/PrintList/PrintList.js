@@ -11,11 +11,11 @@ import {
   Button,
   Divider
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+import { useDispatch } from 'react-redux';
+import Actions from 'reduxs/reducers/DRL/action';
 
-import mockData from './data';
 import icons from '../icons';
+import mockData from './data';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -43,12 +43,12 @@ const PrintList = props => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
-  const DRLState = useSelector(state => state.DRLState);
-  const { dataPrint } = DRLState;
+  // const DRLState = useSelector(state => state.DRLState);
+  // const { dataPrint } = DRLState;
 
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: dataPrint,
+    data: mockData,
     columns: [
       {
         title: 'Đã In',
@@ -63,7 +63,11 @@ const PrintList = props => {
       },
       { title: 'STT', field: 'stt', editable: 'never', filtering: false },
       { title: 'MSSV', field: 'mssv', editable: 'onAdd' },
-      { title: 'Họ tên', field: 'name', editable: 'never' },
+      {
+        title: 'Họ tên',
+        field: 'name',
+        editable: 'never'
+      },
       {
         title: 'Trường hợp',
         field: 'case',
@@ -72,6 +76,9 @@ const PrintList = props => {
           2: 'Năm Học',
           3: 'Tất cả',
           4: 'Toàn Khoá'
+        },
+        filterCellStyle: {
+          paddingTop: 1
         }
       },
       {
@@ -83,6 +90,15 @@ const PrintList = props => {
       }
     ]
   });
+
+  const handleAdd = newData => {
+    setState(prevState => {
+      const data = [...prevState.data];
+      data.push(newData);
+      return { ...prevState, data };
+    });
+    setOpen(false);
+  };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -109,14 +125,6 @@ const PrintList = props => {
                 {
                   icon: icons.Print,
                   tooltip: 'Print'
-                },
-                {
-                  icon: icons.Add,
-                  tooltip: 'Add User',
-                  isFreeAction: true,
-                  onClick: event => {
-                    setOpen(true);
-                  }
                 }
               ]}
               options={{
@@ -189,6 +197,31 @@ const PrintList = props => {
         >
           Danh sách in
         </Button>
+
+        <Button
+          onClick={() => setOpen(true)}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Thêm sinh viên in
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Import
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Export
+        </Button>
         <Button
           onClick={() => dispatch(Actions.handlePrint())}
           variant="contained"
@@ -198,7 +231,11 @@ const PrintList = props => {
           In theo trường hợp
         </Button>
       </CardActions>
-      <AddDialog open={open} handleClose={() => setOpen(false)} />
+      <AddDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        handleAdd={handleAdd}
+      />
     </Card>
   );
 };

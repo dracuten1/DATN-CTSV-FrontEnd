@@ -2,9 +2,16 @@ import React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import themeUI from '../../theme';
+import themeUI from 'shared/styles/theme';
 
-import { Export, Import, Print, Title, PrintList, AllList } from './components';
+import {
+  Export,
+  Import,
+  Print,
+  Title,
+  PrintList,
+  AllList
+} from 'pages/DRL/components';
 
 const useStyles = makeStyles(theme => ({
   root: {

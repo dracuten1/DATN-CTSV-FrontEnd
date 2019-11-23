@@ -11,8 +11,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+// import { useDispatch } from 'react-redux';
+// import Actions from '../../../../reduxs/reducers/DRL/action';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,13 +22,13 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 300
+    width: 400
   }
 }));
 
 const AddDialog = props => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const { open, handleClose, handleAdd } = props;
   const date = new Date();
@@ -48,6 +48,10 @@ const AddDialog = props => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const addData = () => {
+    handleAdd(values);
   };
 
   return (
@@ -161,8 +165,7 @@ const AddDialog = props => {
           <Button onClick={handleClose} color="primary">
             Huỷ
           </Button>
-          <Button color="primary">
-            {/* onClick={dispatch(Actions.handleAdd(values))} */}
+          <Button onClick={addData} color="primary">
             Thêm
           </Button>
         </DialogActions>
