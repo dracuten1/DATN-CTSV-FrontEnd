@@ -3,6 +3,8 @@ import DataTable from 'shared/components/dataTable/DataTable';
 import Filters from 'shared/components/filters/Filters';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import BeforeStudentCertificateDialog from 'pages/beforeStudentCertificateDialog/BeforeStudentCertificateDialog';
+import BeforeStudentExportCertificateDialog
+  from '../beforeStudentExportCertificateDialog/BeforeStudentExportCertificateDialog';
 
 export class StudentCertification extends PureComponent {
 
@@ -19,8 +21,7 @@ export class StudentCertification extends PureComponent {
                     <BeforeStudentCertificateDialog />
                     <ContainedButton label='Xem danh sách in' />
                     <ContainedButton label='In' />
-                    <ContainedButton label='Xuất' />
-
+                    <BeforeStudentExportCertificateDialog/>
                 </div>
 
             </div>

@@ -63,14 +63,19 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {listButton.map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem button component="a" href="/">
+          <ListItemIcon>
+            <DashboardIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Xác nhận sinh viên"/>
+        </ListItem>
+        <ListItem button component="a" href="/drl">
+          <ListItemIcon>
+            <MailIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Điểm rèn luyện"/>
+        </ListItem>
       </List>
-
     </div>
   );
 
