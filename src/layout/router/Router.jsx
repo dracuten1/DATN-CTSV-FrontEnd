@@ -9,6 +9,7 @@ import {
 import history from 'historyConfig';
 import StudentCertification from 'pages/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
+import Auth from 'pages/Auth/Auth';
 
 
 class Routers extends React.PureComponent {
@@ -22,6 +23,9 @@ class Routers extends React.PureComponent {
                     </Route>
                     <Route exact path="/drl">
                         <DashboardDRL />
+                    </Route>
+                    <Route exact path="/auth">
+                        <Auth />
                     </Route>
                 </Switch>
             </Router>
