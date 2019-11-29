@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TasksProgress = props => {
-  const { className, ...rest } = props;
+  const { many, className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -49,7 +49,7 @@ const TasksProgress = props => {
             >
               TODAY PRINTS
             </Typography>
-            <Typography variant="h3">20</Typography>
+            <Typography variant="h3">{many}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

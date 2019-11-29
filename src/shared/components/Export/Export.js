@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Export = props => {
-  const { className, ...rest } = props;
+  const { many, className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -57,7 +57,7 @@ const Export = props => {
             >
               TODAY EXPORTS
             </Typography>
-            <Typography variant="h3">20</Typography>
+            <Typography variant="h3">{many}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>

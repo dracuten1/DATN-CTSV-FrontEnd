@@ -29,8 +29,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TotalProfit = props => {
-  const { className, ...rest } = props;
+const Title = props => {
+  const { url, title, className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -40,9 +40,12 @@ const TotalProfit = props => {
         <Grid container justify="center">
           <Grid item>
             <Typography gutterBottom />
-            <Typography className={classes.title} color="inherit" variant="h1">
-              <Link href="#" style={{ textDecoration: 'none', color: 'white' }}>
-                <b>ĐIỂM RÈN LUYỆN</b>
+            <Typography className={classes.title} color="inherit" variant="h2">
+              <Link
+                href={url}
+                style={{ textDecoration: 'none', color: 'white' }}
+              >
+                <b>{title}</b>
               </Link>
             </Typography>
           </Grid>
@@ -52,8 +55,8 @@ const TotalProfit = props => {
   );
 };
 
-TotalProfit.propTypes = {
+Title.propTypes = {
   className: PropTypes.string
 };
 
-export default TotalProfit;
+export default Title;

@@ -5,20 +5,24 @@ import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
   button: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
   input: {
-    display: 'none',
-  },
+    display: 'none'
+  }
 }));
 
 export default function ContainedButton(props) {
   const classes = useStyles();
 
-  const { label } = props;
+  const { handleDialog, label } = props;
   return (
     <div>
-      <Button variant="contained" className={classes.button}>
+      <Button
+        onClick={handleDialog}
+        variant="contained"
+        className={classes.button}
+      >
         {label}
       </Button>
     </div>
