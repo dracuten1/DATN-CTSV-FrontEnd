@@ -65,15 +65,15 @@ function ResponsiveDrawer(props) {
       <List>
         <ListItem button component="a" href="/">
           <ListItemIcon>
-            <DashboardIcon/>
+            <InboxIcon />
           </ListItemIcon>
-          <ListItemText primary="Xác nhận sinh viên"/>
+          <ListItemText primary="Xác nhận sinh viên" />
         </ListItem>
         <ListItem button component="a" href="/drl">
           <ListItemIcon>
-            <MailIcon/>
+            <MailIcon />
           </ListItemIcon>
-          <ListItemText primary="Điểm rèn luyện"/>
+          <ListItemText primary="Điểm rèn luyện" />
         </ListItem>
       </List>
     </div>
