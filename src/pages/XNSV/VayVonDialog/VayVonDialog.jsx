@@ -69,15 +69,9 @@ const VayVonDialog = props => {
     });
   };
 
-  console.log(open);
-
   return (
     <div>
-      <Dialog
-        open={open}
-        // onClose={handleClose()}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>

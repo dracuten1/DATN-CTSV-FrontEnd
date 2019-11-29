@@ -40,6 +40,7 @@ const XNTruocKhiThemDialog = props => {
   const { open, handleClose } = props;
   const date = new Date();
 
+  const [isOpen, setIsOpen] = React.useState(true);
   const [values, setValues] = React.useState({
     stt: 3,
     name: '',
@@ -55,10 +56,6 @@ const XNTruocKhiThemDialog = props => {
     year: '',
     isPrint: false,
     date: moment(date).format('DD/MM/YYYY')
-  });
-
-  const [loaiXN, setLoaiXN] = React.useState({
-    vayvon: true
   });
 
   const dataLXNTV = [
@@ -189,7 +186,9 @@ const XNTruocKhiThemDialog = props => {
             </FormControl>
           )}
           <Divider className={classes.divider} />
-          {values.loaiXN === 'Vay vốn' && <VayVonDialog open />}
+          {values.type === 'Vay vốn' && (
+            <VayVonDialog handleClose={() => setIsOpen(false)} open={isOpen} />
+          )}
           <FormControl className={classes.textField}>
             <InputLabel id="demo-simple-select-helper-label">
               Tình trạng
