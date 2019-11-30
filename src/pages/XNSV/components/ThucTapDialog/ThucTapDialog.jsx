@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const VayVonDialog = props => {
+const ThucTapDialog = props => {
   const classes = useStyles();
   // const dispatch = useDispatch();
 
@@ -45,19 +45,17 @@ const VayVonDialog = props => {
   const date = new Date();
 
   const [values, setValues] = React.useState({
-    cmnd: '',
+    nameComp: '',
+    city: '',
+    district: '',
+    ward: '',
     address: '',
-    dien: '',
-    doituong: '',
     date: moment(date).format('DD/MM/YYYY')
   });
 
-  const dataThuocDien = ['Không miễn giảm', 'Giảm học phí', 'Miễn học phí'];
-  const dataDoiTuong = ['Mồ côi', 'Không mồ côi'];
-
-  const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  const dataThanhPho = ['TPHCM', 'Vung Tau', 'Da Nang'];
+  const dataHuyen = ['Quan 7', 'Nha Be', 'Quan 5'];
+  const dataXa = ['Thang Nhat', 'Thang Nhi', 'Thang Tam'];
 
   const drawData = data => {
     return data.map((val, ind) => {
@@ -69,35 +67,76 @@ const VayVonDialog = props => {
     });
   };
 
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
   return (
     <div>
       <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
-          <b>Xác Nhận Trước Khi In</b>
+          <b>Xác Nhận Công Ty</b>
         </DialogTitle>
         <DialogContent className={classes.container}>
           <TextField
             className={classes.textField}
-            label="CMND"
-            defaultValue="1612123"
-            onChange={handleChange('cmnd')}
+            label="Tên công ty"
+            defaultValue="Boash"
+            onChange={handleChange('nameComp')}
             margin="normal"
           />
+          <Divider className={classes.divider} />
+
+          <FormControl className={classes.textField}>
+            <InputLabel id="demo-simple-select-helper-label">
+              Tỉnh/Thành Phố
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              onChange={handleChange('city')}
+            >
+              {drawData(dataThanhPho)}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.textField}>
+            <InputLabel id="demo-simple-select-helper-label">
+              Quận/Huyện
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              onChange={handleChange('district')}
+            >
+              {drawData(dataHuyen)}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.textField}>
+            <InputLabel id="demo-simple-select-helper-label">
+              Phường/Xã
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              onChange={handleChange('ward')}
+            >
+              {drawData(dataXa)}
+            </Select>
+          </FormControl>
           <TextField
             className={classes.textField}
-            label="Nơi cấp"
+            label="Địa chỉ"
             margin="normal"
-            defaultValue="Bà Rịa - Vũng Tàu"
+            defaultValue="336/1 Phạm Hữu Lầu"
             onChange={handleChange('address')}
-            InputProps={{
-              readOnly: true
-            }}
           />
+          <Divider className={classes.divider} />
+
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               margin="normal"
               id="date-picker-dialog"
-              label="Date picker dialog"
+              label="Giá trị đến ngày"
               format="dd/MM/yyyy"
               value={date}
               onChange={handleChange('date')}
@@ -107,31 +146,6 @@ const VayVonDialog = props => {
             />
           </MuiPickersUtilsProvider>
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Thuộc diện
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={handleChange('dien')}
-            >
-              {drawData(dataThuocDien)}
-            </Select>
-          </FormControl>
-
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Thuộc đối tượng
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={handleChange('doituong')}
-            >
-              {drawData(dataDoiTuong)}
-            </Select>
-          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -144,4 +158,4 @@ const VayVonDialog = props => {
   );
 };
 
-export default VayVonDialog;
+export default ThucTapDialog;

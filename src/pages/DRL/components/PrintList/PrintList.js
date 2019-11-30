@@ -14,7 +14,7 @@ import {
 import { useDispatch } from 'react-redux';
 import Actions from 'reduxs/reducers/DRL/action';
 
-import icons from '../icons';
+import icons from '../../../../shared/icons';
 import mockData from './data';
 import { AddDialog } from '../AddDialog';
 
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-start'
   }
 }));
 
@@ -62,11 +62,12 @@ const PrintList = props => {
         )
       },
       { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-      { title: 'MSSV', field: 'mssv', editable: 'onAdd' },
+      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
       {
         title: 'Họ tên',
         field: 'name',
-        editable: 'never'
+        editable: 'never',
+        filtering: false
       },
       {
         title: 'Trường hợp',
@@ -117,12 +118,6 @@ const PrintList = props => {
               data={state.data}
               actions={[
                 {
-                  icon: icons.Import,
-                  tooltip: 'Import',
-                  isFreeAction: true
-                  // onClick: (event, rowData) =>
-                },
-                {
                   icon: icons.Print,
                   tooltip: 'Print'
                 }
@@ -135,7 +130,7 @@ const PrintList = props => {
                 rowStyle: {
                   backgroundColor: '#EEE'
                 },
-                exportButton: true,
+                // exportButton: true,
                 filtering: true
               }}
               editable={{

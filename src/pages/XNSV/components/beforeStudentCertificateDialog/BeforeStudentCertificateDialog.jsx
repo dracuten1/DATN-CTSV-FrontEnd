@@ -15,9 +15,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import TextFieldWithLabel from '../../../shared/components/textFieldWithLabel/TextFieldWithLabel';
-import InputDateWithLabel from '../../../shared/components/inputDateWithLabel/InputDateWithLabel';
-import Filter from '../../../shared/components/filter/Filter';
+import TextFieldWithLabel from '../../../../shared/components/textFieldWithLabel/TextFieldWithLabel';
+import InputDateWithLabel from '../../../../shared/components/inputDateWithLabel/InputDateWithLabel';
+import Filter from '../../../../shared/components/filter/Filter';
 
 const useStyles = makeStyles(theme => ({
   formControl: {

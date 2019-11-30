@@ -8,11 +8,19 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
-import VayVonDialog from 'pages/XNSV/VayVonDialog/VayVonDialog';
+import VayVonDialog from 'pages/XNSV/components/VayVonDialog/VayVonDialog';
+import ThucTapDialog from 'pages/XNSV/components/ThucTapDialog/ThucTapDialog';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
 
@@ -28,35 +36,39 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     margin: theme.spacing(2),
-    width: '95%',
+    width: '90%',
     alignSelf: 'center'
   }
 }));
+
+const date = new Date();
+
+const tempValues = {
+  stt: 3,
+  name: '',
+  mssv: '',
+  city: '',
+  district: '',
+  ward: '',
+  address: '',
+  language: '',
+  type: '',
+  status: '',
+  reason: '',
+  semester: null,
+  year: '',
+  isPrint: false,
+  date: moment(date).format('DD/MM/YYYY')
+};
 
 const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
   // const dispatch = useDispatch();
 
   const { open, handleClose } = props;
-  const date = new Date();
 
-  const [isOpen, setIsOpen] = React.useState(true);
-  const [values, setValues] = React.useState({
-    stt: 3,
-    name: '',
-    mssv: '',
-    city: '',
-    district: '',
-    ward: '',
-    language: '',
-    type: '',
-    status: '',
-    reason: '',
-    semester: null,
-    year: '',
-    isPrint: false,
-    date: moment(date).format('DD/MM/YYYY')
-  });
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [values, setValues] = React.useState(tempValues);
 
   const dataLXNTV = [
     'Bảo lưu',
@@ -72,6 +84,7 @@ const XNTruocKhiThemDialog = props => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
+    setIsOpen(true);
   };
 
   const drawData = data => {
@@ -82,6 +95,12 @@ const XNTruocKhiThemDialog = props => {
         </MenuItem>
       );
     });
+  };
+
+  const closeDialog = () => {
+    setValues(tempValues);
+    setIsOpen(false);
+    handleClose();
   };
 
   return (
@@ -185,10 +204,144 @@ const XNTruocKhiThemDialog = props => {
               </Select>
             </FormControl>
           )}
-          <Divider className={classes.divider} />
           {values.type === 'Vay vốn' && (
-            <VayVonDialog handleClose={() => setIsOpen(false)} open={isOpen} />
+            <VayVonDialog
+              handleClose={() => {
+                setIsOpen(false);
+                setValues({ ...values, type: '' });
+              }}
+              open={isOpen}
+            />
           )}
+          {values.type === 'Giới thiệu' && (
+            <ThucTapDialog
+              handleClose={() => {
+                setIsOpen(false);
+                setValues({ ...values, type: '' });
+              }}
+              open={isOpen}
+            />
+          )}
+          {values.type === 'Bảo lưu' && (
+            <div className={classes.container}>
+              <FormControl className={classes.textField}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Năm học
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  onChange={handleChange('year')}
+                >
+                  <MenuItem selected value={3}>
+                    2019-2020
+                  </MenuItem>
+                  <MenuItem value={2}>2018-2019</MenuItem>
+                  <MenuItem value={1}>2017-2018</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.textField}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Học kỳ
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  onChange={handleChange('semester')}
+                >
+                  <MenuItem value={1}>Học kỳ 1</MenuItem>
+                  <MenuItem value={2}>Học kỳ 2</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          )}
+          {values.type === 'Chờ xét TN' && (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Chọn ngày công bố dự kiến"
+                format="dd/MM/yyyy"
+                value={date}
+                style={{ width: '400px', marginLeft: '8px' }}
+                onChange={handleChange('date')}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date'
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          )}
+          {values.type === 'Chờ xét HTCT' && (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Chọn ngày công bố dự kiến"
+                format="dd/MM/yyyy"
+                value={date}
+                style={{ width: '400px', marginLeft: '8px' }}
+                onChange={handleChange('date')}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date'
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          )}
+          {values.type === 'Đang học' && (
+            <div className={classes.container}>
+              <Divider className={classes.divider} />
+
+              <TextareaAutosize
+                style={{ width: '400px', marginLeft: '8px' }}
+                rowsMax={3}
+                placeholder="Ghi chú"
+              />
+            </div>
+          )}
+          {values.type === 'Hoàn tất CT' && (
+            <div className={classes.container}>
+              <Divider className={classes.divider} />
+
+              <TextareaAutosize
+                style={{ width: '400px', marginLeft: '8px' }}
+                rowsMax={3}
+                placeholder="Ghi chú"
+              />
+            </div>
+          )}
+          {values.type === 'Xác nhận TGH' && (
+            <div className={classes.container}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date-picker-dialog"
+                  label="Từ ngày"
+                  format="dd/MM/yyyy"
+                  value={date}
+                  style={{ width: '400px', marginLeft: '8px' }}
+                  onChange={handleChange('date')}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date-picker-dialog"
+                  label="Đến ngày"
+                  format="dd/MM/yyyy"
+                  value={date}
+                  style={{ width: '400px', marginLeft: '8px' }}
+                  onChange={handleChange('date')}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+            </div>
+          )}
+          <Divider className={classes.divider} />
           <FormControl className={classes.textField}>
             <InputLabel id="demo-simple-select-helper-label">
               Tình trạng
@@ -211,35 +364,8 @@ const XNTruocKhiThemDialog = props => {
               {drawData(dataLXNTA)}
             </Select>
           </FormControl>
-          <Divider className={classes.divider} />
 
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Năm học
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={handleChange('year')}
-            >
-              <MenuItem selected value={3}>
-                2019-2020
-              </MenuItem>
-              <MenuItem value={2}>2018-2019</MenuItem>
-              <MenuItem value={1}>2017-2018</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">Học kỳ</InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={handleChange('semester')}
-            >
-              <MenuItem value={1}>Học kỳ 1</MenuItem>
-              <MenuItem value={2}>Học kỳ 2</MenuItem>
-            </Select>
-          </FormControl>
+          <Divider className={classes.divider} />
           <TextField
             className={classes.textField}
             label="Ngày thêm"
@@ -251,7 +377,7 @@ const XNTruocKhiThemDialog = props => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={closeDialog} color="primary">
             Huỷ
           </Button>
           <Button color="primary">Thêm</Button>

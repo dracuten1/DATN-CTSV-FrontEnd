@@ -57,8 +57,12 @@ const DialogTitle = withStyles(styles)(props => {
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
       {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon/>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
         </IconButton>
       ) : null}
     </MuiDialogTitle>
@@ -78,37 +82,46 @@ const DialogActions = withStyles(theme => ({
   }
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs() {
+export default function CustomizedDialogs(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
+  const { open, handleClose } = props;
 
   return (
     <div>
-      <Button variant="contained" className={classes.button} onClick={handleClickOpen}>
+      {/* <Button
+        variant="contained"
+        className={classes.button}
+        onClick={handleClickOpen}
+      >
         Xuất
-      </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      </Button> */}
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Export xác nhận sinh viên
         </DialogTitle>
-        <Divider className={classes.divider}/>
+        <Divider className={classes.divider} />
         <DialogContent className={classes.groupContent}>
           <div>
             <span>Chọn định dạng xuất file</span>
             &nbsp;&nbsp;
             <FormControlLabel
-              control={<Checkbox color="primary"/>}
+              control={<Checkbox color="primary" />}
               label="xlsx"
             />
             <FormControlLabel
-              control={<Checkbox color="primary"/>}
+              control={<Checkbox color="primary" />}
               label="xsv"
             />
             <TextField
@@ -121,42 +134,36 @@ export default function CustomizedDialogs() {
             <Button variant="contained">Chọn file</Button>
           </div>
         </DialogContent>
-        <Divider className={classes.divider}/>
+        <Divider className={classes.divider} />
         <DialogContent className={classes.groupContent}>
           <List>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox color="primary" value="gilad" checked/>}
+                control={<Checkbox color="primary" value="gilad" checked />}
                 label="MSSV"
               />
               <FormControlLabel
-                control={<Checkbox color="primary" checked value="jason"/>}
+                control={<Checkbox color="primary" checked value="jason" />}
                 label="Họ và tên"
               />
               <FormControlLabel
-                control={
-                  <Checkbox color="primary" value="antoine" checked/>
-                }
+                control={<Checkbox color="primary" value="antoine" checked />}
                 label="Loại giấy xác nhận"
               />
               <FormControlLabel
-                control={<Checkbox color="primary" value="gilad" checked/>}
+                control={<Checkbox color="primary" value="gilad" checked />}
                 label="Lý do"
               />
               <FormControlLabel
-                control={<Checkbox color="primary" value="jason" checked/>}
+                control={<Checkbox color="primary" value="jason" checked />}
                 label="Địa chỉ"
               />
               <FormControlLabel
-                control={
-                  <Checkbox color="primary" value="antoine" checked/>
-                }
+                control={<Checkbox color="primary" value="antoine" checked />}
                 label="Học kỳ"
               />
               <FormControlLabel
-                control={
-                  <Checkbox color="primary" value="antoine" checked/>
-                }
+                control={<Checkbox color="primary" value="antoine" checked />}
                 label="Năm học"
               />
             </FormGroup>

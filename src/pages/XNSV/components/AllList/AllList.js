@@ -15,10 +15,11 @@ import {
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import Actions from 'reduxs/reducers/DRL/action';
 import mockData from './data';
-import Actions from '../../../../reduxs/reducers/DRL/action';
-import { Filters } from '../Filters';
-import { AddDialog } from '../AddDialog';
+import Filters from '../filters/Filters';
+import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
+import ExportCert from '../beforeStudentExportCertificateDialog/BeforeStudentExportCertificateDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -45,7 +46,10 @@ const AllList = props => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState({
+    add: false,
+    export: false
+  });
   const [state, setState] = useState({
     data: mockData,
     columns: [
@@ -104,15 +108,6 @@ const AllList = props => {
     ]
   });
 
-  const handleAdd = newData => {
-    setState(prevState => {
-      const data = [...prevState.data];
-      data.push(newData);
-      return { ...prevState, data };
-    });
-    setOpen(false);
-  };
-
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
@@ -139,9 +134,9 @@ const AllList = props => {
                 },
                 rowStyle: {
                   backgroundColor: '#EEE'
-                },
+                }
                 // exportButton: true,
-                filtering: true
+                // filtering: true
               }}
               editable={{
                 onRowAdd: newData =>
@@ -192,7 +187,7 @@ const AllList = props => {
           color="primary"
           size="small"
         >
-          Xem toàn bộ
+          Xem lịch sử
         </Button>
         <Button
           onClick={() => dispatch(Actions.handlePrintList())}
@@ -203,7 +198,7 @@ const AllList = props => {
           Danh sách in
         </Button>
         <Button
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen({ add: true })}
           variant="contained"
           color="primary"
           size="small"
@@ -219,7 +214,7 @@ const AllList = props => {
           Import
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => setOpen({ export: true })}
           variant="contained"
           color="primary"
           size="small"
@@ -230,10 +225,13 @@ const AllList = props => {
           In theo trường hợp
         </Button>
       </CardActions>
-      <AddDialog
-        open={open}
-        handleClose={() => setOpen(false)}
-        handleAdd={handleAdd}
+      <XNTKTDialog
+        open={open.add}
+        handleClose={() => setOpen({ add: false })}
+      />
+      <ExportCert
+        open={open.export}
+        handleClose={() => setOpen({ export: false })}
       />
     </Card>
   );

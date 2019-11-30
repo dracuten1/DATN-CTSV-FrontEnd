@@ -1,16 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
-import DataTable from 'shared/components/dataTable/DataTable';
-import Filters from 'shared/components/filters/Filters';
-import ContainedButton from 'shared/components/containedButton/ContainedButton';
-import BeforeStudentCertificateDialog from 'pages/XNSV/beforeStudentCertificateDialog/BeforeStudentCertificateDialog';
 import Export from 'shared/components/Export/Export';
 import Import from 'shared/components/Import/Import';
 import Print from 'shared/components/Print/Print';
 import Title from 'shared/components/Title/Title';
-import XNTKTDialog from 'pages/XNSV/XNTruockhiThemDialog/XNTruocKhiThemDialog';
-import BeforeStudentExportCertificateDialog from 'pages/XNSV/beforeStudentExportCertificateDialog/BeforeStudentExportCertificateDialog';
+// import DataTable from 'shared/components/dataTable/DataTable';
+// import Filters from 'pages/XNSV/components/filters/Filters';
+// import ContainedButton from 'shared/components/containedButton/ContainedButton';
+// import BeforeStudentCertificateDialog from 'pages/XNSV/components/beforeStudentCertificateDialog/BeforeStudentCertificateDialog';
+// import XNTKTDialog from 'pages/XNSV/components/XNTruockhiThemDialog/XNTruocKhiThemDialog';
+// import BeforeStudentExportCertificateDialog from 'pages/XNSV/components/beforeStudentExportCertificateDialog/BeforeStudentExportCertificateDialog';
+import AllList from 'pages/XNSV/components/AllList/AllList';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 const StudentCertification = () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
 
   return (
     <div className={classes.root}>
@@ -39,7 +40,7 @@ const StudentCertification = () => {
         </Grid>
 
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {/* <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Filters />
             <ContainedButton label="Lọc sinh viên" />
           </div>
@@ -50,7 +51,8 @@ const StudentCertification = () => {
             <ContainedButton handleDialog={() => setOpen(true)} label="In" />
             <BeforeStudentExportCertificateDialog />
             <XNTKTDialog open={open} handleClose={() => setOpen(false)} />
-          </div>
+          </div> */}
+          <AllList />
         </Grid>
       </Grid>
     </div>
