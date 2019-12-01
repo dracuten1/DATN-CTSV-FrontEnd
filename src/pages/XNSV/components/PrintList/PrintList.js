@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import MaterialTable from 'material-table';
+import moment from 'moment';
 import {
   Card,
   CardActions,
@@ -38,6 +39,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const date = new Date();
+
 const PrintList = props => {
   const { className, ...rest } = props;
 
@@ -61,7 +64,7 @@ const PrintList = props => {
           </div>
         )
       },
-      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+      { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
       { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
       {
         title: 'Họ tên',
@@ -70,23 +73,28 @@ const PrintList = props => {
         filtering: false
       },
       {
-        title: 'Trường hợp',
+        title: 'Loại xác nhận',
         field: 'case',
         lookup: {
-          1: 'Năm học-Học kỳ',
-          2: 'Năm Học',
-          3: 'Tất cả',
-          4: 'Toàn Khoá'
+          1: 'Đang học',
+          2: 'Bảo lưu',
+          3: 'Chờ xét TN',
+          4: 'Chờ xét HTCT'
         },
         filterCellStyle: {
           paddingTop: 1
         }
       },
       {
-        title: 'Ngày in',
-        field: 'date',
+        title: 'Tình trạng',
+        field: 'tinhTrang',
         editable: 'never',
-        type: 'date',
+        filtering: false
+      },
+      {
+        title: 'Ghi chú',
+        field: 'ghiChu',
+        editable: 'never',
         filtering: false
       }
     ]
@@ -111,7 +119,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH IN</b>
+                  <b>DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}</b>
                 </div>
               }
               columns={state.columns}
@@ -134,17 +142,17 @@ const PrintList = props => {
                 filtering: true
               }}
               editable={{
-                // onRowAdd: newData =>
-                //   new Promise(resolve => {
-                //     setTimeout(() => {
-                //       resolve();
-                //       setState(prevState => {
-                //         const data = [...prevState.data];
-                //         data.push(newData);
-                //         return { ...prevState, data };
-                //       });
-                //     }, 600);
-                //   }),
+                onRowAdd: newData =>
+                  new Promise(resolve => {
+                    setTimeout(() => {
+                      resolve();
+                      setState(prevState => {
+                        const data = [...prevState.data];
+                        data.push(newData);
+                        return { ...prevState, data };
+                      });
+                    }, 600);
+                  }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
                     setTimeout(() => {
@@ -207,14 +215,6 @@ const PrintList = props => {
           color="primary"
           size="small"
         >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
           Export
         </Button>
         <Button
@@ -226,7 +226,7 @@ const PrintList = props => {
           In theo trường hợp
         </Button>
       </CardActions>
-      <XNTKTDialog open={open} handleClose={() => setOpen(false)} />
+      <XNTKTDialog handleAdd={handleAdd} open={open} handleClose={() => setOpen(false)} />
     </Card>
   );
 };

@@ -65,7 +65,7 @@ const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
   // const dispatch = useDispatch();
 
-  const { open, handleClose } = props;
+  const { open, handleClose, handleAdd } = props;
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [values, setValues] = React.useState(tempValues);
@@ -73,14 +73,14 @@ const XNTruocKhiThemDialog = props => {
   const dataLXNTV = [
     'Bảo lưu',
     'Đang học',
-    'Chờ xét HTCT',
-    'Chờ xét TN',
-    'Hoàn tất CT',
-    'Xác nhận TGH',
+    'Chờ xét hoàn tất chương trình',
+    'Chờ xét tốt nghiệp',
+    'Hoàn tất chương trình',
+    'Xác nhận thời gian học',
     'Giới thiệu',
     'Vay vốn'
   ];
-  const dataLXNTA = ['Đang học', 'Bảo lưu', 'Xác nhận TGH', 'Hoàn tất CT'];
+  const dataLXNTA = ['Đang học', 'Bảo lưu', 'Xác nhận thời gian học', 'Hoàn tất chương trình'];
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -101,6 +101,10 @@ const XNTruocKhiThemDialog = props => {
     setValues(tempValues);
     setIsOpen(false);
     handleClose();
+  };
+
+  const addData = () => {
+    handleAdd(values);
   };
 
   return (
@@ -380,7 +384,7 @@ const XNTruocKhiThemDialog = props => {
           <Button onClick={closeDialog} color="primary">
             Huỷ
           </Button>
-          <Button color="primary">Thêm</Button>
+          <Button onClick={addData} color="primary">Thêm</Button>
         </DialogActions>
       </Dialog>
     </div>

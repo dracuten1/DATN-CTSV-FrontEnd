@@ -2,19 +2,23 @@
 
 export default [
   {
-    stt: 1,
-    name: 'Mehmet',
+    scn: 112,
+    name: 'Lương Ngọc Vũ',
     mssv: '1612001',
-    case: 2,
+    tinhTrang: 'Đang học',
     isPrint: true,
+    case: 1,
+    ghiChu: '',
     date: '22/11/2019'
   },
   {
-    stt: 2,
-    name: 'Zerya Betül',
+    scn: 113,
+    name: 'Nguyễn Văn A',
     mssv: '1612002',
-    case: 1,
+    tinhTrang: 'Bảo lưu',
     isPrint: false,
+    case: 2,
+    ghiChu: 'Nợ Anh Văn',
     date: '22/11/2019'
   }
 ];

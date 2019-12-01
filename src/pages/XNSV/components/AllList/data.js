@@ -2,23 +2,19 @@
 
 const info = [
   {
-    stt: 1,
-    name: 'Mehmet',
+    scn: 112,
+    name: 'Nguyễn Văn A',
     mssv: '1612001',
-    year: 2,
-    semester: 2,
-    score: 70,
-    grade: 3,
-    note: ''
+    loaiXacNhan: 'Hoàn tất CT',
+    tinhTrang: 'Chờ xét TN',
+    note: 'Nợ Anh Văn',
   },
   {
-    stt: 2,
-    name: 'Zerya Betül',
+    scn: 113,
+    name: 'Lương Ngọc Vũ',
     mssv: '1612002',
-    year: 2,
-    semester: 1,
-    score: 80,
-    grade: 2,
+    loaiXacNhan: 'Đang học',
+    tinhTrang: 'Đang học',
     note: ''
   }
 ];
