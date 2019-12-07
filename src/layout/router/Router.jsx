@@ -5,6 +5,7 @@ import history from 'historyConfig';
 import themeUI from 'shared/styles/theme';
 import StudentCertification from 'pages/XNSV/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
+import Auth from 'pages/Auth/Auth';
 
 class Routers extends React.PureComponent {
   render() {
@@ -13,10 +14,13 @@ class Routers extends React.PureComponent {
         <Router history={history}>
           <Switch>
             <Route exact path="/">
-              <StudentCertification />
+              <Auth />
             </Route>
             <Route exact path="/drl">
               <DashboardDRL />
+            </Route>
+            <Route exact path="/xnsv">
+              <StudentCertification />
             </Route>
           </Switch>
         </Router>
