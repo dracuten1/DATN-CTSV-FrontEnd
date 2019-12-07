@@ -24,7 +24,6 @@ class Auth extends Component {
             username: '',
             password: '',
             showPassword: false,
-            verifycationCode: null,
         };
     };
 
@@ -87,8 +86,7 @@ class Auth extends Component {
                     <Input
                         id="verifycation-code"
                         value={username}
-                        onChange={(event) => { this.setState({ verifycationCode: event.target.value }); }
-                        }
+                        // onChange={(event) => { this.setState({ verifycationCode: event.target.value }); }      }
                     />
                 </FormControl>;
                 <FormControl fullWidth className={clsx(classes.margin, classes.textField)}>
@@ -163,7 +161,7 @@ const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
         error: state.auth.error,
-        isAuthenticated: state.auth.token !== null,
+        isAuthenticated: state.auth.cognitoUser !== null,
         resetPassword: state.auth.resetPassword,
         authRedirectPath: state.auth.authRedirectPath
     };

@@ -120,7 +120,7 @@ export const auth = (email, password) => {
         cognitoAuthUser = new CognitoUser(userData);
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
-                console.log(result);
+                console.log('Auth successfull: ', result);
                 dispatch(authSuccess(result.accessToken.jwtToken, result.accessToken.payload.username, cognitoAuthUser));
             },
             onFailure: (err) => {
@@ -170,6 +170,7 @@ export const setAuthRedirectPath = (path) => {
 
 export const authCheckState = () => {
     return dispatch => {
+        // dispatch(logout());
         const cognitoUser = userPool.getCurrentUser();
         if (cognitoUser) {
             cognitoUser.getSession((err, session) => {
@@ -177,8 +178,11 @@ export const authCheckState = () => {
                 else {
                     if (session.isValid()) {
                         dispatch(authSuccess('token', 'userId', cognitoUser));
+                        console.log('payload cognito: ', cognitoUser.signInUserSession.accessToken.payload);
                     }
-                    dispatch(logout());
+                    if (!session.isValid()) {
+                        dispatch(logout());
+                    }
                 }
             });
         }
