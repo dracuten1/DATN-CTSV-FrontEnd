@@ -16,7 +16,10 @@
       "import/no-unresolved": "off",
       "no-console":"off",
       "react/no-array-index-key":"off",
-      "semi": "error"
+      "semi": "error",
+      "spaced-comment":"off",
+      "no-unused-vars":"off",
+      "no-param-reassign":"off"
     },
     "globals": {
       "window": true,

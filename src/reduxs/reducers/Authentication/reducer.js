@@ -4,8 +4,6 @@ import { updateObject } from './utility';
 const initialState = {
     cognitoUser:null,
     userName: null,
-    token: null,
-    userId: null,
     error: null,
     loading: false,
     resetPassword: false,
@@ -21,8 +19,6 @@ const resetPassword = (state, action) => {
 
 const authSuccess = (state, action) => {
     return updateObject(state, {
-        token: action.idToken,
-        userId: action.userId,
         error: null,
         loading: false,
         cognitoUser: action.cognitoUser,

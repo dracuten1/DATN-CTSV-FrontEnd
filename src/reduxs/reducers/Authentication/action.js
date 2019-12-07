@@ -4,6 +4,7 @@ import {
     CognitoUser
 } from 'amazon-cognito-identity-js';
 import * as actionTypes from './actionTypes';
+import hisory from 'historyConfig';
 
 const poolData = {
     UserPoolId: 'ap-southeast-1_6pX9mWgjh',
@@ -18,11 +19,9 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId, cognitoUser) => {
+export const authSuccess = (cognitoUser) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        idToken: token,
-        userId,
         cognitoUser
     };
 };
@@ -79,6 +78,7 @@ export const resetPassword = (username) => {
     };
 };
 
+//TO DO: 
 export const confirmPassword = (username, verificationCode, newPassword) => {
     return dispatch => {
         const cognitoUser = new CognitoUser({
@@ -92,7 +92,7 @@ export const confirmPassword = (username, verificationCode, newPassword) => {
             },
             onSuccess(result) {
                 console.log('Confirm success', result);
-                dispatch(authSuccess('token', 'user'));
+                dispatch(authSuccess(cognitoUser));
             },
         });
     };
@@ -121,7 +121,8 @@ export const auth = (email, password) => {
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
                 console.log(result);
-                dispatch(authSuccess(result.accessToken.jwtToken, result.accessToken.payload.username, cognitoAuthUser));
+                hisory.push('/drl');
+                dispatch(authSuccess(cognitoAuthUser));
             },
             onFailure: (err) => {
                 if (err.code === "NotAuthorizedException")
@@ -151,7 +152,7 @@ export const handleNewPassword = (newPassword) => {
         cognitoAuthUser.completeNewPasswordChallenge(newPassword, sessionUserAttributes, {
             onSuccess: (result) => {
                 console.log(result);
-                dispatch(authSuccess(result.accessToken.jwtToken, result.accessToken.payload.username, cognitoAuthUser));
+                dispatch(authSuccess(cognitoAuthUser));
             },
             onFailure: (err) => {
                 console.log(err);
@@ -176,7 +177,7 @@ export const authCheckState = () => {
                 if (err) dispatch(logout());
                 else {
                     if (session.isValid()) {
-                        dispatch(authSuccess('token', 'userId', cognitoUser));
+                        dispatch(authSuccess(cognitoUser));
                     }
                     dispatch(logout());
                 }
