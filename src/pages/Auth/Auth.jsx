@@ -24,7 +24,9 @@ class Auth extends Component {
             username: '',
             password: '',
             showPassword: false,
-            verifycationCode: null,
+            confirmPassword: '',
+            errorMsg: '',
+            //verifycationCode: null,
         };
     };
 
@@ -35,7 +37,12 @@ class Auth extends Component {
     };
 
     resetPassword = () => {
-        const { password } = this.state;
+        const { password, confirmPassword } = this.state;
+        if (password !== confirmPassword) {
+            this.setState({ errorMsg: 'Mật khẩu mới không trùng khớp' });
+            return;
+        }
+        this.setState({ errorMsg: '' });
         const { onSetNewPassword } = this.props;
         onSetNewPassword(password);
     };
@@ -56,12 +63,17 @@ class Auth extends Component {
                 width: 200,
             },
         }));
-        const { username, password, showPassword } = this.state;
+        const { username, password, showPassword, confirmPassword, errorMsg } = this.state;
         let errorMessage = null;
         const { error, isAuthenticated, authRedirectPath, loading, resetPassword } = this.props;
         if (error) {
             errorMessage = (
                 <p>{error.message}</p>
+            );
+        }
+        if (errorMsg !== '') {
+            errorMessage = (
+                <p>{errorMsg}</p>
             );
         }
         let authRedirect = null;
@@ -73,24 +85,6 @@ class Auth extends Component {
             form = <CircularProgress />;
         } else if (resetPassword) {
             form = <div className={classes.root}>
-                <FormControl fullWidth className={classes.margin}>
-                    <InputLabel htmlFor="username">Tên đăng nhập</InputLabel>
-                    <Input
-                        id="username"
-                        value={username}
-                        onChange={(event) => { this.setState({ username: event.target.value }); }
-                        }
-                    />
-                </FormControl>;
-                <FormControl fullWidth className={classes.margin}>
-                    <InputLabel htmlFor="verifycation-code">Verify code:</InputLabel>
-                    <Input
-                        id="verifycation-code"
-                        value={username}
-                        onChange={(event) => { this.setState({ verifycationCode: event.target.value }); }
-                        }
-                    />
-                </FormControl>;
                 <FormControl fullWidth className={clsx(classes.margin, classes.textField)}>
                     <InputLabel htmlFor="new-password">Mật khẩu mới</InputLabel>
                     <Input
@@ -98,20 +92,19 @@ class Auth extends Component {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(event) => { this.setState({ password: event.target.value }); }}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={() => this.setState({ showPassword: !showPassword })}
-                                // onMouseDown={handleMouseDownPassword}
-                                >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
+
                     />
                 </FormControl>
-                <Button className={classes.margin} variant="outlined" onClick={this.resetPassword} >Default</Button>
+                <FormControl fullWidth className={clsx(classes.margin, classes.textField)}>
+                    <InputLabel htmlFor="confirm-password">Nhập lại mật khẩu</InputLabel>
+                    <Input
+                        id="confirm-password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(event) => { this.setState({ confirmPassword: event.target.value }); }}
+                    />
+                </FormControl>
+                <Button className={classes.margin} variant="outlined" onClick={this.resetPassword} >Xác nhận</Button>
             </div>;
         } else
             form =
@@ -145,7 +138,7 @@ class Auth extends Component {
                             }
                         />
                     </FormControl>
-                    <Button className={classes.margin} variant="outlined" onClick={this.handleClick} >Default</Button>
+                    <Button className={classes.margin} variant="outlined" onClick={this.handleClick} >Đăng nhập</Button>
                 </div>;
         return (
             <div>

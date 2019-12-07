@@ -179,7 +179,9 @@ export const authCheckState = () => {
                     if (session.isValid()) {
                         dispatch(authSuccess(cognitoUser));
                     }
-                    dispatch(logout());
+                    else {
+                        dispatch(logout());
+                    };
                 }
             });
         }
