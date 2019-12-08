@@ -6,6 +6,7 @@ import themeUI from 'shared/styles/theme';
 import StudentCertification from 'pages/XNSV/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
 import Auth from 'pages/Auth/Auth';
+import Dashboard from 'pages/Dashboard/Dashboard';
 
 class Routers extends React.PureComponent {
   render() {
@@ -15,6 +16,9 @@ class Routers extends React.PureComponent {
           <Switch>
             <Route exact path="/">
               <Auth />
+            </Route>
+            <Route exact path="/dashboard">
+              <Dashboard />
             </Route>
             <Route exact path="/drl">
               <DashboardDRL />

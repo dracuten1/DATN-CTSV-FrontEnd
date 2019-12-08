@@ -19,7 +19,10 @@
       "semi": "error",
       "spaced-comment":"off",
       "no-unused-vars":"off",
-      "no-param-reassign":"off"
+      "no-param-reassign":"off",
+      "react/forbid-prop-types": "off",
+      "react/require-default-props":"off",
+      "react/no-unused-prop-types": "off"
     },
     "globals": {
       "window": true,
