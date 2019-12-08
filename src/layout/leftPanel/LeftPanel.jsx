@@ -11,6 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import history from 'historyConfig';
 import Routers from 'layout/router/Router';
 
 const drawerWidth = 240;
@@ -63,13 +64,13 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button component="a" href="/">
+        <ListItem button component="a" onClick={() => history.push('/xnsv')}>
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
           <ListItemText primary="Xác nhận sinh viên" />
         </ListItem>
-        <ListItem button component="a" href="/drl">
+        <ListItem button component="a" onClick={() => history.push('/drl')}>
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>

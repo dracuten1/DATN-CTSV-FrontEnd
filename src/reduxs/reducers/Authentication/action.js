@@ -3,14 +3,17 @@ import {
     AuthenticationDetails,
     CognitoUser
 } from 'amazon-cognito-identity-js';
-import * as actionTypes from './actionTypes';
 import hisory from 'historyConfig';
+import * as actionTypes from './actionTypes';
 
 const poolData = {
     UserPoolId: 'ap-southeast-1_6pX9mWgjh',
     ClientId: '32gh8i178tatha2f01gps8k014'
 };
 const userPool = new CognitoUserPool(poolData);
+const redirectPath = '/drl';
+
+
 
 export const authStart = () => {
 
@@ -121,7 +124,7 @@ export const auth = (email, password) => {
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
                 console.log(result);
-                hisory.push('/drl');
+                hisory.push(redirectPath);
                 dispatch(authSuccess(cognitoAuthUser));
             },
             onFailure: (err) => {
