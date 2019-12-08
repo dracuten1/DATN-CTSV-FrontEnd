@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import history from 'historyConfig';
@@ -6,6 +6,7 @@ import themeUI from 'shared/styles/theme';
 import StudentCertification from 'pages/XNSV/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
 import Auth from 'pages/Auth/Auth';
+import store from 'store';
 
 class Routers extends React.PureComponent {
   render() {
@@ -29,4 +30,15 @@ class Routers extends React.PureComponent {
   }
 }
 
-export default Routers;
+const ProtectRoute = () => {
+
+
+  const { cognitoUser } = store.getState().auth;
+
+  if (cognitoUser === null) {
+    history.push('/');
+  }
+  return (<Routers />);
+};
+
+export default ProtectRoute;

@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -20,6 +19,8 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import TextField from 'shared/components/textfield/TextField';
+import { height } from '@material-ui/system';
 
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
@@ -90,7 +91,7 @@ const XNTruocKhiThemDialog = props => {
   const drawData = data => {
     return data.map((val, ind) => {
       return (
-        <MenuItem key={ind} value={val}>
+        <MenuItem key={ind} value={val} >
           {val}
         </MenuItem>
       );
@@ -107,6 +108,41 @@ const XNTruocKhiThemDialog = props => {
     handleAdd(values);
   };
 
+  const info = [
+    {
+      label: "MSSV",
+      defaultValue: "1612102",
+      state: "mssv",
+    },
+    {
+      label: "Họ tên",
+      defaultValue: "Nguyen Van A",
+      state: "name",
+    },
+    "devider",
+    {
+      label: "Tỉnh/Thành phố",
+      defaultValue: "Hồ Chí Minh",
+      state: "city",
+    },
+    {
+      label: "Quận (huyện)",
+      defaultValue: "Nhà Bè",
+      state: "district",
+    },
+    {
+      label: "Phường (xã)",
+      defaultValue: "Phước Kiển",
+      state: "ward",
+    },
+    {
+      label: "Địa chỉ",
+      defaultValue: "336/1 Phạm Hữu Lầu",
+      state: "address",
+
+    }
+  ]
+
   return (
     <div>
       <Dialog
@@ -118,59 +154,27 @@ const XNTruocKhiThemDialog = props => {
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>
         <DialogContent className={classes.container}>
-          <TextField
-            className={classes.textField}
-            label="MSSV"
-            defaultValue="1612123"
-            onChange={handleChange('mssv')}
-            margin="normal"
-          />
-          <TextField
-            className={classes.textField}
-            label="Họ tên"
-            margin="normal"
-            defaultValue="Nguyễn Quốc Dũng"
-            onChange={handleChange('name')}
-            InputProps={{
-              readOnly: true
-            }}
-          />
-          <Divider className={classes.divider} />
-          <TextField
-            className={classes.textField}
-            label="Tỉnh/Thành phố"
-            margin="normal"
-            defaultValue="Hồ Chí Minh"
-            onChange={handleChange('city')}
-          />
-          <TextField
-            className={classes.textField}
-            label="Quận (huyện)"
-            margin="normal"
-            defaultValue="Nhà Bè"
-            onChange={handleChange('district')}
-          />
-          <TextField
-            className={classes.textField}
-            label="Phường (xã)"
-            margin="normal"
-            defaultValue="Phước Kiển"
-            onChange={handleChange('ward')}
-          />
-          <TextField
-            className={classes.textField}
-            label="Địa chỉ"
-            margin="normal"
-            defaultValue="336/1 Phạm Hữu Lầu"
-            onChange={handleChange('address')}
-          />
+          {
+            info.map(item => {
+              if (item === "devider") {
+                return (<Divider className={classes.divider} />)
+              }
+              return (<TextField
+                label={item.label}
+                defaultValue={item.defaultValue}
+                onBlur={handleChange(item.state)}
+                margin="normal"
 
+              />)
+            })
+          }
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">
               Ngôn ngữ
             </InputLabel>
             <Select
+              variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('language')}
@@ -181,11 +185,12 @@ const XNTruocKhiThemDialog = props => {
           </FormControl>
 
           {values.language === 'Tiếng Việt' && (
-            <FormControl className={classes.textField}>
+            <FormControl className={classes.textField} margin="normal">
               <InputLabel id="demo-simple-select-helper-label">
                 Loại xác nhận
               </InputLabel>
               <Select
+                variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 onChange={handleChange('type')}
@@ -195,11 +200,12 @@ const XNTruocKhiThemDialog = props => {
             </FormControl>
           )}
           {values.language === 'Tiếng Anh' && (
-            <FormControl className={classes.textField}>
+            <FormControl className={classes.textField} margin="normal">
               <InputLabel id="demo-simple-select-helper-label">
                 Loại xác nhận
               </InputLabel>
               <Select
+                variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 onChange={handleChange('type')}
@@ -228,11 +234,12 @@ const XNTruocKhiThemDialog = props => {
           )}
           {values.type === 'Bảo lưu' && (
             <div className={classes.container}>
-              <FormControl className={classes.textField}>
-                <InputLabel id="demo-simple-select-helper-label">
+              <FormControl className={classes.textField} margin="normal">
+                <InputLabel id="demo-simple-select-helper-label" >
                   Năm học
                 </InputLabel>
                 <Select
+                  variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   onChange={handleChange('year')}
@@ -244,11 +251,12 @@ const XNTruocKhiThemDialog = props => {
                   <MenuItem value={1}>2017-2018</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl className={classes.textField}>
+              <FormControl className={classes.textField} margin="normal">
                 <InputLabel id="demo-simple-select-helper-label">
                   Học kỳ
                 </InputLabel>
                 <Select
+                  variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   onChange={handleChange('semester')}
@@ -346,11 +354,12 @@ const XNTruocKhiThemDialog = props => {
             </div>
           )}
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">
               Tình trạng
             </InputLabel>
             <Select
+              variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('status')}
@@ -358,9 +367,10 @@ const XNTruocKhiThemDialog = props => {
               {drawData(dataLXNTA)}
             </Select>
           </FormControl>
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">Lý do</InputLabel>
             <Select
+              variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('reason')}
