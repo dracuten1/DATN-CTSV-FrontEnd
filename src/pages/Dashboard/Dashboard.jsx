@@ -22,20 +22,16 @@ import { title } from "shared/styles/material";
 
 
 const useStyles = makeStyles(theme => ({
-    section: {
-        padding: "70px 0",
-        textAlign: "center"
-      },
-      title: {
-        ...title,
-        marginBottom: "1rem",
-        marginTop: "30px",
-        minHeight: "32px",
-        textDecoration: "none"
-      },
-      description: {
-        color: "#999"
-      }
+  section: {
+    textAlign: 'center'
+  },
+  title: {
+    ...title,
+    textDecoration: 'none'
+  },
+  description: {
+    color: '#999'
+  }
 }));
 
 const data = [
@@ -43,75 +39,87 @@ const data = [
         title: "Admin",
         description:"Quản lý và cấp quyền các tài khoản User.",
         icon: Admin,
-        iconColor:"info"
+        iconColor:"info",
+        link: "/xnsv"
     },
     {
         title: "Thông tin chung",
         description:"Quản lý các thông tin chung của Sinh Viên.",
         icon: Info,
-        iconColor:"info"
+        iconColor:"info",
+        link: "/xnsv"
     },
     {
         title: "Xác nhận sinh viên",
         description:"Cung cấp các giấy xác nhận thông tin kèm chứng nhận của nhà trường.",
         icon: Confirm,
-        iconColor:"info"
+        iconColor:"info",
+        link: "/xnsv"
     },
     {
         title: "Điểm rèn luyện",
         description:"Cung cấp và quản lý điểm rèn luyện từng học kỳ của Sinh Viên.",
         icon: Grade,
-        iconColor:"success"
+        iconColor:"success",
+        link: "/drl"
     },
     {
         title: "Thông tin lưu trú",
         description:"Quản lý nơi cư trú của Sinh Viên theo từng năm học.",
         icon: Home,
-        iconColor:"success"
+        iconColor:"success",
+        link: "/xnsv"
     },
     {
         title: "Tình trạng sinh viên",
         description:"Quản lý tình trạng Sinh Viên theo từng học kỳ.",
         icon: Status,
-        iconColor:"success"
+        iconColor:"success",
+        link: "/xnsv"
     },
     {
         title: "Hồ sơ sinh viên",
         description:"Quản lý hồ sơ Sinh Viên.",
         icon: Description,
-        iconColor:"primary"
+        iconColor:"primary",
+        link: "/xnsv"
     },
     {
         title: "Chế độ chính sách",
         description:"Quản lý và cung cấp những hỗ trợ cho Sinh Viên theo từng chế độ chính sách.",
         icon: Policy,
-        iconColor:"primary"
+        iconColor:"primary",
+        link: "/xnsv"
     },
     {
         title: "Sinh hoạt công dân",
         description:"Quản lý và tổ chức các lớp Sinh Hoạt Công Dân mỗi năm học.",
         icon: Activity,
-        iconColor:"primary"
+        iconColor:"primary",
+        link: "/xnsv"
     },
     {
         title: "Tài khoản ngân hàng",
         description:"Quản lý tài khoản ngân hàng của Sinh Viên.",
         icon: Card,
-        iconColor:"gray"
+        iconColor:"gray",
+        link: "/xnsv"
     },
     {
         title: "Bảo hiểm",
         description:"Quản lý và cung cấp bảo hiểm cho Sinh Viên theo từng năm học.",
         icon: Hospital,
-        iconColor:"gray"
+        iconColor:"gray",
+        link: "/xnsv"
     },
     {
         title: "Sinh viên nhận học bổng",
         description:"Quản lý và khen thưởng cho Sinh Viên đạt được giải thưởng, học bổng.",
         icon: scholarship,
-        iconColor:"gray"
+        iconColor:"gray",
+        link: "/xnsv"
     }
-]
+];
 
 export default function Dashboard() {
   const classes = useStyles();
@@ -132,7 +140,7 @@ export default function Dashboard() {
       </Grid>
       <div>
         <Grid container>
-          {data.map((item, index) => {
+          {data.map((item) => {
             return (
               <Grid item xs={12} sm={12} md={4}>
                 <InfoArea
@@ -140,6 +148,7 @@ export default function Dashboard() {
                   description={item.description}
                   icon={item.icon}
                   iconColor={item.iconColor}
+                  link={item.link}
                   vertical
                 />
               </Grid>

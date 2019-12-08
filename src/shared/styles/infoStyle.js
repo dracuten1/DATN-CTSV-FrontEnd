@@ -18,7 +18,7 @@ const infoStyle = {
   iconWrapper: {
     float: "left",
     marginTop: "24px",
-    marginRight: "10px"
+    // marginRight: "10px"
   },
   primary: {
     color: primaryColor
@@ -49,7 +49,11 @@ const infoStyle = {
     color: grayColor,
     overflow: "hidden"
   },
-  title,
+  title:{
+    ...title,
+    margin: "0",
+    lineHeight: "1rem"
+  },
   description: {
     color: grayColor,
     overflow: "hidden",

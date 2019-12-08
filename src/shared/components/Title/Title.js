@@ -36,7 +36,7 @@ const Title = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardContent alignItems="center">
+      <CardContent alignitems="center">
         <Grid container justify="center">
           <Grid item>
             <Typography gutterBottom />

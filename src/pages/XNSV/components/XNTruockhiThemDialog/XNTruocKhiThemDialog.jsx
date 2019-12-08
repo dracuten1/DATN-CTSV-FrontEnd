@@ -20,7 +20,6 @@ import {
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import TextField from 'shared/components/textfield/TextField';
-import { height } from '@material-ui/system';
 
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
@@ -141,7 +140,7 @@ const XNTruocKhiThemDialog = props => {
       state: "address",
 
     }
-  ]
+  ];
 
   return (
     <div>
@@ -159,13 +158,15 @@ const XNTruocKhiThemDialog = props => {
               if (item === "devider") {
                 return (<Divider className={classes.divider} />)
               }
-              return (<TextField
+              return (
+              <TextField
                 label={item.label}
                 defaultValue={item.defaultValue}
                 onBlur={handleChange(item.state)}
                 margin="normal"
 
-              />)
+              />
+              );
             })
           }
           <Divider className={classes.divider} />
