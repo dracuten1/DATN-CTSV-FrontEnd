@@ -16,6 +16,16 @@ const appStage = appConfig.appStage;
  */
 class AppLogger {
 
+  log;
+
+  debug;
+
+  info;
+
+  warn;
+
+  error;
+
  /**
    * @constructor AppLogger
    */

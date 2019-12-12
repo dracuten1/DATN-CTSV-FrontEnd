@@ -1,10 +1,7 @@
 import axios from "axios";
-import { logger } from "./AppLogger";
+// import { logger } from "./AppLogger";
 import appConfig from "../../config/app-config";
-import SensitiveStorage from '../services/SensitiveStorage';
 import store from '../../store';
-
-const sensitiveStorage = new SensitiveStorage();
 
 /**
  * Axios basic configuration
@@ -32,8 +29,25 @@ httpClient.interceptors.request.use(
     (configuration) => {
 
         const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.accessToken;
-        
-        configuration.headers.Auth_token = jwtToken;
+
+        const contentType = 'application/json';
+
+        // let headers = new Headers();
+        // headers.append('Content-Type', 'application/json');
+        // headers.append('Accept', 'application/json');
+        // headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+        // headers.append('Access-Control-Allow-Credentials', 'true');
+        // headers.append('Authorization', `Bearer ${jwtToken}`);
+        const headers = {
+            // 'Auth_Token': jwtToken,
+            'Authorization': jwtToken,
+            // 'Authorization': `Bearer ${jwtToken}`,
+            // 'Access-Control-Allow-Origin': '*',
+
+            'Content-Type': contentType,
+        };
+
+        configuration.headers = headers;
 
         return configuration;
     },
@@ -62,18 +76,9 @@ httpClient.interceptors.response.use(
  */
 export const sendPost = async (url, requestBody) => {
 
-    const startTime = window.performance.now();
-
-    logger.debug("START sending API POST request:: " + url, requestBody);
-
     const response = await httpClient.post(url, requestBody);
-    const responseData = response.data;
 
-    const totalExecutionTime = (window.performance.now() - startTime);
-
-    logger.debug("END sending API POST request. Total execution time: " + totalExecutionTime + ". Response: ", responseData);
-
-    return responseData;
+    return response;
 };
 
 /**
@@ -82,13 +87,7 @@ export const sendPost = async (url, requestBody) => {
  */
 export const sendGet = async (url) => {
 
-    const startTime = window.performance.now();
-    logger.debug("HttpClient::START sending API GET request: " + url);
-
     const response = await httpClient.get(url);
-
-    const totalExecutionTime = (window.performance.now() - startTime);
-    logger.debug("HttpClient::END sending API GET request. Total execution time: " + totalExecutionTime + ". Response: ", response);
 
     return response;
 };

@@ -11,6 +11,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
+
+import * as DRLHandler from 'handlers/DRLHandler';
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
 
@@ -54,6 +56,16 @@ const AddDialog = props => {
     handleAdd(values);
   };
 
+  const findStudentInfoById = event => {
+
+    const id = '1612792';
+
+    const body = DRLHandler.FindStudentInfoById(id);
+
+    console.log(body);
+
+  };
+
   return (
     <div>
       <Dialog
@@ -70,6 +82,8 @@ const AddDialog = props => {
             label="MSSV"
             defaultValue="1612123"
             onChange={handleChange('mssv')}
+
+            onBlur={findStudentInfoById}
             margin="normal"
           />
           <TextField
