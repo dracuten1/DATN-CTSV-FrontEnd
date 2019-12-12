@@ -3,6 +3,6 @@ export default {
     CONTEXT_PATH: "",
   },
   api: {
-    BASE_URL: "",
+    BASE_URL: "https://y3twejx91e.execute-api.ap-southeast-1.amazonaws.com/dev/",
   },
 };

@@ -37,7 +37,7 @@
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set REACT_APP_STAGE=development && react-scripts start",
     "build": "set REACT_APP_STAGE=development && react-scripts build",
     "build-prod": "set REACT_APP_STAGE=production && react-scripts build",
     "test": "react-scripts test",
