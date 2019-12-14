@@ -28,22 +28,12 @@ const loggerInterceptor = (configuration) => {
 httpClient.interceptors.request.use(
     (configuration) => {
 
-        const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.accessToken;
+        const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.idToken;
 
         const contentType = 'application/json';
 
-        // let headers = new Headers();
-        // headers.append('Content-Type', 'application/json');
-        // headers.append('Accept', 'application/json');
-        // headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
-        // headers.append('Access-Control-Allow-Credentials', 'true');
-        // headers.append('Authorization', `Bearer ${jwtToken}`);
         const headers = {
-            // 'Auth_Token': jwtToken,
-            'Authorization': jwtToken,
-            // 'Authorization': `Bearer ${jwtToken}`,
-            // 'Access-Control-Allow-Origin': '*',
-
+            'Auth_Token': jwtToken,
             'Content-Type': contentType,
         };
 
