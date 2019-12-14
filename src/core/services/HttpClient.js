@@ -68,7 +68,9 @@ export const sendPost = async (url, requestBody) => {
 
     const response = await httpClient.post(url, requestBody);
 
-    return response;
+    const { body } = response.data;
+
+    return body;
 };
 
 /**
@@ -79,5 +81,7 @@ export const sendGet = async (url) => {
 
     const response = await httpClient.get(url);
 
-    return response;
+    const { body } = response.data;
+
+    return body;
 };

@@ -26,11 +26,11 @@ class AppLogger {
 
   error;
 
- /**
-   * @constructor AppLogger
-   */
+  /**
+    * @constructor AppLogger
+    */
   constructor() {
-    this.TURN_DEBUG_ON = false;
+    this.TURN_DEBUG_ON = true;
     /** Initializing the configuration of logger */
     this.initLogger();
   }
