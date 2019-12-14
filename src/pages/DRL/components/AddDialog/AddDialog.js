@@ -11,8 +11,12 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
+import DRLAction from 'reduxs/reducers/DRL/action';
+import { useSelector, useDispatch } from 'react-redux';
 
 import * as DRLHandler from 'handlers/DRLHandler';
+import { logger } from 'core/services/Apploger';
+import { valueOrEmpty } from 'core/ultis/stringUtil';
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
 
@@ -35,6 +39,9 @@ const AddDialog = props => {
   const { open, handleClose, handleAdd } = props;
   const date = new Date();
 
+
+  const dispatch = useDispatch();
+
   const [values, setValues] = React.useState({
     stt: 3,
     name: '',
@@ -56,15 +63,27 @@ const AddDialog = props => {
     handleAdd(values);
   };
 
-  const findStudentInfoById = event => {
 
-    const id = '1612792';
 
-    const body = DRLHandler.FindStudentInfoById(id);
+  const findStudentInfoById = async event => {
 
-    console.log(body);
+    const id = event.target.value;
+
+    const data = await DRLHandler.FindStudentInfoById(id);
+
+    const resStudentInfo = data.Items[0];
+
+    const studentInfo = {
+      name: valueOrEmpty(resStudentInfo.Ten),
+      mssv: valueOrEmpty(resStudentInfo.Mssv),
+      faculty: valueOrEmpty(resStudentInfo.Nganh),
+      dob: valueOrEmpty(resStudentInfo.NgSinh),
+    };
+
+    setValues(studentInfo);
 
   };
+
 
   return (
     <div>
@@ -80,9 +99,8 @@ const AddDialog = props => {
           <TextField
             className={classes.textField}
             label="MSSV"
-            defaultValue="1612123"
+            value={values.mssv}
             onChange={handleChange('mssv')}
-
             onBlur={findStudentInfoById}
             margin="normal"
           />
@@ -90,7 +108,7 @@ const AddDialog = props => {
             className={classes.textField}
             label="Họ tên"
             margin="normal"
-            defaultValue="Nguyễn Quốc Dũng"
+            value={values.name}
             onChange={handleChange('name')}
             InputProps={{
               readOnly: true
@@ -100,7 +118,7 @@ const AddDialog = props => {
             className={classes.textField}
             label="Ngày sinh"
             margin="normal"
-            defaultValue="16/12/1998"
+            value={values.dob}
             onChange={handleChange('dob')}
             InputProps={{
               readOnly: true
@@ -110,7 +128,7 @@ const AddDialog = props => {
             className={classes.textField}
             label="Khoa"
             margin="normal"
-            defaultValue="Công nghệ thông tin"
+            value={values.faculty}
             onChange={handleChange('faculty')}
             InputProps={{
               readOnly: true
