@@ -23,7 +23,8 @@
       "react/forbid-prop-types": "off",
       "react/require-default-props":"off",
       "react/no-unused-prop-types": "off",
-      "prefer-template":"off"
+      "prefer-template":"off",
+      "no-case-declarations":"off",
     },
     "globals": {
       "window": true,

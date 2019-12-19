@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as DRLHandler from 'handlers/DRLHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
+import { CaseEnum, SemesterEnum } from './DRLEnum';
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
 
@@ -28,7 +29,8 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 400
+    margin: theme.spacing(1),
+    width: 400,
   }
 }));
 
@@ -52,14 +54,73 @@ const AddDialog = props => {
     year: null,
     semester: null,
     isPrint: false,
-    date: moment(date).format('DD/MM/YYYY')
   });
 
   const handleChange = prop => event => {
+    logger.info(event.target.value);
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const addData = () => {
+  const parseCase = key => {
+    switch (key) {
+      case CaseEnum.hk:
+        return 'HK';
+      case CaseEnum.nh:
+        return 'NH';
+      default:
+        return 'All';
+    }
+  };
+
+  const parseSemester = key => {
+    switch (key) {
+      case SemesterEnum.hk1:
+        return 'HK1';
+      default:
+        return 'HK2';
+    };
+  };
+
+  const addData = async () => {
+
+    const addCase = parseCase(values.case);
+    const response = await DRLHandler.GetDRLByIdAndType(values.mssv, addCase);
+    const items = response.Items;
+    const Data = {};
+    items.forEach(element => {
+      const item = { ...element };
+      delete item.Time;
+      switch (values.case) {
+        case CaseEnum.nh:
+          if (element.Time.includes(values.year)) Data[element.Time] = { ...item };
+          break;
+        case CaseEnum.hk:
+          const semester = parseSemester(values.semester);
+          if (element.Time.includes(semester) && element.Time.includes(values.year)) Data[element.Time] = { ...item };
+          break;
+        default:
+          Data[element.Time] = { ...item };
+      };
+    });
+
+    const SinhVien = {
+      Ten: values.name,
+      Khoa: values.faculty,
+      MSSV: values.mssv,
+      NS: values.dob,
+    };
+
+    const LoaiXN = addCase;
+
+    const newCertificate = {
+      Data,
+      SinhVien,
+      LoaiXN,
+    };
+
+    const res = await DRLHandler.AddCertificate(newCertificate);
+    logger.info(res);
+
     handleAdd(values);
   };
 
@@ -84,12 +145,19 @@ const AddDialog = props => {
 
   };
 
+  const drawMenuItem = (data) => {
+
+    return Object.keys(data).map(key => {
+      return (
+        <MenuItem key={key} value={data[key]}>{data[key]}</MenuItem>);
+    });
+  };
+
 
   return (
     <div>
       <Dialog
         open={open}
-        // onClose={handleClose()}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
@@ -136,20 +204,15 @@ const AddDialog = props => {
           />
           <FormControl className={classes.textField}>
             <InputLabel id="demo-simple-select-helper-label">
-              Trường hợp
+              Loại xác nhận
             </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('case')}
+              value={values.case}
             >
-              <MenuItem value={null}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={4}>Toàn khoá</MenuItem>
-              <MenuItem value={3}>Tất cả</MenuItem>
-              <MenuItem value={2}>Năm học</MenuItem>
-              <MenuItem value={1}>Năm học-học kỳ</MenuItem>
+              {drawMenuItem(CaseEnum)}
             </Select>
           </FormControl>
           <FormControl className={classes.textField}>
@@ -160,13 +223,12 @@ const AddDialog = props => {
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('year')}
+              disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc}
             >
-              <MenuItem value={null}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={3}>2019-2020</MenuItem>
-              <MenuItem value={2}>2018-2019</MenuItem>
-              <MenuItem value={1}>2017-2018</MenuItem>
+              <MenuItem value={4}>2019-2020</MenuItem>
+              <MenuItem value={3}>2018-2019</MenuItem>
+              <MenuItem value={2}>2017-2018</MenuItem>
+              <MenuItem value={1}>2016-2017</MenuItem>
             </Select>
           </FormControl>
           <FormControl className={classes.textField}>
@@ -175,23 +237,11 @@ const AddDialog = props => {
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('semester')}
+              disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc || values.case === CaseEnum.nh}
             >
-              <MenuItem value={null}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={1}>Học kỳ 1</MenuItem>
-              <MenuItem value={2}>Học kỳ 2</MenuItem>
+              {drawMenuItem(SemesterEnum)}
             </Select>
           </FormControl>
-          <TextField
-            className={classes.textField}
-            label="Ngày thêm"
-            margin="normal"
-            defaultValue={moment(date).format('DD/MM/YYYY')}
-            InputProps={{
-              readOnly: true
-            }}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

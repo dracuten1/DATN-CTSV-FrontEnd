@@ -10,3 +10,22 @@ export const FindStudentInfoById = async (id) => {
     return response;
 
 };
+
+export const GetDRLByIdAndType = async (id, type) => {
+
+    const url = `drl/mssv-type?mssv=${id}&type=${type}`;
+
+    const reponse = await HttpClient.sendGet(url);
+
+    return reponse;
+
+};
+
+export const AddCertificate = async (value) => {
+
+    const url = `drl/add-certificate`;
+
+    const response = await HttpClient.sendPost(url, value);
+
+    return response;
+};
