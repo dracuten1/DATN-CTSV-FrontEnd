@@ -58,7 +58,6 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const listButton = ['Xác nhận sinh viên', 'Điểm rèn luyện'];
   const drawer = (
     <div>
       <div className={classes.toolbar} />
