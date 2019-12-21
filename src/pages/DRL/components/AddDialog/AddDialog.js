@@ -61,6 +61,7 @@ const AddDialog = props => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
+
   const parseCase = key => {
     switch (key) {
       case CaseEnum.hk:
@@ -81,7 +82,9 @@ const AddDialog = props => {
     };
   };
 
-  const addData = async () => {
+  const [newCertificate, setCertificate] = React.useState({});
+
+  const fetchCertificate = async () => {
 
     const addCase = parseCase(values.case);
     const response = await DRLHandler.GetDRLByIdAndType(values.mssv, addCase);
@@ -112,11 +115,19 @@ const AddDialog = props => {
 
     const LoaiXN = addCase;
 
-    const newCertificate = {
+    const tmpCertificate = {
       Data,
       SinhVien,
       LoaiXN,
     };
+
+    logger.info("Fetch certificate: ", tmpCertificate);
+
+    setCertificate(tmpCertificate);
+
+  };
+
+  const addData = async () => {
 
     const res = await DRLHandler.AddCertificate(newCertificate);
     logger.info(res);
@@ -209,7 +220,10 @@ const AddDialog = props => {
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('case')}
+              onChange={(event) => {
+                handleChange('case')(event);
+                fetchCertificate();
+              }}
               value={values.case}
             >
               {drawMenuItem(CaseEnum)}
@@ -222,7 +236,10 @@ const AddDialog = props => {
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('year')}
+              onChange={(event) => {
+                handleChange('year')(event);
+                fetchCertificate();
+              }}
               disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc}
             >
               <MenuItem value={4}>2019-2020</MenuItem>
@@ -236,7 +253,10 @@ const AddDialog = props => {
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('semester')}
+              onChange={(event) => {
+                handleChange('semester')(event);
+                fetchCertificate();
+              }}
               disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc || values.case === CaseEnum.nh}
             >
               {drawMenuItem(SemesterEnum)}

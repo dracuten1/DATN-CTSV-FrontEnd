@@ -46,10 +46,6 @@ const PrintList = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  useEffect((prev) => {
-    dispatch(DRLActions.getNotPrintYet());
-  }, []);
-
   const dataPrint = useSelector(state => state.DRLState.dataPrint);
   logger.info("dataPrint: ", dataPrint);
   const [open, setOpen] = React.useState(false);
@@ -168,9 +164,8 @@ const PrintList = props => {
                   new Promise(resolve => {
                     setTimeout(() => {
                       logger.info("Olddata: ", oldData);
-                      const { pk, sk, isPrint } = oldData;
-                      const status = isPrint ? 'In' : 'ChuaIn';
-                      dispatch(DRLActions.deleteOneCertificate(pk, sk, status));
+                      const { pk, sk } = oldData;
+                      dispatch(DRLActions.deleteOneCertificate(pk, sk));
                       resolve();
                       setState(prevState => {
                         const data = [...prevState.data];
@@ -195,7 +190,10 @@ const PrintList = props => {
           Xem toàn bộ
         </Button>
         <Button
-          onClick={() => dispatch(DRLActions.handlePrintList())}
+          onClick={() => {
+            dispatch(DRLActions.handlePrintList());
+            dispatch(DRLActions.getNotPrintYet());
+          }}
           variant="contained"
           color="primary"
           size="small"
