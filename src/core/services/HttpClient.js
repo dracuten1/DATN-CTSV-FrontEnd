@@ -85,3 +85,17 @@ export const sendGet = async (url) => {
 
     return body;
 };
+
+/**
+ *
+ * @param {*} url
+ * @param {*} requestBody
+ */
+export const sendDelete = async (url, requestBody) => {
+
+    const response = await httpClient.delete(url, requestBody);
+
+    const { body } = response.data;
+
+    return body;
+};

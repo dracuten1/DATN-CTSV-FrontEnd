@@ -17,23 +17,20 @@ const handlePrintList = () => async dispatch => {
 const getNotPrintYet = () => async dispatch => {
 
   const status = 'ChuaIn';
-  const response = await DRLHandler.GetListCertificate(status);
-  const items = response.Items;
 
-  logger.info('PrintList:: getListNotPrintYet: ', items);
-
-  const payload = items.map((item, index) => {
-    return {
-      stt: index + 1,
-      name: item.SinhVien.Ten,
-      mssv: item.SinhVien.MSSV,
-      case: item.LoaiXN,
-      isPrint: item.status !== 'Chưa In',
-      date: item.ngayThem,
-    };
-  });
+  const payload = await DRLHandler.GetListCertificate(status);
 
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
+
+};
+
+const deleteOneCertificate = (pk, sk, status) => async dispatch => {
+
+  const response = await DRLHandler.DeleteOneCertificate(pk, sk, status);
+
+  logger.info("DRLAction:: deleteOneCertificate: reponse: ", response);
+
+  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
 
 };
 
@@ -44,4 +41,5 @@ export default {
   handlePrintList,
   handlePrint,
   getNotPrintYet,
+  deleteOneCertificate,
 };

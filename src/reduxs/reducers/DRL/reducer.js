@@ -14,11 +14,8 @@ const userReducer = (state = INIT_STATE, action) => {
       return { ...state, isAllList: false, isPrintList: true };
     case ActionTypes.GET_NOT_PRINT_YET:
       return { ...state, dataPrint: action.payload };
-    // case ActionTypes.DATA_PRINT: {
-    //   const data = [...state.dataPrint];
-    //   data.push(action.newData);
-    //   return { ...state, dataPrint: data };
-    // }
+    case ActionTypes.DELETE_ONE_CERTIFICATE:
+      return { ...state, };
     default:
       return { ...state };
   }

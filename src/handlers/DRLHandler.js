@@ -34,7 +34,34 @@ export const GetListCertificate = async (status) => {
 
     const url = `drl/getListCertificates?status=${status}&limit=10`;
 
-    const reponse = await HttpClient.sendGet(url);
+    const response = await HttpClient.sendGet(url);
+    const items = response.Items;
 
-    return reponse;
+    logger.info('PrintList:: getListNotPrintYet: ', items);
+
+    const payload = items.map((item, index) => {
+        return {
+            stt: index + 1,
+            name: item.SinhVien.Ten,
+            mssv: item.SinhVien.MSSV,
+            case: item.LoaiXN,
+            isPrint: item.status !== 'Chưa In',
+            date: item.ngayThem,
+            pk: item.PK,
+            sk: item.SK,
+        };
+    });
+
+    return payload;
+};
+
+export const DeleteOneCertificate = async (pk, sk, status) => {
+
+    const url = `drl/delete-certificate`;
+
+    const deleteInfo = {
+        pk, sk, status
+    };
+
+    HttpClient.sendDelete(url, deleteInfo);
 };

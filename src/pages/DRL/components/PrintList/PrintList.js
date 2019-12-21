@@ -47,7 +47,6 @@ const PrintList = props => {
   const dispatch = useDispatch();
 
   useEffect((prev) => {
-    logger.info(state);
     dispatch(DRLActions.getNotPrintYet());
   }, []);
 
@@ -82,7 +81,7 @@ const PrintList = props => {
         lookup: {
           'HK': 'Năm học-Học kỳ',
           "NH": 'Năm Học',
-          "ALL": 'Tất cả',
+          "All": 'Tất cả',
           "TK": 'Toàn Khoá'
         },
         filterCellStyle: {
@@ -168,6 +167,10 @@ const PrintList = props => {
                 onRowDelete: oldData =>
                   new Promise(resolve => {
                     setTimeout(() => {
+                      logger.info("Olddata: ", oldData);
+                      const { pk, sk, isPrint } = oldData;
+                      const status = isPrint ? 'In' : 'ChuaIn';
+                      dispatch(DRLActions.deleteOneCertificate(pk, sk, status));
                       resolve();
                       setState(prevState => {
                         const data = [...prevState.data];
