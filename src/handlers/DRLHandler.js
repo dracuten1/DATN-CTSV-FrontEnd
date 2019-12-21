@@ -1,5 +1,6 @@
 import * as HttpClient from 'core/services/HttpClient';
 import { logger } from 'core/services/Apploger';
+import moment from 'moment';
 
 export const FindStudentInfoById = async (id) => {
 
@@ -46,7 +47,7 @@ export const GetListCertificate = async (status) => {
             mssv: item.SinhVien.MSSV,
             case: item.LoaiXN,
             isPrint: item.status !== 'Chưa In',
-            date: item.ngayThem,
+            date: moment(item.ngayThem).format('DD/MM/YYYY'),
             pk: item.PK,
             sk: item.SK,
         };

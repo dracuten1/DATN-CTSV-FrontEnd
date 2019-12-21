@@ -45,7 +45,7 @@ const AddDialog = props => {
   const dispatch = useDispatch();
 
   const [values, setValues] = React.useState({
-    stt: 3,
+    stt: null,
     name: '',
     mssv: '',
     dob: '',
