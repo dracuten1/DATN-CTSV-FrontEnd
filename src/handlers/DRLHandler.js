@@ -29,3 +29,12 @@ export const AddCertificate = async (value) => {
 
     return response;
 };
+
+export const GetListCertificate = async (status) => {
+
+    const url = `drl/getListCertificates?status=${status}&limit=10`;
+
+    const reponse = await HttpClient.sendGet(url);
+
+    return reponse;
+};

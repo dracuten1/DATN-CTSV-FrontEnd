@@ -1,10 +1,9 @@
 import ActionTypes from './actionTypes';
-import mockData from '../../../pages/DRL/components/PrintList/data';
 
 const INIT_STATE = {
   isAllList: false,
   isPrintList: true,
-  dataPrint: mockData
+  dataPrint: []
 };
 
 const userReducer = (state = INIT_STATE, action) => {
@@ -13,6 +12,8 @@ const userReducer = (state = INIT_STATE, action) => {
       return { ...state, isAllList: true, isPrintList: false };
     case ActionTypes.PRINT_LIST:
       return { ...state, isAllList: false, isPrintList: true };
+    case ActionTypes.GET_NOT_PRINT_YET:
+      return { ...state, dataPrint: action.payload };
     // case ActionTypes.DATA_PRINT: {
     //   const data = [...state.dataPrint];
     //   data.push(action.newData);

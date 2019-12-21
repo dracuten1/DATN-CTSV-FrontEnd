@@ -25,6 +25,8 @@
       "react/no-unused-prop-types": "off",
       "prefer-template":"off",
       "no-case-declarations":"off",
+      "react/jsx-props-no-spreading":"off",
+      "react/destructuring-assignment":"off",
     },
     "globals": {
       "window": true,

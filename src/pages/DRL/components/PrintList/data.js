@@ -5,7 +5,7 @@ export default [
     stt: 1,
     name: 'Mehmet',
     mssv: '1612001',
-    case: 2,
+    case: 'nk',
     isPrint: true,
     date: '22/11/2019'
   },
@@ -13,7 +13,7 @@ export default [
     stt: 2,
     name: 'Zerya Betül',
     mssv: '1612002',
-    case: 1,
+    case: "hk",
     isPrint: false,
     date: '22/11/2019'
   }

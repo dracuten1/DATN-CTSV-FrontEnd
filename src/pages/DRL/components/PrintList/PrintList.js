@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -11,9 +11,10 @@ import {
   Button,
   Divider
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import Actions from 'reduxs/reducers/DRL/action';
-
+import { useDispatch, useSelector } from 'react-redux';
+import DRLActions from 'reduxs/reducers/DRL/action';
+import * as DRLHandler from 'handlers/DRLHandler';
+import { logger } from 'core/services/Apploger';
 import icons from '../../../../shared/icons';
 import mockData from './data';
 import { AddDialog } from '../AddDialog';
@@ -38,17 +39,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PrintList = props => {
-  const { className, ...rest } = props;
 
+const PrintList = props => {
+
+  const { className, ...rest } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const DRLState = useSelector(state => state.DRLState);
-  // const { dataPrint } = DRLState;
 
+  useEffect((prev) => {
+    logger.info(state);
+    dispatch(DRLActions.getNotPrintYet());
+  }, []);
+
+  const dataPrint = useSelector(state => state.DRLState.dataPrint);
+  logger.info("dataPrint: ", dataPrint);
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: mockData,
+    data: dataPrint,
     columns: [
       {
         title: 'Đã In',
@@ -73,10 +80,10 @@ const PrintList = props => {
         title: 'Trường hợp',
         field: 'case',
         lookup: {
-          1: 'Năm học-Học kỳ',
-          2: 'Năm Học',
-          3: 'Tất cả',
-          4: 'Toàn Khoá'
+          'HK': 'Năm học-Học kỳ',
+          "NH": 'Năm Học',
+          "ALL": 'Tất cả',
+          "TK": 'Toàn Khoá'
         },
         filterCellStyle: {
           paddingTop: 1
@@ -177,7 +184,7 @@ const PrintList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(DRLActions.handleAllList())}
           variant="contained"
           color="primary"
           size="small"
@@ -185,7 +192,7 @@ const PrintList = props => {
           Xem toàn bộ
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handlePrintList())}
+          onClick={() => dispatch(DRLActions.handlePrintList())}
           variant="contained"
           color="primary"
           size="small"
@@ -202,7 +209,7 @@ const PrintList = props => {
           Thêm sinh viên in
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(DRLActions.handleAllList())}
           variant="contained"
           color="primary"
           size="small"
@@ -210,7 +217,7 @@ const PrintList = props => {
           Import
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(DRLActions.handleAllList())}
           variant="contained"
           color="primary"
           size="small"
@@ -218,7 +225,7 @@ const PrintList = props => {
           Export
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handlePrint())}
+          onClick={() => dispatch(DRLActions.handlePrint())}
           variant="contained"
           color="primary"
           size="small"
@@ -238,5 +245,7 @@ const PrintList = props => {
 PrintList.propTypes = {
   className: PropTypes.string
 };
+
+
 
 export default PrintList;
