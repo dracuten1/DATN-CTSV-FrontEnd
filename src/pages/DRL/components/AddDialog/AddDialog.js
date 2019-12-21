@@ -10,16 +10,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import moment from 'moment';
-import DRLAction from 'reduxs/reducers/DRL/action';
-import { useSelector, useDispatch } from 'react-redux';
 
 import * as DRLHandler from 'handlers/DRLHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
 import { CaseEnum, SemesterEnum } from './DRLEnum';
-// import { useDispatch } from 'react-redux';
-// import Actions from '../../../../reduxs/reducers/DRL/action';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -36,16 +31,11 @@ const useStyles = makeStyles(theme => ({
 
 const AddDialog = props => {
   const classes = useStyles();
-  // const dispatch = useDispatch();
 
   const { open, handleClose, handleAdd } = props;
-  const date = new Date();
-
-
-  const dispatch = useDispatch();
 
   const [values, setValues] = React.useState({
-    stt: 3,
+    stt: null,
     name: '',
     mssv: '',
     dob: '',

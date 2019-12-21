@@ -13,10 +13,8 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
-import * as DRLHandler from 'handlers/DRLHandler';
 import { logger } from 'core/services/Apploger';
 import icons from '../../../../shared/icons';
-import mockData from './data';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -136,17 +134,6 @@ const PrintList = props => {
                 filtering: true
               }}
               editable={{
-                // onRowAdd: newData =>
-                //   new Promise(resolve => {
-                //     setTimeout(() => {
-                //       resolve();
-                //       setState(prevState => {
-                //         const data = [...prevState.data];
-                //         data.push(newData);
-                //         return { ...prevState, data };
-                //       });
-                //     }, 600);
-                //   }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
                     setTimeout(() => {
