@@ -24,9 +24,9 @@ const getNotPrintYet = () => async dispatch => {
 
 };
 
-const deleteOneCertificate = (pk, sk, status) => async dispatch => {
+const deleteOneCertificate = (pk, sk) => async dispatch => {
 
-  const response = await DRLHandler.DeleteOneCertificate(pk, sk, status);
+  const response = await DRLHandler.DeleteOneCertificate(pk, sk);
 
   logger.info("DRLAction:: deleteOneCertificate: reponse: ", response);
 

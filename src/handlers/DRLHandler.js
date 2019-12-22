@@ -56,15 +56,16 @@ export const GetListCertificate = async (status) => {
     return payload;
 };
 
-export const DeleteOneCertificate = async (pk, sk, status) => {
+export const DeleteOneCertificate = async (pk, sk) => {
 
     const url = `drl/delete-certificate`;
 
-    const deleteInfo = {
-        pk, sk, status
-    };
+    logger.info("DRLhandler:: deleteOneCertificate: URL: ", url);
 
-    HttpClient.sendDelete(url, deleteInfo);
+    const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
+
+    logger.info("DRLhandler:: deleteOneCertificate: reponse: ", response);
+
 };
 
 export const ExportToDocx = async (type) => {
