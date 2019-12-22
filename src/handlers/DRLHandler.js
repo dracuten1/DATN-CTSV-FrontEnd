@@ -66,3 +66,13 @@ export const DeleteOneCertificate = async (pk, sk, status) => {
 
     HttpClient.sendDelete(url, deleteInfo);
 };
+
+export const ExportToDocx = async (type) => {
+
+    const url = `drl/printf?type=${type}&status=ChuaIn`;
+
+    const reponse = await HttpClient.sendPatch(url);
+
+    return reponse;
+
+};

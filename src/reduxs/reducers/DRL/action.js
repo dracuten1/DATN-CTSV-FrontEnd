@@ -34,7 +34,13 @@ const deleteOneCertificate = (pk, sk, status) => async dispatch => {
 
 };
 
-const handlePrint = () => { };
+const handlePrint = (type) => async dispatch => {
+  const response = await DRLHandler.ExportToDocx(type);
+  
+  logger.info("DRLAction:: exporttodocx: reponse: ", response);
+
+  dispatch({ type: Types.EXPORT_TO_DOCX, payload: null });
+};
 
 export default {
   handleAllList,

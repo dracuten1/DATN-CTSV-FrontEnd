@@ -156,7 +156,7 @@ const XNTruocKhiThemDialog = props => {
           {
             info.map(item => {
               if (item === "devider") {
-                return (<Divider className={classes.divider} />)
+                return (<Divider className={classes.divider} />);
               }
               return (
               <TextField

@@ -15,7 +15,9 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.GET_NOT_PRINT_YET:
       return { ...state, dataPrint: action.payload };
     case ActionTypes.DELETE_ONE_CERTIFICATE:
-      return { ...state, };
+      return { ...state };
+    case ActionTypes.EXPORT_TO_DOCX:
+      return { ...state };
     default:
       return { ...state };
   }
