@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import * as DRLHandler from 'handlers/DRLHandler';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -120,18 +119,6 @@ const PrintList = props => {
     });
     setOpen(false);
   };
-
-  // const handlePrint = async type => {
-  //   const response = await DRLHandler.ExportToDocx(type);
-  //   if (response !== 'Không có gì để in' && response !== undefined) {
-  //     const temp = listLink;
-  //     temp.push(response);
-  //     setListLink(temp);
-  //   } else {
-  //     setNotice(true);
-  //   }
-  //   console.log('listLink');
-  // };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
