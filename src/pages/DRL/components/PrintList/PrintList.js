@@ -52,10 +52,11 @@ const PrintList = props => {
   const dispatch = useDispatch();
 
   const dataPrint = useSelector(state => state.DRLState.dataPrint);
+  const listLink = useSelector(state => state.DRLState.listLink);
+  logger.info('listLink', listLink);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState(false);
-  const [listLink, setListLink] = React.useState([]);
 
   const [state, setState] = useState({
     data: dataPrint,
@@ -82,11 +83,6 @@ const PrintList = props => {
       {
         title: 'Trường hợp',
         field: 'case',
-        customFilterAndSearch: term => {
-          if (valueCase !== term) {
-            valueCase = term;
-          }
-        },
         lookup: {
           HK: 'Năm học-Học kỳ',
           NH: 'Năm Học',
@@ -95,6 +91,15 @@ const PrintList = props => {
         },
         filterCellStyle: {
           paddingTop: 1
+        },
+        customFilterAndSearch: (term, rowData) => {
+          if (valueCase !== term) {
+            valueCase = term;
+          }
+          if (term.length !== 0){
+            return term == rowData.case;
+          }
+          return rowData;
         }
       },
       {
@@ -116,19 +121,18 @@ const PrintList = props => {
     setOpen(false);
   };
 
-  const handlePrint = async type => {
-    const response = await DRLHandler.ExportToDocx(type);
-    if (response !== 'Không có gì để in' && response !== undefined) {
-      const temp = listLink;
-      temp.push(response);
-      setListLink(temp);
-    }
-    else{
-      setNotice(true);
-    }
-  };
-  console.log(listLink);
-  
+  // const handlePrint = async type => {
+  //   const response = await DRLHandler.ExportToDocx(type);
+  //   if (response !== 'Không có gì để in' && response !== undefined) {
+  //     const temp = listLink;
+  //     temp.push(response);
+  //     setListLink(temp);
+  //   } else {
+  //     setNotice(true);
+  //   }
+  //   console.log('listLink');
+  // };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <Divider />
@@ -178,7 +182,7 @@ const PrintList = props => {
                 onRowDelete: oldData =>
                   new Promise(resolve => {
                     setTimeout(() => {
-                      logger.info("Olddata: ", oldData);
+                      logger.info('Olddata: ', oldData);
                       const { pk, sk } = oldData;
                       dispatch(DRLActions.deleteOneCertificate(pk, sk));
                       resolve();
@@ -242,7 +246,7 @@ const PrintList = props => {
               Export
             </Button>
             <Button
-              onClick={() => handlePrint(valueCase)}
+              onClick={() => dispatch(DRLActions.handlePrint(valueCase))}
               variant="contained"
               color="primary"
               size="small"

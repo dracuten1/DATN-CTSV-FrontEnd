@@ -3,7 +3,8 @@ import ActionTypes from './actionTypes';
 const INIT_STATE = {
   isAllList: false,
   isPrintList: true,
-  dataPrint: []
+  dataPrint: [],
+  listLink: []
 };
 
 const userReducer = (state = INIT_STATE, action) => {
@@ -16,6 +17,11 @@ const userReducer = (state = INIT_STATE, action) => {
       return { ...state, dataPrint: action.payload };
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
+      case ActionTypes.ADD_LINK_PRINT:{
+        const temp = state.listLink;
+        temp.push(action.payload);
+        return {...state, listLink: temp };
+      }
     case ActionTypes.EXPORT_TO_DOCX:
       return { ...state };
     default:

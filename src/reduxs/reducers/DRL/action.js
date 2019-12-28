@@ -1,5 +1,6 @@
 import * as DRLHandler from 'handlers/DRLHandler';
 import { logger } from 'core/services/Apploger';
+import history from 'historyConfig';
 import Types from './actionTypes';
 
 const handleAllList = () => async dispatch => {
@@ -15,31 +16,29 @@ const handlePrintList = () => async dispatch => {
 // };
 
 const getNotPrintYet = () => async dispatch => {
-
   const status = 'ChuaIn';
 
   const payload = await DRLHandler.GetListCertificate(status);
 
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
-
   const response = await DRLHandler.DeleteOneCertificate(pk, sk);
 
-  logger.info("DRLAction:: deleteOneCertificate: reponse: ", response);
+  logger.info('DRLAction:: deleteOneCertificate: reponse: ', response);
 
   dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-
 };
 
-const handlePrint = (type) => async dispatch => {
+const handlePrint = type => async dispatch => {
   const response = await DRLHandler.ExportToDocx(type);
-  
-  logger.info("DRLAction:: exporttodocx: reponse: ", response);
 
-  dispatch({ type: Types.EXPORT_TO_DOCX, payload: null });
+  logger.info('DRLAction:: exporttodocx: reponse: ', response);
+  if (response !== 'Không có gì để in' && response !== undefined) {
+    dispatch({ type: Types.ADD_LINK_PRINT, payload: response });
+    history.push('/drl');
+  }
 };
 
 export default {
@@ -47,5 +46,5 @@ export default {
   handlePrintList,
   handlePrint,
   getNotPrintYet,
-  deleteOneCertificate,
+  deleteOneCertificate
 };

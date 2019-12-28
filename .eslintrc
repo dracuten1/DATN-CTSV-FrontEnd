@@ -27,7 +27,8 @@
       "no-case-declarations":"off",
       "react/jsx-props-no-spreading":"off",
       "react/destructuring-assignment":"off",
-      "jsx-a11y/anchor-is-valid": "off"
+      "jsx-a11y/anchor-is-valid": "off",
+      "eqeqeq": "off"
     },
     "globals": {
       "window": true,
