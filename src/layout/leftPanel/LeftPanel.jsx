@@ -13,6 +13,8 @@ import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import history from 'historyConfig';
 import Routers from 'layout/router/Router';
+import { useDispatch } from 'react-redux';
+import DRLActions from 'reduxs/reducers/DRL/action';
 
 const drawerWidth = 240;
 
@@ -51,6 +53,8 @@ const useStyles = makeStyles(theme => ({
 function ResponsiveDrawer(props) {
   const { container } = props;
   const classes = useStyles();
+  const dispatch = useDispatch();
+
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -69,7 +73,7 @@ function ResponsiveDrawer(props) {
           </ListItemIcon>
           <ListItemText primary="Xác nhận sinh viên" />
         </ListItem>
-        <ListItem button component="a" onClick={() => history.push('/drl')}>
+        <ListItem button component="a" onClick={() => dispatch(DRLActions.getNotPrintYet())}>
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>

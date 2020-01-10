@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardDRL = () => {
   const classes = useStyles();
+
   const DRLState = useSelector(state => state.DRLState);
   const { isPrintList } = DRLState;
   return (

@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
+import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -95,7 +96,7 @@ const PrintList = props => {
           if (valueCase !== term) {
             valueCase = term;
           }
-          if (term.length !== 0){
+          if (term.length !== 0) {
             return term == rowData.case;
           }
           return rowData;
@@ -198,9 +199,11 @@ const PrintList = props => {
               Xem toàn bộ
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => {
-                dispatch(DRLActions.handlePrintList());
+                // dispatch(DRLActions.handlePrintList());
                 dispatch(DRLActions.getNotPrintYet());
+                history.push('/drl');
               }}
               variant="contained"
               color="primary"
@@ -209,6 +212,7 @@ const PrintList = props => {
               Danh sách in
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => setOpen(true)}
               variant="contained"
               color="primary"
@@ -217,6 +221,7 @@ const PrintList = props => {
               Thêm sinh viên in
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => dispatch(DRLActions.handleAllList())}
               variant="contained"
               color="primary"
@@ -225,6 +230,7 @@ const PrintList = props => {
               Import
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => dispatch(DRLActions.handleAllList())}
               variant="contained"
               color="primary"
@@ -233,6 +239,7 @@ const PrintList = props => {
               Export
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => dispatch(DRLActions.handlePrint(valueCase))}
               variant="contained"
               color="primary"

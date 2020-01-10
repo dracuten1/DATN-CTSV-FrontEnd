@@ -5,10 +5,12 @@ import Types from './actionTypes';
 
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
+  history.push('/drl');
 };
 
 const handlePrintList = () => async dispatch => {
   dispatch({ type: Types.PRINT_LIST });
+  history.push('/drl');
 };
 
 // const handleAdd = newData => async dispatch => {
@@ -19,8 +21,8 @@ const getNotPrintYet = () => async dispatch => {
   const status = 'ChuaIn';
 
   const payload = await DRLHandler.GetListCertificate(status);
-
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
+  history.push('/drl');
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
@@ -29,6 +31,7 @@ const deleteOneCertificate = (pk, sk) => async dispatch => {
   logger.info('DRLAction:: deleteOneCertificate: reponse: ', response);
 
   dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
+  history.push('/drl');
 };
 
 const handlePrint = type => async dispatch => {
