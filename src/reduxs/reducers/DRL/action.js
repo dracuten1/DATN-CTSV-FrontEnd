@@ -19,7 +19,6 @@ const handlePrintList = () => async dispatch => {
 
 const getNotPrintYet = () => async dispatch => {
   const status = 'ChuaIn';
-
   const payload = await DRLHandler.GetListCertificate(status);
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
   history.push('/drl');
@@ -36,10 +35,11 @@ const deleteOneCertificate = (pk, sk) => async dispatch => {
 
 const handlePrint = type => async dispatch => {
   const response = await DRLHandler.ExportToDocx(type);
-
+  const status = 'ChuaIn';
+  const listData = await DRLHandler.GetListCertificate(status);
   logger.info('DRLAction:: exporttodocx: reponse: ', response);
   if (response !== 'Không có gì để in' && response !== undefined) {
-    dispatch({ type: Types.ADD_LINK_PRINT, payload: response });
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response, listData });
     history.push('/drl');
   }
 };

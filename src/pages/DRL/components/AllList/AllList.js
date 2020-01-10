@@ -195,7 +195,10 @@ const AllList = props => {
           Xem toàn bộ
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handlePrintList())}
+          onClick={() => {
+            // dispatch(DRLActions.handlePrintList());
+            dispatch(Actions.getNotPrintYet());
+          }}
           variant="contained"
           color="primary"
           size="small"

@@ -143,7 +143,6 @@ const AddDialog = props => {
     };
 
     setValues(studentInfo);
-
   };
 
   const drawMenuItem = (data) => {

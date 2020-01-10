@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
-import history from 'historyConfig';
+// import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -45,7 +45,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let valueCase = null;
-
+let updateBegin = 0;
+let isPrint = false;
 const PrintList = props => {
   const { className, ...rest } = props;
   const classes = useStyles();
@@ -53,6 +54,7 @@ const PrintList = props => {
 
   const dataPrint = useSelector(state => state.DRLState.dataPrint);
   const listLink = useSelector(state => state.DRLState.listLink);
+
   logger.info('listLink', listLink);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
@@ -112,6 +114,21 @@ const PrintList = props => {
     ]
   });
 
+  if (updateBegin === 0) {
+    dispatch(DRLActions.getNotPrintYet());
+    updateBegin += 1;
+  }
+
+  if (dataPrint.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataPrint });
+    updateBegin += 1;
+  }
+
+  if (isPrint) {
+    setState({ ...state, data: dataPrint });
+    isPrint = !isPrint;
+  }
+
   const handleAdd = newData => {
     setState(prevState => {
       const data = [...prevState.data];
@@ -120,6 +137,8 @@ const PrintList = props => {
     });
     setOpen(false);
   };
+
+  logger.info('dataTable: ', state.data);
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -203,7 +222,6 @@ const PrintList = props => {
               onClick={() => {
                 // dispatch(DRLActions.handlePrintList());
                 dispatch(DRLActions.getNotPrintYet());
-                history.push('/drl');
               }}
               variant="contained"
               color="primary"
@@ -240,7 +258,10 @@ const PrintList = props => {
             </Button>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(DRLActions.handlePrint(valueCase))}
+              onClick={() => {
+                dispatch(DRLActions.handlePrint(valueCase));
+                isPrint = !isPrint;
+              }}
               variant="contained"
               color="primary"
               size="small"

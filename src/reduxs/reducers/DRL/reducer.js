@@ -4,7 +4,7 @@ const INIT_STATE = {
   isAllList: false,
   isPrintList: true,
   dataPrint: [],
-  listLink: []
+  listLink: [],
 };
 
 const userReducer = (state = INIT_STATE, action) => {
@@ -14,13 +14,13 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.PRINT_LIST:
       return { ...state, isAllList: false, isPrintList: true };
     case ActionTypes.GET_NOT_PRINT_YET:
-      return { ...state, dataPrint: action.payload };
+      return { ...state, dataPrint: action.payload, isAllList: false, isPrintList: true };
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
       case ActionTypes.ADD_LINK_PRINT:{
         const temp = state.listLink;
-        temp.push(action.payload);
-        return {...state, listLink: temp };
+        temp.push(action.listLink);
+        return {...state, listLink: temp, dataPrint: action.listData };
       }
     case ActionTypes.EXPORT_TO_DOCX:
       return { ...state };
