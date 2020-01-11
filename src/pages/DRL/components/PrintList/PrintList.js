@@ -23,6 +23,8 @@ import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
 // import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
+import moment from 'moment';
+import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -99,7 +101,7 @@ const PrintList = props => {
             valueCase = term;
           }
           if (term.length !== 0) {
-            return term == rowData.case;
+            return term === rowData.case;
           }
           return rowData;
         }
@@ -129,13 +131,34 @@ const PrintList = props => {
     isPrint = !isPrint;
   }
 
+  const reparseCase = tmpcase => {
+    switch (tmpcase) {
+      case CaseEnum.hk:
+        return 'HK';
+      case CaseEnum.nh:
+        return 'NH';
+      case CaseEnum.tc:
+        return 'All';
+      case CaseEnum.tk:
+        return 'TK';
+      default:
+        return 'TK';
+    }
+  }
+
   const handleAdd = newData => {
+    setOpen(false);
     setState(prevState => {
       const data = [...prevState.data];
+      logger.info("HOT FIX: ", data);
+      logger.info("HOT FIX: ", newData);
+      newData.stt = data.length + 1;
+      newData.date = moment(new Date()).format('DD/MM/YYYY');
+      newData.case = reparseCase(newData.case);
+
       data.push(newData);
       return { ...prevState, data };
     });
-    setOpen(false);
   };
 
   logger.info('dataTable: ', state.data);
@@ -274,8 +297,8 @@ const PrintList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <AddDialog
