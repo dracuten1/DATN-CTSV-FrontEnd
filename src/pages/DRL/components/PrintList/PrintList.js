@@ -23,6 +23,7 @@ import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
 // import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -129,13 +130,32 @@ const PrintList = props => {
     isPrint = !isPrint;
   }
 
+  const reparseCase = tmpcase => {
+    switch (tmpcase) {
+      case 'Học kỳ':
+        return 'HK';
+      case 'Năm học':
+        return 'NH';
+      case 'Tất cả':
+        return 'All';
+      case 'Toàn khoá':
+        return 'TK';
+    }
+  }
+
   const handleAdd = newData => {
+    setOpen(false);
     setState(prevState => {
       const data = [...prevState.data];
-      data.push(newData);
+      logger.info("HOT FIX: ", data);
+      logger.info("HOT FIX: ", newData);
+      newData.stt = data.length + 1;
+      newData.date = moment(new Date()).format('DD/MM/YYYY');
+      newData.case =reparseCase(newData.case);
+
+        data.push(newData);
       return { ...prevState, data };
     });
-    setOpen(false);
   };
 
   logger.info('dataTable: ', state.data);
@@ -274,8 +294,8 @@ const PrintList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <AddDialog

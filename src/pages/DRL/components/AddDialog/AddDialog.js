@@ -120,6 +120,7 @@ const AddDialog = props => {
   const addData = async () => {
 
     const res = await DRLHandler.AddCertificate(newCertificate);
+    logger.info("adding cerificate: ", newCertificate);
     logger.info(res);
 
     handleAdd(values);
@@ -142,6 +143,7 @@ const AddDialog = props => {
       dob: valueOrEmpty(resStudentInfo.NgSinh),
     };
 
+    logger.info(studentInfo);
     setValues(studentInfo);
   };
 
