@@ -142,7 +142,7 @@ const PrintList = props => {
       case CaseEnum.tk:
         return 'TK';
       default:
-        return 'TK';
+        return 'All';
     }
   }
 
