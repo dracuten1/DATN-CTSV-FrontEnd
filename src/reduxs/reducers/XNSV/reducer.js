@@ -22,7 +22,7 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         temp.push(action.listLink);
         return {...state, listLink: temp, dataPrint: action.listData };
       }
-    case ActionTypes.EXPORT_TO_DOCX:
+    case ActionTypes.PRINT_BY_TYPE:
       return { ...state };
     default:
       return { ...state };
