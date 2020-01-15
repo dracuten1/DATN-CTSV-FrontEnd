@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     margin: theme.spacing(1),
-    width: 400,
+    width: 400
   }
 }));
 
@@ -43,14 +43,13 @@ const AddDialog = props => {
     case: null,
     year: null,
     semester: null,
-    isPrint: false,
+    isPrint: false
   });
 
   const handleChange = prop => event => {
     logger.info(event.target.value);
     setValues({ ...values, [prop]: event.target.value });
   };
-
 
   const parseCase = key => {
     switch (key) {
@@ -69,13 +68,12 @@ const AddDialog = props => {
         return 'HK1';
       default:
         return 'HK2';
-    };
+    }
   };
 
   const [newCertificate, setCertificate] = React.useState({});
 
   const fetchCertificate = async () => {
-
     const addCase = parseCase(values.case);
     const response = await DRLHandler.GetDRLByIdAndType(values.mssv, addCase);
     const items = response.Items;
@@ -85,22 +83,27 @@ const AddDialog = props => {
       delete item.Time;
       switch (values.case) {
         case CaseEnum.nh:
-          if (element.Time.includes(values.year)) Data[element.Time] = { ...item };
+          if (element.Time.includes(values.year))
+            Data[element.Time] = { ...item };
           break;
         case CaseEnum.hk:
           const semester = parseSemester(values.semester);
-          if (element.Time.includes(semester) && element.Time.includes(values.year)) Data[element.Time] = { ...item };
+          if (
+            element.Time.includes(semester) &&
+            element.Time.includes(values.year)
+          )
+            Data[element.Time] = { ...item };
           break;
         default:
           Data[element.Time] = { ...item };
-      };
+      }
     });
 
     const SinhVien = {
       Ten: values.name,
       Khoa: values.faculty,
       MSSV: values.mssv,
-      NS: values.dob,
+      NS: values.dob
     };
 
     const LoaiXN = addCase;
@@ -108,28 +111,23 @@ const AddDialog = props => {
     const tmpCertificate = {
       Data,
       SinhVien,
-      LoaiXN,
+      LoaiXN
     };
 
-    logger.info("Fetch certificate: ", tmpCertificate);
+    logger.info('Fetch certificate: ', tmpCertificate);
 
     setCertificate(tmpCertificate);
-
   };
 
   const addData = async () => {
-
     const res = await DRLHandler.AddCertificate(newCertificate);
-    logger.info("adding cerificate: ", newCertificate);
+    logger.info('adding cerificate: ', newCertificate);
     logger.info(res);
 
     handleAdd(values);
   };
 
-
-
   const findStudentInfoById = async event => {
-
     const id = event.target.value;
 
     const data = await DRLHandler.FindStudentInfoById(id);
@@ -140,28 +138,26 @@ const AddDialog = props => {
       name: valueOrEmpty(resStudentInfo.Ten),
       mssv: valueOrEmpty(resStudentInfo.Mssv),
       faculty: valueOrEmpty(resStudentInfo.Nganh),
-      dob: valueOrEmpty(resStudentInfo.NgSinh),
+      dob: valueOrEmpty(resStudentInfo.NgSinh)
     };
 
     logger.info(studentInfo);
     setValues(studentInfo);
   };
 
-  const drawMenuItem = (data) => {
-
+  const drawMenuItem = data => {
     return Object.keys(data).map(key => {
       return (
-        <MenuItem key={key} value={data[key]}>{data[key]}</MenuItem>);
+        <MenuItem key={key} value={data[key]}>
+          {data[key]}
+        </MenuItem>
+      );
     });
   };
 
-
   return (
     <div>
-      <Dialog
-        open={open}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           <b>Thêm Vào Danh Sách In</b>
         </DialogTitle>
@@ -211,7 +207,7 @@ const AddDialog = props => {
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={(event) => {
+              onChange={event => {
                 handleChange('case')(event);
                 fetchCertificate();
               }}
@@ -220,39 +216,63 @@ const AddDialog = props => {
               {drawMenuItem(CaseEnum)}
             </Select>
           </FormControl>
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">
-              Năm học
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={(event) => {
-                handleChange('year')(event);
-                fetchCertificate();
-              }}
-              disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc}
-            >
-              <MenuItem value={4}>2019-2020</MenuItem>
-              <MenuItem value={3}>2018-2019</MenuItem>
-              <MenuItem value={2}>2017-2018</MenuItem>
-              <MenuItem value={1}>2016-2017</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl className={classes.textField}>
-            <InputLabel id="demo-simple-select-helper-label">Học kỳ</InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={(event) => {
-                handleChange('semester')(event);
-                fetchCertificate();
-              }}
-              disabled={values.case === null || values.case === CaseEnum.tk || values.case === CaseEnum.tc || values.case === CaseEnum.nh}
-            >
-              {drawMenuItem(SemesterEnum)}
-            </Select>
-          </FormControl>
+          {values.case === CaseEnum.nh && (
+            <FormControl className={classes.textField}>
+              <InputLabel id="demo-simple-select-helper-label">
+                Năm học
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                onChange={event => {
+                  handleChange('year')(event);
+                  fetchCertificate();
+                }}
+              >
+                <MenuItem value={4}>2019-2020</MenuItem>
+                <MenuItem value={3}>2018-2019</MenuItem>
+                <MenuItem value={2}>2017-2018</MenuItem>
+                <MenuItem value={1}>2016-2017</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+          {values.case === CaseEnum.hk && (
+            <>
+              <FormControl className={classes.textField}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Năm học
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  onChange={event => {
+                    handleChange('year')(event);
+                    fetchCertificate();
+                  }}
+                >
+                  <MenuItem value={4}>2019-2020</MenuItem>
+                  <MenuItem value={3}>2018-2019</MenuItem>
+                  <MenuItem value={2}>2017-2018</MenuItem>
+                  <MenuItem value={1}>2016-2017</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.textField}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Học kỳ
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  onChange={event => {
+                    handleChange('semester')(event);
+                    fetchCertificate();
+                  }}
+                >
+                  {drawMenuItem(SemesterEnum)}
+                </Select>
+              </FormControl>
+            </>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

@@ -16,15 +16,15 @@ import {
   DialogContent,
   DialogContentText
 } from '@material-ui/core';
+import moment from 'moment';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import { useDispatch, useSelector } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
+import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 // import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
-import moment from 'moment';
-import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -101,7 +101,7 @@ const PrintList = props => {
             valueCase = term;
           }
           if (term.length !== 0) {
-            return term === rowData.case;
+            return term == rowData.case;
           }
           return rowData;
         }
@@ -144,14 +144,14 @@ const PrintList = props => {
       default:
         return 'All';
     }
-  }
+  };
 
   const handleAdd = newData => {
     setOpen(false);
     setState(prevState => {
       const data = [...prevState.data];
-      logger.info("HOT FIX: ", data);
-      logger.info("HOT FIX: ", newData);
+      logger.info('HOT FIX: ', data);
+      logger.info('HOT FIX: ', newData);
       newData.stt = data.length + 1;
       newData.date = moment(new Date()).format('DD/MM/YYYY');
       newData.case = reparseCase(newData.case);
@@ -297,8 +297,8 @@ const PrintList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-              ''
-            )}
+            ''
+          )}
         </Grid>
       </CardActions>
       <AddDialog
