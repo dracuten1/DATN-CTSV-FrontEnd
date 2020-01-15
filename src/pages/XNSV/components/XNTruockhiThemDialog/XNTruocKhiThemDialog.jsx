@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,6 +9,7 @@ import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -19,10 +21,9 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import TextField from 'shared/components/textfield/TextField';
-
-// import { useDispatch } from 'react-redux';
-// import Actions from '../../../../reduxs/reducers/DRL/action';
+import { logger } from 'core/services/Apploger';
+import { valueOrEmpty } from 'core/ultis/stringUtil';
+import * as XNSVHandler from 'handlers/XNSVHandler';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 const date = new Date();
 
 const tempValues = {
-  stt: 3,
+  stt: null,
   name: '',
   mssv: '',
   city: '',
@@ -52,18 +53,18 @@ const tempValues = {
   ward: '',
   address: '',
   language: '',
-  type: '',
   status: '',
   reason: '',
+  type: null,
   semester: null,
-  year: '',
+  year: null,
   isPrint: false,
   date: moment(date).format('DD/MM/YYYY')
 };
 
 const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const { open, handleClose, handleAdd } = props;
 
@@ -80,7 +81,12 @@ const XNTruocKhiThemDialog = props => {
     'Giới thiệu',
     'Vay vốn'
   ];
-  const dataLXNTA = ['Đang học', 'Bảo lưu', 'Xác nhận thời gian học', 'Hoàn tất chương trình'];
+  const dataLXNTA = [
+    'Đang học',
+    'Bảo lưu',
+    'Xác nhận thời gian học',
+    'Hoàn tất chương trình'
+  ];
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -90,7 +96,7 @@ const XNTruocKhiThemDialog = props => {
   const drawData = data => {
     return data.map((val, ind) => {
       return (
-        <MenuItem key={ind} value={val} >
+        <MenuItem key={ind} value={val}>
           {val}
         </MenuItem>
       );
@@ -109,73 +115,118 @@ const XNTruocKhiThemDialog = props => {
 
   const info = [
     {
-      label: "MSSV",
-      defaultValue: "1612102",
-      state: "mssv",
+      label: 'MSSV',
+      value: values.mssv,
+      state: 'mssv'
     },
     {
-      label: "Họ tên",
-      defaultValue: "Nguyen Van A",
-      state: "name",
+      label: 'Họ tên',
+      value: values.name,
+      state: 'name'
     },
-    "devider",
+    'devider',
     {
-      label: "Tỉnh/Thành phố",
-      defaultValue: "Hồ Chí Minh",
-      state: "city",
-    },
-    {
-      label: "Quận (huyện)",
-      defaultValue: "Nhà Bè",
-      state: "district",
+      label: 'Tỉnh/Thành phố',
+      value: values.city,
+      state: 'city'
     },
     {
-      label: "Phường (xã)",
-      defaultValue: "Phước Kiển",
-      state: "ward",
+      label: 'Quận (huyện)',
+      value: values.district,
+      state: 'district'
     },
     {
-      label: "Địa chỉ",
-      defaultValue: "336/1 Phạm Hữu Lầu",
-      state: "address",
-
+      label: 'Phường (xã)',
+      value: values.ward,
+      state: 'ward'
+    },
+    {
+      label: 'Địa chỉ',
+      value: values.address,
+      state: 'address'
     }
   ];
+
+  const findStudentInfoById = async event => {
+    const id = event.target.value;
+
+    const data = await XNSVHandler.FindStudentInfoById(id);
+
+    const resStudentInfo = data.Items[0];
+
+    const {DiaChiThuongTru} = resStudentInfo;
+
+    const studentInfo = {
+      name: valueOrEmpty(resStudentInfo.HoVaTen),
+      mssv: valueOrEmpty(resStudentInfo.MSSV),
+      city: valueOrEmpty(DiaChiThuongTru.TinhTP),
+      address: valueOrEmpty(DiaChiThuongTru.SoNha),
+      district: valueOrEmpty(DiaChiThuongTru.QuanHuyen),
+      ward: valueOrEmpty(DiaChiThuongTru.PhuongXa)
+    };
+
+    logger.info(studentInfo);
+    setValues(studentInfo);
+  };
+
 
   return (
     <div>
       <Dialog
         open={open}
-        // onClose={handleClose()}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>
         <DialogContent className={classes.container}>
-          {
-            info.map(item => {
-              if (item === "devider") {
-                return (<Divider className={classes.divider} />);
-              }
+          {info.map(item => {
+            if (item === 'devider') {
+              return <Divider className={classes.divider} />;
+            }
+            if (item.label === 'MSSV') {
               return (
+                <TextField
+                  className={classes.textField}
+                  label="MSSV"
+                  value={values.mssv}
+                  onChange={handleChange('mssv')}
+                  onBlur={findStudentInfoById}
+                  margin="normal"
+                />
+              );
+            }
+            if (item.label === 'Họ tên') {
+              return (
+                <TextField
+                  className={classes.textField}
+                  label="Họ tên"
+                  value={values.name}
+                  onChange={handleChange('name')}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true
+                  }}
+                />
+              );
+            }
+            return (
               <TextField
+              className={classes.textField}
                 label={item.label}
-                defaultValue={item.defaultValue}
+                value={item.value}
                 onBlur={handleChange(item.state)}
                 margin="normal"
-
               />
-              );
-            })
-          }
+            );
+          })}
           <Divider className={classes.divider} />
           <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">
               Ngôn ngữ
             </InputLabel>
             <Select
-              variant="outlined"
+              // variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('language')}
@@ -191,7 +242,7 @@ const XNTruocKhiThemDialog = props => {
                 Loại xác nhận
               </InputLabel>
               <Select
-                variant="outlined"
+                // variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 onChange={handleChange('type')}
@@ -206,7 +257,7 @@ const XNTruocKhiThemDialog = props => {
                 Loại xác nhận
               </InputLabel>
               <Select
-                variant="outlined"
+                // variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 onChange={handleChange('type')}
@@ -236,11 +287,11 @@ const XNTruocKhiThemDialog = props => {
           {values.type === 'Bảo lưu' && (
             <div className={classes.container}>
               <FormControl className={classes.textField} margin="normal">
-                <InputLabel id="demo-simple-select-helper-label" >
+                <InputLabel id="demo-simple-select-helper-label">
                   Năm học
                 </InputLabel>
                 <Select
-                  variant="outlined"
+                  // variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   onChange={handleChange('year')}
@@ -257,7 +308,7 @@ const XNTruocKhiThemDialog = props => {
                   Học kỳ
                 </InputLabel>
                 <Select
-                  variant="outlined"
+                  // variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
                   onChange={handleChange('semester')}
@@ -360,7 +411,7 @@ const XNTruocKhiThemDialog = props => {
               Tình trạng
             </InputLabel>
             <Select
-              variant="outlined"
+              // variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('status')}
@@ -371,7 +422,7 @@ const XNTruocKhiThemDialog = props => {
           <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">Lý do</InputLabel>
             <Select
-              variant="outlined"
+              // variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               onChange={handleChange('reason')}
@@ -395,7 +446,9 @@ const XNTruocKhiThemDialog = props => {
           <Button onClick={closeDialog} color="primary">
             Huỷ
           </Button>
-          <Button onClick={addData} color="primary">Thêm</Button>
+          <Button onClick={addData} color="primary">
+            Thêm
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

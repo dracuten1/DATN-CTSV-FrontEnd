@@ -86,6 +86,15 @@ export const sendGet = async (url) => {
     return body;
 };
 
+export const sendGetBody = async (url, requestBody) => {
+
+    const response = await httpClient.get(url, requestBody);
+
+    const { body } = response.data;
+
+    return body;
+};
+
 /**
  *
  * @param {*} url
