@@ -13,9 +13,12 @@ const handlePrintList = () => async dispatch => {
   history.push('/drl');
 };
 
-// const handleAdd = newData => async dispatch => {
-//   dispatch({ type: Types.DATA_PRINT, newData });
-// };
+const getListHistory = () => async dispatch => {
+  const status = 'In';
+  const payload = await DRLHandler.GetListCertificate(status);
+  dispatch({ type: Types.GET_HISTORY_LIST, payload });
+  // history.push('/drl');
+};
 
 const getNotPrintYet = () => async dispatch => {
   const status = 'ChuaIn';
@@ -49,5 +52,6 @@ export default {
   handlePrintList,
   handlePrint,
   getNotPrintYet,
-  deleteOneCertificate
+  deleteOneCertificate,
+  getListHistory
 };

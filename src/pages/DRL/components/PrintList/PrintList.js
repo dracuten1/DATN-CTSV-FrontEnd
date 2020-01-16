@@ -54,16 +54,26 @@ const PrintList = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const dataPrint = useSelector(state => state.DRLState.dataPrint);
-  const listLink = useSelector(state => state.DRLState.listLink);
+  // const dataPrint = useSelector(state => state.DRLState.dataPrint);
+  // const listLink = useSelector(state => state.DRLState.listLink);
 
-  logger.info('listLink', listLink);
+  const DRLState = useSelector(state => state.DRLState);
+
+  const {
+    dataPrint,
+    listLink,
+    dataHistory,
+    isPrintList,
+    isHistoryList
+  } = DRLState;
+
+  logger.info('history', dataHistory);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState(false);
 
   const [state, setState] = useState({
-    data: dataPrint,
+    data: isPrintList ? dataPrint : dataHistory,
     columns: [
       {
         title: 'Đã In',
@@ -131,6 +141,10 @@ const PrintList = props => {
     isPrint = !isPrint;
   }
 
+  if (isHistoryList && state.data.length < dataHistory.length) {
+    setState({ ...state, data: dataHistory });
+  }
+
   const reparseCase = tmpcase => {
     switch (tmpcase) {
       case CaseEnum.hk:
@@ -173,17 +187,28 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH IN</b>
+                  {isPrintList ? (
+                    <b>
+                      DANH SÁCH IN TRONG NGÀY{' '}
+                      {moment(new Date()).format('DD/MM/YYYY')}
+                    </b>
+                  ) : (
+                    <b>LỊCH SỬ HOẠT ĐỘNG</b>
+                  )}
                 </div>
               }
               columns={state.columns}
               data={state.data}
-              actions={[
-                {
-                  icon: icons.Print,
-                  tooltip: 'Print'
-                }
-              ]}
+              actions={
+                isPrintList
+                  ? [
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print'
+                      }
+                    ]
+                  : []
+              }
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -195,35 +220,39 @@ const PrintList = props => {
                 // exportButton: true,
                 filtering: true
               }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      logger.info('Olddata: ', oldData);
-                      const { pk, sk } = oldData;
-                      dispatch(DRLActions.deleteOneCertificate(pk, sk));
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
+              editable={
+                isPrintList
+                  ? {
+                      onRowUpdate: (newData, oldData) =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            resolve();
+                            if (oldData) {
+                              setState(prevState => {
+                                const data = [...prevState.data];
+                                data[data.indexOf(oldData)] = newData;
+                                return { ...prevState, data };
+                              });
+                            }
+                          }, 600);
+                        }),
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            logger.info('Olddata: ', oldData);
+                            const { pk, sk } = oldData;
+                            dispatch(DRLActions.deleteOneCertificate(pk, sk));
+                            resolve();
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+                  : {}
+              }
             />
           </div>
         </PerfectScrollbar>
@@ -243,8 +272,19 @@ const PrintList = props => {
             <Button
               style={{ marginLeft: '8px' }}
               onClick={() => {
-                // dispatch(DRLActions.handlePrintList());
+                dispatch(DRLActions.getListHistory());
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Xem Lịch Sử
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
                 dispatch(DRLActions.getNotPrintYet());
+                updateBegin = 1;
               }}
               variant="contained"
               color="primary"

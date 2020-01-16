@@ -22,7 +22,7 @@ const DashboardDRL = () => {
   const classes = useStyles();
 
   const DRLState = useSelector(state => state.DRLState);
-  const { isPrintList } = DRLState;
+  const { isAllList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
@@ -40,7 +40,7 @@ const DashboardDRL = () => {
         </Grid>
 
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          {isPrintList ? <PrintList /> : <AllList />}
+          {isAllList ? <AllList /> : <PrintList />}
         </Grid>
       </Grid>
     </div>
