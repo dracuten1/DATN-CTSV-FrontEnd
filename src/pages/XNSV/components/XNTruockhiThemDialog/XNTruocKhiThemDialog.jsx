@@ -154,10 +154,16 @@ const XNTruocKhiThemDialog = props => {
 
     const resStudentInfo = data.Items[0];
 
-
-
-    const { DiaChiThuongTru } = resStudentInfo;
-
+    let { DiaChiThuongTru } = resStudentInfo;
+    if (!DiaChiThuongTru) {
+      DiaChiThuongTru = {
+        TinhTP: undefined,
+        SoNha: undefined,
+        QuanHuyen: undefined,
+        PhuongXa: undefined,
+      }
+    }
+    
     const studentInfo = {
       name: valueOrEmpty(resStudentInfo.HoVaTen),
       mssv: valueOrEmpty(resStudentInfo.MSSV),
