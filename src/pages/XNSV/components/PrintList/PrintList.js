@@ -133,9 +133,24 @@ const PrintList = props => {
     setState({ ...state, data: dataHistory });
   }
 
+  const reparseCase = tmpcase => {
+    switch (tmpcase) {
+      case 'Đang học': return 1;
+      case 'Bảo lưu': return 2;
+      case 'Chờ xét tốt nghiệp': return 3;
+      case 'Chờ xét hoàn tất chương trình': return 4;
+      case 'Vay vốn': return 5;
+      case 'Giấy giới thiệu': return 6;
+      case 'Thời gian học': return 7;
+      case 'Hoàn tất chương trình': return 8;
+    }
+  };
+
   const handleAdd = newData => {
     setState(prevState => {
       const data = [...prevState.data];
+      newData.scn = data.length + 1;
+      newData.case = reparseCase(newData.case);
       data.push(newData);
       return { ...prevState, data };
     });
@@ -202,7 +217,7 @@ const PrintList = props => {
                       });
                     }, 600);
                   })
-              }: {}}
+              } : {}}
             />
           </div>
         </PerfectScrollbar>

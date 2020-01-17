@@ -47,7 +47,8 @@ export const GetListCertificate = async (status) => {
   const url = `xnsv/getListCertificates?status=${status}`;
 
   const response = await HttpClient.sendGet(url);
-  const items = !response.Items ? [] : response.Items;
+  logger.info(response);
+  const items = response;
 
   const payload = items.map((item, index) => {
     return {
@@ -86,4 +87,13 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   logger.info("XNSVhandler:: deleteOneCertificate: reponse: ", response);
 
+};
+
+
+export const AddCertificate = async value => {
+  const url = `xnsv/add-certificate`;
+
+  const response = await HttpClient.sendPost(url, value);
+
+  return response;
 };

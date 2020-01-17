@@ -56,7 +56,7 @@ const AllList = props => {
       { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
       { title: 'MSSV', field: 'mssv', filtering: false },
       { title: 'Họ tên', field: 'name', filtering: false },
-      { title: 'Loại xác nhận', field: 'loaiXacNhan', filtering: false },
+      { title: 'Loại xác nhận', field: 'type', filtering: false },
       { title: 'Lý do', field: 'lydo', filtering: false },
       {
         title: 'Ghi chú',
@@ -70,6 +70,7 @@ const AllList = props => {
     setState(prevState => {
       const data = [...prevState.data];
       data.push(newData);
+      newData.scn = data.length + 1;
       return { ...prevState, data };
     });
     setOpen(false);

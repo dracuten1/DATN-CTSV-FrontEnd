@@ -120,6 +120,7 @@ const AddDialog = props => {
   };
 
   const addData = async () => {
+    fetchCertificate();
     const res = await DRLHandler.AddCertificate(newCertificate);
     logger.info('adding cerificate: ', newCertificate);
     logger.info(res);
