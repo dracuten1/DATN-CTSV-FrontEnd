@@ -68,7 +68,6 @@ const defaultValue = {
 
 const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
-  const dispatch = useDispatch();
 
   const { open, handleClose, handleAdd } = props;
 
@@ -77,38 +76,41 @@ const XNTruocKhiThemDialog = props => {
 
   const [newCertificate, setCertificate] = React.useState({});
 
-  const fetchCertificate = async () => {
+  const fetchCertificate = (prop) => event => {
+    let tmp = { ...values };
+    tmp[prop] = event.target.value;
     let Data;
-    switch (values.case) {
+    logger.info("FECTCH DATA:: ", tmp);
+    switch (tmp.case) {
       case 'Bảo lưu':
         Data = {
-          HocKy: `${values.semester}`,
-          NamHoc: `${values.year}`,
-          NgonNgu: `${values.language}`
+          HocKy: `${tmp.semester}`,
+          NamHoc: `${tmp.year}`,
+          NgonNgu: `${tmp.language}`
         }
         break;
       case 'Đang học':
         Data = {
-          NgonNgu: `${values.language}`,
+          NgonNgu: `${tmp.language}`,
 
         }
         break;
       case 'Chờ xét hoàn tất chương trình':
         Data = {
-          NgayCongBoKetQua: `${values.expectedPublicationDate}`,
-          NgonNgu: `${values.language}`
+          NgayCongBoKetQua: `${tmp.expectedPublicationDate}`,
+          NgonNgu: `${tmp.language}`
         }
         break;
       case 'Hoàn tất chương trình':
         Data = {
-          GhiChu: `${values.note}`,
-          NgonNgu: `${values.language}`
+          GhiChu: `${tmp.note}`,
+          NgonNgu: `${tmp.language}`
         }
         break;
       case 'Thời gian học':
         Data = {
-          NamKetThuc: `${values.studingEndDate}`,
-          NgonNgu: `${values.language}`,
+          NamKetThuc: `${tmp.studingEndDate}`,
+          NgonNgu: `${tmp.language}`,
         }
         break;
       default:
@@ -117,18 +119,18 @@ const XNTruocKhiThemDialog = props => {
 
     const tmpCertificate = {
       Data,
-      LoaiGiayXN: values.case,
-      LyDoXN: values.reason,
-      ThoiGian: values.date,
+      LoaiGiayXN: tmp.case,
+      LyDoXN: tmp.reason,
+      ThoiGian: tmp.date,
       ThongTinSinhVien: {
         DiaChiThuongTru: {
-          PhuongXa: values.ward,
-          QuanHuyen: values.district,
-          SoNha: values.address,
-          TinhTP: values.city,
+          PhuongXa: tmp.ward,
+          QuanHuyen: tmp.district,
+          SoNha: tmp.address,
+          TinhTP: tmp.city,
         },
-        MSSV: values.mssv,
-        Ten: values.name,
+        MSSV: tmp.mssv,
+        Ten: tmp.name,
       }
     }
     logger.info("Fetch: ", tmpCertificate);
@@ -155,7 +157,6 @@ const XNTruocKhiThemDialog = props => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
-    fetchCertificate();
     setIsOpen(true);
   };
 
@@ -176,9 +177,12 @@ const XNTruocKhiThemDialog = props => {
   };
 
   const addData = async () => {
-    fetchCertificate();
     const res = await XNSVHandler.AddCertificate(newCertificate);
-    handleAdd(values);
+    if (res.statusCode === 200){
+      handleAdd(values);
+    } else {
+      // TO DO: SHOW ERROR
+    }
   };
 
   const info = [
@@ -264,7 +268,7 @@ const XNTruocKhiThemDialog = props => {
                   value={values.mssv}
                   onChange={event => {
                     handleChange('mssv')(event);
-                    fetchCertificate();
+                    // fetchCertificate();
                   }}
                   onBlur={findStudentInfoById}
                   margin="normal"
@@ -307,7 +311,7 @@ const XNTruocKhiThemDialog = props => {
               value={values.language}
               onChange={event => {
                 handleChange('language')(event)
-                fetchCertificate();
+                // fetchCertificate();
               }}
             >
               <MenuItem value="Tiếng Việt">Tiếng Việt</MenuItem>
@@ -445,7 +449,7 @@ const XNTruocKhiThemDialog = props => {
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('expectedPublicationDate')(event);
-                  fetchCertificate()
+                  // fetchCertificate();
                 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
@@ -546,7 +550,7 @@ const XNTruocKhiThemDialog = props => {
               value={values.reason}
               onChange={event => {
                 handleChange('reason')(event);
-                fetchCertificate();
+                fetchCertificate('reason')(event);
               }}
             >
               {drawData(dataReason)}

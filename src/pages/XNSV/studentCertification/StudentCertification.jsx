@@ -6,7 +6,6 @@ import Export from 'shared/components/Export/Export';
 import Import from 'shared/components/Import/Import';
 import Print from 'shared/components/Print/Print';
 import Title from 'shared/components/Title/Title';
-import AllList from 'pages/XNSV/components/AllList/AllList';
 import PrintList from 'pages/XNSV/components/PrintList/PrintList';
 
 const useStyles = makeStyles(theme => ({

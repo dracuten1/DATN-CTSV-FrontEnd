@@ -11,7 +11,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import history from 'historyConfig';
 import Routers from 'layout/router/Router';
 import { useDispatch } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
