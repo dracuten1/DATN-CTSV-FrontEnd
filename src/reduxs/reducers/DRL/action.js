@@ -17,7 +17,6 @@ const getListHistory = () => async dispatch => {
   const status = 'In';
   const payload = await DRLHandler.GetListCertificate(status);
   dispatch({ type: Types.GET_HISTORY_LIST, payload });
-  // history.push('/drl');
 };
 
 const getNotPrintYet = () => async dispatch => {

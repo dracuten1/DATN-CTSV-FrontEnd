@@ -154,7 +154,7 @@ const XNTruocKhiThemDialog = props => {
 
     const resStudentInfo = data.Items[0];
 
-    const {DiaChiThuongTru} = resStudentInfo;
+    const { DiaChiThuongTru } = resStudentInfo;
 
     const studentInfo = {
       name: valueOrEmpty(resStudentInfo.HoVaTen),
@@ -169,13 +169,9 @@ const XNTruocKhiThemDialog = props => {
     setValues(studentInfo);
   };
 
-
   return (
     <div>
-      <Dialog
-        open={open}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>
@@ -212,7 +208,7 @@ const XNTruocKhiThemDialog = props => {
             }
             return (
               <TextField
-              className={classes.textField}
+                className={classes.textField}
                 label={item.label}
                 value={item.value}
                 onBlur={handleChange(item.state)}
@@ -427,7 +423,7 @@ const XNTruocKhiThemDialog = props => {
               id="demo-simple-select-helper"
               onChange={handleChange('reason')}
             >
-              {drawData(dataLXNTA)}
+              {drawData(dataReason)}
             </Select>
           </FormControl>
 
@@ -454,5 +450,33 @@ const XNTruocKhiThemDialog = props => {
     </div>
   );
 };
+
+const dataReason = [
+  'Dạy thêm',
+  'Du học',
+  'Hỗ trợ học phí',
+  'Hoãn nghĩa vụ quân sự',
+  'Học nghiệp vụ sư phạm',
+  'Học ngiệp vụ quản lý nhà nước',
+  'Học tại chức',
+  'Học thêm',
+  'Khai báo thuế',
+  'Lắp đặt ADSL',
+  'Mua vé tàu tết',
+  'Mượn sách thư viện',
+  'Nhận chứng chỉ quốc phòng',
+  'Nhận sim khuyến mãi',
+  'Nhận trợ cấp',
+  'Sổ ưu đãi',
+  'Tạm trú',
+  'Tạm trú KTX',
+  'Thi anh văn',
+  'Vào phòng thi',
+  'Xin cấp visa',
+  'Xin học bổng',
+  'Xin số liệu',
+  'Xin thực tập',
+  'Xin việc làm'
+];
 
 export default XNTruocKhiThemDialog;

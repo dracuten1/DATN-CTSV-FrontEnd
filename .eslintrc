@@ -28,7 +28,8 @@
       "react/jsx-props-no-spreading":"off",
       "react/destructuring-assignment":"off",
       "jsx-a11y/anchor-is-valid": "off",
-      "eqeqeq": "off"
+      "eqeqeq": "off",
+      "no-use-before-define": "off"
     },
     "globals": {
       "window": true,

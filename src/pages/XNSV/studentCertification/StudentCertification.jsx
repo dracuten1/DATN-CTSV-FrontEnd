@@ -36,7 +36,7 @@ const StudentCertification = () => {
           <Print many={20} />
         </Grid>
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          {isPrintList ? <PrintList /> : <AllList />}
+          <PrintList />
         </Grid>
       </Grid>
     </div>

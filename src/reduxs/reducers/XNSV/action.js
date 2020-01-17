@@ -20,6 +20,12 @@ const handleAllList = () => async dispatch => {
     history.push('/xnsv');
   };
 
+  const getListHistory = () => async dispatch => {
+    const status = 'In';
+    const payload = await XNSVHandler.GetListCertificate(status);
+    dispatch({ type: Types.GET_HISTORY_LIST, payload });
+  };
+
   const deleteOneCertificate = (pk, sk) => async dispatch => {
     const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
   
@@ -45,5 +51,6 @@ const handleAllList = () => async dispatch => {
     handlePrintList,
     handlePrint,
     getNotPrintYet,
-    deleteOneCertificate
+    deleteOneCertificate,
+    getListHistory
   };
