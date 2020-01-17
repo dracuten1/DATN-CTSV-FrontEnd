@@ -12,11 +12,10 @@ import {
   Button,
   Divider
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import Actions from 'reduxs/reducers/DRL/action';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { logger } from 'core/services/Apploger';
+import XNSVActions from 'reduxs/reducers/XNSV/action';
 import icons from 'shared/icons';
-import mockData from './data';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -40,18 +39,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const date = new Date();
+let updateBegin = 0;
+let isPrint = false;
 
 const PrintList = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const DRLState = useSelector(state => state.DRLState);
-  // const { dataPrint } = DRLState;
+
+  const XNSVState = useSelector(state => state.XNSVState);
+  const {
+    dataPrint,
+    listLink,
+    dataHistory,
+    isPrintList,
+    isHistoryList
+  } = XNSVState;
+
+  logger.info('history', dataHistory);
+  logger.info('dataPrint: ', dataPrint);
 
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: mockData,
+    data: isPrintList ? dataPrint : dataHistory,
     columns: [
       {
         title: 'Đã In',
@@ -78,18 +89,21 @@ const PrintList = props => {
         lookup: {
           1: 'Đang học',
           2: 'Bảo lưu',
-          3: 'Chờ xét TN',
-          4: 'Chờ xét HTCT'
+          3: 'Chờ xét tốt nghiệp',
+          4: 'Chờ xét hoàn tất chương trình',
+          5: 'Vay vốn',
+          6: 'Giấy giới thiệu',
+          7: 'Thời gian học',
+          8: 'Hoàn tất chương trình'
         },
         filterCellStyle: {
           paddingTop: 1
         }
       },
       {
-        title: 'Tình trạng',
-        field: 'tinhTrang',
+        title: 'Lý do',
+        field: 'reason',
         editable: 'never',
-        filtering: false
       },
       {
         title: 'Ghi chú',
@@ -99,6 +113,25 @@ const PrintList = props => {
       }
     ]
   });
+
+  if (updateBegin === 0) {
+    dispatch(XNSVActions.getNotPrintYet());
+    updateBegin += 1;
+  }
+
+  if (dataPrint.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataPrint });
+    updateBegin += 1;
+  }
+
+  if (isPrint) {
+    setState({ ...state, data: dataPrint });
+    isPrint = !isPrint;
+  }
+
+  if (isHistoryList && state.data.length !== dataHistory.length) {
+    setState({ ...state, data: dataHistory });
+  }
 
   const handleAdd = newData => {
     setState(prevState => {
@@ -119,17 +152,19 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}</b>
+                  <b>
+                    DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}
+                  </b>
                 </div>
               }
               columns={state.columns}
               data={state.data}
-              actions={[
+              actions={!isHistoryList ? [
                 {
                   icon: icons.Print,
                   tooltip: 'Print'
                 }
-              ]}
+              ] : []}
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -141,7 +176,7 @@ const PrintList = props => {
                 // exportButton: true,
                 filtering: true
               }}
-              editable={{
+              editable={!isHistoryList ? {
                 onRowAdd: newData =>
                   new Promise(resolve => {
                     setTimeout(() => {
@@ -153,22 +188,12 @@ const PrintList = props => {
                       });
                     }, 600);
                   }),
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
                 onRowDelete: oldData =>
                   new Promise(resolve => {
                     setTimeout(() => {
+                      logger.info('Olddata: ', oldData);
+                      const { pk, sk } = oldData;
+                      dispatch(XNSVActions.deleteOneCertificate(pk, sk));
                       resolve();
                       setState(prevState => {
                         const data = [...prevState.data];
@@ -177,7 +202,7 @@ const PrintList = props => {
                       });
                     }, 600);
                   })
-              }}
+              }: {}}
             />
           </div>
         </PerfectScrollbar>
@@ -185,7 +210,7 @@ const PrintList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(XNSVActions.getListHistory())}
           variant="contained"
           color="primary"
           size="small"
@@ -193,7 +218,10 @@ const PrintList = props => {
           Xem lịch sử
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handlePrintList())}
+          onClick={() => {
+            dispatch(XNSVActions.getNotPrintYet());
+            updateBegin = 1;
+          }}
           variant="contained"
           color="primary"
           size="small"
@@ -210,7 +238,7 @@ const PrintList = props => {
           Thêm sinh viên in
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(XNSVActions.handleAllList())}
           variant="contained"
           color="primary"
           size="small"
@@ -218,7 +246,7 @@ const PrintList = props => {
           Export
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handlePrint())}
+          onClick={() => dispatch(XNSVActions.handlePrint())}
           variant="contained"
           color="primary"
           size="small"
@@ -226,7 +254,11 @@ const PrintList = props => {
           In theo trường hợp
         </Button>
       </CardActions>
-      <XNTKTDialog handleAdd={handleAdd} open={open} handleClose={() => setOpen(false)} />
+      <XNTKTDialog
+        handleAdd={handleAdd}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
     </Card>
   );
 };

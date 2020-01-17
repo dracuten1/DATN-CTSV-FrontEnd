@@ -23,7 +23,6 @@ import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
 import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
-// import history from 'historyConfig';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -53,9 +52,6 @@ const PrintList = props => {
   const { className, ...rest } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
-
-  // const dataPrint = useSelector(state => state.DRLState.dataPrint);
-  // const listLink = useSelector(state => state.DRLState.listLink);
 
   const DRLState = useSelector(state => state.DRLState);
 
@@ -141,7 +137,7 @@ const PrintList = props => {
     isPrint = !isPrint;
   }
 
-  if (isHistoryList && state.data.length < dataHistory.length) {
+  if (isHistoryList && state.data.length !== dataHistory.length) {
     setState({ ...state, data: dataHistory });
   }
 

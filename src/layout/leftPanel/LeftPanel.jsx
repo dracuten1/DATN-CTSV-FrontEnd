@@ -15,6 +15,7 @@ import history from 'historyConfig';
 import Routers from 'layout/router/Router';
 import { useDispatch } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
+import XNSVActions from 'reduxs/reducers/XNSV/action';
 
 const drawerWidth = 240;
 
@@ -67,13 +68,21 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button component="a" onClick={() => history.push('/xnsv')}>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
           <ListItemText primary="Xác nhận sinh viên" />
         </ListItem>
-        <ListItem button component="a" onClick={() => dispatch(DRLActions.getNotPrintYet())}>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(DRLActions.getNotPrintYet())}
+        >
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>
