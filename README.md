@@ -62,8 +62,16 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ma
 This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
 
 ### Deployment
+    Config one time:
+        + Step1: Install AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/install-windows.html
+        + Step2: 
+            $ aws configure
+            AWS Access Key ID [None]: AKIAXXUWRPQ42NAKD6D5
+            AWS Secret Access Key [None]: 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
+            Default region name [None]: ap-southeast-1
+            Default output format [None]: ENTER
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+    Deploy script: npm deploy || yarn deploy
 
 ### `npm build` fails to minify
 
