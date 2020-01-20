@@ -52,13 +52,13 @@ export const GetListCertificate = async (status) => {
 
   const payload = items.map((item, index) => {
     return {
-      scn: index + 1,
+      scn: item.SCN,
       name: item.ThongTinSinhVien.Ten,
       mssv: item.ThongTinSinhVien.MSSV,
       case: parseCase(item.LoaiGiayXN),
       reason: item.LyDoXN,
-      isPrint: item.status !== 'Chưa In',
-      date: moment(item.NgayTao).format('DD/MM/YYYY'),
+      isPrint: item.TrangThai !== 'Chưa In',
+      date: moment(item.ngayThem).format('DD/MM/YYYY'),
       pk: item.PK,
       sk: item.SK,
     };
@@ -74,7 +74,6 @@ export const PrintByType = async (type) => {
   const reponse = await HttpClient.sendPatch(url);
 
   return reponse;
-
 };
 
 export const DeleteOneCertificate = async (pk, sk) => {

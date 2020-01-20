@@ -40,8 +40,8 @@ const handleAllList = () => async dispatch => {
     const status = 'ChuaIn';
     const listData = await XNSVHandler.GetListCertificate(status);
     logger.info('XNSVAction:: PrintByType: reponse: ', response);
-    if (response !== 'Không có gì để in' && response !== undefined) {
-      dispatch({ type: Types.ADD_LINK_PRINT, listLink: response, listData });
+    if (response.statusCode === 200) {
+      dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
       history.push('/xnsv');
     }
   };

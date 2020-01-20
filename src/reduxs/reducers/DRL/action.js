@@ -40,8 +40,8 @@ const handlePrint = type => async dispatch => {
   const status = 'ChuaIn';
   const listData = await DRLHandler.GetListCertificate(status);
   logger.info('DRLAction:: exporttodocx: reponse: ', response);
-  if (response !== 'Không có gì để in' && response !== undefined) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response, listData });
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
     history.push('/drl');
   }
 };

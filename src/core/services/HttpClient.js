@@ -112,7 +112,5 @@ export const sendDelete = async (url, requestBody) => {
 export const sendPatch = async (url) => {
     const response = await httpClient.patch(url);
     
-    const {body} = response.data;
-
-    return body;
-}
+    return response.data;
+};
