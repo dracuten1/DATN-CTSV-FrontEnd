@@ -46,11 +46,24 @@ const handlePrint = type => async dispatch => {
   }
 };
 
+const PrintOneStudent = (pk, sk) => async dispatch => {
+  const response = await DRLHandler.PrintOneStudent(pk, sk);
+  const status = 'ChuaIn';
+  const listData = await DRLHandler.GetListCertificate(status);
+  logger.info('DRLAction:: exporttodocx: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+    history.push('/drl');
+  }
+};
+
+
 export default {
   handleAllList,
   handlePrintList,
   handlePrint,
   getNotPrintYet,
   deleteOneCertificate,
-  getListHistory
+  getListHistory,
+  PrintOneStudent
 };

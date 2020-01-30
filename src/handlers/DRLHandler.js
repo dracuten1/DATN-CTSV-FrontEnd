@@ -55,7 +55,7 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   logger.info('DRLhandler:: deleteOneCertificate: URL: ', url);
 
-  const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
+  const response = await HttpClient.sendDelete(url, { data: {pk, sk} });
 
   logger.info('DRLhandler:: deleteOneCertificate: reponse: ', response);
 };
@@ -64,6 +64,14 @@ export const ExportToDocx = async type => {
   const url = `drl/printf?type=${type}&status=ChuaIn`;
 
   const reponse = await HttpClient.sendPatch(url);
+
+  return reponse;
+};
+
+export const PrintOneStudent = async (PK, SK) => {
+  const url = `drl/printfmulti`;
+
+  const reponse = await HttpClient.sendPatchWithBody(url, { keys: { PK, SK } });
 
   return reponse;
 };

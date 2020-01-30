@@ -103,14 +103,20 @@ export const sendGetBody = async (url, requestBody) => {
 export const sendDelete = async (url, requestBody) => {
 
     const response = await httpClient.delete(url, requestBody);
+    console.log("aaaaaaa", requestBody);
 
     const { body } = response.data;
-
     return body;
 };
 
 export const sendPatch = async (url) => {
     const response = await httpClient.patch(url);
+    
+    return response.data;
+};
+
+export const sendPatchWithBody = async (url, requestBody) => {
+    const response = await httpClient.patch(url, requestBody);
     
     return response.data;
 };
