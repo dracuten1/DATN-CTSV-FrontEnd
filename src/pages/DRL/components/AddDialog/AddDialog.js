@@ -44,6 +44,8 @@ const AddDialog = props => {
     year: null,
     semester: null,
     isPrint: false
+    // pk: '',
+    // sk: ''
   });
 
   const handleChange = prop => event => {
@@ -57,6 +59,8 @@ const AddDialog = props => {
         return 'HK';
       case CaseEnum.nh:
         return 'NH';
+      case CaseEnum.tk:
+        return 'TK';
       default:
         return 'All';
     }
@@ -123,9 +127,14 @@ const AddDialog = props => {
     fetchCertificate();
     const res = await DRLHandler.AddCertificate(newCertificate);
     logger.info('adding cerificate: ', newCertificate);
-    logger.info(res);
-
-    handleAdd(values);
+    logger.info('response adding: ', res);
+    const { Items } = res;
+    const data = {
+      ...values,
+      pk: Items[0].PK,
+      sk: Items[0].SK
+    };
+    handleAdd(data);
   };
 
   const findStudentInfoById = async event => {

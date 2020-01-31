@@ -22,7 +22,6 @@ export const AddCertificate = async value => {
   const url = `drl/add-certificate`;
 
   const response = await HttpClient.sendPost(url, value);
-
   return response;
 };
 
@@ -71,7 +70,7 @@ export const ExportToDocx = async type => {
 export const PrintOneStudent = async (PK, SK) => {
   const url = `drl/printfmulti`;
 
-  const reponse = await HttpClient.sendPatchWithBody(url, { keys: { PK, SK } });
+  const reponse = await HttpClient.sendPatchWithBody(url, { keys: [{ PK, SK }] });
 
   return reponse;
 };

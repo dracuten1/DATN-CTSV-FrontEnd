@@ -103,7 +103,6 @@ export const sendGetBody = async (url, requestBody) => {
 export const sendDelete = async (url, requestBody) => {
 
     const response = await httpClient.delete(url, requestBody);
-    console.log("aaaaaaa", requestBody);
 
     const { body } = response.data;
     return body;

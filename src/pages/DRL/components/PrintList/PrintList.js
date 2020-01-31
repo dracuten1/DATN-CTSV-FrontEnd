@@ -200,7 +200,13 @@ const PrintList = props => {
                   ? [
                       {
                         icon: icons.Print,
-                        tooltip: 'Print'
+                        tooltip: 'Print',
+                        onClick: (event, rowData) => {
+                          dispatch(
+                            DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
+                          );
+                          isPrint = !isPrint;
+                        }
                       }
                     ]
                   : []
