@@ -264,7 +264,7 @@ const PrintList = props => {
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
-              onClick={() => dispatch(DRLActions.handleAllList())}
+              onClick={() => dispatch(DRLActions.fillterListData('HK1','2018-2019','Giỏi'))}
               variant="contained"
               color="primary"
               size="small"
@@ -274,7 +274,8 @@ const PrintList = props => {
             <Button
               style={{ marginLeft: '8px' }}
               onClick={() => {
-                dispatch(DRLActions.getListHistory());
+                // dispatch(DRLActions.getListHistory());
+                // console.log(moment(new Date()).format("x"));
               }}
               variant="contained"
               color="primary"

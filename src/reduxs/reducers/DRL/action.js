@@ -13,6 +13,11 @@ const handlePrintList = () => async dispatch => {
   history.push('/drl');
 };
 
+const fillterListData = fillter => async dispatch => {
+  const payload = await DRLHandler.FillterListData(fillter);
+  dispatch({ type: Types.ALL_LIST, payload });
+};
+
 const getListHistory = () => async dispatch => {
   const status = 'In';
   const payload = await DRLHandler.GetListCertificate(status);
@@ -57,6 +62,13 @@ const PrintOneStudent = (pk, sk) => async dispatch => {
   }
 };
 
+const getListPrintByDate = (from, to) => async dispatch => {
+  const response = await DRLHandler.GetPrintListByDate(from, to);
+  logger.info('DRLAction:: listPrintByDate: reponse: ', response);
+  const payload = response.Items;
+  dispatch({ type: Types.GET_LIST_DOCX, payload });
+  history.push('/drl');
+};
 
 export default {
   handleAllList,
@@ -65,5 +77,7 @@ export default {
   getNotPrintYet,
   deleteOneCertificate,
   getListHistory,
-  PrintOneStudent
+  PrintOneStudent,
+  fillterListData,
+  getListPrintByDate
 };

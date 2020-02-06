@@ -4,6 +4,7 @@ const INIT_STATE = {
   isAllList: false,
   isPrintList: true,
   isHistoryList: false,
+  allList: [],
   dataPrint: [],
   dataHistory: [],
   listLink: []
@@ -14,6 +15,7 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.ALL_LIST:
       return {
         ...state,
+        allList: action.payload,
         isAllList: true,
         isPrintList: false,
         isHistoryList: false
@@ -47,6 +49,9 @@ const userReducer = (state = INIT_STATE, action) => {
       const temp = state.listLink;
       temp.push(action.listLink);
       return { ...state, listLink: temp, dataPrint: action.listData };
+    }
+    case ActionTypes.GET_LIST_DOCX: {
+      return { ...state, listLink: action.payload };
     }
     case ActionTypes.EXPORT_TO_DOCX:
       return { ...state };

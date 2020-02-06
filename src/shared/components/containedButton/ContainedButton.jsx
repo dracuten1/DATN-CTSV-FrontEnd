@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
 export default function ContainedButton(props) {
   const classes = useStyles();
 
-  const { handleDialog, label } = props;
+  const { handleClick, label } = props;
   return (
     <div>
       <Button
-        onClick={handleDialog}
+        onClick={handleClick}
         variant="contained"
         className={classes.button}
       >

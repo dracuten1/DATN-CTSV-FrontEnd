@@ -18,6 +18,15 @@ export const GetDRLByIdAndType = async (id, type) => {
   return reponse;
 };
 
+export const FillterListData = async fillter => {
+  const {type, time, xeploai} = fillter;
+  const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
+
+  const reponse = await HttpClient.sendGet(url);
+
+  return reponse;
+};
+
 export const AddCertificate = async value => {
   const url = `drl/add-certificate`;
 
@@ -74,3 +83,12 @@ export const PrintOneStudent = async (PK, SK) => {
 
   return reponse;
 };
+
+export const GetPrintListByDate = async (from, to) => {
+  const url = `drl/printf?from=${from}&to=${to}`;
+
+  const reponse = await HttpClient.sendGet(url);
+
+  return reponse;
+};
+

@@ -45,6 +45,11 @@ const AllList = props => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [fillter, setFillter] = React.useState({
+    type: 'HK1',
+    time: '2018-2019',
+    xeploai: 'Giỏi'
+  });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: mockData,
@@ -113,11 +118,18 @@ const AllList = props => {
     setOpen(false);
   };
 
+  const handleFillter = (prop, data) => {
+    setFillter({ ...fillter, [prop]: data });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <Filters onFillter={handleFillter} />
+        <ContainedButton
+          handleClick={() => dispatch(Actions.fillterListData(fillter))}
+          label="Lọc sinh viên"
+        />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>
@@ -187,16 +199,18 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          style={{ marginLeft: '8px' }}
+          onClick={() => {
+            dispatch(Actions.getListHistory());
+          }}
           variant="contained"
           color="primary"
           size="small"
         >
-          Xem toàn bộ
+          Xem Lịch Sử
         </Button>
         <Button
           onClick={() => {
-            // dispatch(DRLActions.handlePrintList());
             dispatch(Actions.getNotPrintYet());
           }}
           variant="contained"
@@ -228,9 +242,6 @@ const AllList = props => {
           size="small"
         >
           Export
-        </Button>
-        <Button disabled variant="contained" color="primary" size="small">
-          In theo trường hợp
         </Button>
       </CardActions>
       <AddDialog
