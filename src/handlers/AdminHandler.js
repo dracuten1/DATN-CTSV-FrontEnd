@@ -21,3 +21,10 @@ export const disalbeUser = async data => {
   logger.info('AdminHandler:: disalbeUser: reponse: ', response);
 };
 
+export const GetListSigner = async () => {
+  const url = `signer`;
+
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};

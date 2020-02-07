@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import MaterialTable from 'material-table';
 import moment from 'moment';
+import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import {
   Card,
   CardActions,
@@ -19,6 +20,7 @@ import XNSVActions from 'reduxs/reducers/XNSV/action';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import icons from 'shared/icons';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
+import Filters from '../filters/Filters';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -62,11 +64,17 @@ const PrintList = props => {
 
   logger.info('history', dataHistory);
   logger.info('dataPrint: ', dataPrint);
-
+  const [fillter, setFillter] = React.useState({
+    hk: '1',
+    nh: '2018-2019',
+    type: 'Đang học',
+    fromDate: moment(date).format('YYYY-MM-DD'),
+    toDate: moment(date).format('YYYY-MM-DD')
+  });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: isPrintList ? dataPrint : dataHistory,
-    columns: [
+    columns: isPrint ? [
       {
         title: 'Đã In',
         field: 'isPrint',
@@ -125,6 +133,66 @@ const PrintList = props => {
       },
       {
         title: 'Ngày thêm',
+        field: 'date',
+        editable: 'never',
+        type: 'date',
+        filtering: false
+      }
+    ]
+    : [
+      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+      {
+        title: 'Họ tên',
+        field: 'name',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Loại xác nhận',
+        field: 'case',
+        lookup: {
+          1: 'Đang học',
+          2: 'Bảo lưu',
+          3: 'Chờ xét tốt nghiệp',
+          4: 'Chờ xét hoàn tất chương trình',
+          5: 'Vay vốn',
+          6: 'Giấy giới thiệu',
+          7: 'Thời gian học',
+          8: 'Hoàn tất chương trình'
+        },
+        filterCellStyle: {
+          paddingTop: 1
+        },
+        customFilterAndSearch: (term, rowData) => {
+          if (valueCase !== term) {
+            valueCase = term;
+          }
+          if (term.length !== 0) {
+            return term == rowData.case;
+          }
+          return rowData;
+        }
+      },
+      {
+        title: 'Lý do',
+        field: 'reason',
+        editable: 'never'
+      },
+      {
+        title: 'Ghi chú',
+        field: 'ghiChu',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Link',
+        field: 'link',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Ngày in',
         field: 'date',
         editable: 'never',
         type: 'date',
@@ -209,8 +277,18 @@ const PrintList = props => {
     setOpen(false);
   };
 
+  const handleFillter = (prop, data) => {
+    setFillter({ ...fillter, [prop]: data });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
+      <CardActions className={classes.actions}>
+        <Filters onFillter={handleFillter}/>
+        <ContainedButton 
+          handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
+          label="Lọc sinh viên" />
+      </CardActions>
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -276,6 +354,7 @@ const PrintList = props => {
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => dispatch(XNSVActions.getListHistory())}
               variant="contained"
               color="primary"
@@ -284,6 +363,7 @@ const PrintList = props => {
               Xem lịch sử
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => {
                 dispatch(XNSVActions.getNotPrintYet());
                 updateBegin = 1;
@@ -296,6 +376,7 @@ const PrintList = props => {
             </Button>
 
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => setOpen(true)}
               variant="contained"
               color="primary"
@@ -304,6 +385,7 @@ const PrintList = props => {
               Thêm sinh viên in
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => dispatch(XNSVActions.handleAllList())}
               variant="contained"
               color="primary"
@@ -312,6 +394,7 @@ const PrintList = props => {
               Export
             </Button>
             <Button
+              style={{ marginLeft: '8px' }}
               onClick={() => {
                 dispatch(XNSVActions.handlePrint(reparseCaseToString(valueCase[0])));
                 isPrint = !isPrint;

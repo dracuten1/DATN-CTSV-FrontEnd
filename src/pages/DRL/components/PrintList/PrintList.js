@@ -124,6 +124,7 @@ const PrintList = props => {
 
   if (updateBegin === 0) {
     dispatch(DRLActions.getNotPrintYet());
+    dispatch(DRLActions.getListPrintByDate(moment(new Date()).format("x"), moment(new Date()).format("x")));
     updateBegin += 1;
   }
 
@@ -225,19 +226,6 @@ const PrintList = props => {
               editable={
                 isPrintList
                   ? {
-                      // onRowUpdate: (newData, oldData) =>
-                      //   new Promise(resolve => {
-                      //     setTimeout(() => {
-                      //       resolve();
-                      //       if (oldData) {
-                      //         setState(prevState => {
-                      //           const data = [...prevState.data];
-                      //           data[data.indexOf(oldData)] = newData;
-                      //           return { ...prevState, data };
-                      //         });
-                      //       }
-                      //     }, 600);
-                      //   }),
                       onRowDelete: oldData =>
                         new Promise(resolve => {
                           setTimeout(() => {
@@ -275,7 +263,6 @@ const PrintList = props => {
               style={{ marginLeft: '8px' }}
               onClick={() => {
                 // dispatch(DRLActions.getListHistory());
-                // console.log(moment(new Date()).format("x"));
               }}
               variant="contained"
               color="primary"

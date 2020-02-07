@@ -44,13 +44,12 @@ const parseCase = key => {
 
 export const GetListCertificate = async (status) => {
 
-  const url = `xnsv/getListCertificates?status=${status}`;
+  const url = `xnsv/certificate?status=${status}`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendPut(url);
   logger.info(response);
-  const items = response;
 
-  const payload = items.map((item, index) => {
+  const payload = response.map((item, index) => {
     return {
       scn: item.SCN,
       name: item.ThongTinSinhVien.Ten,
@@ -96,3 +95,21 @@ export const AddCertificate = async value => {
 
   return response;
 };
+
+export const GetCompany = async () => {
+  const url = `xnsv/company`;
+
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};
+
+export const ExportWithFillter = async (fillter) => {
+  const {nh, hk, type, fromDate, toDate} = fillter;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
+
+  const response = await HttpClient.sendPatch(url);
+
+  return response;
+};
+

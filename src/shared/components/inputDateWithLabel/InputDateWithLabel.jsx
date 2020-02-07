@@ -27,12 +27,16 @@ const date = new Date();
 export default function UncontrolledTextField(props) {
   const classes = useStyles();
 
-  const { label, handleChange } = props;
+  const { label, clickFillter, prop } = props;
+  const handleChange = event => {
+    clickFillter(prop, event.target.value);
+  };
+
   return (
     <div className={classes.container}>
-      <span>{label}</span>
       <TextField
         type="date"
+        label={label}
         id="outlined-search"
         className={classes.textField}
         defaultValue={moment(date).format('YYYY-MM-DD')}
@@ -42,8 +46,8 @@ export default function UncontrolledTextField(props) {
         variant="outlined"
         inputProps={{
           style: {
-            height: 40,
-            padding: '0px 10px'
+            height: 13,
+            // padding: '0px 10px'
           }
         }}
       />
