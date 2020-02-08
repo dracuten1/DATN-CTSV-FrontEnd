@@ -12,8 +12,10 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import * as DRLHandler from 'handlers/DRLHandler';
+import * as AdminHandler from 'handlers/AdminHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
+import { LinearProgress } from '@material-ui/core';
 import { CaseEnum, SemesterEnum } from './DRLEnum';
 
 const useStyles = makeStyles(theme => ({
@@ -43,7 +45,8 @@ const AddDialog = props => {
     case: null,
     year: null,
     semester: null,
-    isPrint: false
+    isPrint: false,
+    signer: null,
     // pk: '',
     // sk: ''
   });
@@ -75,26 +78,58 @@ const AddDialog = props => {
     }
   };
 
-  const [newCertificate, setCertificate] = React.useState({});
+  const parseSigner = key => {
+    return signerObj[key];
+  };
 
-  const fetchCertificate = async () => {
-    const addCase = parseCase(values.case);
-    const response = await DRLHandler.GetDRLByIdAndType(values.mssv, addCase);
+  const [newCertificate, setCertificate] = React.useState({});
+  const [signer, setSigner] = React.useState({});
+  const [signerObj, setSignerObj] = React.useState({});
+  const [progress, setProgress] = React.useState(true);
+
+
+  const getSignerEnum = async () => {
+
+    const response = await AdminHandler.GetListSigner();
+
+    const SignerEnum = {};
+    const SignerObj = {};
+    const { Items } = response;
+    Items.forEach((item, index) => {
+      const key = "singer" + index;
+      SignerEnum[key] = item.hvtnguoiki + " - " + item.chucvu;
+      SignerObj[item.hvtnguoiki + " - " + item.chucvu] = { chucvu: item.chucvu, hvtnguoiki: item.hvtnguoiki, KT: item.KT, TL: item.TL };
+    });
+    logger.info("DRL:: Add dialog:: signerEnum: ", SignerEnum);
+    setSigner(SignerEnum);
+    setSignerObj(SignerObj);
+    return SignerEnum;
+  };
+
+  React.useEffect(() => {
+    getSignerEnum();
+  }, []);
+
+  const fetchCertificate = (prop) => async event => {
+    const tmp = { ...values };
+    tmp[prop] = event.target.value;
+    const addCase = parseCase(tmp.case);
+    const response = await DRLHandler.GetDRLByIdAndType(tmp.mssv, addCase);
     const items = response.Items;
     const Data = {};
     items.forEach(element => {
       const item = { ...element };
       delete item.Time;
-      switch (values.case) {
+      switch (tmp.case) {
         case CaseEnum.nh:
-          if (element.Time.includes(values.year))
+          if (element.Time.includes(tmp.year))
             Data[element.Time] = { ...item };
           break;
         case CaseEnum.hk:
-          const semester = parseSemester(values.semester);
+          const semester = parseSemester(tmp.semester);
           if (
             element.Time.includes(semester) &&
-            element.Time.includes(values.year)
+            element.Time.includes(tmp.year)
           )
             Data[element.Time] = { ...item };
           break;
@@ -104,27 +139,30 @@ const AddDialog = props => {
     });
 
     const SinhVien = {
-      Ten: values.name,
-      Khoa: values.faculty,
-      MSSV: values.mssv,
-      NS: values.dob
+      Ten: tmp.name,
+      Khoa: tmp.faculty,
+      MSSV: tmp.mssv,
+      NS: tmp.dob
     };
 
     const LoaiXN = addCase;
+    const NguoiKi = parseSigner(tmp.signer);
 
     const tmpCertificate = {
       Data,
       SinhVien,
-      LoaiXN
+      LoaiXN,
+      NguoiKi,
     };
 
+    logger.info('Fetch certificate: nguoiki: ', tmp.signer);
     logger.info('Fetch certificate: ', tmpCertificate);
 
     setCertificate(tmpCertificate);
   };
 
   const addData = async () => {
-    fetchCertificate();
+    setProgress(false);
     const res = await DRLHandler.AddCertificate(newCertificate);
     logger.info('adding cerificate: ', newCertificate);
     logger.info('response adding: ', res);
@@ -155,7 +193,10 @@ const AddDialog = props => {
     setValues(studentInfo);
   };
 
+
+
   const drawMenuItem = data => {
+    logger.info("DRL:: Add dialog:: drawMenuItem data: ", data);
     return Object.keys(data).map(key => {
       return (
         <MenuItem key={key} value={data[key]}>
@@ -168,6 +209,7 @@ const AddDialog = props => {
   return (
     <div>
       <Dialog open={open} aria-labelledby="form-dialog-title">
+        <LinearProgress color="secondary" />
         <DialogTitle id="form-dialog-title">
           <b>Thêm Vào Danh Sách In</b>
         </DialogTitle>
@@ -212,6 +254,22 @@ const AddDialog = props => {
           />
           <FormControl className={classes.textField}>
             <InputLabel id="demo-simple-select-helper-label">
+              Người kí
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              onChange={event => {
+                handleChange('signer')(event);
+                fetchCertificate('signer')(event);
+              }}
+              value={values.signer}
+            >
+              {drawMenuItem(signer)}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.textField}>
+            <InputLabel id="demo-simple-select-helper-label">
               Loại xác nhận
             </InputLabel>
             <Select
@@ -219,7 +277,7 @@ const AddDialog = props => {
               id="demo-simple-select-helper"
               onChange={event => {
                 handleChange('case')(event);
-                fetchCertificate();
+                fetchCertificate('case')(event);
               }}
               value={values.case}
             >
@@ -236,7 +294,7 @@ const AddDialog = props => {
                 id="demo-simple-select-helper"
                 onChange={event => {
                   handleChange('year')(event);
-                  fetchCertificate();
+                  fetchCertificate('year')(event);
                 }}
               >
                 <MenuItem value={4}>2019-2020</MenuItem>
@@ -257,7 +315,7 @@ const AddDialog = props => {
                   id="demo-simple-select-helper"
                   onChange={event => {
                     handleChange('year')(event);
-                    fetchCertificate();
+                    fetchCertificate('year')(event);
                   }}
                 >
                   <MenuItem value={4}>2019-2020</MenuItem>
@@ -275,7 +333,7 @@ const AddDialog = props => {
                   id="demo-simple-select-helper"
                   onChange={event => {
                     handleChange('semester')(event);
-                    fetchCertificate();
+                    fetchCertificate('semester')(event);
                   }}
                 >
                   {drawMenuItem(SemesterEnum)}

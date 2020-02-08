@@ -35,7 +35,7 @@ export const AddCertificate = async value => {
 };
 
 export const GetListCertificate = async status => {
-  const url = `drl/getListCertificates?status=${status}&limit=10`;
+  const url = `drl/getListCertificates?status=${status}`;
 
   const response = await HttpClient.sendGet(url);
   const items = response.Items;
