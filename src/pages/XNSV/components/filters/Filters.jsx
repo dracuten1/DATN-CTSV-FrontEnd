@@ -34,11 +34,28 @@ export default function Filters(props) {
         clickFillter={onFillter}
         prop="type"
         label="Loại xác nhận"
-        data={['Bảo lưu', 'Đang học']}
+        data={[
+          'Bảo lưu',
+          'Đang học',
+          'Chờ xét hoàn tất chương trình',
+          'Chờ xét tốt nghiệp',
+          'Hoàn tất chương trình',
+          'Thời gian học',
+          'Giới thiệu',
+          'Vay vốn'
+        ]}
       />
 
-      <InputDateWithLabel prop='fromDate' clickFillter={onFillter} label="Từ ngày" />
-      <InputDateWithLabel prop='toDate' clickFillter={onFillter} label="Đến ngày" />
+      <InputDateWithLabel
+        prop="fromDate"
+        clickFillter={onFillter}
+        label="Từ ngày"
+      />
+      <InputDateWithLabel
+        prop="toDate"
+        clickFillter={onFillter}
+        label="Đến ngày"
+      />
     </div>
   );
 }

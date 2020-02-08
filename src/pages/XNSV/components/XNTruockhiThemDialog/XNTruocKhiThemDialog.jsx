@@ -132,11 +132,11 @@ const XNTruocKhiThemDialog = props => {
         MSSV: tmp.mssv,
         Ten: tmp.name,
       }
-    }
+    };
     logger.info("Fetch: ", tmpCertificate);
 
     setCertificate(tmpCertificate);
-  }
+  };
 
   const dataLXNTV = [
     'Bảo lưu',
