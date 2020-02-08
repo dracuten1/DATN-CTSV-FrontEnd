@@ -74,131 +74,132 @@ const PrintList = props => {
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: isPrintList ? dataPrint : dataHistory,
-    columns: isPrint ? [
-      {
-        title: 'Đã In',
-        field: 'isPrint',
-        editable: 'onAdd',
-        type: 'boolean',
-        render: rowData => (
-          <div style={{ marginLeft: '10px' }}>
-            {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
-          </div>
-        )
-      },
-      { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
-      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-      {
-        title: 'Họ tên',
-        field: 'name',
-        editable: 'never',
-        filtering: false
-      },
-      {
-        title: 'Loại xác nhận',
-        field: 'case',
-        lookup: {
-          1: 'Đang học',
-          2: 'Bảo lưu',
-          3: 'Chờ xét tốt nghiệp',
-          4: 'Chờ xét hoàn tất chương trình',
-          5: 'Vay vốn',
-          6: 'Giấy giới thiệu',
-          7: 'Thời gian học',
-          8: 'Hoàn tất chương trình'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        },
-        customFilterAndSearch: (term, rowData) => {
-          if (valueCase !== term) {
-            valueCase = term;
+    columns: isPrint
+      ? [
+          {
+            title: 'Đã In',
+            field: 'isPrint',
+            editable: 'onAdd',
+            type: 'boolean',
+            render: rowData => (
+              <div style={{ marginLeft: '10px' }}>
+                {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
+              </div>
+            )
+          },
+          { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
+          { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+          {
+            title: 'Họ tên',
+            field: 'name',
+            editable: 'never',
+            filtering: false
+          },
+          {
+            title: 'Loại xác nhận',
+            field: 'case',
+            lookup: {
+              1: 'Đang học',
+              2: 'Bảo lưu',
+              3: 'Chờ xét tốt nghiệp',
+              4: 'Chờ xét hoàn tất chương trình',
+              5: 'Vay vốn',
+              6: 'Giấy giới thiệu',
+              7: 'Thời gian học',
+              8: 'Hoàn tất chương trình'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            },
+            customFilterAndSearch: (term, rowData) => {
+              if (valueCase !== term) {
+                valueCase = term;
+              }
+              if (term.length !== 0) {
+                return term == rowData.case;
+              }
+              return rowData;
+            }
+          },
+          {
+            title: 'Lý do',
+            field: 'reason',
+            editable: 'never'
+          },
+          {
+            title: 'Ghi chú',
+            field: 'ghiChu',
+            editable: 'never',
+            filtering: false
+          },
+          {
+            title: 'Ngày thêm',
+            field: 'date',
+            editable: 'never',
+            type: 'date',
+            filtering: false
           }
-          if (term.length !== 0) {
-            return term == rowData.case;
+        ]
+      : [
+          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+          { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+          {
+            title: 'Họ tên',
+            field: 'name',
+            editable: 'never',
+            filtering: false
+          },
+          {
+            title: 'Loại xác nhận',
+            field: 'case',
+            lookup: {
+              1: 'Đang học',
+              2: 'Bảo lưu',
+              3: 'Chờ xét tốt nghiệp',
+              4: 'Chờ xét hoàn tất chương trình',
+              5: 'Vay vốn',
+              6: 'Giấy giới thiệu',
+              7: 'Thời gian học',
+              8: 'Hoàn tất chương trình'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            },
+            customFilterAndSearch: (term, rowData) => {
+              if (valueCase !== term) {
+                valueCase = term;
+              }
+              if (term.length !== 0) {
+                return term == rowData.case;
+              }
+              return rowData;
+            }
+          },
+          {
+            title: 'Lý do',
+            field: 'reason',
+            editable: 'never'
+          },
+          {
+            title: 'Ghi chú',
+            field: 'ghiChu',
+            editable: 'never',
+            filtering: false
+          },
+          {
+            title: 'Link',
+            field: 'link',
+            editable: 'never',
+            filtering: false
+          },
+          {
+            title: 'Ngày in',
+            field: 'date',
+            editable: 'never',
+            type: 'date',
+            filtering: false
           }
-          return rowData;
-        }
-      },
-      {
-        title: 'Lý do',
-        field: 'reason',
-        editable: 'never'
-      },
-      {
-        title: 'Ghi chú',
-        field: 'ghiChu',
-        editable: 'never',
-        filtering: false
-      },
-      {
-        title: 'Ngày thêm',
-        field: 'date',
-        editable: 'never',
-        type: 'date',
-        filtering: false
-      }
-    ]
-    : [
-      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-      {
-        title: 'Họ tên',
-        field: 'name',
-        editable: 'never',
-        filtering: false
-      },
-      {
-        title: 'Loại xác nhận',
-        field: 'case',
-        lookup: {
-          1: 'Đang học',
-          2: 'Bảo lưu',
-          3: 'Chờ xét tốt nghiệp',
-          4: 'Chờ xét hoàn tất chương trình',
-          5: 'Vay vốn',
-          6: 'Giấy giới thiệu',
-          7: 'Thời gian học',
-          8: 'Hoàn tất chương trình'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        },
-        customFilterAndSearch: (term, rowData) => {
-          if (valueCase !== term) {
-            valueCase = term;
-          }
-          if (term.length !== 0) {
-            return term == rowData.case;
-          }
-          return rowData;
-        }
-      },
-      {
-        title: 'Lý do',
-        field: 'reason',
-        editable: 'never'
-      },
-      {
-        title: 'Ghi chú',
-        field: 'ghiChu',
-        editable: 'never',
-        filtering: false
-      },
-      {
-        title: 'Link',
-        field: 'link',
-        editable: 'never',
-        filtering: false
-      },
-      {
-        title: 'Ngày in',
-        field: 'date',
-        editable: 'never',
-        type: 'date',
-        filtering: false
-      }
-    ]
+        ]
   });
 
   if (updateBegin === 0) {
@@ -245,21 +246,21 @@ const PrintList = props => {
 
   const reparseCaseToString = tmpcase => {
     switch (tmpcase) {
-      case "1":
+      case '1':
         return 'Đang học';
-      case "2":
+      case '2':
         return 'Bảo lưu';
-      case "3":
+      case '3':
         return 'Chờ xét tốt nghiệp';
-      case "4":
+      case '4':
         return 'Chờ xét hoàn tất chương trình';
-      case "5":
+      case '5':
         return 'Vay vốn';
-      case "6":
-        return  'Giấy giới thiệu';
-      case "7":
+      case '6':
+        return 'Giấy giới thiệu';
+      case '7':
         return 'Thời gian học';
-      case "8":
+      case '8':
         return 'Hoàn tất chương trình';
       default:
         return null;
@@ -283,12 +284,17 @@ const PrintList = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters onFillter={handleFillter}/>
-        <ContainedButton 
-          handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
-          label="Lọc sinh viên" />
-      </CardActions>
+      {isPrint ? (
+        <CardActions className={classes.actions}>
+          <Filters onFillter={handleFillter} />
+          <ContainedButton
+            handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
+            label="Lọc sinh viên"
+          />
+        </CardActions>
+      ) : (
+        ''
+      )}
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -297,6 +303,14 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
+                  {isPrint ? (
+                    <b>
+                      DANH SÁCH IN TRONG NGÀY{' '}
+                      {moment(date).format('DD/MM/YYYY')}
+                    </b>
+                  ) : (
+                    <b>LỊCH SỬ IN</b>
+                  )}
                   <b>
                     DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}
                   </b>
@@ -396,7 +410,9 @@ const PrintList = props => {
             <Button
               style={{ marginLeft: '8px' }}
               onClick={() => {
-                dispatch(XNSVActions.handlePrint(reparseCaseToString(valueCase[0])));
+                dispatch(
+                  XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                );
                 isPrint = !isPrint;
               }}
               variant="contained"
