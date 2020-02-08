@@ -73,6 +73,15 @@ export const sendPost = async (url, requestBody) => {
     return body;
 };
 
+export const sendPut = async (url) => {
+
+    const response = await httpClient.put(url);
+
+    const { body } = response.data;
+
+    return body;
+};
+
 /**
  *
  * @param {*} url
@@ -80,6 +89,15 @@ export const sendPost = async (url, requestBody) => {
 export const sendGet = async (url) => {
 
     const response = await httpClient.get(url);
+
+    const { body } = response.data;
+
+    return body;
+};
+
+export const sendGetBody = async (url, requestBody) => {
+
+    const response = await httpClient.get(url, requestBody);
 
     const { body } = response.data;
 
@@ -96,6 +114,17 @@ export const sendDelete = async (url, requestBody) => {
     const response = await httpClient.delete(url, requestBody);
 
     const { body } = response.data;
-
     return body;
+};
+
+export const sendPatch = async (url) => {
+    const response = await httpClient.patch(url);
+    
+    return response.data;
+};
+
+export const sendPatchWithBody = async (url, requestBody) => {
+    const response = await httpClient.patch(url, requestBody);
+    
+    return response.data;
 };

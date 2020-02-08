@@ -5,19 +5,22 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import MaterialTable from 'material-table';
 import moment from 'moment';
+import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import {
   Card,
   CardActions,
   CardContent,
+  Grid,
   Button,
   Divider
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import Actions from 'reduxs/reducers/DRL/action';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { logger } from 'core/services/Apploger';
+import XNSVActions from 'reduxs/reducers/XNSV/action';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import icons from 'shared/icons';
-import mockData from './data';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
+import Filters from '../filters/Filters';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -40,19 +43,38 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const date = new Date();
+let updateBegin = 0;
+let isPrint = false;
+let valueCase = null;
 
 const PrintList = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const DRLState = useSelector(state => state.DRLState);
-  // const { dataPrint } = DRLState;
 
+  const XNSVState = useSelector(state => state.XNSVState);
+  const {
+    dataPrint,
+    listLink,
+    dataHistory,
+    isPrintList,
+    isHistoryList
+  } = XNSVState;
+
+  logger.info('history', dataHistory);
+  logger.info('dataPrint: ', dataPrint);
+  const [fillter, setFillter] = React.useState({
+    hk: '1',
+    nh: '2018-2019',
+    type: 'Đang học',
+    fromDate: moment(date).format('YYYY-MM-DD'),
+    toDate: moment(date).format('YYYY-MM-DD')
+  });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: mockData,
-    columns: [
+    data: isPrintList ? dataPrint : dataHistory,
+    columns: isPrint ? [
       {
         title: 'Đã In',
         field: 'isPrint',
@@ -78,39 +100,195 @@ const PrintList = props => {
         lookup: {
           1: 'Đang học',
           2: 'Bảo lưu',
-          3: 'Chờ xét TN',
-          4: 'Chờ xét HTCT'
+          3: 'Chờ xét tốt nghiệp',
+          4: 'Chờ xét hoàn tất chương trình',
+          5: 'Vay vốn',
+          6: 'Giấy giới thiệu',
+          7: 'Thời gian học',
+          8: 'Hoàn tất chương trình'
         },
         filterCellStyle: {
           paddingTop: 1
+        },
+        customFilterAndSearch: (term, rowData) => {
+          if (valueCase !== term) {
+            valueCase = term;
+          }
+          if (term.length !== 0) {
+            return term == rowData.case;
+          }
+          return rowData;
         }
       },
       {
-        title: 'Tình trạng',
-        field: 'tinhTrang',
-        editable: 'never',
-        filtering: false
+        title: 'Lý do',
+        field: 'reason',
+        editable: 'never'
       },
       {
         title: 'Ghi chú',
         field: 'ghiChu',
         editable: 'never',
         filtering: false
+      },
+      {
+        title: 'Ngày thêm',
+        field: 'date',
+        editable: 'never',
+        type: 'date',
+        filtering: false
+      }
+    ]
+    : [
+      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+      {
+        title: 'Họ tên',
+        field: 'name',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Loại xác nhận',
+        field: 'case',
+        lookup: {
+          1: 'Đang học',
+          2: 'Bảo lưu',
+          3: 'Chờ xét tốt nghiệp',
+          4: 'Chờ xét hoàn tất chương trình',
+          5: 'Vay vốn',
+          6: 'Giấy giới thiệu',
+          7: 'Thời gian học',
+          8: 'Hoàn tất chương trình'
+        },
+        filterCellStyle: {
+          paddingTop: 1
+        },
+        customFilterAndSearch: (term, rowData) => {
+          if (valueCase !== term) {
+            valueCase = term;
+          }
+          if (term.length !== 0) {
+            return term == rowData.case;
+          }
+          return rowData;
+        }
+      },
+      {
+        title: 'Lý do',
+        field: 'reason',
+        editable: 'never'
+      },
+      {
+        title: 'Ghi chú',
+        field: 'ghiChu',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Link',
+        field: 'link',
+        editable: 'never',
+        filtering: false
+      },
+      {
+        title: 'Ngày in',
+        field: 'date',
+        editable: 'never',
+        type: 'date',
+        filtering: false
       }
     ]
   });
 
+  if (updateBegin === 0) {
+    dispatch(XNSVActions.getNotPrintYet());
+    updateBegin += 1;
+  }
+
+  if (dataPrint.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataPrint });
+    updateBegin += 1;
+  }
+
+  if (isPrint) {
+    setState({ ...state, data: dataPrint });
+    isPrint = !isPrint;
+  }
+
+  if (isHistoryList && state.data.length !== dataHistory.length) {
+    setState({ ...state, data: dataHistory });
+  }
+
+  const reparseCase = tmpcase => {
+    switch (tmpcase) {
+      case 'Đang học':
+        return 1;
+      case 'Bảo lưu':
+        return 2;
+      case 'Chờ xét tốt nghiệp':
+        return 3;
+      case 'Chờ xét hoàn tất chương trình':
+        return 4;
+      case 'Vay vốn':
+        return 5;
+      case 'Giấy giới thiệu':
+        return 6;
+      case 'Thời gian học':
+        return 7;
+      case 'Hoàn tất chương trình':
+        return 8;
+      default:
+        return 9;
+    }
+  };
+
+  const reparseCaseToString = tmpcase => {
+    switch (tmpcase) {
+      case "1":
+        return 'Đang học';
+      case "2":
+        return 'Bảo lưu';
+      case "3":
+        return 'Chờ xét tốt nghiệp';
+      case "4":
+        return 'Chờ xét hoàn tất chương trình';
+      case "5":
+        return 'Vay vốn';
+      case "6":
+        return  'Giấy giới thiệu';
+      case "7":
+        return 'Thời gian học';
+      case "8":
+        return 'Hoàn tất chương trình';
+      default:
+        return null;
+    }
+  };
+
   const handleAdd = newData => {
     setState(prevState => {
       const data = [...prevState.data];
+      newData.scn = data.length + 1;
+      newData.case = reparseCase(newData.case);
       data.push(newData);
       return { ...prevState, data };
     });
     setOpen(false);
   };
 
+  const handleFillter = (prop, data) => {
+    setFillter({ ...fillter, [prop]: data });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
+      <CardActions className={classes.actions}>
+        <Filters onFillter={handleFillter}/>
+        <ContainedButton 
+          handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
+          label="Lọc sinh viên" />
+      </CardActions>
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -119,17 +297,23 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}</b>
+                  <b>
+                    DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}
+                  </b>
                 </div>
               }
               columns={state.columns}
               data={state.data}
-              actions={[
-                {
-                  icon: icons.Print,
-                  tooltip: 'Print'
-                }
-              ]}
+              actions={
+                !isHistoryList
+                  ? [
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print'
+                      }
+                    ]
+                  : []
+              }
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -141,92 +325,101 @@ const PrintList = props => {
                 // exportButton: true,
                 filtering: true
               }}
-              editable={{
-                onRowAdd: newData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.push(newData);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  }),
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
+              editable={
+                !isHistoryList
+                  ? {
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            logger.info('Olddata: ', oldData);
+                            const { pk, sk } = oldData;
+                            dispatch(XNSVActions.deleteOneCertificate(pk, sk));
+                            resolve();
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+                  : {}
+              }
             />
           </div>
         </PerfectScrollbar>
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Xem lịch sử
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handlePrintList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Danh sách in
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => dispatch(XNSVActions.getListHistory())}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Xem lịch sử
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                dispatch(XNSVActions.getNotPrintYet());
+                updateBegin = 1;
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Danh sách in
+            </Button>
 
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm sinh viên in
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handlePrint())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          In theo trường hợp
-        </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => setOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Thêm sinh viên in
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => dispatch(XNSVActions.handleAllList())}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Export
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                dispatch(XNSVActions.handlePrint(reparseCaseToString(valueCase[0])));
+                isPrint = !isPrint;
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              In theo trường hợp
+            </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>
       </CardActions>
-      <XNTKTDialog handleAdd={handleAdd} open={open} handleClose={() => setOpen(false)} />
+      <XNTKTDialog
+        handleAdd={handleAdd}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
     </Card>
   );
 };

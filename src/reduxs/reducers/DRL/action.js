@@ -1,40 +1,74 @@
 import * as DRLHandler from 'handlers/DRLHandler';
 import { logger } from 'core/services/Apploger';
+import history from 'historyConfig';
 import Types from './actionTypes';
 
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
+  history.push('/drl');
 };
 
 const handlePrintList = () => async dispatch => {
   dispatch({ type: Types.PRINT_LIST });
+  history.push('/drl');
 };
 
-// const handleAdd = newData => async dispatch => {
-//   dispatch({ type: Types.DATA_PRINT, newData });
-// };
+const fillterListData = fillter => async dispatch => {
+  const payload = await DRLHandler.FillterListData(fillter);
+  dispatch({ type: Types.ALL_LIST, payload });
+};
+
+const getListHistory = () => async dispatch => {
+  const status = 'In';
+  const payload = await DRLHandler.GetListCertificate(status);
+  dispatch({ type: Types.GET_HISTORY_LIST, payload });
+};
 
 const getNotPrintYet = () => async dispatch => {
-
   const status = 'ChuaIn';
-
   const payload = await DRLHandler.GetListCertificate(status);
-
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-
+  history.push('/drl');
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
-
   const response = await DRLHandler.DeleteOneCertificate(pk, sk);
 
-  logger.info("DRLAction:: deleteOneCertificate: reponse: ", response);
+  logger.info('DRLAction:: deleteOneCertificate: reponse: ', response);
 
   dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-
+  history.push('/drl');
 };
 
-const handlePrint = () => { };
+const handlePrint = type => async dispatch => {
+  const response = await DRLHandler.ExportToDocx(type);
+  const status = 'ChuaIn';
+  const listData = await DRLHandler.GetListCertificate(status);
+  logger.info('DRLAction:: exporttodocx: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+    history.push('/drl');
+  }
+};
+
+const PrintOneStudent = (pk, sk) => async dispatch => {
+  const response = await DRLHandler.PrintOneStudent(pk, sk);
+  const status = 'ChuaIn';
+  const listData = await DRLHandler.GetListCertificate(status);
+  logger.info('DRLAction:: exporttodocx: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+    history.push('/drl');
+  }
+};
+
+const getListPrintByDate = (from, to) => async dispatch => {
+  const response = await DRLHandler.GetPrintListByDate(from, to);
+  logger.info('DRLAction:: listPrintByDate: reponse: ', response);
+  const payload = response.Items;
+  dispatch({ type: Types.GET_LIST_DOCX, payload });
+  history.push('/drl');
+};
 
 export default {
   handleAllList,
@@ -42,4 +76,8 @@ export default {
   handlePrint,
   getNotPrintYet,
   deleteOneCertificate,
+  getListHistory,
+  PrintOneStudent,
+  fillterListData,
+  getListPrintByDate
 };

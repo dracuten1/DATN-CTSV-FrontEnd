@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -9,12 +9,20 @@ import {
   CardActions,
   CardContent,
   Button,
-  Divider
+  Divider,
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText
 } from '@material-ui/core';
+import moment from 'moment';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import { useDispatch, useSelector } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
-import icons from '../../../../shared/icons';
+import icons from 'shared/icons';
+import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -37,22 +45,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
+let valueCase = null;
+let updateBegin = 0;
+let isPrint = false;
 const PrintList = props => {
-
   const { className, ...rest } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(DRLActions.getNotPrintYet());
-  });
+  const DRLState = useSelector(state => state.DRLState);
 
-  const dataPrint = useSelector(state => state.DRLState.dataPrint);
-  logger.info("dataPrint: ", dataPrint);
+  const {
+    dataPrint,
+    listLink,
+    dataHistory,
+    isPrintList,
+    isHistoryList
+  } = DRLState;
+
+  logger.info('history', dataHistory);
+  logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
+  const [notice, setNotice] = React.useState(false);
+
   const [state, setState] = useState({
-    data: dataPrint,
+    data: isPrintList ? dataPrint : dataHistory,
     columns: [
       {
         title: 'Đã In',
@@ -77,13 +94,22 @@ const PrintList = props => {
         title: 'Trường hợp',
         field: 'case',
         lookup: {
-          'HK': 'Năm học-Học kỳ',
-          "NH": 'Năm Học',
-          "All": 'Tất cả',
-          "TK": 'Toàn Khoá'
+          HK: 'Năm học-Học kỳ',
+          NH: 'Năm Học',
+          All: 'Tất cả',
+          TK: 'Toàn Khoá'
         },
         filterCellStyle: {
           paddingTop: 1
+        },
+        customFilterAndSearch: (term, rowData) => {
+          if (valueCase !== term) {
+            valueCase = term;
+          }
+          if (term.length !== 0) {
+            return term == rowData.case;
+          }
+          return rowData;
         }
       },
       {
@@ -96,14 +122,57 @@ const PrintList = props => {
     ]
   });
 
+  if (updateBegin === 0) {
+    dispatch(DRLActions.getNotPrintYet());
+    dispatch(DRLActions.getListPrintByDate(moment(new Date()).format("x"), moment(new Date()).format("x")));
+    updateBegin += 1;
+  }
+
+  if (dataPrint.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataPrint });
+    updateBegin += 1;
+  }
+
+  if (isPrint) {
+    setState({ ...state, data: dataPrint });
+    isPrint = !isPrint;
+  }
+
+  if (isHistoryList && state.data.length !== dataHistory.length) {
+    setState({ ...state, data: dataHistory });
+  }
+
+  const reparseCase = tmpcase => {
+    switch (tmpcase) {
+      case CaseEnum.hk:
+        return 'HK';
+      case CaseEnum.nh:
+        return 'NH';
+      case CaseEnum.tc:
+        return 'All';
+      case CaseEnum.tk:
+        return 'TK';
+      default:
+        return 'All';
+    }
+  };
+
   const handleAdd = newData => {
+    setOpen(false);
     setState(prevState => {
       const data = [...prevState.data];
+      logger.info('HOT FIX: ', data);
+      logger.info('HOT FIX: ', newData);
+      newData.stt = data.length + 1;
+      newData.date = moment(new Date()).format('DD/MM/YYYY');
+      newData.case = reparseCase(newData.case);
+
       data.push(newData);
       return { ...prevState, data };
     });
-    setOpen(false);
   };
+
+  logger.info('dataTable: ', state.data);
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -115,17 +184,34 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH IN</b>
+                  {isPrintList ? (
+                    <b>
+                      DANH SÁCH IN TRONG NGÀY{' '}
+                      {moment(new Date()).format('DD/MM/YYYY')}
+                    </b>
+                  ) : (
+                    <b>LỊCH SỬ HOẠT ĐỘNG</b>
+                  )}
                 </div>
               }
               columns={state.columns}
               data={state.data}
-              actions={[
-                {
-                  icon: icons.Print,
-                  tooltip: 'Print'
-                }
-              ]}
+              actions={
+                isPrintList
+                  ? [
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print',
+                        onClick: (event, rowData) => {
+                          dispatch(
+                            DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
+                          );
+                          isPrint = !isPrint;
+                        }
+                      }
+                    ]
+                  : []
+              }
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -137,99 +223,136 @@ const PrintList = props => {
                 // exportButton: true,
                 filtering: true
               }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      logger.info("Olddata: ", oldData);
-                      const { pk, sk } = oldData;
-                      dispatch(DRLActions.deleteOneCertificate(pk, sk));
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
+              editable={
+                isPrintList
+                  ? {
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            logger.info('Olddata: ', oldData);
+                            const { pk, sk } = oldData;
+                            dispatch(DRLActions.deleteOneCertificate(pk, sk));
+                            resolve();
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+                  : {}
+              }
             />
           </div>
         </PerfectScrollbar>
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(DRLActions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Xem toàn bộ
-        </Button>
-        <Button
-          onClick={() => {
-            dispatch(DRLActions.handlePrintList());
-            dispatch(DRLActions.getNotPrintYet());
-          }}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Danh sách in
-        </Button>
-
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm sinh viên in
-        </Button>
-        <Button
-          onClick={() => dispatch(DRLActions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(DRLActions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
-        <Button
-          onClick={() => dispatch(DRLActions.handlePrint())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          In theo trường hợp
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <Button
+              onClick={() => dispatch(DRLActions.fillterListData('HK1','2018-2019','Giỏi'))}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Xem toàn bộ
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                // dispatch(DRLActions.getListHistory());
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Xem Lịch Sử
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                dispatch(DRLActions.getNotPrintYet());
+                updateBegin = 1;
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Danh sách in
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => setOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Thêm sinh viên in
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => dispatch(DRLActions.handleAllList())}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Import
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => dispatch(DRLActions.handleAllList())}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Export
+            </Button>
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                dispatch(DRLActions.handlePrint(valueCase));
+                isPrint = !isPrint;
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              In theo trường hợp
+            </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>
       </CardActions>
       <AddDialog
         open={open}
         handleClose={() => setOpen(false)}
         handleAdd={handleAdd}
       />
+      <Dialog
+        open={notice}
+        onClose={() => setNotice(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Không có gì để in
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNotice(false)} color="primary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
@@ -237,7 +360,5 @@ const PrintList = props => {
 PrintList.propTypes = {
   className: PropTypes.string
 };
-
-
 
 export default PrintList;

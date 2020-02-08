@@ -39,6 +39,7 @@ class AppLogger {
    * @description Initializing the configuration such as if appStage is production then all log method will be replaced with empty methods
    * except logToServer, which will be responsible for logging the important stuff on server
    */
+  
   initLogger() {
     /** Checking the appStage */
     if (this.TURN_DEBUG_ON && appStage !== 'production') {

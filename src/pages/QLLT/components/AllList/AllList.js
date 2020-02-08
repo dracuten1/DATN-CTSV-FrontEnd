@@ -4,7 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import MaterialTable from 'material-table';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
   CardActions,
@@ -42,71 +42,111 @@ const useStyles = makeStyles(theme => ({
 
 const AllList = props => {
   const { className, ...rest } = props;
+  const QLLTState = useSelector(state => state.QLLTState);
 
+  const { dataPrint, isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [fillter, setFillter] = React.useState({
-    type: 'HK1',
-    time: '2018-2019',
-    xeploai: 'Giỏi'
-  });
+
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: mockData,
-    columns: [
-      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-      { title: 'MSSV', field: 'mssv', filtering: false },
-      { title: 'Họ tên', field: 'name', filtering: false },
-      {
-        title: 'Năm học',
-        field: 'year',
-        lookup: {
-          1: '2016-2017',
-          2: '2017-2018',
-          3: '2018-2019',
-          4: '2019-2020'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        }
-      },
-      {
-        title: 'Học kỳ',
-        field: 'semester',
-        lookup: {
-          1: '1',
-          2: '2',
-          3: 'Cả năm'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        }
-      },
-      {
-        title: 'Điểm',
-        field: 'score'
-      },
-      {
-        title: 'Xếp loại',
-        field: 'grade',
-        lookup: {
-          1: 'Xuất sắc',
-          2: 'Giỏi',
-          3: 'Khá',
-          4: 'Trung bình',
-          5: 'Yếu',
-          6: 'Kém'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        }
-      },
-      {
-        title: 'Ghi chú',
-        field: 'note',
-        filtering: false
-      }
-    ]
+    data: isAlllist ? mockData.info : mockData.importInfo,
+    columns: isAlllist
+      ? [
+          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+          { title: 'MSSV', field: 'mssv', filtering: false },
+          { title: 'Họ tên', field: 'name', filtering: false },
+          {
+            title: 'Nội trú - KTX',
+            field: 'ktx'
+          },
+          {
+            title: 'Nội trú - Portal',
+            field: 'portal'
+          },
+          {
+            title: 'Xác nhận ngoại trú',
+            field: 'isConfirm',
+            type: 'boolean',
+            render: rowData => (
+              <div style={{ marginLeft: '10px' }}>
+                {rowData.isConfirm ? <icons.CheckBox /> : <icons.CheckBlank />}
+              </div>
+            )
+          },
+          {
+            title: 'Năm học',
+            field: 'year',
+            lookup: {
+              1: '2016-2017',
+              2: '2017-2018',
+              3: '2018-2019',
+              4: '2019-2020'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            }
+          },
+          {
+            title: 'Học kỳ',
+            field: 'semester',
+            lookup: {
+              1: '1',
+              2: '2'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            }
+          },
+          {
+            title: 'Người nhận',
+            field: 'receiver',
+            filtering: false
+          },
+          {
+            title: 'Ghi chú',
+            field: 'note',
+            filtering: false
+          }
+        ]
+      : [
+          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+          { title: 'MSSV', field: 'mssv', filtering: false },
+          { title: 'Họ tên', field: 'name', filtering: false },
+          {
+            title: 'KTX',
+            field: 'ktx'
+          },
+          {
+            title: 'Năm học',
+            field: 'year',
+            lookup: {
+              1: '2016-2017',
+              2: '2017-2018',
+              3: '2018-2019',
+              4: '2019-2020'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            }
+          },
+          {
+            title: 'Học kỳ',
+            field: 'semester',
+            lookup: {
+              1: '1',
+              2: '2'
+            },
+            filterCellStyle: {
+              paddingTop: 1
+            }
+          },
+          {
+            title: 'Ghi chú',
+            field: 'note',
+            filtering: false
+          }
+        ]
   });
 
   const handleAdd = newData => {
@@ -118,18 +158,11 @@ const AllList = props => {
     setOpen(false);
   };
 
-  const handleFillter = (prop, data) => {
-    setFillter({ ...fillter, [prop]: data });
-  };
-
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFillter={handleFillter} />
-        <ContainedButton
-          handleClick={() => dispatch(Actions.fillterListData(fillter))}
-          label="Lọc sinh viên"
-        />
+        <Filters />
+        <ContainedButton label="Lọc sinh viên" />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>
@@ -139,7 +172,11 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>THÔNG TIN SINH VIÊN</b>
+                  {isAlllist ? (
+                    <b>THÔNG TIN SINH VIÊN</b>
+                  ) : (
+                    <b>DANH SÁCH IMPORT</b>
+                  )}
                 </div>
               }
               columns={state.columns}
@@ -156,17 +193,6 @@ const AllList = props => {
                 filtering: true
               }}
               editable={{
-                onRowAdd: newData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.push(newData);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
                     setTimeout(() => {
@@ -199,25 +225,12 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          style={{ marginLeft: '8px' }}
-          onClick={() => {
-            dispatch(Actions.getListHistory());
-          }}
+          onClick={() => dispatch(Actions.handleAllList())}
           variant="contained"
           color="primary"
           size="small"
         >
-          Xem Lịch Sử
-        </Button>
-        <Button
-          onClick={() => {
-            dispatch(Actions.getNotPrintYet());
-          }}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Danh sách in
+          Xem toàn bộ
         </Button>
         <Button
           onClick={() => setOpen(true)}

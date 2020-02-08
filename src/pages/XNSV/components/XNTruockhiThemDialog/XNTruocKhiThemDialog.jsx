@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,6 +9,7 @@ import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -19,10 +21,9 @@ import {
   KeyboardDatePicker
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import TextField from 'shared/components/textfield/TextField';
-
-// import { useDispatch } from 'react-redux';
-// import Actions from '../../../../reduxs/reducers/DRL/action';
+import { logger } from 'core/services/Apploger';
+import { valueOrEmpty } from 'core/ultis/stringUtil';
+import * as XNSVHandler from 'handlers/XNSVHandler';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -43,8 +44,8 @@ const useStyles = makeStyles(theme => ({
 
 const date = new Date();
 
-const tempValues = {
-  stt: 3,
+const defaultValue = {
+  stt: null,
   name: '',
   mssv: '',
   city: '',
@@ -52,23 +53,90 @@ const tempValues = {
   ward: '',
   address: '',
   language: '',
-  type: '',
   status: '',
   reason: '',
+  case: null,
   semester: null,
-  year: '',
+  year: null,
   isPrint: false,
+  note: '',
+  studingBeginDate: moment(date).format('DD/MM/YYYY'),
+  studingEndDate: moment(date).format('DD/MM/YYYY'),
+  expectedPublicationDate: moment(date).format('DD/MM/YYYY'),
   date: moment(date).format('DD/MM/YYYY')
 };
 
 const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
-  // const dispatch = useDispatch();
 
   const { open, handleClose, handleAdd } = props;
 
   const [isOpen, setIsOpen] = React.useState(false);
-  const [values, setValues] = React.useState(tempValues);
+  const [values, setValues] = React.useState(defaultValue);
+
+  const [newCertificate, setCertificate] = React.useState({});
+
+  const fetchCertificate = (prop) => event => {
+    let tmp = { ...values };
+    tmp[prop] = event.target.value;
+    let Data;
+    logger.info("FECTCH DATA:: ", tmp);
+    switch (tmp.case) {
+      case 'Bảo lưu':
+        Data = {
+          HocKy: `${tmp.semester}`,
+          NamHoc: `${tmp.year}`,
+          NgonNgu: `${tmp.language}`
+        }
+        break;
+      case 'Đang học':
+        Data = {
+          NgonNgu: `${tmp.language}`,
+
+        }
+        break;
+      case 'Chờ xét hoàn tất chương trình':
+        Data = {
+          NgayCongBoKetQua: `${tmp.expectedPublicationDate}`,
+          NgonNgu: `${tmp.language}`
+        }
+        break;
+      case 'Hoàn tất chương trình':
+        Data = {
+          GhiChu: `${tmp.note}`,
+          NgonNgu: `${tmp.language}`
+        }
+        break;
+      case 'Thời gian học':
+        Data = {
+          NamKetThuc: `${tmp.studingEndDate}`,
+          NgonNgu: `${tmp.language}`,
+        }
+        break;
+      default:
+        break;
+    }
+
+    const tmpCertificate = {
+      Data,
+      LoaiGiayXN: tmp.case,
+      LyDoXN: tmp.reason,
+      ThoiGian: tmp.date,
+      ThongTinSinhVien: {
+        DiaChiThuongTru: {
+          PhuongXa: tmp.ward,
+          QuanHuyen: tmp.district,
+          SoNha: tmp.address,
+          TinhTP: tmp.city,
+        },
+        MSSV: tmp.mssv,
+        Ten: tmp.name,
+      }
+    }
+    logger.info("Fetch: ", tmpCertificate);
+
+    setCertificate(tmpCertificate);
+  }
 
   const dataLXNTV = [
     'Bảo lưu',
@@ -76,11 +144,16 @@ const XNTruocKhiThemDialog = props => {
     'Chờ xét hoàn tất chương trình',
     'Chờ xét tốt nghiệp',
     'Hoàn tất chương trình',
-    'Xác nhận thời gian học',
+    'Thời gian học',
     'Giới thiệu',
     'Vay vốn'
   ];
-  const dataLXNTA = ['Đang học', 'Bảo lưu', 'Xác nhận thời gian học', 'Hoàn tất chương trình'];
+  const dataLXNTA = [
+    'Đang học',
+    'Bảo lưu',
+    'Xác nhận thời gian học',
+    'Hoàn tất chương trình'
+  ];
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -90,7 +163,7 @@ const XNTruocKhiThemDialog = props => {
   const drawData = data => {
     return data.map((val, ind) => {
       return (
-        <MenuItem key={ind} value={val} >
+        <MenuItem key={ind} value={val}>
           {val}
         </MenuItem>
       );
@@ -98,87 +171,148 @@ const XNTruocKhiThemDialog = props => {
   };
 
   const closeDialog = () => {
-    setValues(tempValues);
+    setValues(defaultValue);
     setIsOpen(false);
     handleClose();
   };
 
-  const addData = () => {
-    handleAdd(values);
+  const addData = async () => {
+    const res = await XNSVHandler.AddCertificate(newCertificate);
+    if (res.statusCode === 200){
+      handleAdd(values);
+    } else {
+      // TO DO: SHOW ERROR
+    }
   };
 
   const info = [
     {
-      label: "MSSV",
-      defaultValue: "1612102",
-      state: "mssv",
+      label: 'MSSV',
+      value: values.mssv,
+      state: 'mssv'
     },
     {
-      label: "Họ tên",
-      defaultValue: "Nguyen Van A",
-      state: "name",
+      label: 'Họ tên',
+      value: values.name,
+      state: 'name'
     },
-    "devider",
+    'devider',
     {
-      label: "Tỉnh/Thành phố",
-      defaultValue: "Hồ Chí Minh",
-      state: "city",
-    },
-    {
-      label: "Quận (huyện)",
-      defaultValue: "Nhà Bè",
-      state: "district",
+      label: 'Tỉnh/Thành phố',
+      value: values.city,
+      state: 'city'
     },
     {
-      label: "Phường (xã)",
-      defaultValue: "Phước Kiển",
-      state: "ward",
+      label: 'Quận (huyện)',
+      value: values.district,
+      state: 'district'
     },
     {
-      label: "Địa chỉ",
-      defaultValue: "336/1 Phạm Hữu Lầu",
-      state: "address",
-
+      label: 'Phường (xã)',
+      value: values.ward,
+      state: 'ward'
+    },
+    {
+      label: 'Địa chỉ',
+      value: values.address,
+      state: 'address'
     }
   ];
 
+  const findStudentInfoById = async event => {
+    const id = event.target.value;
+
+    const data = await XNSVHandler.FindStudentInfoById(id);
+
+    const resStudentInfo = data.Items[0];
+
+    let { DiaChiThuongTru } = resStudentInfo;
+    if (!DiaChiThuongTru) {
+      DiaChiThuongTru = {
+        TinhTP: undefined,
+        SoNha: undefined,
+        QuanHuyen: undefined,
+        PhuongXa: undefined,
+      }
+    }
+
+    const studentInfo = {
+      name: valueOrEmpty(resStudentInfo.HoVaTen),
+      mssv: valueOrEmpty(resStudentInfo.MSSV),
+      city: valueOrEmpty(DiaChiThuongTru.TinhTP),
+      address: valueOrEmpty(DiaChiThuongTru.SoNha),
+      district: valueOrEmpty(DiaChiThuongTru.QuanHuyen),
+      ward: valueOrEmpty(DiaChiThuongTru.PhuongXa)
+    };
+
+    logger.info("findStudentInfoById: ", studentInfo);
+    setValues({ ...values, ...studentInfo });
+  };
+
   return (
     <div>
-      <Dialog
-        open={open}
-        // onClose={handleClose()}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>
         <DialogContent className={classes.container}>
-          {
-            info.map(item => {
-              if (item === "devider") {
-                return (<Divider className={classes.divider} />)
-              }
+          {info.map(item => {
+            if (item === 'devider') {
+              return <Divider className={classes.divider} />;
+            }
+            if (item.label === 'MSSV') {
               return (
+                <TextField
+                  className={classes.textField}
+                  label="MSSV"
+                  value={values.mssv}
+                  onChange={event => {
+                    handleChange('mssv')(event);
+                    // fetchCertificate();
+                  }}
+                  onBlur={findStudentInfoById}
+                  margin="normal"
+                />
+              );
+            }
+            if (item.label === 'Họ tên') {
+              return (
+                <TextField
+                  className={classes.textField}
+                  label="Họ tên"
+                  value={values.name}
+                  onChange={handleChange('name')}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true
+                  }}
+                />
+              );
+            }
+            return (
               <TextField
+                className={classes.textField}
                 label={item.label}
-                defaultValue={item.defaultValue}
+                value={item.value}
                 onBlur={handleChange(item.state)}
                 margin="normal"
-
               />
-              );
-            })
-          }
+            );
+          })}
           <Divider className={classes.divider} />
           <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">
               Ngôn ngữ
             </InputLabel>
             <Select
-              variant="outlined"
+              // variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('language')}
+              value={values.language}
+              onChange={event => {
+                handleChange('language')(event)
+                // fetchCertificate();
+              }}
             >
               <MenuItem value="Tiếng Việt">Tiếng Việt</MenuItem>
               <MenuItem value="Tiếng Anh">Tiếng Anh</MenuItem>
@@ -191,10 +325,15 @@ const XNTruocKhiThemDialog = props => {
                 Loại xác nhận
               </InputLabel>
               <Select
-                variant="outlined"
+                // variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
-                onChange={handleChange('type')}
+                value={values.case}
+                onChange={event => {
+                  handleChange('case')(event);
+                  fetchCertificate();
+
+                }}
               >
                 {drawData(dataLXNTV)}
               </Select>
@@ -206,44 +345,52 @@ const XNTruocKhiThemDialog = props => {
                 Loại xác nhận
               </InputLabel>
               <Select
-                variant="outlined"
+                // variant="outlined"
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
-                onChange={handleChange('type')}
+                value={values.case}
+                onChange={event => {
+                  handleChange('case')(event);
+                  fetchCertificate();
+                }}
               >
                 {drawData(dataLXNTA)}
               </Select>
             </FormControl>
           )}
-          {values.type === 'Vay vốn' && (
+          {values.case === 'Vay vốn' && (
             <VayVonDialog
               handleClose={() => {
                 setIsOpen(false);
-                setValues({ ...values, type: '' });
+                setValues({ ...values, case: '' });
               }}
               open={isOpen}
             />
           )}
-          {values.type === 'Giới thiệu' && (
+          {values.case === 'Giới thiệu' && (
             <ThucTapDialog
               handleClose={() => {
                 setIsOpen(false);
-                setValues({ ...values, type: '' });
+                setValues({ ...values, case: '' });
               }}
               open={isOpen}
             />
           )}
-          {values.type === 'Bảo lưu' && (
+          {values.case === 'Bảo lưu' && (
             <div className={classes.container}>
               <FormControl className={classes.textField} margin="normal">
-                <InputLabel id="demo-simple-select-helper-label" >
+                <InputLabel id="demo-simple-select-helper-label">
                   Năm học
                 </InputLabel>
                 <Select
-                  variant="outlined"
+                  // variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  onChange={handleChange('year')}
+                  value={values.year}
+                  onChange={event => {
+                    handleChange('year')(event);
+                    fetchCertificate();
+                  }}
                 >
                   <MenuItem selected value={3}>
                     2019-2020
@@ -257,10 +404,14 @@ const XNTruocKhiThemDialog = props => {
                   Học kỳ
                 </InputLabel>
                 <Select
-                  variant="outlined"
+                  // variant="outlined"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  onChange={handleChange('semester')}
+                  value={values.semester}
+                  onChange={event => {
+                    handleChange('semester')(event);
+                    fetchCertificate();
+                  }}
                 >
                   <MenuItem value={1}>Học kỳ 1</MenuItem>
                   <MenuItem value={2}>Học kỳ 2</MenuItem>
@@ -268,7 +419,7 @@ const XNTruocKhiThemDialog = props => {
               </FormControl>
             </div>
           )}
-          {values.type === 'Chờ xét TN' && (
+          {values.case === 'Chờ xét tốt nghiệp' && (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 margin="normal"
@@ -277,14 +428,17 @@ const XNTruocKhiThemDialog = props => {
                 format="dd/MM/yyyy"
                 value={date}
                 style={{ width: '400px', marginLeft: '8px' }}
-                onChange={handleChange('date')}
+                onChange={event => {
+                  handleChange('expectedPublicationDate')(event);
+                  fetchCertificate();
+                }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
                 }}
               />
             </MuiPickersUtilsProvider>
           )}
-          {values.type === 'Chờ xét HTCT' && (
+          {values.case === 'Chờ xét hoàn tất chương trình' && (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
                 margin="normal"
@@ -293,36 +447,63 @@ const XNTruocKhiThemDialog = props => {
                 format="dd/MM/yyyy"
                 value={date}
                 style={{ width: '400px', marginLeft: '8px' }}
-                onChange={handleChange('date')}
+                onChange={event => {
+                  handleChange('expectedPublicationDate')(event);
+                  // fetchCertificate();
+                }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
                 }}
               />
             </MuiPickersUtilsProvider>
           )}
-          {values.type === 'Đang học' && (
+          <Divider className={classes.divider} />
+          <FormControl className={classes.textField} margin="normal">
+            <InputLabel id="demo-simple-select-helper-label">
+              Tình trạng
+            </InputLabel>
+            <Select
+              // variant="outlined"
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={values.status}
+              onChange={event => {
+                handleChange('status')(event)
+                fetchCertificate();
+              }}
+            >
+              {drawData(dataLXNTA)}
+            </Select>
+          </FormControl>
+          {values.status === 'Đang học' && (
             <div className={classes.container}>
               <Divider className={classes.divider} />
-
               <TextareaAutosize
                 style={{ width: '400px', marginLeft: '8px' }}
                 rowsMax={3}
                 placeholder="Ghi chú"
+                onBlur={event => {
+                  handleChange('note')(event)
+                  fetchCertificate();
+                }}
               />
             </div>
           )}
-          {values.type === 'Hoàn tất CT' && (
+          {values.status === 'Hoàn tất chương trình' && (
             <div className={classes.container}>
               <Divider className={classes.divider} />
-
               <TextareaAutosize
                 style={{ width: '400px', marginLeft: '8px' }}
                 rowsMax={3}
                 placeholder="Ghi chú"
+                onBlur={event => {
+                  handleChange('note')(event)
+                  fetchCertificate();
+                }}
               />
             </div>
           )}
-          {values.type === 'Xác nhận TGH' && (
+          {values.status === 'Xác nhận thời gian học' && (
             <div className={classes.container}>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -332,7 +513,10 @@ const XNTruocKhiThemDialog = props => {
                   format="dd/MM/yyyy"
                   value={date}
                   style={{ width: '400px', marginLeft: '8px' }}
-                  onChange={handleChange('date')}
+                  onChange={event => {
+                    handleChange('studingBeginDate')(event);
+                    fetchCertificate();
+                  }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date'
                   }}
@@ -346,7 +530,10 @@ const XNTruocKhiThemDialog = props => {
                   format="dd/MM/yyyy"
                   value={date}
                   style={{ width: '400px', marginLeft: '8px' }}
-                  onChange={handleChange('date')}
+                  onChange={event => {
+                    handleChange('studingEndDate')(event);
+                    fetchCertificate();
+                  }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date'
                   }}
@@ -354,29 +541,19 @@ const XNTruocKhiThemDialog = props => {
               </MuiPickersUtilsProvider>
             </div>
           )}
-          <Divider className={classes.divider} />
-          <FormControl className={classes.textField} margin="normal">
-            <InputLabel id="demo-simple-select-helper-label">
-              Tình trạng
-            </InputLabel>
-            <Select
-              variant="outlined"
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              onChange={handleChange('status')}
-            >
-              {drawData(dataLXNTA)}
-            </Select>
-          </FormControl>
           <FormControl className={classes.textField} margin="normal">
             <InputLabel id="demo-simple-select-helper-label">Lý do</InputLabel>
             <Select
-              variant="outlined"
+              // variant="outlined"
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('reason')}
+              value={values.reason}
+              onChange={event => {
+                handleChange('reason')(event);
+                fetchCertificate('reason')(event);
+              }}
             >
-              {drawData(dataLXNTA)}
+              {drawData(dataReason)}
             </Select>
           </FormControl>
 
@@ -395,11 +572,41 @@ const XNTruocKhiThemDialog = props => {
           <Button onClick={closeDialog} color="primary">
             Huỷ
           </Button>
-          <Button onClick={addData} color="primary">Thêm</Button>
+          <Button onClick={addData} color="primary">
+            Thêm
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 };
+
+const dataReason = [
+  'Dạy thêm',
+  'Du học',
+  'Hỗ trợ học phí',
+  'Hoãn nghĩa vụ quân sự',
+  'Học nghiệp vụ sư phạm',
+  'Học ngiệp vụ quản lý nhà nước',
+  'Học tại chức',
+  'Học thêm',
+  'Khai báo thuế',
+  'Lắp đặt ADSL',
+  'Mua vé tàu tết',
+  'Mượn sách thư viện',
+  'Nhận chứng chỉ quốc phòng',
+  'Nhận sim khuyến mãi',
+  'Nhận trợ cấp',
+  'Sổ ưu đãi',
+  'Tạm trú',
+  'Tạm trú KTX',
+  'Thi anh văn',
+  'Vào phòng thi',
+  'Xin cấp visa',
+  'Xin học bổng',
+  'Xin số liệu',
+  'Xin thực tập',
+  'Xin việc làm'
+];
 
 export default XNTruocKhiThemDialog;

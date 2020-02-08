@@ -6,7 +6,6 @@ import Export from 'shared/components/Export/Export';
 import Import from 'shared/components/Import/Import';
 import Print from 'shared/components/Print/Print';
 import Title from 'shared/components/Title/Title';
-import AllList from 'pages/XNSV/components/AllList/AllList';
 import PrintList from 'pages/XNSV/components/PrintList/PrintList';
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +35,7 @@ const StudentCertification = () => {
           <Print many={20} />
         </Grid>
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          {isPrintList ? <PrintList /> : <AllList />}
+          <PrintList />
         </Grid>
       </Grid>
     </div>
