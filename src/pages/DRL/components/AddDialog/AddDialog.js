@@ -342,6 +342,7 @@ const AddDialog = props => {
                   handleChange('year')(event);
                   fetchCertificate('year')(event);
                 }}
+                defaultValue={4}
               >
                 <MenuItem value={4}>2019-2020</MenuItem>
                 <MenuItem value={3}>2018-2019</MenuItem>
@@ -363,6 +364,7 @@ const AddDialog = props => {
                     handleChange('year')(event);
                     fetchCertificate('year')(event);
                   }}
+                  defaultValue={4}
                 >
                   <MenuItem value={4}>2019-2020</MenuItem>
                   <MenuItem value={3}>2018-2019</MenuItem>
@@ -381,6 +383,7 @@ const AddDialog = props => {
                     handleChange('semester')(event);
                     fetchCertificate('semester')(event);
                   }}
+                  defaultValue={SemesterEnum.hk1}
                 >
                   {drawMenuItem(SemesterEnum)}
                 </Select>
