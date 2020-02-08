@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-restricted-syntax */
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -16,6 +18,7 @@ import * as AdminHandler from 'handlers/AdminHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
 import { LinearProgress } from '@material-ui/core';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import { CaseEnum, SemesterEnum } from './DRLEnum';
 
 const useStyles = makeStyles(theme => ({
@@ -86,7 +89,8 @@ const AddDialog = props => {
   const [signer, setSigner] = React.useState({});
   const [signerObj, setSignerObj] = React.useState({});
   const [progress, setProgress] = React.useState(true);
-
+  const [disableAdd, setDisableAdd] = React.useState(true);
+  const [missingDataError, setMissingDataError] = React.useState(false);
 
   const getSignerEnum = async () => {
 
@@ -147,6 +151,14 @@ const AddDialog = props => {
 
     const LoaiXN = addCase;
     const NguoiKi = parseSigner(tmp.signer);
+    if (prop === "case" || prop === "year" || prop === "semester") {
+
+      if (isEmptyObj(Data)) {
+        setMissingDataError(true);
+      } else {
+        setMissingDataError(false);
+      }
+    }
 
     const tmpCertificate = {
       Data,
@@ -156,23 +168,55 @@ const AddDialog = props => {
     };
 
     logger.info('Fetch certificate: nguoiki: ', tmp.signer);
-    logger.info('Fetch certificate: ', tmpCertificate);
+    logger.info('Fetch certificate: validate', validateCertificate());
 
     setCertificate(tmpCertificate);
+    setDisableAdd(!validateCertificate(tmpCertificate));
+  };
+
+  function isEmptyObj(obj) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
+
+  const isEmpty = (data) => {
+    logger.info("Print list:: validate certificate: data:1 ", data, isEmptyObj(data));
+    return (data === undefined || data === null || isEmptyObj(data) || data === "");
+  };
+
+  const validateCertificate = data => {
+    logger.info("Print list:: validate certificate: data: ", data);
+    if (isEmpty(data)) return false;
+    if (isEmpty(data.Data)) return false;
+    if (isEmpty(data.SinhVien)) return false;
+    if (isEmpty(data.LoaiXN)) return false;
+    if (isEmpty(data.NguoiKi)) return false;
+
+    return true;
   };
 
   const addData = async () => {
     setProgress(false);
-    const res = await DRLHandler.AddCertificate(newCertificate);
-    logger.info('adding cerificate: ', newCertificate);
-    logger.info('response adding: ', res);
-    const { Items } = res;
-    const data = {
-      ...values,
-      pk: Items[0].PK,
-      sk: Items[0].SK
-    };
-    handleAdd(data);
+    const valid = validateCertificate(newCertificate);
+    if (valid) {
+      const res = await DRLHandler.AddCertificate(newCertificate);
+      logger.info('adding cerificate: ', newCertificate);
+      logger.info('response adding: ', res);
+      const { Items } = res;
+      const data = {
+        ...values,
+        pk: Items[0].PK,
+        sk: Items[0].SK
+      };
+      handleAdd(data, valid);
+    } else {
+      handleAdd(undefined, valid);
+    }
+
+    setProgress(true);
   };
 
   const findStudentInfoById = async event => {
@@ -209,7 +253,9 @@ const AddDialog = props => {
   return (
     <div>
       <Dialog open={open} aria-labelledby="form-dialog-title">
-        <LinearProgress color="secondary" />
+        <div style={{ height: 10 }}>
+          <LinearProgress color="secondary" hidden={progress} />
+        </div>
         <DialogTitle id="form-dialog-title">
           <b>Thêm Vào Danh Sách In</b>
         </DialogTitle>
@@ -341,12 +387,13 @@ const AddDialog = props => {
               </FormControl>
             </>
           )}
+          <div style={{ display: missingDataError ? "block" : "none", color: "red", marginLeft: 10 }}>Không có dữ liệu điểm rèn luyện!</div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Huỷ
           </Button>
-          <Button onClick={addData} color="primary">
+          <Button onClick={addData} color="primary" disabled={disableAdd}>
             Thêm
           </Button>
         </DialogActions>
