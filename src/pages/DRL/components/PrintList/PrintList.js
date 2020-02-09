@@ -76,7 +76,6 @@ const PrintList = props => {
     setImportOpen(false);
   };
   const handleImport = () => {
-
   };
 
   const [state, setState] = useState({
@@ -366,6 +365,7 @@ const PrintList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
+        importCase={"import-drl"}
       />
       <Dialog
         open={notice}
