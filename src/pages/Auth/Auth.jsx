@@ -15,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 
 import * as actions from 'reduxs/reducers/Authentication/action';
+import './Auth.css';
 
 class Auth extends Component {
 
