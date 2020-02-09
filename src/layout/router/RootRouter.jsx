@@ -3,7 +3,6 @@ import { Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import history from 'historyConfig';
 import themeUI from 'shared/styles/theme';
-import Auth from 'pages/Auth/Auth';
 import AuthV2 from 'pages/Auth/Auth.v2';
 import LeftPanel from 'layout/leftPanel/LeftPanel';
 import store from 'store';

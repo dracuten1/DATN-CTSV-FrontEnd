@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import Export from 'shared/components/Export/Export';
 import Import from 'shared/components/Import/Import';
@@ -17,8 +16,6 @@ const useStyles = makeStyles(theme => ({
 const StudentCertification = () => {
   const classes = useStyles();
   // const [open, setOpen] = React.useState(false);
-  const DRLState = useSelector(state => state.DRLState);
-  const { isPrintList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

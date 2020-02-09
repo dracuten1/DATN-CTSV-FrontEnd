@@ -5,7 +5,6 @@ import history from 'historyConfig';
 import themeUI from 'shared/styles/theme';
 import StudentCertification from 'pages/XNSV/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
-import Auth from 'pages/Auth/Auth';
 import Dashboard from 'pages/Dashboard/Dashboard';
 import store from 'store';
 

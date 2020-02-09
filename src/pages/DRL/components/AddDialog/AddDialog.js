@@ -18,7 +18,6 @@ import * as AdminHandler from 'handlers/AdminHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
 import { LinearProgress } from '@material-ui/core';
-import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import { CaseEnum, SemesterEnum } from './DRLEnum';
 
 const useStyles = makeStyles(theme => ({
