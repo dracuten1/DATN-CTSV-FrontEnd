@@ -24,6 +24,7 @@ import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
 import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -68,6 +69,15 @@ const PrintList = props => {
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState(false);
+
+  //Import props
+  const [importOpen, setImportOpen] = React.useState(false);
+  const closeImportDialog = () => {
+    setImportOpen(false);
+  };
+  const handleImport = () => {
+
+  };
 
   const [state, setState] = useState({
     data: isPrintList ? dataPrint : dataHistory,
@@ -310,7 +320,7 @@ const PrintList = props => {
             </Button>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(DRLActions.handleAllList())}
+              onClick={() => setImportOpen(true)}
               variant="contained"
               color="primary"
               size="small"
@@ -319,7 +329,6 @@ const PrintList = props => {
             </Button>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(DRLActions.handleAllList())}
               variant="contained"
               color="primary"
               size="small"
@@ -352,6 +361,11 @@ const PrintList = props => {
         open={open}
         handleClose={() => setOpen(false)}
         handleAdd={handleAdd}
+      />
+      <ImportDialog
+        open={importOpen}
+        handleClose={() => setImportOpen(false)}
+        handleImport={handleImport}
       />
       <Dialog
         open={notice}
