@@ -1,13 +1,13 @@
 import React from 'react';
 // import { connect } from 'react-redux';
-import LeftPanel from 'layout/leftPanel/LeftPanel';
+import RootRouter from 'layout/router/RootRouter';
 
 class App extends React.PureComponent {
 
     render() {
         return (
             <div >
-                <LeftPanel />
+                <RootRouter />
             </div>
         );
     }

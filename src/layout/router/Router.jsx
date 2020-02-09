@@ -15,9 +15,6 @@ class Routers extends React.PureComponent {
       <ThemeProvider theme={themeUI}>
         <Router history={history}>
           <Switch>
-            <Route exact path="/">
-              <Auth />
-            </Route>
             <Route exact path="/dashboard">
               <Dashboard />
             </Route>
