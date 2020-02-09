@@ -123,21 +123,23 @@ const AddDialog = props => {
     items.forEach(element => {
       const item = { ...element };
       delete item.Time;
+      //remove "DRL-"
+      const newTime = element.Time.replace("DRL-", "");
       switch (tmp.case) {
         case CaseEnum.nh:
-          if (element.Time.includes(tmp.year))
-            Data[element.Time] = { ...item };
+          if (newTime.includes(tmp.year))
+            Data[newTime] = { ...item };
           break;
         case CaseEnum.hk:
           const semester = parseSemester(tmp.semester);
           if (
-            element.Time.includes(semester) &&
-            element.Time.includes(tmp.year)
+            newTime.includes(semester) &&
+            newTime.includes(tmp.year)
           )
-            Data[element.Time] = { ...item };
+            Data[newTime] = { ...item };
           break;
         default:
-          Data[element.Time] = { ...item };
+          Data[newTime] = { ...item };
       }
     });
 

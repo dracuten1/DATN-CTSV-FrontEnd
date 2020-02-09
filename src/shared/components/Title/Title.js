@@ -45,7 +45,7 @@ const Title = props => {
                 href={url}
                 style={{ textDecoration: 'none', color: 'white' }}
               >
-                <b>{title}</b>
+                <b style={{ fontFamily: "none" }}>{title}</b>
               </Link>
             </Typography>
           </Grid>
