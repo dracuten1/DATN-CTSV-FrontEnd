@@ -160,6 +160,7 @@ class Auth extends Component {
         );
     };
 }
+//a..
 
 const mapStateToProps = state => {
     return {
