@@ -117,7 +117,7 @@ const PrintList = props => {
             valueCase = term;
           }
           if (term.length !== 0) {
-            return term === rowData.case;
+            return term == rowData.case;
           }
           return rowData;
         }

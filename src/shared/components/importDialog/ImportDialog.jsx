@@ -17,6 +17,7 @@ import { LinearProgress } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { withStyles } from '@material-ui/styles';
 import Axios from 'axios';
+import CustomizedSnackbars from '../snackBar/SnackBar';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -69,32 +70,51 @@ const ImportDialog = props => {
     const [file, setFile] = useState(undefined);
 
     const handleImport = async () => {
-        setImportDisable(true);
-        setHiddenProgress(false);
-        const response = await ImportHandler.GetUploadURL(importCase);
-        logger.info("ImportDialog:: response: ", response);
+        try {
+
+            setImportDisable(true);
+            setHiddenProgress(false);
+            const response = await ImportHandler.GetUploadURL(importCase);
+            logger.info("ImportDialog:: response: ", response);
 
 
-        const binary = atob(file.split(',')[1]);
-        const array = [];
-        for (let i = 0; i < binary.length; i++) {
-            array.push(binary.charCodeAt(i));
-        }
-        const blobData = new Blob([new Uint8Array(array)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const result = await fetch(response.uploadURL, {
-            method: 'PUT',
-            body: blobData
-        });
+            const binary = atob(file.split(',')[1]);
+            const array = [];
+            for (let i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
+            }
+            const blobData = new Blob([new Uint8Array(array)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const result = await fetch(response.uploadURL, {
+                method: 'PUT',
+                body: blobData
+            });
 
-        const res = await ImportHandler.GetImportDRLInfo(response.key);
-        logger.info("ImportDialog:: res: ", res);
+            const res = await ImportHandler.GetImportDRLInfo(response.key);
+            logger.info("ImportDialog:: res: ", res);
 
-        setMessage(res.message + "-" + res.nh + "-" + res.hk);
+            setMessage(res.message + "-" + res.nh + "-" + res.hk);
 
-        const res1 = await ImportHandler.ImportDRLInfo({ key: res.jsonKey, importType: 2 });
-        logger.info("ImportDialog:: res1: ", res1);
+            const res1 = await ImportHandler.ImportDRLInfo({
+                key: res.jsonKey,
+                importType: 2,
+                startStudentID: res.startStudentID,
+                endStudentID: res.endStudentID,
+                nh: res.nh,
+                hk: res.hk
+            });
+            logger.info("ImportDialog:: res1: ", res1);
 
 
+            const statusResponse = await ImportHandler.GetImportStatus();
+            logger.info("ImportDialog:: status: ", statusResponse);
+            setSnackBarValue(successSnackBar);
+            handleClose();
+
+        } catch (error) {
+            logger.info(error);
+            setSnackBarValue(errorSnackBar);
+            handleClose();
+        };
     };
 
     const onFileChange = (tfile) => {
@@ -107,6 +127,16 @@ const ImportDialog = props => {
             setImportDisable(true);
         }
 
+    };
+
+
+
+    const successSnackBar = { open: true, type: "success", message: "Import thành công!" };
+    const errorSnackBar = { open: true, type: "error", message: "Đã xảy ra lỗi, vui lòng kiểm tra lại!" };
+    const hiddenSnackBar = { open: false };
+    const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+    const handleSnackBarClose = (current) => (event) => {
+        setSnackBarValue({ ...current, ...hiddenSnackBar });
     };
 
     return (
@@ -138,11 +168,12 @@ const ImportDialog = props => {
                     <Button onClick={handleImport} color="primary" disabled={importDisable}>
                         Import
                     </Button>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={handleClose} color="primary" >
                         Đóng
                     </Button>
                 </DialogActions>
             </Dialog>
+            <CustomizedSnackbars value={snackBarValue} handleClose={handleSnackBarClose} />
         </div >
     );
 };
