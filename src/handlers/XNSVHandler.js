@@ -77,7 +77,7 @@ export const PrintByType = async (type) => {
 
 export const DeleteOneCertificate = async (pk, sk) => {
 
-  const url = `xnsv/delete-certificate`;
+  const url = `xnsv/certificate`;
 
   logger.info("XNSVhandler:: deleteOneCertificate: URL: ", url);
 

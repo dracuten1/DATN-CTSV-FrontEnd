@@ -360,10 +360,10 @@ const PrintList = props => {
               style={{ marginLeft: '8px' }}
               onClick={async () => {
                 if (valueCase !== null){
-                  const data = await DRLHandler.ExportToDocx(valueCase);
-                  console.log("printttt:", data);
+                  const data = await DRLHandler.ExportToDocx(valueCase[0]);
                   if (data.statusCode === 200) {
-                    dispatch(DRLActions.handlePrint(valueCase));
+                    console.log("printttt:", valueCase);
+                    dispatch(DRLActions.handlePrint(valueCase[0]));
                     setSnackBarValue(printSuccessSnackBar);
                   } else {
                     setSnackBarValue(errorSnackBar);

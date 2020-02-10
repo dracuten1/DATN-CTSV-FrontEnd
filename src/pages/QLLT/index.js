@@ -1,1 +1,1 @@
-export { default } from './DashboardDRL';
+export { default } from './DashboardQLLT';
