@@ -74,7 +74,7 @@ const PrintList = props => {
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: isPrintList ? dataPrint : dataHistory,
-    columns: isPrint
+    columns: isPrintList
       ? [
           {
             title: 'Đã In',
@@ -116,7 +116,7 @@ const PrintList = props => {
                 valueCase = term;
               }
               if (term.length !== 0) {
-                return term === rowData.case;
+                return term == rowData.case;
               }
               return rowData;
             }
@@ -284,7 +284,7 @@ const PrintList = props => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      {isPrint ? (
+      {isPrintList ? (
         <CardActions className={classes.actions}>
           <Filters onFillter={handleFillter} />
           <ContainedButton
@@ -303,7 +303,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  {isPrint ? (
+                  {isPrintList ? (
                     <b>
                       DANH SÁCH IN TRONG NGÀY{' '}
                       {moment(date).format('DD/MM/YYYY')}
@@ -311,9 +311,6 @@ const PrintList = props => {
                   ) : (
                     <b>LỊCH SỬ IN</b>
                   )}
-                  <b>
-                    DANH SÁCH IN TRONG NGÀY {moment(date).format('DD/MM/YYYY')}
-                  </b>
                 </div>
               }
               columns={state.columns}

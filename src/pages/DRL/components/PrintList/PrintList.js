@@ -19,6 +19,7 @@ import {
 import moment from 'moment';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import { useDispatch, useSelector } from 'react-redux';
+import * as DRLHandler from 'handlers/DRLHandler';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
@@ -108,7 +109,7 @@ const PrintList = props => {
             valueCase = term;
           }
           if (term.length !== 0) {
-            return term === rowData.case;
+            return term == rowData.case;
           }
           return rowData;
         }
@@ -125,7 +126,12 @@ const PrintList = props => {
 
   if (updateBegin === 0) {
     dispatch(DRLActions.getNotPrintYet());
-    dispatch(DRLActions.getListPrintByDate(moment(new Date()).format("x"), moment(new Date()).format("x")));
+    dispatch(
+      DRLActions.getListPrintByDate(
+        moment(new Date()).format('x'),
+        moment(new Date()).format('x')
+      )
+    );
     updateBegin += 1;
   }
 
@@ -158,8 +164,22 @@ const PrintList = props => {
     }
   };
 
-  const successSnackBar = { open: true, type: "success", message: "Thêm thành công!" };
-  const errorSnackBar = { open: true, type: "error", message: "Đã xảy ra lỗi, vui lòng kiểm tra lại!" };
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thêm thành công!'
+  };
+  const printSuccessSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Đã in thành công!'
+  };
+
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
 
@@ -181,10 +201,10 @@ const PrintList = props => {
     } else {
       setSnackBarValue(errorSnackBar);
       logger.info('HOT FIX: ', snackBarValue);
-    };
+    }
   };
 
-  const handleClose = (current) => (event) => {
+  const handleClose = current => event => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
@@ -207,8 +227,8 @@ const PrintList = props => {
                       {moment(new Date()).format('DD/MM/YYYY')}
                     </b>
                   ) : (
-                      <b>LỊCH SỬ HOẠT ĐỘNG</b>
-                    )}
+                    <b>LỊCH SỬ HOẠT ĐỘNG</b>
+                  )}
                 </div>
               }
               columns={state.columns}
@@ -216,17 +236,17 @@ const PrintList = props => {
               actions={
                 isPrintList
                   ? [
-                    {
-                      icon: icons.Print,
-                      tooltip: 'Print',
-                      onClick: (event, rowData) => {
-                        dispatch(
-                          DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
-                        );
-                        isPrint = !isPrint;
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print',
+                        onClick: (event, rowData) => {
+                          dispatch(
+                            DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
+                          );
+                          isPrint = !isPrint;
+                        }
                       }
-                    }
-                  ]
+                    ]
                   : []
               }
               options={{
@@ -243,21 +263,21 @@ const PrintList = props => {
               editable={
                 isPrintList
                   ? {
-                    onRowDelete: oldData =>
-                      new Promise(resolve => {
-                        setTimeout(() => {
-                          logger.info('Olddata: ', oldData);
-                          const { pk, sk } = oldData;
-                          dispatch(DRLActions.deleteOneCertificate(pk, sk));
-                          resolve();
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data.splice(data.indexOf(oldData), 1);
-                            return { ...prevState, data };
-                          });
-                        }, 600);
-                      })
-                  }
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            logger.info('Olddata: ', oldData);
+                            const { pk, sk } = oldData;
+                            dispatch(DRLActions.deleteOneCertificate(pk, sk));
+                            resolve();
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
                   : {}
               }
             />
@@ -269,7 +289,9 @@ const PrintList = props => {
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
-              onClick={() => dispatch(DRLActions.fillterListData('HK1', '2018-2019', 'Giỏi'))}
+              onClick={() =>
+                dispatch(DRLActions.fillterListData('HK1', '2018-2019', 'Giỏi'))
+              }
               variant="contained"
               color="primary"
               size="small"
@@ -328,9 +350,22 @@ const PrintList = props => {
             </Button>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => {
-                dispatch(DRLActions.handlePrint(valueCase));
+              onClick={async () => {
+                if (valueCase !== null){
+                  const data = await DRLHandler.ExportToDocx(valueCase);
+                  console.log("printttt:", data);
+                  if (data.statusCode === 200) {
+                    dispatch(DRLActions.handlePrint(valueCase));
+                    setSnackBarValue(printSuccessSnackBar);
+                  } else {
+                    setSnackBarValue(errorSnackBar);
+                  }
+                }
+                else {
+                  setSnackBarValue(errorSnackBar);
+                }
                 isPrint = !isPrint;
+                valueCase = null;
               }}
               variant="contained"
               color="primary"
@@ -344,8 +379,8 @@ const PrintList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-              ''
-            )}
+            ''
+          )}
         </Grid>
       </CardActions>
       <AddDialog
@@ -353,23 +388,6 @@ const PrintList = props => {
         handleClose={() => setOpen(false)}
         handleAdd={handleAdd}
       />
-      <Dialog
-        open={notice}
-        onClose={() => setNotice(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Không có gì để in
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNotice(false)} color="primary" autoFocus>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Card>
   );
 };
