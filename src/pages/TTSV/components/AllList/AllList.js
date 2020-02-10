@@ -16,6 +16,7 @@ import {
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import mockData from './data';
+import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/DRL/action';
 import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
@@ -47,106 +48,38 @@ const AllList = props => {
   const { dataPrint, isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
+  let arrColumns = [];
+  switch (isAlllist) {
+    case 1://SV nuoc ngoai
+      arrColumns = Columns.SVNN;
+      break;
+    case 2://DTB
+      arrColumns = Columns.DTB;
+      break;
+    case 3://Danh sach tot nghiep
+      arrColumns = Columns.DSTN;
+      break;
+    case 4://Hoan thanh tin chi
+      arrColumns = Columns.HTCT;
+      break;
+    case 5://Dang hoc
+      arrColumns = Columns.HTCT;
+      break;
+    case 6://Canh cao hoc vu
+      arrColumns = Columns.CCHV;
+      break;
+    case 7://Bi thoi hoc
+      arrColumns = Columns.CCHV;
+      break;
+    default://Dang ky hoc phan
+      arrColumns = Columns.DKHP;
+      break;
+  }
 
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: isAlllist ? mockData.info : mockData.importInfo,
-    columns: isAlllist
-      ? [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
-          {
-            title: 'Nội trú - KTX',
-            field: 'ktx'
-          },
-          {
-            title: 'Nội trú - Portal',
-            field: 'portal'
-          },
-          {
-            title: 'Xác nhận ngoại trú',
-            field: 'isConfirm',
-            type: 'boolean',
-            render: rowData => (
-              <div style={{ marginLeft: '10px' }}>
-                {rowData.isConfirm ? <icons.CheckBox /> : <icons.CheckBlank />}
-              </div>
-            )
-          },
-          {
-            title: 'Năm học',
-            field: 'year',
-            lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'semester',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Người nhận',
-            field: 'receiver',
-            filtering: false
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note',
-            filtering: false
-          }
-        ]
-      : [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
-          {
-            title: 'KTX',
-            field: 'ktx'
-          },
-          {
-            title: 'Năm học',
-            field: 'year',
-            lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'semester',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note',
-            filtering: false
-          }
-        ]
+    columns: arrColumns
   });
 
   const handleAdd = newData => {

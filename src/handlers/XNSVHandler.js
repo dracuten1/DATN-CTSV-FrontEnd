@@ -68,7 +68,7 @@ export const GetListCertificate = async (status) => {
 
 export const PrintByType = async (type) => {
 
-  const url = `xnsv/printfByType?type=${type}`;
+  const url = `xnsv/printf?type=${type}`;
 
   const reponse = await HttpClient.sendPatch(url);
 

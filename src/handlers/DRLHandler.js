@@ -13,18 +13,18 @@ export const FindStudentInfoById = async id => {
 export const GetDRLByIdAndType = async (id, type) => {
   const url = `drl/mssv-type?mssv=${id}&type=${type}`;
 
-  const reponse = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGet(url);
 
-  return reponse;
+  return response;
 };
 
 export const FillterListData = async fillter => {
   const {type, time, xeploai} = fillter;
   const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
 
-  const reponse = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGet(url);
 
-  return reponse;
+  return response;
 };
 
 export const AddCertificate = async value => {
@@ -65,30 +65,31 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   const response = await HttpClient.sendDelete(url, { data: {pk, sk} });
 
-  logger.info('DRLhandler:: deleteOneCertificate: reponse: ', response);
+  logger.info('DRLhandler:: deleteOneCertificate: response: ', response);
 };
 
 export const ExportToDocx = async type => {
   const url = `drl/printf?type=${type}&status=ChuaIn`;
 
-  const reponse = await HttpClient.sendPatch(url);
+  const response = await HttpClient.sendPatch(url);
+  logger.info('DRLHandler:: exporttodocx: response: ', response);
 
-  return reponse;
+  return response;
 };
 
 export const PrintOneStudent = async (PK, SK) => {
   const url = `drl/printfmulti`;
 
-  const reponse = await HttpClient.sendPatchWithBody(url, { keys: [{ PK, SK }] });
+  const response = await HttpClient.sendPatchWithBody(url, { keys: [{ PK, SK }] });
 
-  return reponse;
+  return response;
 };
 
 export const GetPrintListByDate = async (from, to) => {
   const url = `drl/printf?from=${from}&to=${to}`;
 
-  const reponse = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGet(url);
 
-  return reponse;
+  return response;
 };
 
