@@ -5,6 +5,17 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import Confirm from '@material-ui/icons/CheckCircleOutline';
+import Grade from '@material-ui/icons/Grade';
+import Home from '@material-ui/icons/Home';
+import Status from '@material-ui/icons/BusinessCenter';
+import Description from '@material-ui/icons/Description';
+import Policy from '@material-ui/icons/Accessible';
+import Activity from '@material-ui/icons/ImportContacts';
+import Card from '@material-ui/icons/Payment';
+import BlockIcon from '@material-ui/icons/Block';
+import Hospital from '@material-ui/icons/LocalHospital';
+import Scholarship from '@material-ui/icons/School';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -86,6 +97,66 @@ function ResponsiveDrawer(props) {
             <MailIcon />
           </ListItemIcon>
           <ListItemText primary="Điểm rèn luyện" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <Status />
+          </ListItemIcon>
+          <ListItemText primary="Tình trạng sinh viên" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <Home />
+          </ListItemIcon>
+          <ListItemText primary="Quản lý lưu trú" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <Activity />
+          </ListItemIcon>
+          <ListItemText primary="Sinh hoạt công dân" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <BlockIcon />
+          </ListItemIcon>
+          <ListItemText primary="Khen thưởng - Kỷ luật" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <Scholarship />
+          </ListItemIcon>
+          <ListItemText primary="Quản lý học bổng" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+        >
+          <ListItemIcon>
+            <Description />
+          </ListItemIcon>
+          <ListItemText primary="Hồ sơ sinh viên" />
         </ListItem>
       </List>
     </div>

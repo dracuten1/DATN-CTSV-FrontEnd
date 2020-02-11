@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
 // @material-ui/icons
 import Admin from '@material-ui/icons/Person';
@@ -14,12 +14,12 @@ import Policy from '@material-ui/icons/Accessible';
 import Activity from '@material-ui/icons/ImportContacts';
 import Card from '@material-ui/icons/Payment';
 import Hospital from '@material-ui/icons/LocalHospital';
-import scholarship from '@material-ui/icons/School';
+import Scholarship from '@material-ui/icons/School';
+import BlockIcon from '@material-ui/icons/Block';
 // core components
 import { Grid } from '@material-ui/core';
-import InfoArea from "shared/components/InfoArea/InfoArea";
-import { title } from "shared/styles/material";
-
+import InfoArea from 'shared/components/InfoArea/InfoArea';
+import { title } from 'shared/styles/material';
 
 const useStyles = makeStyles(theme => ({
   section: {
@@ -35,90 +35,95 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const data = [
-    {
-        title: "Admin",
-        description:"Quản lý và cấp quyền các tài khoản User.",
-        icon: Admin,
-        iconColor:"info",
-        link: "/xnsv"
-    },
-    {
-        title: "Thông tin chung",
-        description:"Quản lý các thông tin chung của Sinh Viên.",
-        icon: Info,
-        iconColor:"info",
-        link: "/xnsv"
-    },
-    {
-        title: "Xác nhận sinh viên",
-        description:"Cung cấp các giấy xác nhận thông tin kèm chứng nhận của nhà trường.",
-        icon: Confirm,
-        iconColor:"info",
-        link: "/xnsv"
-    },
-    {
-        title: "Điểm rèn luyện",
-        description:"Cung cấp và quản lý điểm rèn luyện từng học kỳ của Sinh Viên.",
-        icon: Grade,
-        iconColor:"success",
-        link: "/drl"
-    },
-    {
-        title: "Thông tin lưu trú",
-        description:"Quản lý nơi cư trú của Sinh Viên theo từng năm học.",
-        icon: Home,
-        iconColor:"success",
-        link: "/xnsv"
-    },
-    {
-        title: "Tình trạng sinh viên",
-        description:"Quản lý tình trạng Sinh Viên theo từng học kỳ.",
-        icon: Status,
-        iconColor:"success",
-        link: "/xnsv"
-    },
-    {
-        title: "Hồ sơ sinh viên",
-        description:"Quản lý hồ sơ Sinh Viên.",
-        icon: Description,
-        iconColor:"primary",
-        link: "/xnsv"
-    },
-    {
-        title: "Chế độ chính sách",
-        description:"Quản lý và cung cấp những hỗ trợ cho Sinh Viên theo từng chế độ chính sách.",
-        icon: Policy,
-        iconColor:"primary",
-        link: "/xnsv"
-    },
-    {
-        title: "Sinh hoạt công dân",
-        description:"Quản lý và tổ chức các lớp Sinh Hoạt Công Dân mỗi năm học.",
-        icon: Activity,
-        iconColor:"primary",
-        link: "/xnsv"
-    },
-    {
-        title: "Tài khoản ngân hàng",
-        description:"Quản lý tài khoản ngân hàng của Sinh Viên.",
-        icon: Card,
-        iconColor:"gray",
-        link: "/xnsv"
-    },
-    {
-        title: "Bảo hiểm",
-        description:"Quản lý và cung cấp bảo hiểm cho Sinh Viên theo từng năm học.",
-        icon: Hospital,
-        iconColor:"gray",
-        link: "/xnsv"
-    },
-    {
-        title: "Sinh viên nhận học bổng",
-        description:"Quản lý và khen thưởng cho Sinh Viên đạt được giải thưởng, học bổng.",
-        icon: scholarship,
-        iconColor:"gray",
-        link: "/xnsv"
-    }
+  {
+    title: 'Admin',
+    description: 'Quản lý và cấp quyền các tài khoản User.',
+    icon: Admin,
+    iconColor: 'info',
+    link: '/xnsv'
+  },
+  {
+    title: 'Xác nhận sinh viên',
+    description:
+      'Cung cấp các giấy xác nhận thông tin kèm chứng nhận của nhà trường.',
+    icon: Confirm,
+    iconColor: 'info',
+    link: '/xnsv'
+  },
+  {
+    title: 'Điểm rèn luyện',
+    description:
+      'Cung cấp và quản lý điểm rèn luyện từng học kỳ của Sinh Viên.',
+    icon: Grade,
+    iconColor: 'success',
+    link: '/drl'
+  },
+  {
+    title: 'Thông tin lưu trú',
+    description: 'Quản lý nơi cư trú của Sinh Viên theo từng năm học.',
+    icon: Home,
+    iconColor: 'success',
+    link: '/xnsv'
+  },
+  {
+    title: 'Tình trạng sinh viên',
+    description: 'Quản lý tình trạng Sinh Viên theo từng học kỳ.',
+    icon: Status,
+    iconColor: 'success',
+    link: '/xnsv'
+  },
+  {
+    title: 'Hồ sơ sinh viên',
+    description: 'Quản lý hồ sơ Sinh Viên.',
+    icon: Description,
+    iconColor: 'primary',
+    link: '/xnsv'
+  },
+  {
+    title: 'Chế độ chính sách',
+    description:
+      'Quản lý và cung cấp những hỗ trợ cho Sinh Viên theo từng chế độ chính sách.',
+    icon: Policy,
+    iconColor: 'primary',
+    link: '/xnsv'
+  },
+  {
+    title: 'Sinh hoạt công dân',
+    description: 'Quản lý và tổ chức các lớp Sinh Hoạt Công Dân mỗi năm học.',
+    icon: Activity,
+    iconColor: 'primary',
+    link: '/xnsv'
+  },
+  {
+    title: 'Tài khoản ngân hàng',
+    description: 'Quản lý tài khoản ngân hàng của Sinh Viên.',
+    icon: Card,
+    iconColor: 'gray',
+    link: '/xnsv'
+  },
+  {
+    title: 'Bảo hiểm',
+    description:
+      'Quản lý và cung cấp bảo hiểm cho Sinh Viên theo từng năm học.',
+    icon: Hospital,
+    iconColor: 'gray',
+    link: '/xnsv'
+  },
+  {
+    title: 'Sinh viên nhận học bổng',
+    description:
+      'Quản lý và khen thưởng cho Sinh Viên đạt được giải thưởng, học bổng.',
+    icon: Scholarship,
+    iconColor: 'gray',
+    link: '/xnsv'
+  },
+  {
+    title: 'Khen thưởng - Kỷ luật',
+    description: 'Quản lý sinh viên được khen thưởng và bị kỷ luật Sinh Viên.',
+    icon: BlockIcon,
+    iconColor: 'info',
+    link: '/xnsv'
+  }
 ];
 
 export default function Dashboard() {
@@ -140,7 +145,7 @@ export default function Dashboard() {
       </Grid>
       <div>
         <Grid container>
-          {data.map((item) => {
+          {data.map(item => {
             return (
               <Grid item xs={12} sm={12} md={4}>
                 <InfoArea

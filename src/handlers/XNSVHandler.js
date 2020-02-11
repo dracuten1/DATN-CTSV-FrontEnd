@@ -89,7 +89,7 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
 
 export const AddCertificate = async value => {
-  const url = `xnsv/add-certificate`;
+  const url = `xnsv/certificate`;
 
   const response = await HttpClient.sendPost(url, value);
 

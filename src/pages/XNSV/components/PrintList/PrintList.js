@@ -68,8 +68,8 @@ const PrintList = props => {
     hk: '1',
     nh: '2018-2019',
     type: 'Đang học',
-    fromDate: moment(date).format('YYYY-MM-DD'),
-    toDate: moment(date).format('YYYY-MM-DD')
+    fromDate: '',
+    toDate: ''
   });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({

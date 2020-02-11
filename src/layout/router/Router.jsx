@@ -6,6 +6,13 @@ import themeUI from 'shared/styles/theme';
 import StudentCertification from 'pages/XNSV/studentCertification/StudentCertification';
 import DashboardDRL from 'pages/DRL/DashboardDRL';
 import Dashboard from 'pages/Dashboard/Dashboard';
+import DashboardHSSV from 'pages/HSSV/DashboardHSSV';
+import DashboardQLLT from 'pages/QLLT/DashboardQLLT';
+import DashboardTTSV from 'pages/TTSV/DashboardTTSV';
+import DashboardQLHB from 'pages/QLHB/DashboardHB';
+import DashboardSHCD from 'pages/SHCD/DashboardSHCD';
+import DashboardKTKL from 'pages/KT_KL/DashboardKTKL';
+
 import store from 'store';
 
 class Routers extends React.PureComponent {
@@ -23,6 +30,24 @@ class Routers extends React.PureComponent {
             <Route exact path="/xnsv">
               <StudentCertification />
             </Route>
+            <Route exact path="/hssv">
+              <DashboardHSSV />
+            </Route>
+            <Route exact path="/qlhb">
+              <DashboardQLHB />
+            </Route>
+            <Route exact path="/qllt">
+              <DashboardQLLT />
+            </Route>
+            <Route exact path="/shcd">
+              <DashboardSHCD />
+            </Route>
+            <Route exact path="/ttsv">
+              <DashboardTTSV />
+            </Route>
+            <Route exact path="/ktkl">
+              <DashboardKTKL />
+            </Route>
           </Switch>
         </Router>
       </ThemeProvider>
@@ -31,14 +56,12 @@ class Routers extends React.PureComponent {
 }
 
 const ProtectRoute = () => {
-
-
   const { cognitoUser } = store.getState().auth;
 
   if (cognitoUser === null) {
     history.push('/');
   }
-  return (<Routers />);
+  return <Routers />;
 };
 
 export default ProtectRoute;

@@ -76,8 +76,7 @@ const PrintList = props => {
   const closeImportDialog = () => {
     setImportOpen(false);
   };
-  const handleImport = () => {
-  };
+  const handleImport = () => {};
 
   const [state, setState] = useState({
     data: isPrintList ? dataPrint : dataHistory,
@@ -359,17 +358,24 @@ const PrintList = props => {
             <Button
               style={{ marginLeft: '8px' }}
               onClick={async () => {
-                if (valueCase !== null){
+                if (valueCase !== null) {
                   const data = await DRLHandler.ExportToDocx(valueCase[0]);
+                  const listData = await DRLHandler.GetListCertificate(
+                    'ChuaIn'
+                  );
+
                   if (data.statusCode === 200) {
-                    console.log("printttt:", valueCase);
-                    dispatch(DRLActions.handlePrint(valueCase[0]));
+                    dispatch({
+                      type: 'ADD_LINK_PRINT',
+                      listLink: data.body,
+                      listData
+                    });
+
                     setSnackBarValue(printSuccessSnackBar);
                   } else {
                     setSnackBarValue(errorSnackBar);
                   }
-                }
-                else {
+                } else {
                   setSnackBarValue(errorSnackBar);
                 }
                 isPrint = !isPrint;
@@ -400,7 +406,7 @@ const PrintList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={"import-drl"}
+        importCase={'import-drl'}
       />
       <Dialog
         open={notice}
