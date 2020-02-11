@@ -45,28 +45,28 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataPrint, isAlllist } = QLLTState;
+  const { dataList, isCase } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
   let arrColumns = [];
-  switch (isAlllist) {
-    case 1://SV nuoc ngoai
+  switch (isCase) {
+    case 1://Dang ky
       arrColumns = Columns.DKSHCD;
       break;
-    case 2://DTB
+    case 2://Diem danh
       arrColumns = Columns.DDSHCD;
       break;
-    case 3://Danh sach tot nghiep
+    case 3://Kiem tra
       arrColumns = Columns.KTSHCD;
       break;
-    default://Dang ky hoc phan
+    default://Ket qua
       arrColumns = Columns.KQSHCD;
       break;
   }
 
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: isAlllist ? mockData.info : mockData.importInfo,
+    data: isCase ? mockData.info : mockData.importInfo,
     columns: arrColumns
   });
 
@@ -93,7 +93,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? (
+                  {isCase ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
                     <b>DANH SÁCH IMPORT</b>
@@ -145,38 +145,6 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Danh sách tình trạng
-        </Button>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Sinh viên nước ngoài
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Điểm trung bình
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Tốt nghiệp
-        </Button>
         <Button
           onClick={() => dispatch(Actions.handleAllList())}
           variant="contained"

@@ -158,7 +158,7 @@ const DSTN = [
   }
 ];
 
-const HTCT = [
+const HTTC = [
   { title: 'STT', field: 'stt', editable: 'never', filtering: false },
   { title: 'MSSV', field: 'mssv', filtering: false },
   { title: 'Họ tên', field: 'name', filtering: false },
@@ -286,5 +286,5 @@ export default {
   DKHP,
   DTB,
   CCHV,
-  HTCT
+  HTTC
 };

@@ -8,9 +8,8 @@ import {
   Import,
   Print,
   Title,
-  PrintList,
   AllList
-} from 'pages/DRL/components';
+} from 'pages/HSSV/components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,16 +17,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardDRL = () => {
+const DashboardHSSV = () => {
   const classes = useStyles();
 
-  const DRLState = useSelector(state => state.DRLState);
-  const { isAllList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Title url="/drl" title="Điểm Rèn Luyện" />
+          <Title url="/drl" title="Hồ Sơ Sinh Viên" />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Export many={20} />
@@ -40,11 +37,11 @@ const DashboardDRL = () => {
         </Grid>
 
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          {isAllList ? <AllList /> : <PrintList />}
+          <AllList />
         </Grid>
       </Grid>
     </div>
   );
 };
 
-export default DashboardDRL;
+export default DashboardHSSV;

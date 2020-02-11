@@ -44,7 +44,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataPrint, isAlllist } = QLLTState;
+  const { listData, isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 

@@ -60,10 +60,10 @@ const AllList = props => {
       arrColumns = Columns.DSTN;
       break;
     case 4://Hoan thanh tin chi
-      arrColumns = Columns.HTCT;
+      arrColumns = Columns.HTTC;
       break;
     case 5://Dang hoc
-      arrColumns = Columns.HTCT;
+      arrColumns = Columns.HTTC;
       break;
     case 6://Canh cao hoc vu
       arrColumns = Columns.CCHV;
@@ -157,14 +157,6 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Danh sách tình trạng
-        </Button>
         <Button
           onClick={() => setOpen(true)}
           variant="contained"

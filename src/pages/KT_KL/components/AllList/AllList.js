@@ -44,14 +44,14 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataPrint, isAlllist } = QLLTState;
+  const { dataPrint, isKyLuat } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: isAlllist ? mockData.info : mockData.importInfo,
-    columns: isAlllist
+    data: isKyLuat ? mockData.info : mockData.importInfo,
+    columns: isKyLuat
       ? [
           { title: 'STT', field: 'stt', editable: 'never', filtering: false },
           { title: 'MSSV', field: 'mssv', filtering: false },
@@ -188,7 +188,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? (
+                  {isKyLuat ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
                     <b>DANH SÁCH IMPORT</b>

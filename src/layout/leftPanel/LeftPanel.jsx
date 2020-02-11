@@ -26,6 +26,7 @@ import Routers from 'layout/router/Router';
 import { useDispatch } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
+import history from 'historyConfig';
 
 const drawerWidth = 240;
 
@@ -101,7 +102,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/ttsv')}
         >
           <ListItemIcon>
             <Status />
@@ -111,7 +112,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/qllt')}
         >
           <ListItemIcon>
             <Home />
@@ -121,7 +122,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/shcd')}
         >
           <ListItemIcon>
             <Activity />
@@ -131,7 +132,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/ktkl')}
         >
           <ListItemIcon>
             <BlockIcon />
@@ -141,7 +142,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/qlhb')}
         >
           <ListItemIcon>
             <Scholarship />
@@ -151,7 +152,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/hssv')}
         >
           <ListItemIcon>
             <Description />
