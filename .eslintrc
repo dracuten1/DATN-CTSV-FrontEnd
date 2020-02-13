@@ -31,7 +31,8 @@
       "eqeqeq": "off",
       "no-use-before-define": "off",
       "no-unused-expressions":"off",
-      "react/jsx-curly-brace-presence":"off"
+      "react/jsx-curly-brace-presence":"off",
+      "dot-notation": "off"
     },
     "globals": {
       "window": true,

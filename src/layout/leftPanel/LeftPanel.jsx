@@ -26,6 +26,8 @@ import Routers from 'layout/router/Router';
 import { useDispatch } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
+import QLLTActions from 'reduxs/reducers/QLLT/action';
+
 import history from 'historyConfig';
 
 const drawerWidth = 240;
@@ -112,7 +114,7 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => history.push('/qllt')}
+          onClick={() =>  history.push('/qllt')}
         >
           <ListItemIcon>
             <Home />

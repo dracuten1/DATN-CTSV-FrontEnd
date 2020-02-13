@@ -16,7 +16,7 @@ import {
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import mockData from './data';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
 
@@ -40,6 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
@@ -47,41 +48,52 @@ const AllList = props => {
   const { dataList, isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const [open, setOpen] = React.useState(false);
+  const [fillter, setFillter] = React.useState({
+    hk: '1',
+    nh: '19-20',
+    type: 'all'
+  });
   const [state, setState] = useState({
-    data: isAlllist ? mockData.info : mockData.importInfo,
+    data: dataList,
     columns: isAlllist
       ? [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
+          // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+          { title: 'MSSV', field: 'MSSV', filtering: false },
+          { title: 'Họ tên', field: 'Họ tên', filtering: false },
           {
             title: 'Nội trú - KTX',
-            field: 'ktx'
+            field: 'ktx',
+            filtering: false
           },
           {
             title: 'Nội trú - Portal',
-            field: 'portal'
-          },
-          {
-            title: 'Xác nhận ngoại trú',
-            field: 'isConfirm',
+            field: 'portal',
             type: 'boolean',
             render: rowData => (
               <div style={{ marginLeft: '10px' }}>
-                {rowData.isConfirm ? <icons.CheckBox /> : <icons.CheckBlank />}
+                {rowData.portal ? <icons.CheckBox /> : <icons.CheckBlank />}
+              </div>
+            )
+          },
+          {
+            title: 'Xác nhận ngoại trú',
+            field: 'Xác nhận ngoại trú',
+            type: 'boolean',
+            render: rowData => (
+              <div style={{ marginLeft: '10px' }}>
+                {rowData['Xác nhận ngoại trú'] ? <icons.CheckBox /> : <icons.CheckBlank />}
               </div>
             )
           },
           {
             title: 'Năm học',
-            field: 'year',
+            field: 'NH',
             lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
+              1: '16-17',
+              2: '17-18',
+              3: '18-19',
+              4: '19-20'
             },
             filterCellStyle: {
               paddingTop: 1
@@ -89,7 +101,7 @@ const AllList = props => {
           },
           {
             title: 'Học kỳ',
-            field: 'semester',
+            field: 'HK',
             lookup: {
               1: '1',
               2: '2'
@@ -119,7 +131,7 @@ const AllList = props => {
           },
           {
             title: 'Năm học',
-            field: 'year',
+            field: 'NH',
             lookup: {
               1: '2016-2017',
               2: '2017-2018',
@@ -132,7 +144,7 @@ const AllList = props => {
           },
           {
             title: 'Học kỳ',
-            field: 'semester',
+            field: 'HK',
             lookup: {
               1: '1',
               2: '2'
@@ -149,6 +161,16 @@ const AllList = props => {
         ]
   });
 
+  if (updateBegin === 0) {
+    dispatch(Actions.getListWithFilter(fillter));
+    updateBegin += 1;
+  }
+
+  if (dataList.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataList });
+    updateBegin += 1;
+  }
+
   const handleAdd = newData => {
     setState(prevState => {
       const data = [...prevState.data];
@@ -158,11 +180,18 @@ const AllList = props => {
     setOpen(false);
   };
 
+  const handleFillter = (prop, data) => {
+    setFillter({ ...fillter, [prop]: data });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <Filters onFillter={handleFillter} />
+        <ContainedButton
+          handleClick={() => dispatch(Actions.getListWithFilter(fillter))}
+          label="Lọc sinh viên"
+        />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>

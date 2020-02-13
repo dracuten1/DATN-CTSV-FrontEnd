@@ -1,72 +1,46 @@
-import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as QLLTHandler from 'handlers/QLLTHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
 
-const handleAllList = () => async dispatch => {
-  dispatch({ type: Types.ALL_LIST });
-  history.push('/xnsv');
-};
-
-const handlePrintList = () => async dispatch => {
-  dispatch({ type: Types.PRINT_LIST });
-  history.push('/xnsv');
-};
-
-const getNotPrintYet = () => async dispatch => {
-  const status = 'ChuaIn';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/xnsv');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
-};
-
-const deleteOneCertificate = (pk, sk) => async dispatch => {
-  const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
-
-  logger.info('XNSVAction:: deleteOneCertificate: reponse: ', response);
-
-  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-  history.push('/xnsv');
-};
-
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
-  const status = 'ChuaIn';
-  const listData = await XNSVHandler.GetListCertificate(status);
-  logger.info('XNSVAction:: PrintByType: reponse: ', response);
-  if (response.statusCode === 200) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-    history.push('/xnsv');
+const parseNHToNumber = nh => {
+  switch (nh) {
+    case '16-17':
+      return 1;
+    case '17-18':
+      return 2;
+    case '18-19':
+      return 3;
+    case '19-20':
+      return 4;
+    default:
+      return 5;
   }
 };
 
-const getCompany = () => async dispatch => {
-  const response = await XNSVHandler.GetCompany();
-  logger.info('XNSVAction:: Company: reponse: ', response);
-  history.push('/xnsv');
+const getListWithFilter = filter => async dispatch => {
+  const response = await QLLTHandler.GetListWithFilter(filter);
+  logger.info('QLLTAction:: getListAll: reponse: ', response);
+  const data = Object.keys(response).map(key => {
+    response[key].ktx = response[key]['Nội trú']['KTX'];
+    response[key].portal =
+      response[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
+    response[key].NH =parseNHToNumber(response[key].NH);
+      return response[key];
+  });
+  dispatch({ type: Types.GET_ALLLIST, payload: data });
+  history.push('/qllt');
 };
 
-const exportWithFillter = (fillter) => async dispatch => {
-  logger.info('XNSVAction:: Fillter: fillter: ', fillter);
-  
-  const response = await XNSVHandler.ExportWithFillter(fillter);
-  logger.info('XNSVAction:: ExportFillter: reponse: ', response);
-  history.push('/xnsv');
-};
+// const exportWithFillter = (fillter) => async dispatch => {
+//   logger.info('QLLTAction:: Fillter: fillter: ', fillter);
+
+//   const response = await QLLTHandler.ExportWithFillter(fillter);
+//   logger.info('QLLTAction:: ExportFillter: reponse: ', response);
+//   history.push('/qllt');
+// };
 
 export default {
-  handleAllList,
-  handlePrintList,
-  handlePrint,
-  getNotPrintYet,
-  deleteOneCertificate,
-  getListHistory,
-  getCompany,
-  exportWithFillter
+  getListWithFilter
+  // exportWithFillter
 };
