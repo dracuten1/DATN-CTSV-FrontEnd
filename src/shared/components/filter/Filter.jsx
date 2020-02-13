@@ -29,10 +29,10 @@ export default function SimpleSelect(props) {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const { label, prop, clickFillter } = props;
+  const { label, prop, clickFilter } = props;
   const handleChange = event => {
     setSelectItem(event.target.value);
-    clickFillter(prop, event.target.value);
+    clickFilter(prop, event.target.value);
   };
   const drawData = () => {
     const { data } = props;

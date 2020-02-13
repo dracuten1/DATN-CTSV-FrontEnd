@@ -3,7 +3,7 @@ import ActionTypes from './actionTypes';
 const INIT_STATE = {
   isAlllist: true,
   dataList: [],
-  listLink: [],
+  listLink: []
 };
 
 const qlltReducer = (state = INIT_STATE, action) => {
@@ -11,7 +11,7 @@ const qlltReducer = (state = INIT_STATE, action) => {
     case ActionTypes.ALLLIST:
       return { ...state, isAlllist: true };
     case ActionTypes.KTX:
-      return { ...state,  isAlllist: false };
+      return { ...state, isAlllist: false };
     case ActionTypes.GET_ALLLIST:
       return {
         ...state,
@@ -22,7 +22,11 @@ const qlltReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         dataList: action.payload,
-        isAlllist: false,
+        isAlllist: false
+      };
+    case ActionTypes.UPDATE_STUDENT:
+      return {
+        ...state
       };
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;

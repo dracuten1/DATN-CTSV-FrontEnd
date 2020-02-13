@@ -278,7 +278,7 @@ const PrintList = props => {
     setOpen(false);
   };
 
-  const handleFillter = (prop, data) => {
+  const handleFilter = (prop, data) => {
     setFillter({ ...fillter, [prop]: data });
   };
 
@@ -286,7 +286,7 @@ const PrintList = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       {isPrintList ? (
         <CardActions className={classes.actions}>
-          <Filters onFillter={handleFillter} />
+          <Filters onFilter={handleFilter} />
           <ContainedButton
             handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
             label="Lọc sinh viên"

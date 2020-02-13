@@ -18,17 +18,35 @@ const parseNHToNumber = nh => {
   }
 };
 
-const getListWithFilter = filter => async dispatch => {
+const getAllListWithFilter = filter => async dispatch => {
   const response = await QLLTHandler.GetListWithFilter(filter);
   logger.info('QLLTAction:: getListAll: reponse: ', response);
   const data = Object.keys(response).map(key => {
     response[key].ktx = response[key]['Nội trú']['KTX'];
     response[key].portal =
       response[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
-    response[key].NH =parseNHToNumber(response[key].NH);
+    response[key].nh = parseNHToNumber(response[key].NH);
       return response[key];
   });
   dispatch({ type: Types.GET_ALLLIST, payload: data });
+  history.push('/qllt');
+};
+
+const getKtxListWithFilter = filter => async dispatch => {
+  const response = await QLLTHandler.GetListWithFilter(filter);
+  logger.info('QLLTAction:: getListKTX: reponse: ', response);
+  const data = Object.keys(response).map(key => {
+    response[key].nh =parseNHToNumber(response[key].NH);
+      return response[key];
+  });  
+  dispatch({ type: Types.GET_KTX_LIST, payload: data });
+  history.push('/qllt');
+};
+
+const updateOneStudentByType = (data, type) => async dispatch => {
+  const response = await QLLTHandler.UpdateOneStudentByType(data,type);
+  logger.info('QLLTAction:: update: reponse: ', response);
+  dispatch({ type: Types.UPDATE_STUDENT});
   history.push('/qllt');
 };
 
@@ -41,6 +59,8 @@ const getListWithFilter = filter => async dispatch => {
 // };
 
 export default {
-  getListWithFilter
+  getAllListWithFilter,
+  getKtxListWithFilter,
+  updateOneStudentByType
   // exportWithFillter
 };

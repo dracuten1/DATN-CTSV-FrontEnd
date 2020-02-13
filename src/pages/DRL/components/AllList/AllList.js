@@ -118,14 +118,14 @@ const AllList = props => {
     setOpen(false);
   };
 
-  const handleFillter = (prop, data) => {
+  const handleFilter = (prop, data) => {
     setFillter({ ...fillter, [prop]: data });
   };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFillter={handleFillter} />
+        <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => dispatch(Actions.fillterListData(fillter))}
           label="Lọc sinh viên"

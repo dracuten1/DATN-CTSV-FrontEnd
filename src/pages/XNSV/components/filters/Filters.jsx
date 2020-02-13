@@ -14,24 +14,24 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFillter } = props;
+  const { onFilter } = props;
 
   return (
     <div className={classes.container}>
       <Filter
-        clickFillter={onFillter}
+        clickFilter={onFilter}
         label="Học kỳ"
         prop="hk"
         data={['1', '2', 'NH']}
       />
       <Filter
-        clickFillter={onFillter}
+        clickFilter={onFilter}
         label="Năm học"
         prop="nh"
         data={['2018-2019', '2017-2018', '2016-2017', '2015-2016']}
       />
       <Filter
-        clickFillter={onFillter}
+        clickFilter={onFilter}
         prop="type"
         label="Loại xác nhận"
         data={[
@@ -48,12 +48,12 @@ export default function Filters(props) {
 
       <InputDateWithLabel
         prop="fromDate"
-        clickFillter={onFillter}
+        clickFilter={onFilter}
         label="Từ ngày"
       />
       <InputDateWithLabel
         prop="toDate"
-        clickFillter={onFillter}
+        clickFilter={onFilter}
         label="Đến ngày"
       />
     </div>

@@ -15,7 +15,7 @@ import {
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
-import mockData from './data';
+import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
@@ -49,125 +49,27 @@ const AllList = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-  const [fillter, setFillter] = React.useState({
+  const [filter, setfilter] = React.useState({
     hk: '1',
     nh: '19-20',
     type: 'all'
   });
   const [state, setState] = useState({
     data: dataList,
-    columns: isAlllist
-      ? [
-          // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'MSSV', filtering: false },
-          { title: 'Họ tên', field: 'Họ tên', filtering: false },
-          {
-            title: 'Nội trú - KTX',
-            field: 'ktx',
-            filtering: false
-          },
-          {
-            title: 'Nội trú - Portal',
-            field: 'portal',
-            type: 'boolean',
-            render: rowData => (
-              <div style={{ marginLeft: '10px' }}>
-                {rowData.portal ? <icons.CheckBox /> : <icons.CheckBlank />}
-              </div>
-            )
-          },
-          {
-            title: 'Xác nhận ngoại trú',
-            field: 'Xác nhận ngoại trú',
-            type: 'boolean',
-            render: rowData => (
-              <div style={{ marginLeft: '10px' }}>
-                {rowData['Xác nhận ngoại trú'] ? <icons.CheckBox /> : <icons.CheckBlank />}
-              </div>
-            )
-          },
-          {
-            title: 'Năm học',
-            field: 'NH',
-            lookup: {
-              1: '16-17',
-              2: '17-18',
-              3: '18-19',
-              4: '19-20'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'HK',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Người nhận',
-            field: 'receiver',
-            filtering: false
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note',
-            filtering: false
-          }
-        ]
-      : [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
-          {
-            title: 'KTX',
-            field: 'ktx'
-          },
-          {
-            title: 'Năm học',
-            field: 'NH',
-            lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'HK',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note',
-            filtering: false
-          }
-        ]
+    columns: Columns.ALL
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getListWithFilter(fillter));
+    dispatch(Actions.getAllListWithFilter(filter));
     updateBegin += 1;
   }
 
   if (dataList.length > 0 && updateBegin === 1) {
-    setState({ ...state, data: dataList });
+    setState({
+      ...state,
+      data: dataList,
+      columns: isAlllist ? Columns.ALL : Columns.KTX
+    });
     updateBegin += 1;
   }
 
@@ -180,16 +82,36 @@ const AllList = props => {
     setOpen(false);
   };
 
-  const handleFillter = (prop, data) => {
-    setFillter({ ...fillter, [prop]: data });
+  const handleFilter = (prop, data) => {
+    setfilter({ ...filter, [prop]: data });
+  };
+
+  const parseNHToString = nh => {
+    switch (nh) {
+      case 1:
+        return '16-17';
+      case 2:
+        return '17-18';
+      case 3:
+        return '18-19';
+      case 4:
+        return '19-20';
+      default:
+        return '20-211';
+    }
   };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFillter={handleFillter} />
+        <Filters onFilter={handleFilter} />
         <ContainedButton
-          handleClick={() => dispatch(Actions.getListWithFilter(fillter))}
+          handleClick={() => {
+            if (filter.type === 'all')
+              dispatch(Actions.getAllListWithFilter(filter));
+            else dispatch(Actions.getKtxListWithFilter(filter));
+            updateBegin -= 1;
+          }}
           label="Lọc sinh viên"
         />
       </CardActions>
@@ -201,11 +123,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? (
-                    <b>THÔNG TIN SINH VIÊN</b>
-                  ) : (
-                    <b>DANH SÁCH IMPORT</b>
-                  )}
+                  {isAlllist ? <b>DANH SÁCH TỔNG</b> : <b>DANH SÁCH KTX</b>}
                 </div>
               }
               columns={state.columns}
@@ -229,9 +147,22 @@ const AllList = props => {
                       if (oldData) {
                         setState(prevState => {
                           const data = [...prevState.data];
+                          if (isAlllist) {
+                            if (newData.portal)
+                              newData['Nội trú']['Cập nhật Portal'] =
+                                'Đã cập nhật';
+                            else
+                              newData['Nội trú']['Cập nhật Portal'] =
+                                'Không cập nhật';
+                            newData['Nội trú']['KTX'] = newData.ktx;
+                          }
+
                           data[data.indexOf(oldData)] = newData;
                           return { ...prevState, data };
                         });
+                        newData.NH = parseNHToString(newData.nh);
+                        const type = isAlllist ? 'all' : 'ktx';
+                        dispatch(Actions.updateOneStudentByType(newData, type));
                       }
                     }, 600);
                   }),
@@ -254,7 +185,7 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(Actions.getListWithFilter(filter))}
           variant="contained"
           color="primary"
           size="small"

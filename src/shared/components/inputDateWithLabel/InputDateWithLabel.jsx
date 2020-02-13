@@ -27,9 +27,9 @@ const date = new Date();
 export default function UncontrolledTextField(props) {
   const classes = useStyles();
 
-  const { label, clickFillter, prop } = props;
+  const { label, clickFilter, prop } = props;
   const handleChange = event => {
-    clickFillter(prop, event.target.value);
+    clickFilter(prop, event.target.value);
   };
 
   return (
