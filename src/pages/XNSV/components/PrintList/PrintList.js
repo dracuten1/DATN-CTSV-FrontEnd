@@ -292,15 +292,18 @@ const PrintList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {isPrintList ? (
+        ''
+      ) : (
         <CardActions className={classes.actions}>
           <Filters onFilter={handleFilter} />
           <ContainedButton
-            handleClick={() => dispatch(XNSVActions.getListExport(fillter))}
+            handleClick={() => {
+              dispatch(XNSVActions.getListExport(fillter));
+              updateBegin = 1;
+            }}
             label="Lọc sinh viên"
           />
         </CardActions>
-      ) : (
-        ''
       )}
       <Divider />
       <CardContent className={classes.content}>

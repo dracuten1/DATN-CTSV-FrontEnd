@@ -78,7 +78,7 @@ const getListExport = fillter => async dispatch => {
 
   const response = await XNSVHandler.GetListExport(fillter);
   logger.info('XNSVAction:: ListExportFillter: reponse: ', response);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload: response.Items });
+  dispatch({ type: Types.GET_HISTORY_LIST, payload: response });
   history.push('/xnsv');
 };
 

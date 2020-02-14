@@ -129,8 +129,20 @@ export const GetListExport = async (fillter) => {
   const {nh, hk, type, fromDate, toDate} = fillter;
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
 
-  const response = await HttpClient.sendGet(url);
-
-  return response.body;
+  const response = await HttpClient.sendPut(url);
+  const {Items} = response;
+  const payload = Items.map((item, index) => {
+    return {
+      scn: item.SCN,
+      name: item.Ten,
+      mssv: item.MSSV,
+      case: parseCase(item.LoaiGiayXN),
+      reason: item.LyDoXN,
+      isPrint: item.TrangThai !== 'Chưa In',
+      ngayin: item.NgayIn ? moment(parseFloat(item.NgayIn)).format('DD/MM/YYYY') : null,
+      link: item.linkDownloadPrint ? item.linkDownloadPrint : null
+    };
+  });
+  return payload;
 };
 
