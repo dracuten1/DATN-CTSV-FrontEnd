@@ -16,9 +16,9 @@ export const GetXNSVByType = async (type) => {
 
   const url = `xnsv/listCertificateByType?type=${type}`;
 
-  const reponse = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGet(url);
 
-  return reponse;
+  return response;
 };
 
 const parseCase = key => {
@@ -60,6 +60,8 @@ export const GetListCertificate = async (status) => {
       date: moment(item.ngayThem).format('DD/MM/YYYY'),
       pk: item.PK,
       sk: item.SK,
+      ngayin: item.NgayIn ? moment(parseFloat(item.NgayIn)).format('DD/MM/YYYY') : null,
+      link: item.linkDownloadPrint ? item.linkDownloadPrint : null
     };
   });
 
@@ -70,9 +72,19 @@ export const PrintByType = async (type) => {
 
   const url = `xnsv/printf?type=${type}`;
 
-  const reponse = await HttpClient.sendPatch(url);
+  const response = await HttpClient.sendPatch(url);
 
-  return reponse;
+  return response;
+};
+
+export const PrintOneStudent = async (data) => {
+
+  const url = `xnsv/printf`;
+  console.log("dataaaa:", data);
+  const response = await HttpClient.sendPutWithBody(url, data);
+  logger.info("XNSVhandler:: printOneCertificate: response: ", response);
+
+  return response;
 };
 
 export const DeleteOneCertificate = async (pk, sk) => {
@@ -83,7 +95,7 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
 
-  logger.info("XNSVhandler:: deleteOneCertificate: reponse: ", response);
+  logger.info("XNSVhandler:: deleteOneCertificate: response: ", response);
 
 };
 
@@ -111,5 +123,14 @@ export const ExportWithFillter = async (fillter) => {
   const response = await HttpClient.sendPatch(url);
 
   return response;
+};
+
+export const GetListExport = async (fillter) => {
+  const {nh, hk, type, fromDate, toDate} = fillter;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
+
+  const response = await HttpClient.sendGet(url);
+
+  return response.body;
 };
 

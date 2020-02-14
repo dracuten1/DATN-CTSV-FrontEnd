@@ -46,17 +46,39 @@ const handlePrint = type => async dispatch => {
   }
 };
 
+const handlePrintOneStudent = data => async dispatch => {
+  const response = await XNSVHandler.PrintOneStudent(data);
+  const status = 'ChuaIn';
+  const listData = await XNSVHandler.GetListCertificate(status);
+  logger.info('XNSVAction:: PrintOneStudent: reponse: ', response);
+  dispatch({ type: Types.ADD_LINK_PRINT, listLink: response, listData });
+  history.push('/xnsv');
+};
+
 const getCompany = () => async dispatch => {
   const response = await XNSVHandler.GetCompany();
   logger.info('XNSVAction:: Company: reponse: ', response);
   history.push('/xnsv');
 };
 
-const exportWithFillter = (fillter) => async dispatch => {
+const exportWithFillter = fillter => async dispatch => {
   logger.info('XNSVAction:: Fillter: fillter: ', fillter);
-  
+
   const response = await XNSVHandler.ExportWithFillter(fillter);
   logger.info('XNSVAction:: ExportFillter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body.Items });
+    history.push('/xnsv');
+  }
+};
+
+const getListExport = fillter => async dispatch => {
+  logger.info('XNSVAction:: Fillter: fillter: ', fillter);
+
+  const response = await XNSVHandler.GetListExport(fillter);
+  logger.info('XNSVAction:: ListExportFillter: reponse: ', response);
+  dispatch({ type: Types.GET_HISTORY_LIST, payload: response.Items });
   history.push('/xnsv');
 };
 
@@ -68,5 +90,7 @@ export default {
   deleteOneCertificate,
   getListHistory,
   getCompany,
-  exportWithFillter
+  exportWithFillter,
+  getListExport,
+  handlePrintOneStudent
 };

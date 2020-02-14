@@ -12,7 +12,8 @@ import {
   CardContent,
   Grid,
   Button,
-  Divider
+  Divider,
+  Link
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { logger } from 'core/services/Apploger';
@@ -54,16 +55,139 @@ const PrintList = props => {
   const dispatch = useDispatch();
 
   const XNSVState = useSelector(state => state.XNSVState);
-  const {
-    dataPrint,
-    listLink,
-    dataHistory,
-    isPrintList,
-    isHistoryList
-  } = XNSVState;
+  const { dataList, listLink, isPrintList, isHistoryList } = XNSVState;
 
-  logger.info('history', dataHistory);
-  logger.info('dataPrint: ', dataPrint);
+  logger.info('dataList: ', dataList);
+
+  const Print = [
+    {
+      title: 'Đã In',
+      field: 'isPrint',
+      editable: 'onAdd',
+      type: 'boolean',
+      render: rowData => (
+        <div style={{ marginLeft: '10px' }}>
+          {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
+        </div>
+      )
+    },
+    { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
+    { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+    {
+      title: 'Họ tên',
+      field: 'name',
+      editable: 'never',
+      filtering: false
+    },
+    {
+      title: 'Loại xác nhận',
+      field: 'case',
+      lookup: {
+        1: 'Đang học',
+        2: 'Bảo lưu',
+        3: 'Chờ xét tốt nghiệp',
+        4: 'Chờ xét hoàn tất chương trình',
+        5: 'Vay vốn',
+        6: 'Giấy giới thiệu',
+        7: 'Thời gian học',
+        8: 'Hoàn tất chương trình'
+      },
+      filterCellStyle: {
+        paddingTop: 1
+      },
+      customFilterAndSearch: (term, rowData) => {
+        if (valueCase !== term) {
+          valueCase = term;
+        }
+        if (term.length !== 0) {
+          return term == rowData.case;
+        }
+        return rowData;
+      }
+    },
+    {
+      title: 'Lý do',
+      field: 'reason',
+      editable: 'never'
+    },
+    {
+      title: 'Ghi chú',
+      field: 'ghiChu',
+      editable: 'never',
+      filtering: false
+    },
+    {
+      title: 'Ngày thêm',
+      field: 'date',
+      editable: 'never',
+      type: 'date',
+      filtering: false
+    }
+  ];
+  const His = [
+    { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
+    { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+    {
+      title: 'Họ tên',
+      field: 'name',
+      editable: 'never',
+      filtering: false
+    },
+    {
+      title: 'Loại xác nhận',
+      field: 'case',
+      lookup: {
+        1: 'Đang học',
+        2: 'Bảo lưu',
+        3: 'Chờ xét tốt nghiệp',
+        4: 'Chờ xét hoàn tất chương trình',
+        5: 'Vay vốn',
+        6: 'Giấy giới thiệu',
+        7: 'Thời gian học',
+        8: 'Hoàn tất chương trình'
+      },
+      filterCellStyle: {
+        paddingTop: 1
+      },
+      customFilterAndSearch: (term, rowData) => {
+        if (valueCase !== term) {
+          valueCase = term;
+        }
+        if (term.length !== 0) {
+          return term === rowData.case;
+        }
+        return rowData;
+      }
+    },
+    {
+      title: 'Lý do',
+      field: 'reason',
+      editable: 'never'
+    },
+    {
+      title: 'Ghi chú',
+      field: 'ghiChu',
+      editable: 'never',
+      filtering: false
+    },
+
+    {
+      title: 'Ngày in',
+      field: 'ngayin',
+      editable: 'never',
+      type: 'date',
+      filtering: false
+    },
+    {
+      title: 'Link',
+      field: 'link',
+      editable: 'never',
+      width: 300,
+      filtering: false,
+      render: rowData => <Link href={rowData.link}>Link Download</Link>
+    }
+  ];
+
   const [fillter, setFillter] = React.useState({
     hk: '1',
     nh: '2018-2019',
@@ -73,133 +197,8 @@ const PrintList = props => {
   });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: isPrintList ? dataPrint : dataHistory,
-    columns: isPrintList
-      ? [
-          {
-            title: 'Đã In',
-            field: 'isPrint',
-            editable: 'onAdd',
-            type: 'boolean',
-            render: rowData => (
-              <div style={{ marginLeft: '10px' }}>
-                {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
-              </div>
-            )
-          },
-          { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-          {
-            title: 'Họ tên',
-            field: 'name',
-            editable: 'never',
-            filtering: false
-          },
-          {
-            title: 'Loại xác nhận',
-            field: 'case',
-            lookup: {
-              1: 'Đang học',
-              2: 'Bảo lưu',
-              3: 'Chờ xét tốt nghiệp',
-              4: 'Chờ xét hoàn tất chương trình',
-              5: 'Vay vốn',
-              6: 'Giấy giới thiệu',
-              7: 'Thời gian học',
-              8: 'Hoàn tất chương trình'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            },
-            customFilterAndSearch: (term, rowData) => {
-              if (valueCase !== term) {
-                valueCase = term;
-              }
-              if (term.length !== 0) {
-                return term == rowData.case;
-              }
-              return rowData;
-            }
-          },
-          {
-            title: 'Lý do',
-            field: 'reason',
-            editable: 'never'
-          },
-          {
-            title: 'Ghi chú',
-            field: 'ghiChu',
-            editable: 'never',
-            filtering: false
-          },
-          {
-            title: 'Ngày thêm',
-            field: 'date',
-            editable: 'never',
-            type: 'date',
-            filtering: false
-          }
-        ]
-      : [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-          {
-            title: 'Họ tên',
-            field: 'name',
-            editable: 'never',
-            filtering: false
-          },
-          {
-            title: 'Loại xác nhận',
-            field: 'case',
-            lookup: {
-              1: 'Đang học',
-              2: 'Bảo lưu',
-              3: 'Chờ xét tốt nghiệp',
-              4: 'Chờ xét hoàn tất chương trình',
-              5: 'Vay vốn',
-              6: 'Giấy giới thiệu',
-              7: 'Thời gian học',
-              8: 'Hoàn tất chương trình'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            },
-            customFilterAndSearch: (term, rowData) => {
-              if (valueCase !== term) {
-                valueCase = term;
-              }
-              if (term.length !== 0) {
-                return term === rowData.case;
-              }
-              return rowData;
-            }
-          },
-          {
-            title: 'Lý do',
-            field: 'reason',
-            editable: 'never'
-          },
-          {
-            title: 'Ghi chú',
-            field: 'ghiChu',
-            editable: 'never',
-            filtering: false
-          },
-          {
-            title: 'Link',
-            field: 'link',
-            editable: 'never',
-            filtering: false
-          },
-          {
-            title: 'Ngày in',
-            field: 'date',
-            editable: 'never',
-            type: 'date',
-            filtering: false
-          }
-        ]
+    data: isPrintList ? dataList : dataList,
+    columns: Print
   });
 
   if (updateBegin === 0) {
@@ -207,19 +206,19 @@ const PrintList = props => {
     updateBegin += 1;
   }
 
-  if (dataPrint.length > 0 && updateBegin === 1) {
-    setState({ ...state, data: dataPrint });
+  if (dataList.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataList, columns: isPrintList ? Print : His });
     updateBegin += 1;
   }
 
   if (isPrint) {
-    setState({ ...state, data: dataPrint });
+    setState({ ...state, data: dataList });
     isPrint = !isPrint;
   }
 
-  if (isHistoryList && state.data.length !== dataHistory.length) {
-    setState({ ...state, data: dataHistory });
-  }
+  // if (isHistoryList && state.data.length !== dataList.length) {
+  //   setState({ ...state, data: dataList });
+  // }
 
   const reparseCase = tmpcase => {
     switch (tmpcase) {
@@ -247,20 +246,28 @@ const PrintList = props => {
   const reparseCaseToString = tmpcase => {
     switch (tmpcase) {
       case '1':
+      case 1:
         return 'Đang học';
       case '2':
+      case 2:
         return 'Bảo lưu';
       case '3':
+      case 3:
         return 'Chờ xét tốt nghiệp';
       case '4':
+      case 4:
         return 'Chờ xét hoàn tất chương trình';
       case '5':
+      case 5:
         return 'Vay vốn';
       case '6':
+      case 6:
         return 'Giấy giới thiệu';
       case '7':
+      case 7:
         return 'Thời gian học';
       case '8':
+      case 8:
         return 'Hoàn tất chương trình';
       default:
         return null;
@@ -288,7 +295,7 @@ const PrintList = props => {
         <CardActions className={classes.actions}>
           <Filters onFilter={handleFilter} />
           <ContainedButton
-            handleClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
+            handleClick={() => dispatch(XNSVActions.getListExport(fillter))}
             label="Lọc sinh viên"
           />
         </CardActions>
@@ -320,7 +327,16 @@ const PrintList = props => {
                   ? [
                       {
                         icon: icons.Print,
-                        tooltip: 'Print'
+                        tooltip: 'Print',
+                        onClick: (event, rowData) => {
+                          const data = {
+                            pk: rowData.pk,
+                            sk: rowData.sk,
+                            type: reparseCaseToString(rowData.case)
+                          };
+                          dispatch(XNSVActions.handlePrintOneStudent(data));
+                          isPrint = !isPrint;
+                        }
                       }
                     ]
                   : []
@@ -366,7 +382,10 @@ const PrintList = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(XNSVActions.getListHistory())}
+              onClick={() => {
+                dispatch(XNSVActions.getListHistory());
+                updateBegin = 1;
+              }}
               variant="contained"
               color="primary"
               size="small"
@@ -397,7 +416,7 @@ const PrintList = props => {
             </Button>
             <Button
               style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(XNSVActions.handleAllList())}
+              onClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
               variant="contained"
               color="primary"
               size="small"
