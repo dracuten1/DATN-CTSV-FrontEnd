@@ -9,7 +9,6 @@ import {
   Print,
   Title,
   PrintList,
-  AllList
 } from 'pages/DRL/components';
 
 const useStyles = makeStyles(theme => ({
@@ -22,7 +21,6 @@ const DashboardDRL = () => {
   const classes = useStyles();
 
   const DRLState = useSelector(state => state.DRLState);
-  const { isAllList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
@@ -40,7 +38,7 @@ const DashboardDRL = () => {
         </Grid>
 
         <Grid item lg={12} md={12} xl={12} xs={12}>
-          {isAllList ? <AllList /> : <PrintList />}
+          <PrintList />
         </Grid>
       </Grid>
     </div>

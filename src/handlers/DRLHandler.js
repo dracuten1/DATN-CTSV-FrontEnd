@@ -85,6 +85,15 @@ export const PrintOneStudent = async (PK, SK) => {
   return response;
 };
 
+export const PrintAllStudent = async (keys) => {
+  const url = `drl/printfmulti`;
+
+  const response = await HttpClient.sendPatchWithBody(url, { keys });
+
+  return response;
+};
+
+
 export const GetPrintListByDate = async (from, to) => {
   const url = `drl/printf?from=${from}&to=${to}`;
 

@@ -10,11 +10,7 @@ import {
   CardContent,
   Button,
   Divider,
-  Grid,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText
+  Grid
 } from '@material-ui/core';
 import moment from 'moment';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
@@ -25,8 +21,10 @@ import { logger } from 'core/services/Apploger';
 import icons from 'shared/icons';
 import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import { AddDialog } from '../AddDialog';
+import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -65,6 +63,12 @@ const PrintList = props => {
     isHistoryList,
     isAllList
   } = DRLState;
+
+  const [fillter, setFillter] = React.useState({
+    type: 'HK1',
+    time: '2018-2019',
+    xeploai: 'Giỏi'
+  });
 
   logger.info('history', dataPrint);
   logger.info('dataPrint: ', dataPrint);
@@ -190,10 +194,11 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
+    console.log(moment(new Date()).format('x'));
     dispatch(DRLActions.getNotPrintYet());
     dispatch(
       DRLActions.getListPrintByDate(
-        moment(new Date()).format('x'),
+        moment(new Date().setHours(0)).format('x'),
         moment(new Date()).format('x')
       )
     );
@@ -272,12 +277,29 @@ const PrintList = props => {
   const handleClose = current => event => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
-
+  const handleFilter = (prop, data) => {
+    setFillter({ ...fillter, [prop]: data });
+  };
   logger.info('dataTable: ', state.data);
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
+      <Divider />
+      {isAllList ? (
+        <CardActions className={classes.actions}>
+          <Filters onFilter={handleFilter} />
+          <ContainedButton
+            handleClick={() => {
+              dispatch(DRLActions.fillterListData(fillter));
+              updateBegin = 1;
+            }}
+            label="Lọc sinh viên"
+          />
+        </CardActions>
+      ) : (
+        ''
+      )}
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -358,17 +380,6 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    // dispatch(DRLActions.getListHistory());
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Xem Lịch Sử
-                </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
                     dispatch(DRLActions.getNotPrintYet());
                     updateBegin = 1;
                   }}
@@ -399,11 +410,12 @@ const PrintList = props => {
             ) : (
               <>
                 <Button
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       DRLActions.fillterListData('HK1', '2018-2019', 'Giỏi')
-                    )
-                  }
+                    );
+                    updateBegin = 1;
+                  }}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -451,8 +463,51 @@ const PrintList = props => {
                 >
                   In theo trường hợp
                 </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={async () => {
+                    const keys = dataPrint.map(item => {
+                        return ({
+                          PK: item.pk,
+                          SK: item.sk
+                        });
+                    });
+                    const data = await DRLHandler.PrintAllStudent(keys);
+
+                    if (data.statusCode === 200) {
+                      dispatch({
+                        type: 'ADD_LINK_PRINT',
+                        listLink: data.body,
+                        listData: []
+                      });
+
+                      setSnackBarValue(printSuccessSnackBar);
+                    } else {
+                      setSnackBarValue(errorSnackBar);
+                    }
+                    isPrint = !isPrint;
+                    valueCase = null;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  In tất cả
+                </Button>
               </>
             )}
+            <Button
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                dispatch(DRLActions.getListHistory());
+                updateBegin = 1;
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              Xem Lịch Sử
+            </Button>
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>

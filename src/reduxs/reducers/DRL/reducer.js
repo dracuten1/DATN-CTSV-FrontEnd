@@ -1,7 +1,7 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isdataPrint: false,
+  isAllList: false,
   isPrintList: true,
   isHistoryList: false,
   dataPrint: [],
@@ -14,14 +14,14 @@ const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         dataPrint: action.payload,
-        isdataPrint: true,
+        isAllList: true,
         isPrintList: false,
         isHistoryList: false
       };
     case ActionTypes.PRINT_LIST:
       return {
         ...state,
-        isdataPrint: false,
+        isAllList: false,
         isPrintList: true,
         isHistoryList: false
       };
@@ -29,7 +29,7 @@ const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         dataPrint: action.payload,
-        isdataPrint: false,
+        isAllList: false,
         isPrintList: true,
         isHistoryList: false
       };
@@ -37,7 +37,7 @@ const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         dataPrint: action.payload,
-        isdataPrint: false,
+        isAllList: false,
         isPrintList: false,
         isHistoryList: true
       };
