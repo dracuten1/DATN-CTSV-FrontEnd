@@ -37,7 +37,11 @@ export default function SimpleSelect(props) {
   const drawData = () => {
     const { data } = props;
     return data.map((val, ind) => {
-      return (
+      return val === 'None' ? (
+        <MenuItem key={ind} value={null}>
+          {val}
+        </MenuItem>
+      ) : (
         <MenuItem key={ind} value={val}>
           {val}
         </MenuItem>

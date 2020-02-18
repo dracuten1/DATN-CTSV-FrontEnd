@@ -52,11 +52,11 @@ const getCompany = () => async dispatch => {
   history.push('/xnsv');
 };
 
-const exportWithFillter = (fillter) => async dispatch => {
-  logger.info('XNSVAction:: Fillter: fillter: ', fillter);
+const exportWithFilter = (filter) => async dispatch => {
+  logger.info('XNSVAction:: filter: filter: ', filter);
   
-  const response = await XNSVHandler.ExportWithFillter(fillter);
-  logger.info('XNSVAction:: ExportFillter: reponse: ', response);
+  const response = await XNSVHandler.exportWithFilter(filter);
+  logger.info('XNSVAction:: Exportfilter: reponse: ', response);
   history.push('/xnsv');
 };
 
@@ -68,5 +68,5 @@ export default {
   deleteOneCertificate,
   getListHistory,
   getCompany,
-  exportWithFillter
+  exportWithFilter
 };

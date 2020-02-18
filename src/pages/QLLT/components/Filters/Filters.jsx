@@ -20,19 +20,19 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Học kỳ"
         prop="hk"
-        data={['1', '2']}
+        data={['None', '1', '2']}
       />
       <Filter
         clickFilter={onFilter}
         label="Năm học"
         prop="nh"
-        data={['19-20','18-19', '17-18', '16-17', '15-16']}
+        data={['None', '19-20','18-19', '17-18', '16-17', '15-16']}
       />
       <Filter
         clickFilter={onFilter}
         label="Loại"
         prop="type"
-        data={['all', 'ktx']}
+        data={['None', 'all', 'ktx']}
       />
     </div>
   );

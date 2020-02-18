@@ -50,11 +50,11 @@ const updateOneStudentByType = (data, type) => async dispatch => {
   history.push('/qllt');
 };
 
-// const exportWithFillter = (fillter) => async dispatch => {
-//   logger.info('QLLTAction:: Fillter: fillter: ', fillter);
+// const exportWithFilter = (filter) => async dispatch => {
+//   logger.info('QLLTAction:: filter: filter: ', filter);
 
-//   const response = await QLLTHandler.ExportWithFillter(fillter);
-//   logger.info('QLLTAction:: ExportFillter: reponse: ', response);
+//   const response = await QLLTHandler.exportWithFilter(filter);
+//   logger.info('QLLTAction:: Exportfilter: reponse: ', response);
 //   history.push('/qllt');
 // };
 
@@ -62,5 +62,5 @@ export default {
   getAllListWithFilter,
   getKtxListWithFilter,
   updateOneStudentByType
-  // exportWithFillter
+  // exportWithFilter
 };

@@ -188,7 +188,7 @@ const PrintList = props => {
     }
   ];
 
-  const [fillter, setFillter] = React.useState({
+  const [filter, setFilter] = React.useState({
     hk: '1',
     nh: '2018-2019',
     type: 'Đang học',
@@ -286,7 +286,7 @@ const PrintList = props => {
   };
 
   const handleFilter = (prop, data) => {
-    setFillter({ ...fillter, [prop]: data });
+    setFilter({ ...filter, [prop]: data });
   };
 
   return (
@@ -298,7 +298,7 @@ const PrintList = props => {
           <Filters onFilter={handleFilter} />
           <ContainedButton
             handleClick={() => {
-              dispatch(XNSVActions.getListExport(fillter));
+              dispatch(XNSVActions.getListExport(filter));
               updateBegin = 1;
             }}
             label="Lọc sinh viên"
@@ -383,63 +383,92 @@ const PrintList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => {
-                dispatch(XNSVActions.getListHistory());
-                updateBegin = 1;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Xem lịch sử
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => {
-                dispatch(XNSVActions.getNotPrintYet());
-                updateBegin = 1;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Danh sách in
-            </Button>
-
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => setOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Thêm sinh viên in
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => dispatch(XNSVActions.exportWithFillter(fillter))}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Export
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => {
-                dispatch(
-                  XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
-                );
-                isPrint = !isPrint;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              In theo trường hợp
-            </Button>
+            {isPrintList ? (
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(XNSVActions.getListHistory());
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem lịch sử
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => setOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Thêm sinh viên in
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(
+                      XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                    );
+                    isPrint = !isPrint;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  In theo trường hợp
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(
+                      XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                    );
+                    isPrint = !isPrint;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  In tất cả
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(XNSVActions.getNotPrintYet());
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Danh sách in
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => dispatch(XNSVActions.exportWithfilter(filter))}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Import
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => dispatch(XNSVActions.exportWithfilter(filter))}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Export
+                </Button>
+              </>
+            )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>

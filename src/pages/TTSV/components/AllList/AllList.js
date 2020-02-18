@@ -17,7 +17,7 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import mockData from './data';
 import Columns from './columns';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
 
@@ -41,61 +41,94 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataPrint, isAlllist } = QLLTState;
+  const { dataList, isCase } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
   let arrColumns = [];
-  switch (isAlllist) {
-    case 1://SV nuoc ngoai
+  switch (isCase) {
+    case 1: //SV nuoc ngoai
       arrColumns = Columns.SVNN;
       break;
-    case 2://DTB
+    case 2: //DTB
       arrColumns = Columns.DTB;
       break;
-    case 3://Danh sach tot nghiep
+    case 3: //Danh sach tot nghiep
       arrColumns = Columns.DSTN;
       break;
-    case 4://Hoan thanh tin chi
+    case 4: //Hoan thanh tin chi
       arrColumns = Columns.HTTC;
       break;
-    case 5://Dang hoc
+    case 5: //Dang hoc
       arrColumns = Columns.HTTC;
       break;
-    case 6://Canh cao hoc vu
+    case 6: //Canh cao hoc vu
       arrColumns = Columns.CCHV;
       break;
-    case 7://Bi thoi hoc
+    case 7: //Bi thoi hoc
       arrColumns = Columns.CCHV;
       break;
-    default://Dang ky hoc phan
+    default:
+      //Dang ky hoc phan
       arrColumns = Columns.DKHP;
       break;
   }
 
   const [open, setOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState({
+    hk: '1',
+    nh: '19-20',
+    type: 'DangHoc'
+  });
   const [state, setState] = useState({
-    data: isAlllist ? mockData.info : mockData.importInfo,
+    data: isCase ? mockData.info : mockData.importInfo,
     columns: arrColumns
   });
+
+  if (updateBegin === 0) {
+    dispatch(Actions.getListWithFilter(filter));
+    updateBegin += 1;
+  }
+
+  if (dataList.length > 0 && updateBegin === 1) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: arrColumns
+    });
+    updateBegin += 1;
+  }
 
   const handleAdd = newData => {
     setState(prevState => {
       const data = [...prevState.data];
+      newData.scn = data.length + 1;
+      // newData.case = reparseCase(newData.case);
       data.push(newData);
       return { ...prevState, data };
     });
     setOpen(false);
   };
 
+  const handleFilter = (prop, data) => {
+    setFilter({ ...filter, [prop]: data });
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <Filters onFilter={handleFilter} />
+        <ContainedButton
+          handleClick={() => {
+            dispatch(Actions.getListWithFilter(filter));
+            updateBegin = 1;
+          }}
+          label="Lọc sinh viên"
+        />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>
@@ -105,7 +138,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? (
+                  {isCase ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
                     <b>DANH SÁCH IMPORT</b>
@@ -158,79 +191,7 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Sinh viên nước ngoài
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Điểm trung bình
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Tốt nghiệp
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Hoàn tất chương trình
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Đang học
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Cảnh cáo học vụ
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Bị thôi học
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Bảo lưu
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Đăng ký HP
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(Actions.exportWithFilter(filter))}
           variant="contained"
           color="primary"
           size="small"
@@ -238,7 +199,7 @@ const AllList = props => {
           Import
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(Actions.exportWithFilter(filter))}
           variant="contained"
           color="primary"
           size="small"
@@ -246,7 +207,7 @@ const AllList = props => {
           Export
         </Button>
         <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => dispatch(Actions.getListWithFilter(filter))}
           variant="contained"
           color="primary"
           size="small"

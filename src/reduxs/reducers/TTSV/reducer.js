@@ -1,7 +1,7 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isCase: 1,
+  isCase: 5,
   dataList: [],
   listLink: []
 };
@@ -14,7 +14,7 @@ const ttsvReducer = (state = INIT_STATE, action) => {
       return { ...state, isCase: 2 };
     case ActionTypes.DSTN:
       return { ...state, isCase: 3 };
-    case ActionTypes.HTTC:
+    case ActionTypes.HTCT:
       return { ...state, isCase: 4 };
     case ActionTypes.DH:
       return { ...state, isCase: 5 };
@@ -42,7 +42,7 @@ const ttsvReducer = (state = INIT_STATE, action) => {
         dataList: action.payload,
         isCase: 3
       };
-    case ActionTypes.GET_LIST_HTTC:
+    case ActionTypes.GET_LIST_HTCT:
       return {
         ...state,
         dataList: action.payload,
@@ -76,7 +76,12 @@ const ttsvReducer = (state = INIT_STATE, action) => {
       const temp = state.listLink;
       temp.push(action.listLink);
       return { ...state, listLink: temp, dataPrint: action.listData };
-    }
+    };
+    case ActionTypes.ADD_LINK_EXPORT: {
+      const ex = state.listLink;
+      ex.push(action.listLink);
+      return { ...state, listLink: ex };
+    };
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
     case ActionTypes.PRINT_BY_TYPE:

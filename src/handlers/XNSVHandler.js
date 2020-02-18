@@ -116,8 +116,8 @@ export const GetCompany = async () => {
   return response;
 };
 
-export const ExportWithFillter = async (fillter) => {
-  const {nh, hk, type, fromDate, toDate} = fillter;
+export const ExportWithFilter = async (filter) => {
+  const {nh, hk, type, fromDate, toDate} = filter;
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPatch(url);
@@ -125,8 +125,8 @@ export const ExportWithFillter = async (fillter) => {
   return response;
 };
 
-export const GetListExport = async (fillter) => {
-  const {nh, hk, type, fromDate, toDate} = fillter;
+export const GetListExport = async (filter) => {
+  const {nh, hk, type, fromDate, toDate} = filter;
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPut(url);

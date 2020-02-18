@@ -1,72 +1,83 @@
-import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as TTSVHandler from 'handlers/TTSVHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
 
-const handleAllList = () => async dispatch => {
-  dispatch({ type: Types.ALL_LIST });
-  history.push('/xnsv');
-};
-
-const handlePrintList = () => async dispatch => {
-  dispatch({ type: Types.PRINT_LIST });
-  history.push('/xnsv');
-};
-
-const getNotPrintYet = () => async dispatch => {
-  const status = 'ChuaIn';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/xnsv');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
-};
-
-const deleteOneCertificate = (pk, sk) => async dispatch => {
-  const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
-
-  logger.info('XNSVAction:: deleteOneCertificate: reponse: ', response);
-
-  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-  history.push('/xnsv');
-};
-
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
-  const status = 'ChuaIn';
-  const listData = await XNSVHandler.GetListCertificate(status);
-  logger.info('XNSVAction:: PrintByType: reponse: ', response);
-  if (response.statusCode === 200) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-    history.push('/xnsv');
+const parseNHToNumber = nh => {
+  switch (nh) {
+    case '2016-2017':
+      return 1;
+    case '2017-2018':
+      return 2;
+    case '2018-2019':
+      return 3;
+    case '2019-2020':
+      return 4;
+    default:
+      return 5;
   }
 };
 
-const getCompany = () => async dispatch => {
-  const response = await XNSVHandler.GetCompany();
-  logger.info('XNSVAction:: Company: reponse: ', response);
-  history.push('/xnsv');
+const getListWithFilter = filter => async dispatch => {
+  const response = await TTSVHandler.GetListWithFilter(filter);
+  logger.info('TTSVAction:: getListAll: reponse: ', response);
+  const { type } = filter;
+  const data = Object.keys(response).map(key => {
+    response[key].nh = parseNHToNumber(response[key].NamHoc);
+    return response[key];
+  });
+  switch (type) {
+    case 'SinhVienNuocNgoai':
+      dispatch({ type: Types.GET_LIST_SVNN, payload: data });
+      break;
+    case 'DiemTrungBinh':
+      dispatch({ type: Types.GET_LIST_DTB, payload: data });
+      break;
+    case 'TotNghiep':
+      dispatch({ type: Types.GET_LIST_DSTN, payload: data });
+      break;
+    case 'HoanTatChuongTrinh':
+      dispatch({ type: Types.GET_LIST_HTCT, payload: data });
+      break;
+    case 'DangHoc':
+      dispatch({ type: Types.GET_LIST_DH, payload: data });
+      break;
+    case 'CanhCaoHocVu':
+      dispatch({ type: Types.GET_LIST_CCHV, payload: data });
+      break;
+    case 'BuocThoiHoc':
+      dispatch({ type: Types.GET_LIST_BTH, payload: data });
+      break;
+    case 'DangKyHocPhan':
+      dispatch({ type: Types.GET_LIST_DKHP, payload: data });
+      break;
+    default:
+      break;
+  }
+  history.push('/ttsv');
 };
 
-const exportWithFillter = (fillter) => async dispatch => {
-  logger.info('XNSVAction:: Fillter: fillter: ', fillter);
-  
-  const response = await XNSVHandler.ExportWithFillter(fillter);
-  logger.info('XNSVAction:: ExportFillter: reponse: ', response);
-  history.push('/xnsv');
+// const updateOneStudentByType = (data, type) => async dispatch => {
+//   const response = await TTSVHandler.UpdateOneStudentByType(data, type);
+//   logger.info('TTSVAction:: update: reponse: ', response);
+//   dispatch({ type: Types.UPDATE_STUDENT });
+//   history.push('/qllt');
+// };
+
+const exportWithFilter = (filter) => async dispatch => {
+  logger.info('TTSVAction:: filter: filter: ', filter);
+
+  const response = await TTSVHandler.ExportWithFilter(filter);
+  logger.info('TTSVAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+  }
+  history.push('/ttsv');
 };
 
 export default {
-  handleAllList,
-  handlePrintList,
-  handlePrint,
-  getNotPrintYet,
-  deleteOneCertificate,
-  getListHistory,
-  getCompany,
-  exportWithFillter
+  getListWithFilter,
+  // updateOneStudentByType
+  exportWithFilter
 };

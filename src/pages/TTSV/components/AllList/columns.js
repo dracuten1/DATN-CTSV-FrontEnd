@@ -1,7 +1,7 @@
 const SVNN = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Tên chương trình',
     field: 'ktx'
@@ -38,7 +38,7 @@ const SVNN = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',
@@ -63,9 +63,9 @@ const SVNN = [
 ];
 
 const DTB = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Ngày sinh',
     field: 'dob'
@@ -91,7 +91,7 @@ const DTB = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',
@@ -109,9 +109,9 @@ const DTB = [
 ];
 
 const DSTN = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Ngày sinh',
     field: 'dob'
@@ -141,7 +141,7 @@ const DSTN = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',
@@ -159,9 +159,9 @@ const DSTN = [
 ];
 
 const HTTC = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Học kỳ',
     field: 'HocKy',
@@ -175,7 +175,7 @@ const HTTC = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',
@@ -193,9 +193,9 @@ const HTTC = [
 ];
 
 const CCHV = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'ĐTB1',
     field: 'portal'
@@ -217,7 +217,7 @@ const CCHV = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',
@@ -235,9 +235,9 @@ const CCHV = [
 ];
 
 const DKHP = [
-  { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-  { title: 'MSSV', field: 'mssv', filtering: false },
-  { title: 'Họ tên', field: 'name', filtering: false },
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Mã MH',
     field: 'portal'
@@ -267,7 +267,7 @@ const DKHP = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: '2016-2017',
       2: '2017-2018',

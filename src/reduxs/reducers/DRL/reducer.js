@@ -1,12 +1,10 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isAllList: false,
+  isdataPrint: false,
   isPrintList: true,
   isHistoryList: false,
-  allList: [],
   dataPrint: [],
-  dataHistory: [],
   listLink: []
 };
 
@@ -15,15 +13,15 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.ALL_LIST:
       return {
         ...state,
-        allList: action.payload,
-        isAllList: true,
+        dataPrint: action.payload,
+        isdataPrint: true,
         isPrintList: false,
         isHistoryList: false
       };
     case ActionTypes.PRINT_LIST:
       return {
         ...state,
-        isAllList: false,
+        isdataPrint: false,
         isPrintList: true,
         isHistoryList: false
       };
@@ -31,15 +29,15 @@ const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         dataPrint: action.payload,
-        isAllList: false,
+        isdataPrint: false,
         isPrintList: true,
         isHistoryList: false
       };
     case ActionTypes.GET_HISTORY_LIST:
       return {
         ...state,
-        dataHistory: action.payload,
-        isAllList: false,
+        dataPrint: action.payload,
+        isdataPrint: false,
         isPrintList: false,
         isHistoryList: true
       };

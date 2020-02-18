@@ -59,14 +59,14 @@ const PrintList = props => {
   const DRLState = useSelector(state => state.DRLState);
 
   const {
-    dataPrint,
     listLink,
-    dataHistory,
+    dataPrint,
     isPrintList,
-    isHistoryList
+    isHistoryList,
+    isAllList
   } = DRLState;
 
-  logger.info('history', dataHistory);
+  logger.info('history', dataPrint);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
   const [notice, setNotice] = React.useState(false);
@@ -78,58 +78,115 @@ const PrintList = props => {
   };
   const handleImport = () => {};
 
-  const [state, setState] = useState({
-    data: isPrintList ? dataPrint : dataHistory,
-    columns: [
-      {
-        title: 'Đã In',
-        field: 'isPrint',
-        editable: 'onAdd',
-        type: 'boolean',
-        render: rowData => (
-          <div style={{ marginLeft: '10px' }}>
-            {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
-          </div>
-        )
+  const PrintColumns = [
+    {
+      title: 'Đã In',
+      field: 'isPrint',
+      editable: 'onAdd',
+      type: 'boolean',
+      render: rowData => (
+        <div style={{ marginLeft: '10px' }}>
+          {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
+        </div>
+      )
+    },
+    { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+    { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
+    {
+      title: 'Họ tên',
+      field: 'name',
+      editable: 'never',
+      filtering: false
+    },
+    {
+      title: 'Trường hợp',
+      field: 'case',
+      lookup: {
+        HK: 'Năm học-Học kỳ',
+        NH: 'Năm Học',
+        All: 'Tất cả',
+        TK: 'Toàn Khoá'
       },
-      { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-      { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-      {
-        title: 'Họ tên',
-        field: 'name',
-        editable: 'never',
-        filtering: false
+      filterCellStyle: {
+        paddingTop: 1
       },
-      {
-        title: 'Trường hợp',
-        field: 'case',
-        lookup: {
-          HK: 'Năm học-Học kỳ',
-          NH: 'Năm Học',
-          All: 'Tất cả',
-          TK: 'Toàn Khoá'
-        },
-        filterCellStyle: {
-          paddingTop: 1
-        },
-        customFilterAndSearch: (term, rowData) => {
-          if (valueCase !== term) {
-            valueCase = term;
-          }
-          if (term.length !== 0) {
-            return term == rowData.case;
-          }
-          return rowData;
+      customFilterAndSearch: (term, rowData) => {
+        if (valueCase !== term) {
+          valueCase = term;
         }
-      },
-      {
-        title: 'Ngày in',
-        field: 'date',
-        editable: 'never',
-        type: 'date',
-        filtering: false
+        if (term.length !== 0) {
+          return term == rowData.case;
+        }
+        return rowData;
       }
-    ]
+    },
+    {
+      title: 'Ngày in',
+      field: 'date',
+      editable: 'never',
+      type: 'date',
+      filtering: false
+    }
+  ];
+
+  const AllColumns = [
+    // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+    { title: 'MSSV', field: 'mssv', filtering: false },
+    { title: 'Họ tên', field: 'name', filtering: false },
+    {
+      title: 'Năm học',
+      field: 'year',
+      lookup: {
+        1: '2016-2017',
+        2: '2017-2018',
+        3: '2018-2019',
+        4: '2019-2020'
+      },
+      filterCellStyle: {
+        paddingTop: 1
+      }
+    },
+    {
+      title: 'Học kỳ',
+      field: 'semester',
+      lookup: {
+        1: '1',
+        2: '2',
+        3: 'Cả năm'
+      },
+      filterCellStyle: {
+        paddingTop: 1
+      }
+    },
+    {
+      title: 'Điểm',
+      field: 'score'
+    },
+    {
+      title: 'Xếp loại',
+      field: 'grade',
+      lookup: {
+        1: 'Xuất sắc',
+        2: 'Giỏi',
+        3: 'Khá',
+        4: 'Trung bình',
+        5: 'Yếu',
+        6: 'Kém'
+      },
+      filterCellStyle: {
+        paddingTop: 1
+      }
+    },
+    {
+      title: 'Ghi chú',
+      field: 'note',
+      filtering: false
+    }
+  ];
+
+  const [state, setState] = useState({
+    data: isPrintList ? dataPrint : dataPrint,
+    columns: PrintColumns
   });
 
   if (updateBegin === 0) {
@@ -144,17 +201,17 @@ const PrintList = props => {
   }
 
   if (dataPrint.length > 0 && updateBegin === 1) {
-    setState({ ...state, data: dataPrint });
+    setState({
+      ...state,
+      data: dataPrint,
+      columns: isAllList ? AllColumns : PrintColumns
+    });
     updateBegin += 1;
   }
 
   if (isPrint) {
     setState({ ...state, data: dataPrint });
     isPrint = !isPrint;
-  }
-
-  if (isHistoryList && state.data.length !== dataHistory.length) {
-    setState({ ...state, data: dataHistory });
   }
 
   const reparseCase = tmpcase => {
@@ -296,97 +353,106 @@ const PrintList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={() =>
-                dispatch(DRLActions.fillterListData('HK1', '2018-2019', 'Giỏi'))
-              }
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Xem toàn bộ
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => {
-                // dispatch(DRLActions.getListHistory());
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Xem Lịch Sử
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => {
-                dispatch(DRLActions.getNotPrintYet());
-                updateBegin = 1;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Danh sách in
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => setOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Thêm sinh viên in
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={() => setImportOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Import
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              Export
-            </Button>
-            <Button
-              style={{ marginLeft: '8px' }}
-              onClick={async () => {
-                if (valueCase !== null) {
-                  const data = await DRLHandler.ExportToDocx(valueCase[0]);
-                  const listData = await DRLHandler.GetListCertificate(
-                    'ChuaIn'
-                  );
-
-                  if (data.statusCode === 200) {
-                    dispatch({
-                      type: 'ADD_LINK_PRINT',
-                      listLink: data.body,
-                      listData
-                    });
-
-                    setSnackBarValue(printSuccessSnackBar);
-                  } else {
-                    setSnackBarValue(errorSnackBar);
+            {isAllList ? (
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    // dispatch(DRLActions.getListHistory());
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem Lịch Sử
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(DRLActions.getNotPrintYet());
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Danh sách in
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Import
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Export
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() =>
+                    dispatch(
+                      DRLActions.fillterListData('HK1', '2018-2019', 'Giỏi')
+                    )
                   }
-                } else {
-                  setSnackBarValue(errorSnackBar);
-                }
-                isPrint = !isPrint;
-                valueCase = null;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              In theo trường hợp
-            </Button>
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem toàn bộ
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => setOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Thêm sinh viên in
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={async () => {
+                    if (valueCase !== null) {
+                      const data = await DRLHandler.ExportToDocx(valueCase[0]);
+                      const listData = await DRLHandler.GetListCertificate(
+                        'ChuaIn'
+                      );
+
+                      if (data.statusCode === 200) {
+                        dispatch({
+                          type: 'ADD_LINK_PRINT',
+                          listLink: data.body,
+                          listData
+                        });
+
+                        setSnackBarValue(printSuccessSnackBar);
+                      } else {
+                        setSnackBarValue(errorSnackBar);
+                      }
+                    } else {
+                      setSnackBarValue(errorSnackBar);
+                    }
+                    isPrint = !isPrint;
+                    valueCase = null;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  In theo trường hợp
+                </Button>
+              </>
+            )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -408,23 +474,6 @@ const PrintList = props => {
         handleImport={handleImport}
         importCase={'import-drl'}
       />
-      <Dialog
-        open={notice}
-        onClose={() => setNotice(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Không có gì để in
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setNotice(false)} color="primary" autoFocus>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Card>
   );
 };
