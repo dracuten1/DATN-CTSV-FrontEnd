@@ -14,6 +14,7 @@ import Policy from '@material-ui/icons/Accessible';
 import Activity from '@material-ui/icons/ImportContacts';
 import Card from '@material-ui/icons/Payment';
 import BlockIcon from '@material-ui/icons/Block';
+import LockIcon from '@material-ui/icons/Lock';
 import Hospital from '@material-ui/icons/LocalHospital';
 import Scholarship from '@material-ui/icons/School';
 import List from '@material-ui/core/List';
@@ -84,6 +85,16 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
+          onClick={() => history.push('/changepass')}
+        >
+          <ListItemIcon>
+            <LockIcon />
+          </ListItemIcon>
+          <ListItemText primary="Đổi mật khẩu" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
           onClick={() => dispatch(XNSVActions.getNotPrintYet())}
         >
           <ListItemIcon>
@@ -101,61 +112,37 @@ function ResponsiveDrawer(props) {
           </ListItemIcon>
           <ListItemText primary="Điểm rèn luyện" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => history.push('/ttsv')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/ttsv')}>
           <ListItemIcon>
             <Status />
           </ListItemIcon>
           <ListItemText primary="Tình trạng sinh viên" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() =>  history.push('/qllt')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/qllt')}>
           <ListItemIcon>
             <Home />
           </ListItemIcon>
           <ListItemText primary="Quản lý lưu trú" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => history.push('/shcd')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/shcd')}>
           <ListItemIcon>
             <Activity />
           </ListItemIcon>
           <ListItemText primary="Sinh hoạt công dân" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => history.push('/ktkl')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/ktkl')}>
           <ListItemIcon>
             <BlockIcon />
           </ListItemIcon>
           <ListItemText primary="Khen thưởng - Kỷ luật" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => history.push('/qlhb')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/qlhb')}>
           <ListItemIcon>
             <Scholarship />
           </ListItemIcon>
           <ListItemText primary="Quản lý học bổng" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => history.push('/hssv')}
-        >
+        <ListItem button component="a" onClick={() => history.push('/hssv')}>
           <ListItemIcon>
             <Description />
           </ListItemIcon>

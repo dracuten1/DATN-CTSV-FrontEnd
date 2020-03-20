@@ -11,7 +11,7 @@ const poolData = {
     ClientId: '32gh8i178tatha2f01gps8k014'
 };
 const userPool = new CognitoUserPool(poolData);
-const redirectPath = '/drl';
+const redirectPath = '/dashboard';
 
 
 
@@ -53,7 +53,12 @@ export const logout = () => {
         type: actionTypes.AUTH_LOGOUT
     };
 };
-
+export const changPassSuccess = (error) => {
+    return {
+        type: actionTypes.CHANGE_PASSWORD,
+        error
+    };
+};
 export const checkAuthTimeout = (expirationTime) => {
     return dispatch => {
         setTimeout(() => {
@@ -191,3 +196,23 @@ export const authCheckState = () => {
     };
 };
 
+export const ChangePass = (username, oldPassword, newPassword) => {
+    return dispatch => {
+        // const cognitoUser = new CognitoUser({
+        //     Username: username,
+        //     Pool: userPool
+        // });
+    const cognitoUser = userPool.getCurrentUser();
+
+        console.log(cognitoUser);
+        if (cognitoUser) {
+            cognitoUser.changePassword(oldPassword, newPassword, (err, result) => {
+                if (err) {
+                    console.log(err.message || JSON.stringify(err));
+                    dispatch(authFail(true));
+                }
+                else dispatch(changPassSuccess());
+            });
+        }
+    };
+};

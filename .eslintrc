@@ -32,7 +32,8 @@
       "no-use-before-define": "off",
       "no-unused-expressions":"off",
       "react/jsx-curly-brace-presence":"off",
-      "dot-notation": "off"
+      "dot-notation": "off",
+      "react/no-unused-state": "off"
     },
     "globals": {
       "window": true,
