@@ -414,6 +414,7 @@ const PrintList = props => {
                     );
                     isPrint = !isPrint;
                   }}
+                  disabled={valueCase ? "false" : "true"}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -428,6 +429,7 @@ const PrintList = props => {
                     );
                     isPrint = !isPrint;
                   }}
+                  disabled={valueCase ? "false" : "true"}
                   variant="contained"
                   color="primary"
                   size="small"
