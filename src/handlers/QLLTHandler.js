@@ -3,7 +3,7 @@ import { logger } from 'core/services/Apploger';
 
 export const GetListWithFilter = async filter => {
   const url = `ttluutru/sv`;
-  filter.limit = 100;
+  filter.limit = 1000;
   const response = await HttpClient.sendPutWithBody(url, filter);
   return response;
 };

@@ -189,9 +189,9 @@ const PrintList = props => {
   ];
 
   const [filter, setFilter] = React.useState({
-    hk: '1',
-    nh: '2018-2019',
-    type: 'Đang học',
+    hk: '',
+    nh: '',
+    type: '',
     fromDate: '',
     toDate: ''
   });
@@ -207,6 +207,11 @@ const PrintList = props => {
   }
 
   if (dataList.length > 0 && updateBegin === 1) {
+    setState({ ...state, data: dataList, columns: isPrintList ? Print : His });
+    updateBegin += 1;
+  }
+
+  if (updateBegin === 2) {
     setState({ ...state, data: dataList, columns: isPrintList ? Print : His });
     updateBegin += 1;
   }
@@ -299,7 +304,7 @@ const PrintList = props => {
           <ContainedButton
             handleClick={() => {
               dispatch(XNSVActions.getListExport(filter));
-              updateBegin = 1;
+              updateBegin = 2;
             }}
             label="Lọc sinh viên"
           />
@@ -409,12 +414,13 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(
-                      XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
-                    );
-                    isPrint = !isPrint;
+                    if (valueCase){
+                      dispatch(
+                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                      );
+                      isPrint = !isPrint;
+                    }
                   }}
-                  disabled={valueCase ? "false" : "true"}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -424,12 +430,13 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(
-                      XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
-                    );
-                    isPrint = !isPrint;
+                    if (valueCase){
+                      dispatch(
+                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                      );
+                      isPrint = !isPrint;
+                    }
                   }}
-                  disabled={valueCase ? "false" : "true"}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -453,7 +460,7 @@ const PrintList = props => {
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithfilter(filter))}
+                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -462,7 +469,7 @@ const PrintList = props => {
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithfilter(filter))}
+                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
                   variant="contained"
                   color="primary"
                   size="small"

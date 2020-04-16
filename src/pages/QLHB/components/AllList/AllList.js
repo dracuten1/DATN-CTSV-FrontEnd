@@ -15,10 +15,10 @@ import {
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import mockData from './data';
 import Actions from '../../../../reduxs/reducers/DRL/action';
 import { Filters } from '../Filters';
-import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -48,7 +48,8 @@ const AllList = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false);
+  const [importOpen, setImportOpen] = React.useState(false);
+
   const [state, setState] = useState({
     data: isHBKK ? mockData.info : mockData.importInfo,
     columns: isHBKK
@@ -181,14 +182,7 @@ const AllList = props => {
         ]
   });
 
-  const handleAdd = newData => {
-    setState(prevState => {
-      const data = [...prevState.data];
-      data.push(newData);
-      return { ...prevState, data };
-    });
-    setOpen(false);
-  };
+  const handleImport = () => {};
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -265,15 +259,7 @@ const AllList = props => {
           Xem toàn bộ
         </Button>
         <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm sinh viên in
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() => setImportOpen(true)}
           variant="contained"
           color="primary"
           size="small"
@@ -289,10 +275,11 @@ const AllList = props => {
           Export
         </Button>
       </CardActions>
-      <AddDialog
-        open={open}
-        handleClose={() => setOpen(false)}
-        handleAdd={handleAdd}
+      <ImportDialog
+        open={importOpen}
+        handleClose={() => setImportOpen(false)}
+        handleImport={handleImport}
+        importCase={'import-drl'}
       />
     </Card>
   );

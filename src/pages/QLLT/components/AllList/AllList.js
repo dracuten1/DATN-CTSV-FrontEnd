@@ -15,10 +15,11 @@ import {
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
-import { AddDialog } from '../AddDialog';
+
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -41,6 +42,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let updateBegin = 0;
+
 const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
@@ -48,7 +50,8 @@ const AllList = props => {
   const { dataList, isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [open, setOpen] = React.useState(false);
+
+  const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
     nh: '19-20',
@@ -73,18 +76,20 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  const handleAdd = newData => {
-    setState(prevState => {
-      const data = [...prevState.data];
-      data.push(newData);
-      return { ...prevState, data };
+  if ( updateBegin === 2) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: isAlllist ? Columns.ALL : Columns.KTX
     });
-    setOpen(false);
-  };
+    updateBegin += 1;
+  }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
+
+  const handleImport = () => {};
 
   const parseNHToString = nh => {
     switch (nh) {
@@ -110,7 +115,7 @@ const AllList = props => {
             if (filter.type === 'all')
               dispatch(Actions.getAllListWithFilter(filter));
             else dispatch(Actions.getKtxListWithFilter(filter));
-            updateBegin -= 1;
+            updateBegin = 2;
           }}
           label="Lọc sinh viên"
         />
@@ -185,23 +190,7 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() => dispatch(Actions.getListWithFilter(filter))}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Xem toàn bộ
-        </Button>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm sinh viên in
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
+          onClick={() =>  setImportOpen(true)}
           variant="contained"
           color="primary"
           size="small"
@@ -217,10 +206,11 @@ const AllList = props => {
           Export
         </Button>
       </CardActions>
-      <AddDialog
-        open={open}
-        handleClose={() => setOpen(false)}
-        handleAdd={handleAdd}
+      <ImportDialog
+        open={importOpen}
+        handleClose={() => setImportOpen(false)}
+        handleImport={handleImport}
+        importCase={'import-drl'}
       />
     </Card>
   );
