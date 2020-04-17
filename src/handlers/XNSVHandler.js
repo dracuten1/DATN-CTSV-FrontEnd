@@ -130,6 +130,7 @@ export const GetListExport = async (filter) => {
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPut(url);
+  console.log("aaaaa", url);
   const {Items} = response;
   const payload = Items.map((item, index) => {
     return {

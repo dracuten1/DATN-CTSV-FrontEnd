@@ -190,6 +190,54 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
+      <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Hoàn tất chương trình
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Đang học
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Cảnh cáo học vụ
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Bị thôi học
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Bảo lưu
+        </Button>
+        <Button
+          onClick={() => dispatch(Actions.handleAllList())}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          Đăng ký HP
+        </Button>
         <Button
           onClick={() => dispatch(Actions.exportWithFilter(filter))}
           variant="contained"
