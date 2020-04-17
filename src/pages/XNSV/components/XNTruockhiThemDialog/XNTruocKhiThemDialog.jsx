@@ -62,6 +62,8 @@ const defaultValue = {
   studingBeginDate: moment(date).format('DD/MM/YYYY'),
   studingEndDate: moment(date).format('DD/MM/YYYY'),
   expectedPublicationDate: moment(date).format('DD/MM/YYYY'),
+  dien: '',
+  doituong: '',
   date: moment(date).format('DD/MM/YYYY')
 };
 
@@ -110,6 +112,14 @@ const XNTruocKhiThemDialog = props => {
         Data = {
           NamKetThuc: `${tmp.studingEndDate}`,
           NgonNgu: `${tmp.language}`,
+        }
+        break;
+      case 'Vay vốn':
+        Data = {
+          NgonNgu: `${tmp.language}`,
+          ThoiGianRaTruong: `${tmp.studingEndDate}`,
+          ThuocDien: `${tmp.dien}`,
+          ThuocDoiTuong: `${tmp.doituong}`,
         }
         break;
       default:
@@ -177,7 +187,7 @@ const XNTruocKhiThemDialog = props => {
 
   const addData = async () => {
     const res = await XNSVHandler.AddCertificate(newCertificate);
-    if (res.statusCode === 200){
+    if (res.statusCode === 200) {
       handleAdd(values);
     } else {
       // TO DO: SHOW ERROR
@@ -222,6 +232,8 @@ const XNTruocKhiThemDialog = props => {
     const id = event.target.value;
 
     const data = await XNSVHandler.FindStudentInfoById(id);
+
+    console.log("DATA test: ", data);
 
     const resStudentInfo = data.Items[0];
 
@@ -359,6 +371,11 @@ const XNTruocKhiThemDialog = props => {
           )}
           {values.case === 'Vay vốn' && (
             <VayVonDialog
+              handleConfirm={(data) => {
+                setIsOpen(false);
+                setValues({ ...values, case: '', studingEndDate: data.thoigianratruong, dien: data.dien, doituong: data.doituong })
+                fetchCertificate();
+              }}
               handleClose={() => {
                 setIsOpen(false);
                 setValues({ ...values, case: '' });

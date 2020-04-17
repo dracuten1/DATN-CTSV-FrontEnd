@@ -41,7 +41,7 @@ const VayVonDialog = props => {
   const classes = useStyles();
   // const dispatch = useDispatch();
 
-  const { open, handleClose } = props;
+  const { open, handleClose, handleConfirm } = props;
   const date = new Date();
 
   const [values, setValues] = React.useState({
@@ -49,6 +49,7 @@ const VayVonDialog = props => {
     address: '',
     dien: '',
     doituong: '',
+    thoigianratruong: moment(date).format('DD/MM/YYYY'),
     date: moment(date).format('DD/MM/YYYY')
   });
 
@@ -105,6 +106,22 @@ const VayVonDialog = props => {
           </MuiPickersUtilsProvider>
           <Divider className={classes.divider} />
           <FormControl className={classes.textField}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                label="Thời gian ra trường"
+                format="dd/MM/yyyy"
+                value={date}
+                onChange={handleChange('thoigianratruong')}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date'
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </FormControl>
+
+          <FormControl className={classes.textField}>
             <InputLabel id="demo-simple-select-helper-label">
               Thuộc diện
             </InputLabel>
@@ -134,7 +151,10 @@ const VayVonDialog = props => {
           <Button onClick={handleClose} color="primary">
             Huỷ
           </Button>
-          <Button color="primary">Xác nhận</Button>
+          <Button onClick={() => {
+            handleConfirm(values);
+          }}
+            color="primary">Xác nhận</Button>
         </DialogActions>
       </Dialog>
     </div>
