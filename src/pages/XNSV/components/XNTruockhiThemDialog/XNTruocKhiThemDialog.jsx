@@ -15,6 +15,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
 import VayVonDialog from 'pages/XNSV/components/VayVonDialog/VayVonDialog';
 import ThucTapDialog from 'pages/XNSV/components/ThucTapDialog/ThucTapDialog';
+import { LinearProgress } from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
@@ -72,8 +73,10 @@ const XNTruocKhiThemDialog = props => {
 
   const { open, handleClose, handleAdd } = props;
 
+  const [isOpenVayVonDialog, setIsOpenVayVonDialog] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [values, setValues] = React.useState(defaultValue);
+  const [progress, setProgress] = React.useState(true);
 
   const [newCertificate, setCertificate] = React.useState({});
 
@@ -166,7 +169,8 @@ const XNTruocKhiThemDialog = props => {
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
-    setIsOpen(true);
+    if (event.target.value === "Vay vốn") setIsOpenVayVonDialog(true)
+    else setIsOpen(true);
   };
 
   const drawData = data => {
@@ -186,12 +190,15 @@ const XNTruocKhiThemDialog = props => {
   };
 
   const addData = async () => {
+    setProgress(false);
     const res = await XNSVHandler.AddCertificate(newCertificate);
     if (res.statusCode === 200) {
-      handleAdd(values);
+      handleAdd(values, true);
     } else {
       // TO DO: SHOW ERROR
     }
+    setProgress(true);
+    handleClose();
   };
 
   const info = [
@@ -263,6 +270,9 @@ const XNTruocKhiThemDialog = props => {
   return (
     <div>
       <Dialog open={open} aria-labelledby="form-dialog-title">
+        <div style={{ height: 10 }}>
+          <LinearProgress color="secondary" hidden={progress} />
+        </div>
         <DialogTitle id="form-dialog-title">
           <b>Xác Nhận Trước Khi In</b>
         </DialogTitle>
@@ -372,15 +382,15 @@ const XNTruocKhiThemDialog = props => {
           {values.case === 'Vay vốn' && (
             <VayVonDialog
               handleConfirm={(data) => {
-                setIsOpen(false);
-                setValues({ ...values, case: '', studingEndDate: data.thoigianratruong, dien: data.dien, doituong: data.doituong })
+                setIsOpenVayVonDialog(false);
+                setValues({ ...values, studingEndDate: data.thoigianratruong, dien: data.dien, doituong: data.doituong })
                 fetchCertificate();
               }}
               handleClose={() => {
-                setIsOpen(false);
+                setIsOpenVayVonDialog(false);
                 setValues({ ...values, case: '' });
               }}
-              open={isOpen}
+              open={isOpenVayVonDialog}
             />
           )}
           {values.case === 'Giới thiệu' && (

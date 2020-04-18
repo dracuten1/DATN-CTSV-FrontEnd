@@ -279,15 +279,16 @@ const PrintList = props => {
     }
   };
 
-  const handleAdd = newData => {
-    setState(prevState => {
+  const handleAdd = (newData, valid) => {
+    setOpen(false);
+    if (valid) {
+      setState(prevState => {
       const data = [...prevState.data];
       newData.scn = data.length + 1;
       newData.case = reparseCase(newData.case);
       data.push(newData);
       return { ...prevState, data };
-    });
-    setOpen(false);
+    });}
   };
 
   const handleFilter = (prop, data) => {
@@ -299,17 +300,17 @@ const PrintList = props => {
       {isPrintList ? (
         ''
       ) : (
-        <CardActions className={classes.actions}>
-          <Filters onFilter={handleFilter} />
-          <ContainedButton
-            handleClick={() => {
-              dispatch(XNSVActions.getListExport(filter));
-              updateBegin = 2;
-            }}
-            label="Lọc sinh viên"
-          />
-        </CardActions>
-      )}
+          <CardActions className={classes.actions}>
+            <Filters onFilter={handleFilter} />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(XNSVActions.getListExport(filter));
+                updateBegin = 2;
+              }}
+              label="Lọc sinh viên"
+            />
+          </CardActions>
+        )}
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -324,8 +325,8 @@ const PrintList = props => {
                       {moment(date).format('DD/MM/YYYY')}
                     </b>
                   ) : (
-                    <b>LỊCH SỬ IN</b>
-                  )}
+                      <b>LỊCH SỬ IN</b>
+                    )}
                 </div>
               }
               columns={state.columns}
@@ -333,20 +334,20 @@ const PrintList = props => {
               actions={
                 !isHistoryList
                   ? [
-                      {
-                        icon: icons.Print,
-                        tooltip: 'Print',
-                        onClick: (event, rowData) => {
-                          const data = {
-                            pk: rowData.pk,
-                            sk: rowData.sk,
-                            type: reparseCaseToString(rowData.case)
-                          };
-                          dispatch(XNSVActions.handlePrintOneStudent(data));
-                          isPrint = !isPrint;
-                        }
+                    {
+                      icon: icons.Print,
+                      tooltip: 'Print',
+                      onClick: (event, rowData) => {
+                        const data = {
+                          pk: rowData.pk,
+                          sk: rowData.sk,
+                          type: reparseCaseToString(rowData.case)
+                        };
+                        dispatch(XNSVActions.handlePrintOneStudent(data));
+                        isPrint = !isPrint;
                       }
-                    ]
+                    }
+                  ]
                   : []
               }
               options={{
@@ -363,21 +364,21 @@ const PrintList = props => {
               editable={
                 !isHistoryList
                   ? {
-                      onRowDelete: oldData =>
-                        new Promise(resolve => {
-                          setTimeout(() => {
-                            logger.info('Olddata: ', oldData);
-                            const { pk, sk } = oldData;
-                            dispatch(XNSVActions.deleteOneCertificate(pk, sk));
-                            resolve();
-                            setState(prevState => {
-                              const data = [...prevState.data];
-                              data.splice(data.indexOf(oldData), 1);
-                              return { ...prevState, data };
-                            });
-                          }, 600);
-                        })
-                    }
+                    onRowDelete: oldData =>
+                      new Promise(resolve => {
+                        setTimeout(() => {
+                          logger.info('Olddata: ', oldData);
+                          const { pk, sk } = oldData;
+                          dispatch(XNSVActions.deleteOneCertificate(pk, sk));
+                          resolve();
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data.splice(data.indexOf(oldData), 1);
+                            return { ...prevState, data };
+                          });
+                        }, 600);
+                      })
+                  }
                   : {}
               }
             />
@@ -414,7 +415,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    if (valueCase){
+                    if (valueCase) {
                       dispatch(
                         XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
                       );
@@ -430,7 +431,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    if (valueCase){
+                    if (valueCase) {
                       dispatch(
                         XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
                       );
@@ -445,47 +446,47 @@ const PrintList = props => {
                 </Button>
               </>
             ) : (
-              <>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(XNSVActions.getNotPrintYet());
-                    updateBegin = 1;
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Danh sách in
+                <>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => {
+                      dispatch(XNSVActions.getNotPrintYet());
+                      updateBegin = 1;
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Danh sách in
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Import
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Import
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Export
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Export
                 </Button>
-              </>
-            )}
+                </>
+              )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <XNTKTDialog
