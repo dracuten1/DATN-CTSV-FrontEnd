@@ -116,14 +116,9 @@ class Auth extends Component {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
+              <Grid item lg={12} md={12} xl={12} xs={12} style={{textAlign: "center"}}>
                 <Link href="#" variant="body2">
                   Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>

@@ -4,6 +4,8 @@ import {
     CognitoUser
 } from 'amazon-cognito-identity-js';
 import hisory from 'historyConfig';
+import { logger } from 'core/services/Apploger';
+// import * as AdminHandler from 'handlers/AdminHandler';
 import * as actionTypes from './actionTypes';
 
 const poolData = {
@@ -196,23 +198,10 @@ export const authCheckState = () => {
     };
 };
 
-export const ChangePass = (username, oldPassword, newPassword) => {
-    return dispatch => {
-        // const cognitoUser = new CognitoUser({
-        //     Username: username,
-        //     Pool: userPool
-        // });
-    const cognitoUser = userPool.getCurrentUser();
-
-        console.log(cognitoUser);
-        if (cognitoUser) {
-            cognitoUser.changePassword(oldPassword, newPassword, (err, result) => {
-                if (err) {
-                    console.log(err.message || JSON.stringify(err));
-                    dispatch(authFail(true));
-                }
-                else dispatch(changPassSuccess());
-            });
-        }
-    };
-};
+// export const ChangePass = (newPassword) =>  async dispatch => {
+//     const response = await AdminHandler.ChangePass(newPassword);
+//     logger.info('AdminAction:: update: reponse: ', response);
+    
+//     if (response.statusCode === 200)
+//         dispatch(logout());
+// };

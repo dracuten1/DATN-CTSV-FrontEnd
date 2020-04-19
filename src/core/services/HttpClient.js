@@ -73,6 +73,13 @@ export const sendPost = async (url, requestBody) => {
     return body;
 };
 
+export const sendPostGetData = async (url, requestBody) => {
+
+    const response = await httpClient.post(url, requestBody);
+
+    return response;
+};
+
 export const sendPut = async (url) => {
 
     const response = await httpClient.put(url);

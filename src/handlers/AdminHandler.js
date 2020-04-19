@@ -28,3 +28,12 @@ export const GetListSigner = async () => {
 
   return response;
 };
+
+export const ChangePass = async (password) => {
+  const url = `admin/changeUserPass`;
+
+  const response = await HttpClient.sendPostGetData(url, {password});
+
+  return response;
+};
+
