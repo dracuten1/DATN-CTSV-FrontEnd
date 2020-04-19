@@ -527,7 +527,7 @@ const PrintList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={'import-drl'}
+        importCase={1}
       />
     </Card>
   );

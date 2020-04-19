@@ -34,3 +34,31 @@ export const GetImportStatus = async () => {
 
   return response;
 };
+
+
+/* Import QLLT */
+export const GetImportQLLTInfo = async (importCase, key) => {
+  let url = null;
+  importCase === 2 ? url = `ttluutru/ktx/import?key=${key}` : url = `ttluutru/all/import?key=${key}`;
+
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};
+
+export const ImportQLLTInfo = async (importCase, value) => {
+  let url = null;
+  importCase === 2 ? url = `ttluutru/ktx/import` : url = `ttluutru/all/import`;
+
+  const response = await HttpClient.sendPost(url, value);
+
+  return response;
+};
+
+export const GetImportStatusQLLT = async (key) => {
+  const url = `ttluutru/getLog?key=${key}`;
+ 
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};

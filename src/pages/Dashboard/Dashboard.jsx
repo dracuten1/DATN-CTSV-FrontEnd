@@ -39,7 +39,7 @@ const data = [
     title: 'Admin',
     description: 'Quản lý và cấp quyền các tài khoản User.',
     icon: Admin,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
@@ -47,7 +47,7 @@ const data = [
     description:
       'Cung cấp các giấy xác nhận thông tin kèm chứng nhận của nhà trường.',
     icon: Confirm,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
@@ -55,28 +55,28 @@ const data = [
     description:
       'Cung cấp và quản lý điểm rèn luyện từng học kỳ của Sinh Viên.',
     icon: Grade,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/drl'
   },
   {
     title: 'Thông tin lưu trú',
     description: 'Quản lý nơi cư trú của Sinh Viên theo từng năm học.',
     icon: Home,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
     title: 'Tình trạng sinh viên',
     description: 'Quản lý tình trạng Sinh Viên theo từng học kỳ.',
     icon: Status,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
     title: 'Hồ sơ sinh viên',
     description: 'Quản lý hồ sơ Sinh Viên.',
     icon: Description,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
@@ -84,21 +84,21 @@ const data = [
     description:
       'Quản lý và cung cấp những hỗ trợ cho Sinh Viên theo từng chế độ chính sách.',
     icon: Policy,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
     title: 'Sinh hoạt công dân',
     description: 'Quản lý và tổ chức các lớp Sinh Hoạt Công Dân mỗi năm học.',
     icon: Activity,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
     title: 'Tài khoản ngân hàng',
     description: 'Quản lý tài khoản ngân hàng của Sinh Viên.',
     icon: Card,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
@@ -106,7 +106,7 @@ const data = [
     description:
       'Quản lý và cung cấp bảo hiểm cho Sinh Viên theo từng năm học.',
     icon: Hospital,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
@@ -114,14 +114,14 @@ const data = [
     description:
       'Quản lý và khen thưởng cho Sinh Viên đạt được giải thưởng, học bổng.',
     icon: Scholarship,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   },
   {
     title: 'Khen thưởng - Kỷ luật',
     description: 'Quản lý sinh viên được khen thưởng và bị kỷ luật Sinh Viên.',
     icon: BlockIcon,
-    iconColor: 'gray',
+    iconColor: 'info',
     link: '/xnsv'
   }
 ];

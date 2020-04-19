@@ -23,8 +23,14 @@ const getAllListWithFilter = filter => async dispatch => {
   logger.info('QLLTAction:: getListAll: reponse: ', response);
   const data = Object.keys(response).map(key => {
     response[key].ktx = response[key]['Nội trú']['KTX'];
-    response[key].portal =
-      response[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
+    if (response[key]['Nội trú']['Cập nhật Portal'] !== ''){
+      response[key].portal =
+        response[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
+    }
+    else{
+      response[key].xnnt =
+        response[key]['Xác nhận ngoại trú'] === 'Đã xác nhận';
+    }
     response[key].nh = parseNHToNumber(response[key].NH);
       return response[key];
   });

@@ -22,11 +22,11 @@ const ALL = [
   },
   {
     title: 'Xác nhận ngoại trú',
-    field: 'Xác nhận ngoại trú',
+    field: 'xnnt',
     type: 'boolean',
     render: rowData => (
       <div style={{ marginLeft: '10px' }}>
-        {rowData['Xác nhận ngoại trú'] ? (
+        {rowData.xnnt ? (
           <icons.CheckBox />
         ) : (
           <icons.CheckBlank />

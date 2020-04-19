@@ -159,6 +159,12 @@ const AllList = props => {
                             else
                               newData['Nội trú']['Cập nhật Portal'] =
                                 'Không cập nhật';
+                            if (newData.xnnt)
+                              newData['Xác nhận ngoại trú'] =
+                                'Đã xác nhận';
+                            else
+                            newData['Xác nhận ngoại trú'] =
+                                'Không xác nhận';
                             newData['Nội trú']['KTX'] = newData.ktx;
                           }
 
@@ -210,7 +216,7 @@ const AllList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={'import-drl'}
+        importCase={filter.type === "ktx" ? 2 : 3}
       />
     </Card>
   );
