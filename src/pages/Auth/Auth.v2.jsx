@@ -147,7 +147,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password) => dispatch(actions.auth(email, password)),
     onSetNewPassword: password => dispatch(actions.handleNewPassword(password)),
-    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/dashboard'))
   };
 };
 

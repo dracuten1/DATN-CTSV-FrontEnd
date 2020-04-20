@@ -77,7 +77,7 @@ export const sendPostGetData = async (url, requestBody) => {
 
     const response = await httpClient.post(url, requestBody);
 
-    return response;
+    return response.data;
 };
 
 export const sendPut = async (url) => {

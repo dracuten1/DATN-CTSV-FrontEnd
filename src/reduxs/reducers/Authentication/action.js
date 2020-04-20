@@ -131,8 +131,8 @@ export const auth = (email, password) => {
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
                 console.log(result);
-                hisory.push(redirectPath);
                 dispatch(authSuccess(cognitoAuthUser));
+                hisory.push(redirectPath);
             },
             onFailure: (err) => {
                 if (err.code === "NotAuthorizedException")

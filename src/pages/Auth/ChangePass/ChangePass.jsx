@@ -86,7 +86,7 @@ const ChangePass = props => {
       const response = await AdminHandler.ChangePass(values.password);
       logger.info('AdminAction:: update: reponse: ', response);
 
-      if (response.status === 200) {
+      if (response.statusCode === 200) {
         setSnackBarValue(successSnackBar);
         dispatch(actions.logout());
         history.push('/');

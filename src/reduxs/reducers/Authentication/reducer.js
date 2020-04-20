@@ -7,7 +7,7 @@ const initialState = {
     error: null,
     loading: false,
     resetPassword: false,
-    authRedirectPath: '/'
+    authRedirectPath: '/dashboard'
 };
 
 const authStart = (state) => {
