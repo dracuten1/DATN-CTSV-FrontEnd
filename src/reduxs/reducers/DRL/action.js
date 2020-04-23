@@ -83,6 +83,11 @@ const getListPrintByDate = (from, to) => async dispatch => {
   history.push('/drl');
 };
 
+const getListHistoryImport = (nh, hk) => async dispatch => {
+  const payload = await DRLHandler.GetURLFileImport(nh, hk);
+  dispatch({ type: Types.GET_HISTORY_IMPORT_LIST, payload });
+};
+
 export default {
   handleAllList,
   handlePrintList,
@@ -93,5 +98,6 @@ export default {
   PrintOneStudent,
   fillterListData,
   getListPrintByDate,
-  PrintAllStudent
+  PrintAllStudent,
+  getListHistoryImport
 };

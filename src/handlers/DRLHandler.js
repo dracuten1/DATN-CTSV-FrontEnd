@@ -102,3 +102,20 @@ export const GetPrintListByDate = async (from, to) => {
   return response;
 };
 
+export const GetURLFileImport = async (nh,hk) => {
+  const url = `drl/exportFiles?nh=${nh}&hk=${hk}`;
+
+  const response = await HttpClient.sendGet(url);
+
+  logger.info('GetURLFileImport:: GetURLFileImport: ', response);
+
+  const payload = response.map((item, index) => {
+    return {
+      stt: index + 1,
+      url: item
+    };
+  });
+
+  return payload;
+};
+

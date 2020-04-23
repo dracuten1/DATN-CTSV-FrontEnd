@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress } from '@material-ui/core';
-import './Auth.css';
+import '../Auth.css';
 
 function Copyright() {
   return (
@@ -27,11 +27,11 @@ function Copyright() {
   );
 }
 
-class Auth extends Component {
+class ForgotPass extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
       loading: false
     };
@@ -42,9 +42,9 @@ class Auth extends Component {
     this.setState({
       loading: true
     });
-    const { username, password } = this.state;
+    const { email } = this.state;
     const { onAuth } = this.props;
-    onAuth(username, password);
+    onAuth(email);
   };
 
   render() {
@@ -69,7 +69,7 @@ class Auth extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Forgot Password
           </Typography>
           <form className="form" noValidate>
             <TextField
@@ -83,27 +83,9 @@ class Auth extends Component {
               autoComplete="email"
               autoFocus
               onChange={event => {
-                this.setState({ username: event.target.value });
+                this.setState({ email: event.target.value });
               }}
             />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={event => {
-                this.setState({ password: event.target.value });
-              }}
-            />
-            {/* <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        /> */}
             <div style={{ height: 20 }} />
             <Button
               type="submit"
@@ -113,15 +95,8 @@ class Auth extends Component {
               className="submit"
               onClick={this.handleClick}
             >
-              Sign In
+              Send Mail
             </Button>
-            <Grid container>
-              <Grid item lg={12} md={12} xl={12} xs={12} style={{textAlign: "center"}}>
-                <Link href="/forgotpass" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
         <Box mt={8}>
@@ -137,18 +112,14 @@ const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    isAuthenticated: state.auth.token !== null,
-    resetPassword: state.auth.resetPassword,
-    authRedirectPath: state.auth.authRedirectPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password) => dispatch(actions.auth(email, password)),
-    onSetNewPassword: password => dispatch(actions.handleNewPassword(password)),
-    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/dashboard'))
+    onAuth: (email) => dispatch(actions.auth(email)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPass);

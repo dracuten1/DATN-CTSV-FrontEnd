@@ -82,6 +82,11 @@ const PrintList = props => {
   };
   const handleImport = () => {};
 
+  const UrlsColumns = [
+    { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+    { title: 'URL', field: 'url', editable: 'never', filtering: false }
+  ];
+
   const PrintColumns = [
     {
       title: 'Đã In',
@@ -286,7 +291,7 @@ const PrintList = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
       <Divider />
-      {isAllList ? (
+      {isPrintList ? ('') :(
         <CardActions className={classes.actions}>
           <Filters onFilter={handleFilter} />
           <ContainedButton
@@ -297,8 +302,6 @@ const PrintList = props => {
             label="Lọc sinh viên"
           />
         </CardActions>
-      ) : (
-        ''
       )}
       <Divider />
       <CardContent className={classes.content}>
@@ -308,14 +311,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  {isPrintList ? (
-                    <b>
-                      DANH SÁCH IN TRONG NGÀY{' '}
-                      {moment(new Date()).format('DD/MM/YYYY')}
-                    </b>
-                  ) : (
-                    <b>LỊCH SỬ HOẠT ĐỘNG</b>
-                  )}
+                  DANH SÁCH DỮ LIỆU
                 </div>
               }
               columns={state.columns}
@@ -375,39 +371,7 @@ const PrintList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
-            {isAllList ? (
-              <>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(DRLActions.getNotPrintYet());
-                    updateBegin = 1;
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Danh sách in
-                </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => setImportOpen(true)}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Import
-                </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Export
-                </Button>
-              </>
-            ) : (
+            {isPrintList ? (
               <>
                 <Button
                   onClick={() => {
@@ -493,6 +457,50 @@ const PrintList = props => {
                   size="small"
                 >
                   In tất cả
+                </Button>           
+              </>
+            ) : (
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(DRLActions.getNotPrintYet());
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Danh sách in
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Import
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Export
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => {
+                    dispatch(DRLActions.getListHistoryImport(fillter));
+                    updateBegin = 1;
+                  }}
+                >
+                  Danh Sách Import
                 </Button>
               </>
             )}

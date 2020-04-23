@@ -131,8 +131,7 @@ export const GetListExport = async (filter) => {
 
   const response = await HttpClient.sendPut(url);
   console.log("aaaaa", url);
-  const {Items} = response;
-  const payload = Items.map((item, index) => {
+  const payload = response.map((item, index) => {
     return {
       scn: item.SCN,
       name: item.Ten,
