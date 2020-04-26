@@ -2,6 +2,31 @@ import * as HttpClient from 'core/services/HttpClient';
 import { logger } from 'core/services/Apploger';
 import moment from 'moment';
 
+const convertNamHoc = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
+
+  switch (nh) {
+    case `${year}-${(year + 1)}`:
+      return `${convert}-${(convert + 1)}`;
+    case `${(year - 1)}-${year}`:
+      return `${(convert - 1)}-${convert}`;
+    case `${(year - 2)}-${(year - 1)}`:
+      return `${(convert - 2)}-${(convert - 1)}`;
+    case `${(year - 3)}-${(year - 2)}`:
+      return `${(convert - 3)}-${(convert - 2)}`;
+    case `${(year - 4)}-${(year - 3)}`:
+      return `${(convert - 4)}-${(convert - 3)}`;
+    case `${(year - 5)}-${(year - 4)}`:
+      return `${(convert - 5)}-${(convert - 4)}`;
+    case `${(year - 6)}-${(year - 5)}`:
+      return `${(convert - 6)}-${(convert - 5)}`;
+    default:
+      return null;
+  }
+};
+
 export const FindStudentInfoById = async id => {
   const url = `drl/ttsv?mssv=${id}`;
 
@@ -103,7 +128,8 @@ export const GetPrintListByDate = async (from, to) => {
 };
 
 export const GetURLFileImport = async (nh,hk) => {
-  const url = `drl/exportFiles?nh=${nh}&hk=${hk}`;
+  const cvNH = convertNamHoc(nh);
+  const url = `drl/exportFiles?nh=${cvNH}&hk=${hk}`;
 
   const response = await HttpClient.sendGet(url);
 

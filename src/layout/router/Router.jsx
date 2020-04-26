@@ -7,7 +7,6 @@ import StudentCertification from 'pages/XNSV/studentCertification/StudentCertifi
 import DashboardDRL from 'pages/DRL/DashboardDRL';
 import Dashboard from 'pages/Dashboard/Dashboard';
 import ChangePass from 'pages/Auth/ChangePass/ChangePass';
-import ForgotPass from 'pages/Auth/ForgotPass/ForgotPass';
 import DashboardHSSV from 'pages/HSSV/DashboardHSSV';
 import DashboardQLLT from 'pages/QLLT/DashboardQLLT';
 import DashboardTTSV from 'pages/TTSV/DashboardTTSV';
@@ -22,10 +21,7 @@ class Routers extends React.PureComponent {
     return (
       <ThemeProvider theme={themeUI}>
         <Router history={history}>
-          <Switch>
-            <Route exact path="/forgotpass">
-              <ForgotPass />
-            </Route>
+          <Switch>           
             <Route exact path="/dashboard">
               <Dashboard />
             </Route>

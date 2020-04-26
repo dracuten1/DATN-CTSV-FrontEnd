@@ -15,7 +15,12 @@ const poolData = {
 const userPool = new CognitoUserPool(poolData);
 const redirectPath = '/dashboard';
 
+export const forgotPass = () => {
 
+    return {
+        type: actionTypes.FORGOT_PASSWORD
+    };
+};
 
 export const authStart = () => {
 

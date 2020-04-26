@@ -16,19 +16,22 @@ export default function Filters(props) {
   const classes = useStyles();
   const { onFilter } = props;
 
+  const dt = new Date();
+  const year = dt.getFullYear();
+
   return (
     <div className={classes.container}>
       <Filter
         clickFilter={onFilter}
         label="Học kỳ"
         prop="hk"
-        data={['None', '1', '2', 'NH']}
+        data={['None', '1', '2', '3']}
       />
       <Filter
         clickFilter={onFilter}
         label="Năm học"
         prop="nh"
-        data={['None', '2018-2019', '2017-2018', '2016-2017', '2015-2016']}
+        data={['None', `${year}-${(year + 1)}`, `${(year - 1)}-${year}`, `${(year - 2)}-${(year - 1)}`, `${(year - 3)}-${(year - 2)}`, `${(year - 4)}-${(year - 3)}`,`${(year - 5)}-${(year - 4)}`, `${(year - 6)}-${(year - 5)}`]}
       />
       <Filter
         clickFilter={onFilter}

@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress } from '@material-ui/core';
+import history from 'historyConfig';
 import '../Auth.css';
 
 function Copyright() {
@@ -43,8 +44,8 @@ class ForgotPass extends Component {
       loading: true
     });
     const { email } = this.state;
-    const { onAuth } = this.props;
-    onAuth(email);
+    const { onReset } = this.props;
+    onReset(email);
   };
 
   render() {
@@ -87,16 +88,34 @@ class ForgotPass extends Component {
               }}
             />
             <div style={{ height: 20 }} />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className="submit"
-              onClick={this.handleClick}
-            >
-              Send Mail
-            </Button>
+            
+            
+            <Grid container spacing={4}>
+              <Grid item lg={6} sm={6} xl={6} xs={12}>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submit"
+                  onClick={this.handleClick}
+                >
+                  Send Mail
+                </Button>
+              </Grid>
+              <Grid item lg={6} sm={6} xl={6} xs={12}>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submit"
+                  onClick={() => history.push('/')}
+                >
+                  Sign In
+                </Button>
+              </Grid>
+          </Grid>
           </form>
         </div>
         <Box mt={8}>
@@ -106,7 +125,6 @@ class ForgotPass extends Component {
     );
   }
 }
-//a..
 
 const mapStateToProps = state => {
   return {
@@ -117,7 +135,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email) => dispatch(actions.auth(email)),
+    onReset: (email) => dispatch(actions.resetPassword(email)),
     onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };

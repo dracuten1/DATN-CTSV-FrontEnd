@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const dt = new Date();
+const year = dt.getFullYear();
+
 let valueCase = null;
 let updateBegin = 0;
 let isPrint = false;
@@ -146,10 +149,13 @@ const PrintList = props => {
       title: 'Năm học',
       field: 'year',
       lookup: {
-        1: '2016-2017',
-        2: '2017-2018',
-        3: '2018-2019',
-        4: '2019-2020'
+        1: `${(year - 6)}-${(year - 5)}`,
+        2: `${(year - 5)}-${(year - 4)}`,
+        3: `${(year - 4)}-${(year - 3)}`,
+        4: `${(year - 3)}-${(year - 2)}`,
+        5: `${(year - 2)}-${(year - 1)}`,
+        6: `${(year - 1)}-${year}`,
+        7: `${year}-${(year + 1)}`
       },
       filterCellStyle: {
         paddingTop: 1
@@ -161,7 +167,8 @@ const PrintList = props => {
       lookup: {
         1: '1',
         2: '2',
-        3: 'Cả năm'
+        3: '3',
+        4: 'Cả năm'
       },
       filterCellStyle: {
         paddingTop: 1

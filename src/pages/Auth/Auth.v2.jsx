@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress } from '@material-ui/core';
+import history from 'historyConfig';
 import './Auth.css';
 
 function Copyright() {
@@ -117,7 +118,11 @@ class Auth extends Component {
             </Button>
             <Grid container>
               <Grid item lg={12} md={12} xl={12} xs={12} style={{textAlign: "center"}}>
-                <Link href="/forgotpass" variant="body2">
+                <Link component="button" variant="body2" onClick={()=>{
+                  const { onForgotPass } = this.props;
+                  onForgotPass();
+                  history.push('/forgotpass');
+                }}>
                   Forgot password?
                 </Link>
               </Grid>
@@ -146,6 +151,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password) => dispatch(actions.auth(email, password)),
+    onForgotPass: ()  => dispatch(actions.forgotPass()),
     onSetNewPassword: password => dispatch(actions.handleNewPassword(password)),
     onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/dashboard'))
   };

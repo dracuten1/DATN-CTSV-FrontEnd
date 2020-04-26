@@ -42,6 +42,31 @@ const parseCase = key => {
   }
 };
 
+const convertNamHoc = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
+
+  switch (nh) {
+    case `${year}-${(year + 1)}`:
+      return `${convert}-${(convert + 1)}`;
+    case `${(year - 1)}-${year}`:
+      return `${(convert - 1)}-${convert}`;
+    case `${(year - 2)}-${(year - 1)}`:
+      return `${(convert - 2)}-${(convert - 1)}`;
+    case `${(year - 3)}-${(year - 2)}`:
+      return `${(convert - 3)}-${(convert - 2)}`;
+    case `${(year - 4)}-${(year - 3)}`:
+      return `${(convert - 4)}-${(convert - 3)}`;
+    case `${(year - 5)}-${(year - 4)}`:
+      return `${(convert - 5)}-${(convert - 4)}`;
+    case `${(year - 6)}-${(year - 5)}`:
+      return `${(convert - 6)}-${(convert - 5)}`;
+    default:
+      return null;
+  }
+};
+
 export const GetListCertificate = async (status) => {
 
   const url = `xnsv/certificate?status=${status}`;
@@ -118,7 +143,8 @@ export const GetCompany = async () => {
 
 export const ExportWithFilter = async (filter) => {
   const {nh, hk, type, fromDate, toDate} = filter;
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
+  const cvNH = convertNamHoc(nh);
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPatch(url);
 
@@ -127,7 +153,8 @@ export const ExportWithFilter = async (filter) => {
 
 export const GetListExport = async (filter) => {
   const {nh, hk, type, fromDate, toDate} = filter;
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${nh}&hk=${hk}&type=${type}`;
+  const cvNH = convertNamHoc(nh);
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPut(url);
   console.log("aaaaa", url);
