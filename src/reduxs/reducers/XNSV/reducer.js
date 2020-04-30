@@ -5,7 +5,8 @@ const INIT_STATE = {
   isPrintList: true,
   isHisImport: false,
   dataList: [],
-  listLink: []
+  listLink: [],
+  listUser: []
 };
 
 const xnsvReducer = (state = INIT_STATE, action) => {
@@ -52,6 +53,11 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         isPrintList: false,
         isHistoryList: false,
         isHisImport: true
+      };
+    case ActionTypes.GET_USER:
+      return {
+        ...state,
+        listUser: action.payload
       };
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;

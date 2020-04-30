@@ -47,7 +47,7 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.GET_HISTORY_IMPORT_LIST:
       return {
         ...state,
-        dataList: action.payload,
+        dataPrint: action.payload,
         isAllList: false,
         isPrintList: false,
         isHistoryList: false,

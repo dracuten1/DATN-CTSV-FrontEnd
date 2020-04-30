@@ -13,8 +13,8 @@ const handlePrintList = () => async dispatch => {
   history.push('/drl');
 };
 
-const fillterListData = fillter => async dispatch => {
-  const payload = await DRLHandler.FillterListData(fillter);
+const filterListData = fillter => async dispatch => {
+  const payload = await DRLHandler.FilterListData(fillter);
   dispatch({ type: Types.ALL_LIST, payload });
 };
 
@@ -83,8 +83,12 @@ const getListPrintByDate = (from, to) => async dispatch => {
   history.push('/drl');
 };
 
-const getListHistoryImport = (nh, hk) => async dispatch => {
+const getListHistoryImport = (filter) => async dispatch => {
+  const {type, time } = filter;
+  const nh = time;
+  const hk = type;
   const payload = await DRLHandler.GetURLFileImport(nh, hk);
+  logger.info('GetURLFileImport:: payload: ', payload);
   dispatch({ type: Types.GET_HISTORY_IMPORT_LIST, payload });
 };
 
@@ -96,7 +100,7 @@ export default {
   deleteOneCertificate,
   getListHistory,
   PrintOneStudent,
-  fillterListData,
+  filterListData,
   getListPrintByDate,
   PrintAllStudent,
   getListHistoryImport

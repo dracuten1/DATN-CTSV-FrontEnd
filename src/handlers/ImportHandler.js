@@ -49,7 +49,7 @@ export const GetImportQLLTInfo = async (importCase, key) => {
 export const ImportQLLTInfo = async (importCase, value) => {
   let url = null;
   importCase === 2 ? url = `ttluutru/ktx/import` : url = `ttluutru/all/import`;
-
+  logger.info('ImportDialog:: value: ', value);
   const response = await HttpClient.sendPost(url, value);
 
   return response;

@@ -1,3 +1,6 @@
+const dt = new Date();
+const year = dt.getFullYear();
+
 const SVNN = [
   // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
   { title: 'MSSV', field: 'MSSV', filtering: false },
@@ -40,10 +43,13 @@ const SVNN = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -93,10 +99,13 @@ const DTB = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -113,12 +122,8 @@ const DSTN = [
   { title: 'MSSV', field: 'MSSV', filtering: false },
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
-    title: 'Ngày sinh',
-    field: 'dob'
-  },
-  {
     title: 'ĐTB',
-    field: 'portal'
+    field: 'DTB'
   },
   {
     title: 'Loại TN',
@@ -141,12 +146,15 @@ const DSTN = [
   },
   {
     title: 'Năm học',
-    field: 'nh',
+    field: 'NamHoc',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -177,10 +185,13 @@ const HTTC = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -219,10 +230,13 @@ const CCHV = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -269,10 +283,13 @@ const DKHP = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '2016-2017',
-      2: '2017-2018',
-      3: '2018-2019',
-      4: '2019-2020'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1

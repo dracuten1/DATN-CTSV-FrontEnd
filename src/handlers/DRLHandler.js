@@ -23,7 +23,7 @@ const convertNamHoc = nh => {
     case `${(year - 6)}-${(year - 5)}`:
       return `${(convert - 6)}-${(convert - 5)}`;
     default:
-      return null;
+      return '';
   }
 };
 
@@ -43,8 +43,9 @@ export const GetDRLByIdAndType = async (id, type) => {
   return response;
 };
 
-export const FillterListData = async fillter => {
+export const FilterListData = async fillter => {
   const {type, time, xeploai} = fillter;
+  const cvNH = convertNamHoc(time);
   const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
 
   const response = await HttpClient.sendGet(url);
@@ -131,11 +132,15 @@ export const GetURLFileImport = async (nh,hk) => {
   const cvNH = convertNamHoc(nh);
   const url = `drl/exportFiles?nh=${cvNH}&hk=${hk}`;
 
+  logger.info('GetURLFileImport:: URL: ', url);
+
   const response = await HttpClient.sendGet(url);
 
   logger.info('GetURLFileImport:: GetURLFileImport: ', response);
 
-  const payload = response.map((item, index) => {
+  const { urls } = response;
+
+  const payload = urls.map((item, index) => {
     return {
       stt: index + 1,
       url: item

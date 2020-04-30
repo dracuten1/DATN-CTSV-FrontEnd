@@ -63,7 +63,7 @@ const convertNamHoc = nh => {
     case `${(year - 6)}-${(year - 5)}`:
       return `${(convert - 6)}-${(convert - 5)}`;
     default:
-      return null;
+      return '';
   }
 };
 
@@ -142,9 +142,9 @@ export const GetCompany = async () => {
 };
 
 export const ExportWithFilter = async (filter) => {
-  const {nh, hk, type, fromDate, toDate} = filter;
+  const {nh, hk, type, username, fromDate, toDate} = filter;
   const cvNH = convertNamHoc(nh);
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}`;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
 
   const response = await HttpClient.sendPatch(url);
 
@@ -157,7 +157,7 @@ export const GetListExport = async (filter) => {
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}`;
 
   const response = await HttpClient.sendPut(url);
-  console.log("aaaaa", url);
+  logger.info("XNSVhandler:: GetListExport: url: ", url);
   const payload = response.map((item, index) => {
     return {
       scn: item.SCN,

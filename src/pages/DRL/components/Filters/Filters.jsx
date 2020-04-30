@@ -22,7 +22,7 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Học kỳ"
         prop="type"
-        data={['None', 'HK1', 'HK2', 'NH']}
+        data={['None', '1', '2', '3']}
       />
       <Filter
         clickFilter={onFilter}

@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const dt = new Date();
+const year = dt.getFullYear();
+
 const AddDialog = props => {
   const classes = useStyles();
 
@@ -345,10 +348,13 @@ const AddDialog = props => {
                 }}
                 defaultValue={4}
               >
-                <MenuItem value={4}>2019-2020</MenuItem>
-                <MenuItem value={3}>2018-2019</MenuItem>
-                <MenuItem value={2}>2017-2018</MenuItem>
-                <MenuItem value={1}>2016-2017</MenuItem>
+                <MenuItem value={7}>{year}-{(year + 1)}</MenuItem>
+                <MenuItem value={6}>{(year - 1)}-{year}</MenuItem>
+                <MenuItem value={5}>{(year - 2)}-{(year - 1)}</MenuItem>
+                <MenuItem value={4}>{(year - 3)}-{(year - 2)}</MenuItem>
+                <MenuItem value={3}>{(year - 4)}-{(year - 3)}</MenuItem>
+                <MenuItem value={2}>{(year - 5)}-{(year - 4)}</MenuItem>
+                <MenuItem value={1}>{(year - 6)}-{(year - 5)}</MenuItem>
               </Select>
             </FormControl>
           )}
@@ -367,10 +373,13 @@ const AddDialog = props => {
                   }}
                   defaultValue={4}
                 >
-                  <MenuItem value={4}>2019-2020</MenuItem>
-                  <MenuItem value={3}>2018-2019</MenuItem>
-                  <MenuItem value={2}>2017-2018</MenuItem>
-                  <MenuItem value={1}>2016-2017</MenuItem>
+                  <MenuItem value={7}>{year}-{(year + 1)}</MenuItem>
+                  <MenuItem value={6}>{(year - 1)}-{year}</MenuItem>
+                  <MenuItem value={5}>{(year - 2)}-{(year - 1)}</MenuItem>
+                  <MenuItem value={4}>{(year - 3)}-{(year - 2)}</MenuItem>
+                  <MenuItem value={3}>{(year - 4)}-{(year - 3)}</MenuItem>
+                  <MenuItem value={2}>{(year - 5)}-{(year - 4)}</MenuItem>
+                  <MenuItem value={1}>{(year - 6)}-{(year - 5)}</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.textField}>

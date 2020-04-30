@@ -1,9 +1,60 @@
 import * as HttpClient from 'core/services/HttpClient';
 import { logger } from 'core/services/Apploger';
 
+const convertNamHoc = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
+
+  switch (nh) {
+    case `${year}-${(year + 1)}`:
+      return `${convert}-${(convert + 1)}`;
+    case `${(year - 1)}-${year}`:
+      return `${(convert - 1)}-${convert}`;
+    case `${(year - 2)}-${(year - 1)}`:
+      return `${(convert - 2)}-${(convert - 1)}`;
+    case `${(year - 3)}-${(year - 2)}`:
+      return `${(convert - 3)}-${(convert - 2)}`;
+    case `${(year - 4)}-${(year - 3)}`:
+      return `${(convert - 4)}-${(convert - 3)}`;
+    case `${(year - 5)}-${(year - 4)}`:
+      return `${(convert - 5)}-${(convert - 4)}`;
+    case `${(year - 6)}-${(year - 5)}`:
+      return `${(convert - 6)}-${(convert - 5)}`;
+    default:
+      return '';
+  }
+};
+
+const convertType = type => {
+  switch (type) {
+    case 'Bảo lưu':
+      return 'BaoLuu';
+    case 'Đang học':
+      return 'DangHoc';
+    case 'Sinh viên nước ngoài':
+      return 'SinhVienNuocNgoai';
+    case 'Tốt nghiệp':
+      return 'TotNghiep';
+    case 'Hoàn tất chương trình':
+      return 'HoanTatChuongTrinh';
+    case 'Buộc thôi học':
+      return 'BuocThoiHoc';
+    case 'Cảnh cáo học vụ':
+      return 'CanhCaoHocVu';
+    case 'Đăng ký học phần':
+        return 'DangKyHocPhan';
+    default:
+      return '';
+  }
+};
+
 export const GetListWithFilter = async filter => {
   const { type, hk, nh } = filter;
-  const url = `xnsv/ttsv?type=${type}&hk=${hk}&nh=${nh}`;
+  const cvNH = convertNamHoc(nh);
+  const cvType = convertType(type);
+  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
+  logger.info('TTSVAction:: getListAll: url: ', url);
   const response = await HttpClient.sendPut(url);
   return response;
 };
@@ -16,11 +67,13 @@ export const GetListWithFilter = async filter => {
 // };
 
 export const ExportWithFilter = async (filter) => {
-    const { type, hk, nh } = filter;
-    const url = `xnsv/ttsv?type=${type}&hk=${hk}&nh=${nh}`;
+  const { type, hk, nh } = filter;
+  const cvNH = convertNamHoc(nh);
+  const cvType = convertType(type);
+  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
   
-    const response = await HttpClient.sendPatch(url);
-  
-    return response;
+  const response = await HttpClient.sendPatch(url);
+
+  return response;
   };
   

@@ -133,12 +133,13 @@ const ImportDialog = props => {
           res1 = await ImportHandler.ImportQLLTInfo(importCase, {
             checkImportResult: res.checkImportResult,
             jsonkey          : res.newKey,
-            type             : res.checkImportResult.conflict ? "Conflict" : "NotInConflict"
+            // type             : res.checkImportResult.conflict ? "Conflict" : "NotInConflict"
           });
           logger.info('ImportDialog:: res1: ', res1);
-
+          
           const timerId = setInterval(async () => { 
-            statusResponse = await ImportHandler.GetImportStatusQLLT();
+            statusResponse = await ImportHandler.GetImportStatusQLLT(res.newKey);
+            logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
             
@@ -147,8 +148,6 @@ const ImportDialog = props => {
               handleClose();              
               clearInterval(timerId);
             } 
-
-            logger.info('ImportDialog:: status: ', statusResponse);
           }, 30000);
 
           break;
