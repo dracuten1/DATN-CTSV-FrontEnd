@@ -13,6 +13,7 @@ import DashboardTTSV from 'pages/TTSV/DashboardTTSV';
 import DashboardQLHB from 'pages/QLHB/DashboardHB';
 import DashboardSHCD from 'pages/SHCD/DashboardSHCD';
 import DashboardKTKL from 'pages/KT_KL/DashboardKTKL';
+import DashboardSigners from 'pages/UserList/index';
 
 import store from 'store';
 
@@ -51,6 +52,9 @@ class Routers extends React.PureComponent {
             </Route>
             <Route exact path="/ktkl">
               <DashboardKTKL />
+            </Route>
+            <Route exact path="/signers">
+              <DashboardSigners />
             </Route>
           </Switch>
         </Router>

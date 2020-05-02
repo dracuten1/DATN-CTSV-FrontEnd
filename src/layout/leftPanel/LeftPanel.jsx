@@ -148,6 +148,16 @@ function ResponsiveDrawer(props) {
           </ListItemIcon>
           <ListItemText primary="Hồ sơ sinh viên" />
         </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => history.push('/signers')}
+        >
+          <ListItemIcon>
+            <LockIcon />
+          </ListItemIcon>
+          <ListItemText primary="Người ký" />
+        </ListItem>
       </List>
     </div>
   );
