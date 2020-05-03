@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress } from '@material-ui/core';
 import history from 'historyConfig';
+import ChangWithCode from './ChangeWithCode';
 import '../Auth.css';
 
 function Copyright() {
@@ -34,18 +35,20 @@ class ForgotPass extends Component {
     this.state = {
       email: '',
       password: '',
-      loading: false
+      loading: false,
+      open: false
     };
   }
 
   handleClick = event => {
     event.preventDefault();
     this.setState({
-      loading: true
+      open: true
     });
     const { email } = this.state;
-    const { onReset } = this.props;
+    const { onReset, onSetAuthRedirectPath } = this.props;
     onReset(email);
+    onSetAuthRedirectPath();
   };
 
   render() {
@@ -110,7 +113,11 @@ class ForgotPass extends Component {
                   variant="contained"
                   color="primary"
                   className="submit"
-                  onClick={() => history.push('/')}
+                  onClick={() => {
+                    const { onForgotPassSuccess } = this.props;
+                    onForgotPassSuccess();
+                    history.push('/');
+                  }}
                 >
                   Sign In
                 </Button>
@@ -121,6 +128,11 @@ class ForgotPass extends Component {
         <Box mt={8}>
           <Copyright />
         </Box>
+        <ChangWithCode
+          username={this.state.email}
+          open={this.state.open}
+          handleClose={() => this.setState({open: false})}
+      />
       </Container>
     );
   }
@@ -136,6 +148,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onReset: (email) => dispatch(actions.resetPassword(email)),
+    onForgotPassSuccess: ()  => dispatch(actions.forgotPassSuccess()),
     onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };

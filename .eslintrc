@@ -33,7 +33,11 @@
       "no-unused-expressions":"off",
       "react/jsx-curly-brace-presence":"off",
       "dot-notation": "off",
-      "react/no-unused-state": "off"
+      "react/no-unused-state": "off",
+      "vars-on-top": "off",
+      "no-var": "off",
+      "object-shorthand": "off",
+      "func-names":"off"
     },
     "globals": {
       "window": true,

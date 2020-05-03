@@ -68,7 +68,7 @@ const ChangePass = props => {
   const successSnackBar = {
     open: true,
     type: 'success',
-    message: 'Import thành công!'
+    message: 'Thay đổi thành công!'
   };
   const errorSnackBar = {
     open: true,

@@ -22,6 +22,13 @@ export const forgotPass = () => {
     };
 };
 
+export const forgotPassSuccess = () => {
+
+    return {
+        type: actionTypes.FORGOT_PASSWORD_SUCCESS
+    };
+};
+
 export const authStart = () => {
 
     return {
@@ -88,7 +95,25 @@ export const resetPassword = (username) => {
             },
             onFailure: (err) => {
                 console.log(err);
-            }
+            },
+        });
+    };
+};
+
+export const changePassWhenForgot = (username, code, newPassword) => {
+    return dispatch => {        
+        const cognitoUser = new CognitoUser({
+            Username: username,
+            Pool: userPool
+        });
+        cognitoUser.confirmPassword(code, newPassword, {
+            onSuccess() {
+                console.log('Password confirmed!');
+                dispatch(forgotPass());
+            },
+            onFailure(err) {
+                console.log('Password not confirmed!');
+            },
         });
     };
 };

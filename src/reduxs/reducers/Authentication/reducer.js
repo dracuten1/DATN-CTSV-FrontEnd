@@ -14,9 +14,15 @@ const initialState = {
 const forgotPass = (state) => {
     return updateObject(state, { error: null, loading: false, forgotPassword: true });
 };
+
+const forgotPassSuccess = (state) => {
+    return updateObject(state, { error: null, loading: false, forgotPassword: false });
+};
+
 const authStart = (state) => {
     return updateObject(state, { error: null, loading: true });
 };
+
 const resetPassword = (state, action) => {
     return updateObject(state, { error: null, loading: false, resetPassword: true, forgotPassword:false, userName: action.userName });
 };
@@ -58,6 +64,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.SET_AUTH_REDIRECT_PATH: return setAuthRedirectPath(state, action);
         case actionTypes.RESET_PASSWORD: return resetPassword(state, action);
         case actionTypes.FORGOT_PASSWORD: return forgotPass(state, action);
+        case actionTypes.FORGOT_PASSWORD_SUCCESS: return forgotPassSuccess(state, action);
         default:
             return state;
     }
