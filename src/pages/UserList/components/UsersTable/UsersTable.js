@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+import * as SignersHandler from 'handlers/SignersHandler';
 import {
   Card,
   CardActions,
@@ -52,6 +53,7 @@ const UsersTable = props => {
 
   const handleSelectAll = event => {
     const { users } = props;
+
 
     let selectedUsers;
 
@@ -114,12 +116,12 @@ const UsersTable = props => {
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
-                  <TableCell>Available</TableCell>
+                  <TableCell>Họ tên</TableCell>
+                  <TableCell>Chức vụ</TableCell>
+                  <TableCell>TL</TableCell>
+                  <TableCell>KT</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -139,19 +141,17 @@ const UsersTable = props => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body1">{user.name}</Typography>
+                      <Typography variant="body1">{user.hvtnguoiki}</Typography>
                     </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      {user.address.city}, {user.address.state},{' '}
-                      {user.address.country}
+                    <TableCell>{user.chucvu}</TableCell>
+                    <TableCell>{user.TL}
                     </TableCell>
-                    <TableCell>{user.phone}</TableCell>
+                    <TableCell>{user.KT}</TableCell>
                     <TableCell>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
+                      {user.DL}
                     </TableCell>
                     <TableCell>
-                      LOCK
+                      Edit
                     </TableCell>
                   </TableRow>
                 ))}
