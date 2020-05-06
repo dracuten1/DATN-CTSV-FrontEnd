@@ -2,6 +2,8 @@ import React from 'react';
 import Filter from 'shared/components/filter/Filter';
 import { makeStyles } from '@material-ui/core/styles';
 import InputDateWithLabel from 'shared/components/inputDateWithLabel/InputDateWithLabel';
+import { useDispatch, useSelector } from 'react-redux';
+import XNSVActions from 'reduxs/reducers/XNSV/action';
 
 import './Filters.scss';
 
@@ -12,9 +14,24 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+const data = ['None'];
+
 export default function Filters(props) {
   const classes = useStyles();
   const { onFilter } = props;
+
+  const dispatch = useDispatch();
+  const XNSVState = useSelector(state => state.XNSVState);
+  const { listUser } = XNSVState;
+  
+  if (listUser.length == 0){
+    dispatch(XNSVActions.getUser());
+  }
+
+  data.concat(listUser);
+
+  const dt = new Date();
+  const year = dt.getFullYear();
 
   return (
     <div className={classes.container}>
@@ -22,13 +39,13 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Học kỳ"
         prop="hk"
-        data={['None', '1', '2', 'NH']}
+        data={['None', '1', '2', '3']}
       />
       <Filter
         clickFilter={onFilter}
         label="Năm học"
         prop="nh"
-        data={['None', '2018-2019', '2017-2018', '2016-2017', '2015-2016']}
+        data={['None', `${year}-${(year + 1)}`, `${(year - 1)}-${year}`, `${(year - 2)}-${(year - 1)}`, `${(year - 3)}-${(year - 2)}`, `${(year - 4)}-${(year - 3)}`,`${(year - 5)}-${(year - 4)}`, `${(year - 6)}-${(year - 5)}`]}
       />
       <Filter
         clickFilter={onFilter}
@@ -45,6 +62,12 @@ export default function Filters(props) {
           'Giới thiệu',
           'Vay vốn'
         ]}
+      />
+      <Filter
+        clickFilter={onFilter}
+        prop="username"
+        label="User"
+        data={data}
       />
 
       <InputDateWithLabel

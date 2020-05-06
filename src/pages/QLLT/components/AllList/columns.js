@@ -1,6 +1,9 @@
 import React from 'react';
 import icons from 'shared/icons';
 
+const dt = new Date();
+const year = dt.getFullYear();
+
 const ALL = [
   // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
   { title: 'MSSV', field: 'MSSV', filtering: false },
@@ -38,10 +41,13 @@ const ALL = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '16-17',
-      2: '17-18',
-      3: '18-19',
-      4: '19-20'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -52,7 +58,8 @@ const ALL = [
     field: 'HK',
     lookup: {
       1: '1',
-      2: '2'
+      2: '2',
+      3: '3'
     },
     filterCellStyle: {
       paddingTop: 1
@@ -81,10 +88,13 @@ const KTX = [
     title: 'Năm học',
     field: 'nh',
     lookup: {
-      1: '16-17',
-      2: '17-18',
-      3: '18-19',
-      4: '19-20'
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
     },
     filterCellStyle: {
       paddingTop: 1
@@ -95,7 +105,8 @@ const KTX = [
     field: 'HK',
     lookup: {
       1: '1',
-      2: '2'
+      2: '2',
+      3: '3'
     },
     filterCellStyle: {
       paddingTop: 1

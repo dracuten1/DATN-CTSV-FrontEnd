@@ -17,6 +17,7 @@ import BlockIcon from '@material-ui/icons/Block';
 import LockIcon from '@material-ui/icons/Lock';
 import Hospital from '@material-ui/icons/LocalHospital';
 import Scholarship from '@material-ui/icons/School';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -28,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import QLLTActions from 'reduxs/reducers/QLLT/action';
+import * as AuthActions from 'reduxs/reducers/Authentication/action';
 
 import history from 'historyConfig';
 
@@ -151,12 +153,16 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
-          onClick={() => history.push('/signers')}
+          onClick={() => {
+            dispatch(AuthActions.logout());
+            history.push('/');
+          }
+          }
         >
           <ListItemIcon>
-            <LockIcon />
+            <ExitToAppIcon />
           </ListItemIcon>
-          <ListItemText primary="Người ký" />
+          <ListItemText primary="Đăng xuất" />
         </ListItem>
       </List>
     </div>

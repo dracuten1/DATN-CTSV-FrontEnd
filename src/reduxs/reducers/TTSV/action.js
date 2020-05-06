@@ -4,17 +4,24 @@ import history from 'historyConfig';
 import Types from './actionTypes';
 
 const parseNHToNumber = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+
   switch (nh) {
-    case '2016-2017':
+    case `${(year - 6)}-${(year - 5)}`:
       return 1;
-    case '2017-2018':
+    case `${(year - 5)}-${(year - 4)}`:
       return 2;
-    case '2018-2019':
+    case `${(year - 4)}-${(year - 3)}`:
       return 3;
-    case '2019-2020':
+    case `${(year - 3)}-${(year - 2)}`:
       return 4;
-    default:
+    case `${(year - 2)}-${(year - 1)}`:
       return 5;
+    case `${(year - 1)}-${year}`:
+          return 6;      
+    default:
+      return 7;
   }
 };
 
@@ -23,32 +30,37 @@ const getListWithFilter = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const { type } = filter;
   const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key].NamHoc);
+    response[key].NamHoc = parseNHToNumber(response[key].NamHoc);
+    response[key].type = response[key]["data"].LoaiTotNghiep;
+    response[key].month = response[key]["data"].DotThang;
+    response[key].DTB = response[key]["data"].DTB;
+    response[key].note = response[key]["data"].GhiChu;
     return response[key];
   });
+  
   switch (type) {
-    case 'SinhVienNuocNgoai':
+    case 'Sinh viên nước ngoài':
       dispatch({ type: Types.GET_LIST_SVNN, payload: data });
       break;
-    case 'DiemTrungBinh':
+    case 'Điểm trung bình':
       dispatch({ type: Types.GET_LIST_DTB, payload: data });
       break;
-    case 'TotNghiep':
+    case 'Tốt nghiệp':
       dispatch({ type: Types.GET_LIST_DSTN, payload: data });
       break;
-    case 'HoanTatChuongTrinh':
+    case 'Hoàn tất chương trình':
       dispatch({ type: Types.GET_LIST_HTCT, payload: data });
       break;
-    case 'DangHoc':
+    case 'Đang học':
       dispatch({ type: Types.GET_LIST_DH, payload: data });
       break;
-    case 'CanhCaoHocVu':
+    case 'Cảnh cáo học vụ':
       dispatch({ type: Types.GET_LIST_CCHV, payload: data });
       break;
-    case 'BuocThoiHoc':
+    case 'Buộc thôi học':
       dispatch({ type: Types.GET_LIST_BTH, payload: data });
       break;
-    case 'DangKyHocPhan':
+    case 'Đăng ký học phần':
       dispatch({ type: Types.GET_LIST_DKHP, payload: data });
       break;
     default:

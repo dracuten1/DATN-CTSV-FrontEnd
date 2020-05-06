@@ -20,7 +20,6 @@ import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
 
-
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
@@ -41,6 +40,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const dt = new Date();
+const year = dt.getFullYear();
+const convert = year % 100;
+
 let updateBegin = 0;
 
 const AllList = props => {
@@ -54,7 +57,7 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: '19-20',
+    nh: `${(convert - 1)}-${convert}`,
     type: 'all'
   });
   const [state, setState] = useState({
@@ -76,7 +79,7 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  if ( updateBegin === 2) {
+  if (updateBegin === 2) {
     setState({
       ...state,
       data: dataList,
@@ -94,15 +97,19 @@ const AllList = props => {
   const parseNHToString = nh => {
     switch (nh) {
       case 1:
-        return '16-17';
+        return `${(convert - 6)}-${(convert - 5)}`;
       case 2:
-        return '17-18';
+        return `${(convert - 5)}-${(convert - 4)}`;
       case 3:
-        return '18-19';
+        return `${(convert - 4)}-${(convert - 3)}`;
       case 4:
-        return '19-20';
+        return `${(convert - 3)}-${(convert - 2)}`;
+      case 5:
+        return `${(convert - 2)}-${(convert - 1)}`;
+      case 6:
+        return `${(convert - 1)}-${convert}`;
       default:
-        return '20-211';
+        return `${convert}-${(convert + 1)}`;
     }
   };
 
@@ -160,11 +167,9 @@ const AllList = props => {
                               newData['Nội trú']['Cập nhật Portal'] =
                                 'Không cập nhật';
                             if (newData.xnnt)
-                              newData['Xác nhận ngoại trú'] =
-                                'Đã xác nhận';
+                              newData['Xác nhận ngoại trú'] = 'Đã xác nhận';
                             else
-                            newData['Xác nhận ngoại trú'] =
-                                'Không xác nhận';
+                              newData['Xác nhận ngoại trú'] = 'Không xác nhận';
                             newData['Nội trú']['KTX'] = newData.ktx;
                           }
 
@@ -196,7 +201,7 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Button
-          onClick={() =>  setImportOpen(true)}
+          onClick={() => setImportOpen(true)}
           variant="contained"
           color="primary"
           size="small"
@@ -216,7 +221,7 @@ const AllList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={filter.type === "ktx" ? 2 : 3}
+        importCase={filter.type === 'ktx' ? 2 : 3}
       />
     </Card>
   );

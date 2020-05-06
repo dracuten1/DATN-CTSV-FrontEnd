@@ -4,17 +4,25 @@ import history from 'historyConfig';
 import Types from './actionTypes';
 
 const parseNHToNumber = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
+
   switch (nh) {
-    case '16-17':
+    case `${(convert - 6)}-${(convert - 5)}`:
       return 1;
-    case '17-18':
+    case `${(convert - 5)}-${(convert - 4)}`:
       return 2;
-    case '18-19':
+    case `${(convert - 4)}-${(convert - 3)}`:
       return 3;
-    case '19-20':
+    case `${(convert - 3)}-${(convert - 2)}`:
       return 4;
-    default:
+    case `${(convert - 2)}-${(convert - 1)}`:
       return 5;
+    case `${(convert - 1)}-${convert}`:
+          return 6;      
+    default:
+      return 7;
   }
 };
 

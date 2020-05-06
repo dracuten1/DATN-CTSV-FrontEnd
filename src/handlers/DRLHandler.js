@@ -2,6 +2,31 @@ import * as HttpClient from 'core/services/HttpClient';
 import { logger } from 'core/services/Apploger';
 import moment from 'moment';
 
+const convertNamHoc = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
+
+  switch (nh) {
+    case `${year}-${(year + 1)}`:
+      return `${convert}-${(convert + 1)}`;
+    case `${(year - 1)}-${year}`:
+      return `${(convert - 1)}-${convert}`;
+    case `${(year - 2)}-${(year - 1)}`:
+      return `${(convert - 2)}-${(convert - 1)}`;
+    case `${(year - 3)}-${(year - 2)}`:
+      return `${(convert - 3)}-${(convert - 2)}`;
+    case `${(year - 4)}-${(year - 3)}`:
+      return `${(convert - 4)}-${(convert - 3)}`;
+    case `${(year - 5)}-${(year - 4)}`:
+      return `${(convert - 5)}-${(convert - 4)}`;
+    case `${(year - 6)}-${(year - 5)}`:
+      return `${(convert - 6)}-${(convert - 5)}`;
+    default:
+      return '';
+  }
+};
+
 export const FindStudentInfoById = async id => {
   const url = `drl/ttsv?mssv=${id}`;
 
@@ -18,8 +43,9 @@ export const GetDRLByIdAndType = async (id, type) => {
   return response;
 };
 
-export const FillterListData = async fillter => {
+export const FilterListData = async fillter => {
   const {type, time, xeploai} = fillter;
+  const cvNH = convertNamHoc(time);
   const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
 
   const response = await HttpClient.sendGet(url);
@@ -100,5 +126,27 @@ export const GetPrintListByDate = async (from, to) => {
   const response = await HttpClient.sendGet(url);
 
   return response;
+};
+
+export const GetURLFileImport = async (nh,hk) => {
+  const cvNH = convertNamHoc(nh);
+  const url = `drl/exportFiles?nh=${cvNH}&hk=${hk}`;
+
+  logger.info('GetURLFileImport:: URL: ', url);
+
+  const response = await HttpClient.sendGet(url);
+
+  logger.info('GetURLFileImport:: GetURLFileImport: ', response);
+
+  const { urls } = response;
+
+  const payload = urls.map((item, index) => {
+    return {
+      stt: index + 1,
+      url: item
+    };
+  });
+
+  return payload;
 };
 

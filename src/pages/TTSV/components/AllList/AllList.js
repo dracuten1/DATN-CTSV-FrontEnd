@@ -10,12 +10,13 @@ import {
   CardActions,
   CardContent,
   Button,
-  Divider
+  Divider,
+  Grid
 } from '@material-ui/core';
-
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import { logger } from 'core/services/Apploger';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
-import mockData from './data';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
@@ -40,13 +41,15 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-start'
   }
 }));
+const dt = new Date();
+const year = dt.getFullYear();
 
 let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLLTState = useSelector(state => state.QLLTState);
+  const TTSVState = useSelector(state => state.TTSVState);
 
-  const { dataList, isCase } = QLLTState;
+  const { dataList, isCase, listLink } = TTSVState;
   const classes = useStyles();
   const dispatch = useDispatch();
   let arrColumns = [];
@@ -81,11 +84,14 @@ const AllList = props => {
   const [open, setOpen] = React.useState(false);
   const [filter, setFilter] = React.useState({
     hk: '1',
-    nh: '19-20',
-    type: 'DangHoc'
+    nh: `${year}-${(year + 1)}`,
+    type: 'Tốt nghiệp'
   });
+
+  logger.info('TTSVAction:: getListAll: dataList: ', dataList);
+
   const [state, setState] = useState({
-    data: isCase ? mockData.info : mockData.importInfo,
+    data: dataList,
     columns: arrColumns
   });
 
@@ -94,7 +100,7 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  if (dataList.length > 0 && updateBegin === 1) {
+  if (updateBegin === 1) {
     setState({
       ...state,
       data: dataList,
@@ -102,6 +108,8 @@ const AllList = props => {
     });
     updateBegin += 1;
   }
+
+  logger.info('TTSVAction:: getListAll: state: ', state.data);
 
   const handleAdd = newData => {
     setState(prevState => {
@@ -190,78 +198,97 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-      <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Hoàn tất chương trình
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Đang học
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Cảnh cáo học vụ
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Bị thôi học
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Bảo lưu
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Đăng ký HP
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.exportWithFilter(filter))}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.exportWithFilter(filter))}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.getListWithFilter(filter))}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm dữ liệu
-        </Button>
+        <Grid container spacing={4}>
+            <Grid item lg={12} md={12} xl={12} xs={12} >
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                Hoàn tất chương trình
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Đang học
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Cảnh cáo học vụ
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Bị thôi học
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Bảo lưu
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.handleAllList())}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Đăng ký HP
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.exportWithFilter(filter))}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Import
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.exportWithFilter(filter))}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Export
+              </Button>
+              <Button
+                onClick={() => dispatch(Actions.getListWithFilter(filter))}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Thêm dữ liệu
+              </Button>
+            </Grid>
+            {listLink.length > 0 ? (
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            ) : (
+              ''
+            )}
+        </Grid>
       </CardActions>
       <AddDialog
         open={open}

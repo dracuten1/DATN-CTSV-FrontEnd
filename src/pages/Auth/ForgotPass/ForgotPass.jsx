@@ -13,7 +13,8 @@ import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress } from '@material-ui/core';
 import history from 'historyConfig';
-import './Auth.css';
+import ChangWithCode from './ChangeWithCode';
+import '../Auth.css';
 
 function Copyright() {
   return (
@@ -28,24 +29,26 @@ function Copyright() {
   );
 }
 
-class Auth extends Component {
+class ForgotPass extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
-      loading: false
+      loading: false,
+      open: false
     };
   }
 
   handleClick = event => {
     event.preventDefault();
     this.setState({
-      loading: true
+      open: true
     });
-    const { username, password } = this.state;
-    const { onAuth } = this.props;
-    onAuth(username, password);
+    const { email } = this.state;
+    const { onReset, onSetAuthRedirectPath } = this.props;
+    onReset(email);
+    onSetAuthRedirectPath();
   };
 
   render() {
@@ -70,7 +73,7 @@ class Auth extends Component {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Forgot Password
           </Typography>
           <form className="form" noValidate>
             <TextField
@@ -84,77 +87,70 @@ class Auth extends Component {
               autoComplete="email"
               autoFocus
               onChange={event => {
-                this.setState({ username: event.target.value });
+                this.setState({ email: event.target.value });
               }}
             />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={event => {
-                this.setState({ password: event.target.value });
-              }}
-            />
-            {/* <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        /> */}
             <div style={{ height: 20 }} />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className="submit"
-              onClick={this.handleClick}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item lg={12} md={12} xl={12} xs={12} style={{textAlign: "center"}}>
-                <Link component="button" variant="body2" onClick={()=>{
-                  const { onForgotPass } = this.props;
-                  onForgotPass();
-                  history.push('/forgotpass');
-                }}>
-                  Forgot password?
-                </Link>
+            
+            
+            <Grid container spacing={4}>
+              <Grid item lg={6} sm={6} xl={6} xs={12}>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submit"
+                  onClick={this.handleClick}
+                >
+                  Send Mail
+                </Button>
               </Grid>
-            </Grid>
+              <Grid item lg={6} sm={6} xl={6} xs={12}>
+                  <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submit"
+                  onClick={() => {
+                    const { onForgotPassSuccess } = this.props;
+                    onForgotPassSuccess();
+                    history.push('/');
+                  }}
+                >
+                  Sign In
+                </Button>
+              </Grid>
+          </Grid>
           </form>
         </div>
         <Box mt={8}>
           <Copyright />
         </Box>
+        <ChangWithCode
+          username={this.state.email}
+          open={this.state.open}
+          handleClose={() => this.setState({open: false})}
+      />
       </Container>
     );
   }
 }
-//a..
 
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    isAuthenticated: state.auth.token !== null,
-    resetPassword: state.auth.resetPassword,
-    authRedirectPath: state.auth.authRedirectPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password) => dispatch(actions.auth(email, password)),
-    onForgotPass: ()  => dispatch(actions.forgotPass()),
-    onSetNewPassword: password => dispatch(actions.handleNewPassword(password)),
-    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/dashboard'))
+    onReset: (email) => dispatch(actions.resetPassword(email)),
+    onForgotPassSuccess: ()  => dispatch(actions.forgotPassSuccess()),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPass);

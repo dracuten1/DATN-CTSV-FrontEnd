@@ -61,6 +61,14 @@ const getCompany = () => async dispatch => {
   history.push('/xnsv');
 };
 
+const getUser = () => async dispatch => {
+  const response = await XNSVHandler.GetCompany();
+  logger.info('XNSVAction:: Company: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.GET_USER, payload: response.users });
+  }
+};
+
 const exportWithFilter = filter => async dispatch => {
   logger.info('XNSVAction:: filter: filter: ', filter);
 
@@ -92,5 +100,6 @@ export default {
   getCompany,
   exportWithFilter,
   getListExport,
-  handlePrintOneStudent
+  handlePrintOneStudent,
+  getUser
 };

@@ -22,7 +22,7 @@ class Routers extends React.PureComponent {
     return (
       <ThemeProvider theme={themeUI}>
         <Router history={history}>
-          <Switch>
+          <Switch>           
             <Route exact path="/dashboard">
               <Dashboard />
             </Route>

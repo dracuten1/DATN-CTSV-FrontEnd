@@ -192,6 +192,7 @@ const PrintList = props => {
     hk: '',
     nh: '',
     type: '',
+    username: '',
     fromDate: '',
     toDate: ''
   });
