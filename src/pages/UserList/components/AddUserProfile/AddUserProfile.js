@@ -23,10 +23,10 @@ const useStyles = makeStyles({
 });
 
 
-function EditDialog(props) {
+function AddDialog(props) {
   const classes = useStyles();
   const [progress, setProgress] = useState(true);
-  const { open, onClose } = props;
+  const { open, onClose, handleAddSigner } = props;
 
   let { user } = props;
   user = !user ? {} : user;
@@ -37,10 +37,10 @@ function EditDialog(props) {
   }
 
 
-  const handleEdit = async () => {
+  const handleAdd = async () => {
     setProgress(false);
-    await SignersHandler.updateSignerStatus(user);
-
+    await SignersHandler.addSingleSigner(user);
+    handleAddSigner(user);
     setProgress(true);
     onClose();
   };
@@ -51,52 +51,48 @@ function EditDialog(props) {
       <div style={{ height: 10 }}>
         <LinearProgress color="secondary" hidden={progress} />
       </div>
-      <DialogTitle id="simple-dialog-title">CHỈNH SỬA NGƯỜI KÝ</DialogTitle>
+      <DialogTitle id="simple-dialog-title">THÊM NGƯỜI KÝ</DialogTitle>
       <DialogContent className={classes.container}>
         <TextField
           className={classes.textField}
           label="Họ và tên"
           margin="normal"
-          defaultValue={user.hvtnguoiki}
           onBlur={onLostFocus('hvtnguoiki')}
         />
         <TextField
           className={classes.textField}
           label="Chức vụ"
           margin="normal"
-          defaultValue={user.chucvu}
           onBlur={onLostFocus('chucvu')}
         />
         <TextField
           className={classes.textField}
           label="TL"
           margin="normal"
-          defaultValue={user.TL}
           onBlur={onLostFocus('TL')}
         />
         <TextField
           className={classes.textField}
           label="KT"
           margin="normal"
-          defaultValue={user.KT}
           onBlur={onLostFocus('KT')}
         />
-        Status
-        <RadioGroup aria-label="Status" defaultValue={user.DL} style={{ display: 'flex', flexDirection: 'row' }} onBlur={onLostFocus('DL')}>
+        {/* Status
+        <RadioGroup aria-label="Status" defaultValue={'Active'} style={{ display: 'flex', flexDirection: 'row' }} onBlur={onLostFocus('DL')}>
           <FormControlLabel value="Active" control={<Radio />} label="Active" />
           <FormControlLabel value="Disable" control={<Radio />} label="Disable" />
-        </RadioGroup>
+        </RadioGroup> */}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
           Huỷ
           </Button>
-        <Button onClick={handleEdit} color="primary" >
-          Lưu
+        <Button onClick={handleAdd} color="primary" >
+          Thêm
           </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-export default EditDialog;
+export default AddDialog;

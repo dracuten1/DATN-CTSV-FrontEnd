@@ -33,9 +33,9 @@ const UserList = () => {
   }, []);
 
 
+
   return (
     <div className={classes.root}>
-      <UsersToolbar />
       <div className={classes.content}>
         <UsersTable users={signers} />
       </div>
