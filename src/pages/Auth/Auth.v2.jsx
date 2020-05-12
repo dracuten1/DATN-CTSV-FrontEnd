@@ -61,7 +61,7 @@ class Auth extends Component {
           }}
         >
           <LinearProgress
-            style={{ display: this.state.loading ? 'block' : 'none' }}
+            style={{ display: this.props.error ? 'none' : (this.state.loading ? 'block' : 'none') }}
           />
         </div>
         <CssBaseline />
@@ -105,6 +105,7 @@ class Auth extends Component {
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         /> */}
+            <div style={{ color: "red" }}>{this.props.error ? this.props.error.message : ""}</div>
             <div style={{ height: 20 }} />
             <Button
               type="submit"
@@ -117,8 +118,8 @@ class Auth extends Component {
               Sign In
             </Button>
             <Grid container>
-              <Grid item lg={12} md={12} xl={12} xs={12} style={{textAlign: "center"}}>
-                <Link component="button" variant="body2" onClick={()=>{
+              <Grid item lg={12} md={12} xl={12} xs={12} style={{ textAlign: "center" }}>
+                <Link component="button" variant="body2" onClick={() => {
                   const { onForgotPass } = this.props;
                   onForgotPass();
                   history.push('/forgotpass');
@@ -151,7 +152,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password) => dispatch(actions.auth(email, password)),
-    onForgotPass: ()  => dispatch(actions.forgotPass()),
+    onForgotPass: () => dispatch(actions.forgotPass()),
     onSetNewPassword: password => dispatch(actions.handleNewPassword(password)),
     onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/dashboard'))
   };

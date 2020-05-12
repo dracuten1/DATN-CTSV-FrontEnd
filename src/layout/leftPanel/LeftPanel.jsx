@@ -30,9 +30,9 @@ import DRLActions from 'reduxs/reducers/DRL/action';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import QLLTActions from 'reduxs/reducers/QLLT/action';
 import * as AuthActions from 'reduxs/reducers/Authentication/action';
-
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
-
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -87,6 +87,26 @@ function ResponsiveDrawer(props) {
         <ListItem
           button
           component="a"
+          onClick={() => history.push('/admin')}
+        >
+          <ListItemIcon>
+            <SupervisorAccountIcon />
+          </ListItemIcon>
+          <ListItemText primary="Quản lý người dùng" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
+          onClick={() => history.push('/signers')}
+        >
+          <ListItemIcon>
+            <BorderColorIcon />
+          </ListItemIcon>
+          <ListItemText primary="Quản lý người ký" />
+        </ListItem>
+        <ListItem
+          button
+          component="a"
           onClick={() => history.push('/changepass')}
         >
           <ListItemIcon>
@@ -94,6 +114,7 @@ function ResponsiveDrawer(props) {
           </ListItemIcon>
           <ListItemText primary="Đổi mật khẩu" />
         </ListItem>
+        <Divider />
         <ListItem
           button
           component="a"

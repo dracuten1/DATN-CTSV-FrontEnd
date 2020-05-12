@@ -4,14 +4,15 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
-import * as SignersHandler from 'handlers/SignersHandler';
+import * as AdminUserHandler from 'handlers/AdminUserHandler';
 import CreateIcon from '@material-ui/icons/Create';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import EditDialog from 'pages/UserList/components/UserProfile/index';
-import AddDialog from 'pages/UserList/components/AddUserProfile/index';
+import EditDialog from 'pages/UserList/components/UserProfile';
+import AddDialog from 'pages/UserList/components/AddUserProfile';
+import PersonIcon from '@material-ui/icons/Person';
+import SecurityIcon from '@material-ui/icons/Security';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-
 import {
   Card,
   CardActions,
@@ -26,10 +27,12 @@ import {
   Typography,
   TablePagination,
   IconButton,
-  Button
+  Button,
+  Dialog
 } from '@material-ui/core';
 
 import { getInitials } from 'helpers';
+import history from 'historyConfig';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -52,7 +55,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { className, users, ...rest } = props;
+  const { className, users, rerender, ...rest } = props;
 
   const classes = useStyles();
 
@@ -121,6 +124,18 @@ const UsersTable = props => {
   const handleAdd = data => {
     users.push(data);
   }
+  const toggleEnabled = (username, type) => async event => {
+    type = type === true ? 'disable' : 'enable';
+    await AdminUserHandler.togleEnable({ username, type });
+    rerender();
+  }
+
+  const toggleGroups = (username, grName) => async event => {
+    const stament = grName ? "remove" : "add";
+    const groupName = "Admins";
+    await AdminUserHandler.togleGroups({ username, stament, groupName });
+    rerender();
+  }
 
   return (
     <div>
@@ -128,22 +143,19 @@ const UsersTable = props => {
         {...rest}
         className={clsx(classes.root, className)}
       >
-
-        <EditDialog open={editDialog} onClose={onCloseEditDialog} user={selectedUser} />
-        <AddDialog open={addDialog} onClose={onCloseAddDialog} handleAddSigner={handleAdd} />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>No.</TableCell>
+                    <TableCell >No.</TableCell>
+                    <TableCell>Tài khoản</TableCell>
                     <TableCell>Họ tên</TableCell>
-                    <TableCell>Chức vụ</TableCell>
-                    <TableCell>TL</TableCell>
-                    <TableCell>KT</TableCell>
-                    <TableCell>Tình trạng</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Tình trạng người dùng</TableCell>
+                    <TableCell>Nhóm</TableCell>
+                    <TableCell>Kích hoạt</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -154,21 +166,22 @@ const UsersTable = props => {
                       key={user.id}
                       selected={selectedUsers.indexOf(user.id) !== -1}
                     >
-                      <TableCell>{index + 1}</TableCell>
+                      <TableCell >{index + 1}</TableCell>
                       <TableCell>
-                        <Typography variant="body1">{user.hvtnguoiki}</Typography>
+                        <Typography variant="body1">{user.Username}</Typography>
                       </TableCell>
-                      <TableCell>{user.chucvu}</TableCell>
-                      <TableCell>{user.TL}
-                      </TableCell>
-                      <TableCell>{user.KT}</TableCell>
+                      <TableCell>{user.Attributes[0].Value}</TableCell>
+                      <TableCell>{user.Attributes[1].Value}</TableCell>
+                      <TableCell>{user.UserStatus}</TableCell>
                       <TableCell>
-                        {user.DL === 'Active' ? <LockOpenIcon /> : <LockIcon />}
+                        <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
+                          {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
+                        </IconButton>
                       </TableCell>
-                      <TableCell onClick={editSigner(user)}>
-                        <IconButton  >
-                          <CreateIcon />
-                        </IconButton >
+                      <TableCell>
+                        <IconButton onClick={toggleEnabled(user.Username, user.Enabled)}  >
+                          {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -196,8 +209,8 @@ const UsersTable = props => {
         onClick={() => { setAddDialog(true) }}
       >
         <PersonAddIcon fontSize="small" style={{ marginRight: 10 }} />
-        Thêm người kí
-        </Button>
+        Thêm người dùng
+      </Button>
     </div>
   );
 };
