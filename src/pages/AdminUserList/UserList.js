@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/styles';
 import { UsersToolbar, UsersTable } from './components';
 import * as AdminUsersHandler from 'handlers/AdminUserHandler';
 import mockData from './data';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,7 +15,11 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     fontSize: 30,
-    marginBottom: 30
+    marginBottom: 30,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  icon: {
   }
 }));
 
@@ -51,7 +56,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <div className={classes.title}>QUẢN LÝ NGƯỜI DÙNG</div>
+        <div className={classes.title}><SupervisorAccountIcon className={classes.icon} fontSize='large' />QUẢN LÝ NGƯỜI DÙNG</div>
         <UsersTable users={signers} rerender={getSignerEnum} />
       </div>
     </div>
