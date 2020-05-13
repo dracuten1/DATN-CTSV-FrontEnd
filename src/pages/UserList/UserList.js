@@ -11,6 +11,10 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     marginTop: theme.spacing(2)
+  },
+  title: {
+    fontSize: 30,
+    marginBottom: 30
   }
 }));
 
@@ -37,6 +41,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
+        <div className={classes.title}>QUẢN LÝ NGƯỜI KÝ</div>
         <UsersTable users={signers} />
       </div>
     </div>

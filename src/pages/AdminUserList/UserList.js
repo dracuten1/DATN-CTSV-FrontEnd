@@ -11,6 +11,10 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     marginTop: theme.spacing(2)
+  },
+  title: {
+    fontSize: 30,
+    marginBottom: 30
   }
 }));
 
@@ -47,6 +51,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
+        <div className={classes.title}>QUẢN LÝ NGƯỜI DÙNG</div>
         <UsersTable users={signers} rerender={getSignerEnum} />
       </div>
     </div>

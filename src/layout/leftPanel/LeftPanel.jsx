@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -25,7 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Routers from 'layout/router/Router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import QLLTActions from 'reduxs/reducers/QLLT/action';
@@ -33,6 +33,11 @@ import * as AuthActions from 'reduxs/reducers/Authentication/action';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import Avatar from '@material-ui/core/Avatar';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -64,6 +69,9 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  icon: {
+    marginRight: 10,
   }
 }));
 
@@ -74,17 +82,54 @@ function ResponsiveDrawer(props) {
 
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = url => event => {
+    if (url) history.push(url)
+    setAnchorEl(null);
+  };
+
+
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
-      <Divider />
+      <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center', paddingTop: 8 }} >
+        <Avatar></Avatar>
+        {console.log(props.group)}
+        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+          Xin chào {props.username}<KeyboardArrowDownIcon />
+        </Button>
+      </div>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose()}
+        style={{ top: 30 }}
+      >
+        {props.group === 'Admins' ?
+          <div>
+            <MenuItem onClick={handleClose('/admin')}><SupervisorAccountIcon className={classes.icon} />Quản lý người dùng</MenuItem>
+            <MenuItem onClick={handleClose('/signers')}><BorderColorIcon className={classes.icon} />Quản lý người ký</MenuItem>
+          </div>
+          : <div></div>
+        }
+        <MenuItem onClick={handleClose('/changepass')}> <LockIcon className={classes.icon} />Đổi mật khẩu</MenuItem>
+        <MenuItem onClick={() => {
+          dispatch(AuthActions.logout());
+          history.push('/');
+        }}><ExitToAppIcon className={classes.icon} />Đăng xuất</MenuItem>
+      </Menu>
       <List>
-        <ListItem
+        {/* <ListItem
           button
           component="a"
           onClick={() => history.push('/admin')}
@@ -113,7 +158,7 @@ function ResponsiveDrawer(props) {
             <LockIcon />
           </ListItemIcon>
           <ListItemText primary="Đổi mật khẩu" />
-        </ListItem>
+        </ListItem> */}
         <Divider />
         <ListItem
           button
@@ -171,22 +216,8 @@ function ResponsiveDrawer(props) {
           </ListItemIcon>
           <ListItemText primary="Hồ sơ sinh viên" />
         </ListItem>
-        <ListItem
-          button
-          component="a"
-          onClick={() => {
-            dispatch(AuthActions.logout());
-            history.push('/');
-          }
-          }
-        >
-          <ListItemIcon>
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText primary="Đăng xuất" />
-        </ListItem>
       </List>
-    </div>
+    </div >
   );
 
   return (
@@ -231,4 +262,14 @@ function ResponsiveDrawer(props) {
   );
 }
 
-export default ResponsiveDrawer;
+const mapStateToProps = state => {
+  const tmpUsername = state.auth.cognitoUser;
+  const tmpGroup = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.payload['cognito:groups'] : '';
+
+  return {
+    username: tmpUsername ? tmpUsername.username : '',
+    group: tmpGroup ? tmpGroup[0] : '',
+  };
+};
+
+export default connect(mapStateToProps)(ResponsiveDrawer);

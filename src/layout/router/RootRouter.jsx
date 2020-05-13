@@ -34,12 +34,15 @@ const ProtectRoute = () => {
     const { cognitoUser, forgotPassword } = store.getState().auth;
 
     if (cognitoUser === null) {
-      if (forgotPassword){
-        history.push('/forgotpass');
-      }
-      else{
-          history.push('/');
-      }
+        if (forgotPassword) {
+            history.push('/forgotpass');
+        }
+        else {
+            history.push('/');
+        }
+    }
+    else {
+        history.push('/dashboard')
     }
     return (<RootRouter />);
 };
