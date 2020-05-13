@@ -204,6 +204,7 @@ const PrintList = props => {
 
   if (updateBegin === 0) {
     dispatch(XNSVActions.getNotPrintYet());
+    dispatch(XNSVActions.getUser());
     updateBegin += 1;
   }
 

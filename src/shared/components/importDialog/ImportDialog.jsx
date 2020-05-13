@@ -43,16 +43,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const convertImportCase = importCase => {
-  switch (importCase) {
-    case 1:
-      return 'import-drl';
-    case 2:
-      return 'import-luu-tru-ktx';
-    case 3:
-      return 'import-luu-tru-all';
-    default:
-      return '';
+const convertTTSVCase = ttsvCase => {
+  switch (ttsvCase) {
+      case 'SINH VIÊN NƯỚC NGOÀI':
+        return 'NN';
+      case 'ĐIỂM TRUNG BÌNH':
+        return 'DTB';
+      case 'TỐT NGHIỆP':
+        return 'TotNghiep';
+      case 'HOÀN TẤT CHƯƠNG TRÌNH':
+        return 'HTCT';
+      case 'ĐANG HỌC':
+        return 'DangHoc';
+      case 'CẢNH CÁO HỌC VỤ':
+        return 'CanhCaoHV';
+      case 'BUỘC THÔI HỌC':
+        return 'BuocThoiHoc';
+      case 'BẢO LƯU':
+        return 'BaoLuu';
+      case 'ĐĂNG KÝ HỌC PHẦN':
+        return 'DKHP';
+      default:
+        return '';
   }
 };
 
@@ -65,6 +77,22 @@ const DropZone = withStyles({
 const ImportDialog = props => {
   const classes = useStyles();
   const { open, handleClose, importCase } = props;
+
+  const convertImportCase = ipCase => {
+    switch (ipCase) {
+      case 1:
+        return 'import-drl';
+      case 2:
+        return 'import-luu-tru-ktx';
+      case 3:
+        return 'import-luu-tru-all';
+      case 4:
+        const { ttsvCase } = props;
+        return convertTTSVCase(ttsvCase);
+      default:
+        return '';
+    }
+  };
 
   const Case = convertImportCase(importCase);
 
@@ -119,10 +147,17 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
 
-          statusResponse = await ImportHandler.GetImportStatus();
-          logger.info('ImportDialog:: status: ', statusResponse);
-          setSnackBarValue(successSnackBar);
-          handleClose();
+          const timerIdDRL = setInterval(async () => { 
+            statusResponse = await ImportHandler.GetImportStatus();
+            logger.info('ImportDialog:: statusResponse: ', statusResponse);
+            const { log } = statusResponse;
+            
+            if (log.message === "thành công"){
+              setSnackBarValue(successSnackBar);
+              handleClose();              
+              clearInterval(timerIdDRL);
+            } 
+          }, 3000);
           break;
         case 2: case 3: //Luu tru KTX
           res = await ImportHandler.GetImportQLLTInfo(importCase, response.key);
@@ -137,7 +172,7 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
           
-          const timerId = setInterval(async () => { 
+          const timerIdQLLT = setInterval(async () => { 
             statusResponse = await ImportHandler.GetImportStatusQLLT(res.newKey);
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
@@ -146,11 +181,38 @@ const ImportDialog = props => {
             if (data.total === data.currentAmount){
               setSnackBarValue(successSnackBar);
               handleClose();              
-              clearInterval(timerId);
+              clearInterval(timerIdQLLT);
             } 
-          }, 30000);
-
+          }, 3000);
           break;
+        case 4: //TTSV
+          const { ttsvCase } = props;
+          res = await ImportHandler.GetImportTTSVInfo(Case, response.key);
+          logger.info('ImportDialog:: res: ', res);
+
+          setMessage(res.message + '-' + res.newKey);
+
+          res1 = await ImportHandler.ImportTTSVInfo(Case, {
+            checkImportResult: res.checkImportResult,
+            importedStructure: res.importedStructure,
+            jsonkey          : res.newKey,
+            type             : Case
+          });
+          logger.info('ImportDialog:: res1: ', res1);
+          
+          const timerIdTTSV = setInterval(async () => { 
+            statusResponse = await ImportHandler.GetImportStatusTTSV(res.newKey);
+            logger.info('ImportDialog:: statusResponse: ', statusResponse);
+            const { Item } = statusResponse;
+            const { data } = Item;
+            
+            if (data.total === data.currentAmount){
+              setSnackBarValue(successSnackBar);
+              handleClose();              
+              clearInterval(timerIdTTSV);
+            } 
+          }, 3000);
+          break;  
         default:
           break;
       }

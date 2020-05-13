@@ -1,6 +1,9 @@
 import React from 'react';
-import Filter from 'shared/components/filter/Filter';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { logger } from 'core/services/Apploger';
+import Filter from 'shared/components/filter/Filter';
+import InputDateWithLabel from 'shared/components/inputDateWithLabel/InputDateWithLabel';
 import './Filters.scss';
 
 const useStyles = makeStyles(() => ({
@@ -10,9 +13,18 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+let tempArr = ['None'];
+
 export default function Filters(props) {
   const classes = useStyles();
   const { onFilter } = props;
+
+  const DRLState = useSelector(state => state.DRLState);
+  const { listUser } = DRLState;
+
+  tempArr = tempArr.concat(listUser);
+  logger.info('dataUser: ', tempArr);
+
   const dt = new Date();
   const year = dt.getFullYear();
 
@@ -35,6 +47,22 @@ export default function Filters(props) {
         label="Xếp loại"
         prop="xeploai"
         data={['None', 'Xuất sắc', 'Giỏi', 'Khá', 'Trung bình', 'Yếu', 'Kém']}
+      />
+      <Filter
+        clickFilter={onFilter}
+        prop="username"
+        label="User"
+        data={tempArr}
+      />
+      <InputDateWithLabel
+        prop="fromDate"
+        clickFilter={onFilter}
+        label="Từ ngày"
+      />
+      <InputDateWithLabel
+        prop="toDate"
+        clickFilter={onFilter}
+        label="Đến ngày"
       />
     </div>
   );

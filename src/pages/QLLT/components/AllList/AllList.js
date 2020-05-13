@@ -10,9 +10,11 @@ import {
   CardActions,
   CardContent,
   Button,
-  Divider
+  Divider,
+  Grid
 } from '@material-ui/core';
 
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
@@ -50,7 +52,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataList, isAlllist } = QLLTState;
+  const { dataList, isAlllist, listLink } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -58,7 +60,7 @@ const AllList = props => {
   const [filter, setfilter] = React.useState({
     hk: '1',
     nh: `${(convert - 1)}-${convert}`,
-    type: 'all'
+    type: 'All'
   });
   const [state, setState] = useState({
     data: dataList,
@@ -119,7 +121,7 @@ const AllList = props => {
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            if (filter.type === 'all')
+            if (filter.type === 'All')
               dispatch(Actions.getAllListWithFilter(filter));
             else dispatch(Actions.getKtxListWithFilter(filter));
             updateBegin = 2;
@@ -200,28 +202,41 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => setImportOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Button
+            onClick={() => setImportOpen(true)}
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '8px' }}
+          >
+            Import
+          </Button>
+          <Button
+            onClick={() => dispatch(Actions.exportWithFilter(filter))}
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '8px' }}
+          >
+            Export
+          </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>  
       </CardActions>
       <ImportDialog
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={filter.type === 'ktx' ? 2 : 3}
+        importCase={filter.type === 'KTX' ? 2 : 3}
       />
     </Card>
   );

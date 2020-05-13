@@ -14,13 +14,13 @@ import {
   Grid
 } from '@material-ui/core';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import { logger } from 'core/services/Apploger';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
-import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 }));
 const dt = new Date();
 const year = dt.getFullYear();
+const convert = year % 100;
 
 let updateBegin = 0;
 const AllList = props => {
@@ -64,10 +65,10 @@ const AllList = props => {
       arrColumns = Columns.DSTN;
       break;
     case 4: //Hoan thanh tin chi
-      arrColumns = Columns.HTTC;
+      arrColumns = Columns.HTCT;
       break;
     case 5: //Dang hoc
-      arrColumns = Columns.HTTC;
+      arrColumns = Columns.HTCT;
       break;
     case 6: //Canh cao hoc vu
       arrColumns = Columns.CCHV;
@@ -75,17 +76,27 @@ const AllList = props => {
     case 7: //Bi thoi hoc
       arrColumns = Columns.CCHV;
       break;
+    case 8: //Bảo lưu
+      arrColumns = Columns.BL;
+      break;
     default:
       //Dang ky hoc phan
       arrColumns = Columns.DKHP;
       break;
   }
 
+  //Import props
+  const [importOpen, setImportOpen] = React.useState(false);
+  const closeImportDialog = () => {
+    setImportOpen(false);
+  };
+  const handleImport = () => {};
+
   const [open, setOpen] = React.useState(false);
   const [filter, setFilter] = React.useState({
-    hk: '1',
-    nh: `${year}-${(year + 1)}`,
-    type: 'Tốt nghiệp'
+    hk: '',
+    nh: '',
+    type: ''
   });
 
   logger.info('TTSVAction:: getListAll: dataList: ', dataList);
@@ -96,7 +107,11 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getListWithFilter(filter));
+    dispatch(Actions.getListWithFilter({
+      hk: '1',
+      nh: `${year}-${year + 1}`,
+      type: 'TỐT NGHIỆP'
+    }));
     updateBegin += 1;
   }
 
@@ -108,8 +123,6 @@ const AllList = props => {
     });
     updateBegin += 1;
   }
-
-  logger.info('TTSVAction:: getListAll: state: ', state.data);
 
   const handleAdd = newData => {
     setState(prevState => {
@@ -146,11 +159,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isCase ? (
-                    <b>THÔNG TIN SINH VIÊN</b>
-                  ) : (
-                    <b>DANH SÁCH IMPORT</b>
-                  )}
+                    <b>DANH SÁCH {filter.type}</b>
                 </div>
               }
               columns={state.columns}
@@ -163,34 +172,7 @@ const AllList = props => {
                 rowStyle: {
                   backgroundColor: '#EEE'
                 },
-                // exportButton: true,
-                filtering: true
-              }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
+                filtering: false
               }}
             />
           </div>
@@ -199,101 +181,41 @@ const AllList = props => {
       <Divider />
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
-            <Grid item lg={12} md={12} xl={12} xs={12} >
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                Hoàn tất chương trình
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Đang học
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Cảnh cáo học vụ
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Bị thôi học
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Bảo lưu
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.handleAllList())}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Đăng ký HP
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.exportWithFilter(filter))}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Import
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.exportWithFilter(filter))}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Export
-              </Button>
-              <Button
-                onClick={() => dispatch(Actions.getListWithFilter(filter))}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Thêm dữ liệu
-              </Button>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <Button
+              onClick={() => setImportOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Import
+            </Button>
+            <Button
+              onClick={() => dispatch(Actions.exportWithFilter(filter))}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Export
+            </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
             </Grid>
-            {listLink.length > 0 ? (
-              <Grid item lg={12} md={12} xl={12} xs={12}>
-                <ListLinkDocx data={listLink} />
-              </Grid>
-            ) : (
-              ''
-            )}
+          ) : (
+            ''
+          )}
         </Grid>
       </CardActions>
-      <AddDialog
-        open={open}
-        handleClose={() => setOpen(false)}
-        handleAdd={handleAdd}
+      <ImportDialog
+        open={importOpen}
+        handleClose={() => setImportOpen(false)}
+        handleImport={handleImport}
+        importCase={4}
+        ttsvCase={filter.type}
       />
     </Card>
   );

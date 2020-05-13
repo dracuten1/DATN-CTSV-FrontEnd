@@ -36,14 +36,15 @@ export default function Filters(props) {
         prop="type"
         label="Tình trạng"
         data={[
-          'Bảo lưu',
-          'Đang học',
-          'Sinh viên nước ngoài',
-          'Tốt nghiệp',
-          'Hoàn tất chương trình',
-          'Buộc thôi học',
-          'Cảnh cáo học vụ',
-          'Đăng ký học phần'
+          'BẢO LƯU',
+          'ĐANG HỌC',
+          'SINH VIÊN NƯỚC NGOÀI',
+          'TỐT NGHIỆP',
+          'HOÀN TẤT CHƯƠNG TRÌNH',
+          'BUỘC THÔI HỌC',
+          'CẢNH CÁO HỌC VỤ',
+          'ĐĂNG KÝ HỌC PHẦN',
+          'ĐIỂM TRUNG BÌNH'
         ]}
       />
     </div>

@@ -27,6 +27,8 @@ const parseNHToNumber = nh => {
 };
 
 const getAllListWithFilter = filter => async dispatch => {
+  filter.type = 'all';
+  logger.info('QLLTAction:: getListAll: filter: ', filter);
   const response = await QLLTHandler.GetListWithFilter(filter);
   logger.info('QLLTAction:: getListAll: reponse: ', response);
   const data = Object.keys(response).map(key => {
@@ -47,6 +49,8 @@ const getAllListWithFilter = filter => async dispatch => {
 };
 
 const getKtxListWithFilter = filter => async dispatch => {
+  filter.type = 'ktx';
+  logger.info('QLLTAction:: getListAll: filter: ', filter);
   const response = await QLLTHandler.GetListWithFilter(filter);
   logger.info('QLLTAction:: getListKTX: reponse: ', response);
   const data = Object.keys(response).map(key => {
@@ -64,17 +68,21 @@ const updateOneStudentByType = (data, type) => async dispatch => {
   history.push('/qllt');
 };
 
-// const exportWithFilter = (filter) => async dispatch => {
-//   logger.info('QLLTAction:: filter: filter: ', filter);
+const exportWithFilter = filter => async dispatch => {
+  logger.info('QLLTAction:: filter: filter: ', filter);
 
-//   const response = await QLLTHandler.exportWithFilter(filter);
-//   logger.info('QLLTAction:: Exportfilter: reponse: ', response);
-//   history.push('/qllt');
-// };
+  const response = await QLLTHandler.ExportWithFilter(filter);
+  logger.info('QLLTAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+    history.push('/qllt');
+  }
+};
 
 export default {
   getAllListWithFilter,
   getKtxListWithFilter,
-  updateOneStudentByType
-  // exportWithFilter
+  updateOneStudentByType,
+  exportWithFilter
 };
