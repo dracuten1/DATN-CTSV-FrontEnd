@@ -4,7 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import { blue } from '@material-ui/core/colors';
 import { DialogContent, TextField, DialogActions, Button, LinearProgress } from '@material-ui/core';
-import * as SignersHandler from 'handlers/SignersHandler';
+import * as AdminUserHandler from 'handlers/AdminUserHandler';
 import { useState } from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -26,28 +26,32 @@ const useStyles = makeStyles({
 function AddDialog(props) {
   const classes = useStyles();
   const [progress, setProgress] = useState(true);
-  const { open, onClose, handleAddSigner } = props;
-
-  let { user } = props;
-  user = !user ? {} : user;
-
+  const { open, onClose, handleAddUser } = props;
+  const [error, setError] = useState('');
+  const user = { role: 'normal' }
   const onLostFocus = field => event => {
     user[field] = event.target.value;
-    console.log(user);
   }
 
 
   const handleAdd = async () => {
+
     setProgress(false);
-    await SignersHandler.addSingleSigner(user);
-    handleAddSigner(user);
+    const res = await AdminUserHandler.addUser(user);
+    if (res.User) {
+      handleAddUser(res.User);
+      onClose();
+    }
+    else {
+      setError(res.message);
+    }
     setProgress(true);
-    onClose();
+
   };
 
 
   return (
-    <Dialog aria-labelledby="simple-dialog-title" open={open} className={classes.container}>
+    <Dialog aria-labelledby="simple-dialog-title" open={open} className={classes.container} >
       <div style={{ height: 10 }}>
         <LinearProgress color="secondary" hidden={progress} />
       </div>
@@ -55,36 +59,25 @@ function AddDialog(props) {
       <DialogContent className={classes.container}>
         <TextField
           className={classes.textField}
-          label="Họ và tên"
+          label="Tài khoản"
           margin="normal"
-          onBlur={onLostFocus('hvtnguoiki')}
+          onBlur={onLostFocus('username')}
         />
         <TextField
           className={classes.textField}
-          label="Chức vụ"
+          label="Email"
           margin="normal"
-          onBlur={onLostFocus('chucvu')}
-        />
-        <TextField
-          className={classes.textField}
-          label="TL"
-          margin="normal"
-          onBlur={onLostFocus('TL')}
-        />
-        <TextField
-          className={classes.textField}
-          label="KT"
-          margin="normal"
-          onBlur={onLostFocus('KT')}
+          onBlur={onLostFocus('email')}
         />
         {/* Status
         <RadioGroup aria-label="Status" defaultValue={'Active'} style={{ display: 'flex', flexDirection: 'row' }} onBlur={onLostFocus('DL')}>
           <FormControlLabel value="Active" control={<Radio />} label="Active" />
           <FormControlLabel value="Disable" control={<Radio />} label="Disable" />
         </RadioGroup> */}
+        <div style={{ color: 'red' }}>{error}</div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={() => { onClose(); setError(''); }} color="primary">
           Huỷ
           </Button>
         <Button onClick={handleAdd} color="primary" >

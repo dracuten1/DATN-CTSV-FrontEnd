@@ -158,14 +158,14 @@ const UsersTable = props => {
 
                     </TableRow>
                     :
-                    users.slice(0, rowsPerPage).map((user, index) => (
+                    users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
                       <TableRow
                         className={classes.tableRow}
                         hover
                         key={user.id}
                         selected={selectedUsers.indexOf(user.id) !== -1}
                       >
-                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                         <TableCell>
                           <Typography variant="body1">{user.hvtnguoiki}</Typography>
                         </TableCell>

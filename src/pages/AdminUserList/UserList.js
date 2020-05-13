@@ -25,8 +25,18 @@ const UserList = () => {
 
     const response = await AdminUsersHandler.getAllUsers();
 
+    parseAttributes(response);
     setSigners(response);
   };
+
+  const parseAttributes = users => {
+    users.forEach(user => {
+      user.Attributes.forEach(attribute => {
+        user[attribute.Name] = attribute.Value;
+      });
+    })
+    console.log(users);
+  }
 
   React.useEffect(() => {
     getSignerEnum();

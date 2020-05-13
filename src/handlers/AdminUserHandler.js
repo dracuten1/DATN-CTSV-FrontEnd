@@ -26,3 +26,8 @@ export const togleGroups = async (data) => {
 
 };
 
+export const addUser = async (data) => {
+
+    const url = `admin/createUser`;
+    return await HttpClient.sendPost(url, data);
+}

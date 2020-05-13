@@ -8,8 +8,7 @@ import * as AdminUserHandler from 'handlers/AdminUserHandler';
 import CreateIcon from '@material-ui/icons/Create';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import EditDialog from 'pages/UserList/components/UserProfile';
-import AddDialog from 'pages/UserList/components/AddUserProfile';
+import AddDialog from 'pages/AdminUserList/components/AddUserProfile';
 import PersonIcon from '@material-ui/icons/Person';
 import SecurityIcon from '@material-ui/icons/Security';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -123,9 +122,6 @@ const UsersTable = props => {
     setRowsPerPage(event.target.value);
   };
 
-  const handleAdd = data => {
-    users.push(data);
-  }
   const toggleEnabled = (username, type) => async event => {
     type = type === true ? 'disable' : 'enable';
     await AdminUserHandler.togleEnable({ username, type });
@@ -139,19 +135,32 @@ const UsersTable = props => {
     rerender();
   }
 
+  const parseAttributes = user => {
+    user.Attributes.forEach(attribute => {
+      user[attribute.Name] = attribute.Value;
+    });
+  }
+
+  const handleAdd = data => {
+    parseAttributes(data);
+    console.log("test:", data);
+    users.push(data);
+  }
+
   return (
     <div>
       <Card
         {...rest}
         className={clsx(classes.root, className)}
       >
+        <AddDialog open={addDialog} onClose={onCloseAddDialog} handleAddUser={handleAdd} />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell >No.</TableCell>
+                    <TableCell>No.</TableCell>
                     <TableCell>Tài khoản</TableCell>
                     <TableCell>Họ tên</TableCell>
                     <TableCell>Email</TableCell>
@@ -161,7 +170,7 @@ const UsersTable = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.length === 0  ?
+                  {users.length === 0 ?
                     <TableRow
                       className={classes.tableRow}
                     >
@@ -171,19 +180,19 @@ const UsersTable = props => {
 
                     </TableRow>
                     :
-                    users.slice(0, rowsPerPage).map((user, index) => (
+                    users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
                       <TableRow
                         className={classes.tableRow}
                         hover
                         key={user.id}
                         selected={selectedUsers.indexOf(user.id) !== -1}
                       >
-                        <TableCell >{index + 1}</TableCell>
+                        <TableCell >{page * rowsPerPage + index + 1}</TableCell>
                         <TableCell>
                           <Typography variant="body1">{user.Username}</Typography>
                         </TableCell>
-                        <TableCell>{user.Attributes[0].Value}</TableCell>
-                        <TableCell>{user.Attributes[1].Value}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
                         <TableCell>{user.UserStatus}</TableCell>
                         <TableCell>
                           <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
