@@ -11,6 +11,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import EditDialog from 'pages/UserList/components/UserProfile/index';
 import AddDialog from 'pages/UserList/components/AddUserProfile/index';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
   Card,
@@ -147,31 +148,41 @@ const UsersTable = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.slice(0, rowsPerPage).map((user, index) => (
+                  {users.length === 0 ?
                     <TableRow
                       className={classes.tableRow}
-                      hover
-                      key={user.id}
-                      selected={selectedUsers.indexOf(user.id) !== -1}
                     >
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>
-                        <Typography variant="body1">{user.hvtnguoiki}</Typography>
+                      <TableCell align='center' colSpan={7}>
+                        <CircularProgress />
                       </TableCell>
-                      <TableCell>{user.chucvu}</TableCell>
-                      <TableCell>{user.TL}
-                      </TableCell>
-                      <TableCell>{user.KT}</TableCell>
-                      <TableCell>
-                        {user.DL === 'Active' ? <LockOpenIcon /> : <LockIcon />}
-                      </TableCell>
-                      <TableCell onClick={editSigner(user)}>
-                        <IconButton  >
-                          <CreateIcon />
-                        </IconButton >
-                      </TableCell>
+
                     </TableRow>
-                  ))}
+                    :
+                    users.slice(0, rowsPerPage).map((user, index) => (
+                      <TableRow
+                        className={classes.tableRow}
+                        hover
+                        key={user.id}
+                        selected={selectedUsers.indexOf(user.id) !== -1}
+                      >
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{user.hvtnguoiki}</Typography>
+                        </TableCell>
+                        <TableCell>{user.chucvu}</TableCell>
+                        <TableCell>{user.TL}
+                        </TableCell>
+                        <TableCell>{user.KT}</TableCell>
+                        <TableCell>
+                          {user.DL === 'Active' ? <LockOpenIcon /> : <LockIcon />}
+                        </TableCell>
+                        <TableCell onClick={editSigner(user)}>
+                          <IconButton  >
+                            <CreateIcon />
+                          </IconButton >
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </div>

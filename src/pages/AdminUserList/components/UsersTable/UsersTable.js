@@ -13,6 +13,8 @@ import AddDialog from 'pages/UserList/components/AddUserProfile';
 import PersonIcon from '@material-ui/icons/Person';
 import SecurityIcon from '@material-ui/icons/Security';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import {
   Card,
   CardActions,
@@ -159,32 +161,42 @@ const UsersTable = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.slice(0, rowsPerPage).map((user, index) => (
+                  {users.length === 0  ?
                     <TableRow
                       className={classes.tableRow}
-                      hover
-                      key={user.id}
-                      selected={selectedUsers.indexOf(user.id) !== -1}
                     >
-                      <TableCell >{index + 1}</TableCell>
-                      <TableCell>
-                        <Typography variant="body1">{user.Username}</Typography>
+                      <TableCell align='center' colSpan={7}>
+                        <CircularProgress />
                       </TableCell>
-                      <TableCell>{user.Attributes[0].Value}</TableCell>
-                      <TableCell>{user.Attributes[1].Value}</TableCell>
-                      <TableCell>{user.UserStatus}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
-                          {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton onClick={toggleEnabled(user.Username, user.Enabled)}  >
-                          {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
-                        </IconButton>
-                      </TableCell>
+
                     </TableRow>
-                  ))}
+                    :
+                    users.slice(0, rowsPerPage).map((user, index) => (
+                      <TableRow
+                        className={classes.tableRow}
+                        hover
+                        key={user.id}
+                        selected={selectedUsers.indexOf(user.id) !== -1}
+                      >
+                        <TableCell >{index + 1}</TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{user.Username}</Typography>
+                        </TableCell>
+                        <TableCell>{user.Attributes[0].Value}</TableCell>
+                        <TableCell>{user.Attributes[1].Value}</TableCell>
+                        <TableCell>{user.UserStatus}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
+                            {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton onClick={toggleEnabled(user.Username, user.Enabled)}  >
+                            {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </div>
