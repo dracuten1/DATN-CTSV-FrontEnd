@@ -71,7 +71,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ad
             Default region name [None]: ap-southeast-1
             Default output format [None]: ENTER
 
-    Deploy script: npm deploy || yarn deploy
+    Deploy script: npm run deploy || yarn deploy
 
 ### `npm build` fails to minify
 

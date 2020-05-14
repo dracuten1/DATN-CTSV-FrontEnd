@@ -102,7 +102,6 @@ function ResponsiveDrawer(props) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center', paddingTop: 8 }} >
         <Avatar></Avatar>
-        {console.log(props.group)}
         <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
           Xin chào {props.username}<KeyboardArrowDownIcon />
         </Button>

@@ -2,7 +2,7 @@ import prod from "./app-config-prod";
 import dev from "./app-config-dev";
 import local from "./app-config-local";
 
-const appStage = process.env.REACT_APP_STAGE;
+const appStage = process.env.REACT_APP_STAGE.trim();
 
 const isDev =
   appStage !== undefined && appStage !== null && appStage.trim() === "development";
