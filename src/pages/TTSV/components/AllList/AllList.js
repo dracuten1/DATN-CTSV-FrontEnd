@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 }));
 const dt = new Date();
 const year = dt.getFullYear();
-const convert = year % 100;
 
 let updateBegin = 0;
 const AllList = props => {
@@ -87,12 +86,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const closeImportDialog = () => {
-    setImportOpen(false);
-  };
   const handleImport = () => {};
-
-  const [open, setOpen] = React.useState(false);
   const [filter, setFilter] = React.useState({
     hk: '',
     nh: '',
@@ -132,7 +126,6 @@ const AllList = props => {
       data.push(newData);
       return { ...prevState, data };
     });
-    setOpen(false);
   };
 
   const handleFilter = (prop, data) => {

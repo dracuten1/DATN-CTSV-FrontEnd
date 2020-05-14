@@ -21,7 +21,6 @@ const DashboardQLLT = () => {
   const classes = useStyles();
 
   const DRLState = useSelector(state => state.DRLState);
-  const { isAllList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

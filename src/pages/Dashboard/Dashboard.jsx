@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // @material-ui/icons
 import Admin from '@material-ui/icons/Person';
-import Info from '@material-ui/icons/Info';
 import Confirm from '@material-ui/icons/CheckCircleOutline';
 import Grade from '@material-ui/icons/Grade';
 import Home from '@material-ui/icons/Home';

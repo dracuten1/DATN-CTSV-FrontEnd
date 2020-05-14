@@ -82,13 +82,10 @@ const PrintList = props => {
   logger.info('history', dataPrint);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
-  const [notice, setNotice] = React.useState(false);
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const closeImportDialog = () => {
-    setImportOpen(false);
-  };
+
   const handleImport = () => {};
 
   const UrlsColumns = [
