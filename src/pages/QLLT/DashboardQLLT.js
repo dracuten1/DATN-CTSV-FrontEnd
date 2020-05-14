@@ -20,8 +20,7 @@ const useStyles = makeStyles(theme => ({
 const DashboardQLLT = () => {
   const classes = useStyles();
 
-  const DRLState = useSelector(state => state.DRLState);
-  const { isAllList } = DRLState;
+  useSelector(state => state.DRLState);
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

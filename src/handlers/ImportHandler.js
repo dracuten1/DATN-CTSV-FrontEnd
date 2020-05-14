@@ -1,6 +1,5 @@
 import * as HttpClient from 'core/services/HttpClient';
 import { logger } from 'core/services/Apploger';
-import moment from 'moment';
 
 export const GetUploadURL = async (type) => {
   const url = `s3?type=${type}`;
@@ -65,30 +64,30 @@ export const GetImportStatusQLLT = async (key) => {
 };
 
 /* Import TTSV */
-const convertType = ttsvCase => {
-  switch (ttsvCase) {
-    case 1:
-        return 'NN';
-      case 2:
-        return 'DiemTrungBinh';
-      case 3:
-        return 'TotNghiep';
-      case 4:
-        return 'HTCT';
-      case 5:
-        return 'DangHoc';
-      case 6:
-        return 'CanhCaoHV';
-      case 7:
-        return 'BuocThoiHoc';
-      case 8:
-        return 'BaoLuu';
-      case 9:
-        return 'DKHP';
-      default:
-        return '';
-  }
-};
+// const convertType = ttsvCase => {
+//   switch (ttsvCase) {
+//     case 1:
+//         return 'NN';
+//       case 2:
+//         return 'DiemTrungBinh';
+//       case 3:
+//         return 'TotNghiep';
+//       case 4:
+//         return 'HTCT';
+//       case 5:
+//         return 'DangHoc';
+//       case 6:
+//         return 'CanhCaoHV';
+//       case 7:
+//         return 'BuocThoiHoc';
+//       case 8:
+//         return 'BaoLuu';
+//       case 9:
+//         return 'DKHP';
+//       default:
+//         return '';
+//   }
+// };
 
 export const GetImportTTSVInfo = async (ttsvCase, key) => {
   // const type = convertType(ttsvCase);

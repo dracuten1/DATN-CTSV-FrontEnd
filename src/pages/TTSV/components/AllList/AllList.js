@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 }));
 const dt = new Date();
 const year = dt.getFullYear();
-const convert = year % 100;
 
 let updateBegin = 0;
 const AllList = props => {
@@ -87,12 +86,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const closeImportDialog = () => {
-    setImportOpen(false);
-  };
-  const handleImport = () => {};
-
-  const [open, setOpen] = React.useState(false);
+  const handleImport = () => { };
   const [filter, setFilter] = React.useState({
     hk: '',
     nh: '',
@@ -124,16 +118,15 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  const handleAdd = newData => {
-    setState(prevState => {
-      const data = [...prevState.data];
-      newData.scn = data.length + 1;
-      // newData.case = reparseCase(newData.case);
-      data.push(newData);
-      return { ...prevState, data };
-    });
-    setOpen(false);
-  };
+  // const handleAdd = newData => {
+  //   setState(prevState => {
+  //     const data = [...prevState.data];
+  //     newData.scn = data.length + 1;
+  //     // newData.case = reparseCase(newData.case);
+  //     data.push(newData);
+  //     return { ...prevState, data };
+  //   });
+  // };
 
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
@@ -159,7 +152,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                    <b>DANH SÁCH {filter.type}</b>
+                  <b>DANH SÁCH {filter.type}</b>
                 </div>
               }
               columns={state.columns}
@@ -206,8 +199,8 @@ const AllList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <ImportDialog

@@ -45,7 +45,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { dataList, isCase } = QLLTState;
+  const { isCase } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
   let arrColumns = [];
@@ -96,8 +96,8 @@ const AllList = props => {
                   {isCase ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
-                    <b>DANH SÁCH IMPORT</b>
-                  )}
+                      <b>DANH SÁCH IMPORT</b>
+                    )}
                 </div>
               }
               columns={state.columns}
