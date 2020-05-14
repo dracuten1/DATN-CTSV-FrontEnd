@@ -100,6 +100,7 @@ const PrintList = props => {
           valueCase = term;
         }
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.case;
         }
         return rowData;
@@ -285,12 +286,13 @@ const PrintList = props => {
     setOpen(false);
     if (valid) {
       setState(prevState => {
-      const data = [...prevState.data];
-      newData.scn = data.length + 1;
-      newData.case = reparseCase(newData.case);
-      data.push(newData);
-      return { ...prevState, data };
-    });}
+        const data = [...prevState.data];
+        newData.scn = data.length + 1;
+        newData.case = reparseCase(newData.case);
+        data.push(newData);
+        return { ...prevState, data };
+      });
+    }
   };
 
   const handleFilter = (prop, data) => {

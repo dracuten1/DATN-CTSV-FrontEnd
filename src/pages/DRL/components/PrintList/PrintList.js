@@ -76,7 +76,7 @@ const PrintList = props => {
     xeploai: 'Giỏi',
     username: '',
     fromDate: '',
-    toDate:''
+    toDate: ''
   });
 
   logger.info('history', dataPrint);
@@ -86,18 +86,20 @@ const PrintList = props => {
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-    { title: 'URL', field: 'url', editable: 'never', filtering: false, render: rowData => (
+    {
+      title: 'URL', field: 'url', editable: 'never', filtering: false, render: rowData => (
         <Link
           style={{ textDecoration: 'none' }}
           href={rowData.url}
         >
           {`${rowData.url.substring(0, 200)}...`}
         </Link>
-    )}
+      )
+    }
   ];
 
   const HistoryColumns = [
@@ -113,10 +115,10 @@ const PrintList = props => {
       title: 'Trường hợp',
       field: 'case',
       lookup: {
-        HK:  'Năm học-Học kỳ',
-        NH:  'Năm Học',
+        HK: 'Năm học-Học kỳ',
+        NH: 'Năm Học',
         All: 'Tất cả',
-        TK:  'Toàn Khoá'
+        TK: 'Toàn Khoá'
       },
       filterCellStyle: {
         paddingTop: 1
@@ -126,6 +128,7 @@ const PrintList = props => {
           valueCase = term;
         }
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.case;
         }
         return rowData;
@@ -177,6 +180,7 @@ const PrintList = props => {
           valueCase = term;
         }
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.case;
         }
         return rowData;
@@ -250,13 +254,13 @@ const PrintList = props => {
     }
   ];
 
-  if (isAllList){
+  if (isAllList) {
     typeColumns = AllColumns;
-  } else if (isPrintList){
+  } else if (isPrintList) {
     typeColumns = PrintColumns;
-  } else if (isHistoryList){
+  } else if (isHistoryList) {
     typeColumns = HistoryColumns;
-  }else {
+  } else {
     typeColumns = UrlsColumns;
   }
 
@@ -359,7 +363,7 @@ const PrintList = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
       <Divider />
-      {isPrintList ? ('') :(
+      {isPrintList ? ('') : (
         <CardActions className={classes.actions}>
           <Filters onFilter={handleFilter} />
           <ContainedButton
@@ -387,17 +391,17 @@ const PrintList = props => {
               actions={
                 isPrintList
                   ? [
-                      {
-                        icon: icons.Print,
-                        tooltip: 'Print',
-                        onClick: (event, rowData) => {
-                          dispatch(
-                            DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
-                          );
-                          isPrint = !isPrint;
-                        }
+                    {
+                      icon: icons.Print,
+                      tooltip: 'Print',
+                      onClick: (event, rowData) => {
+                        dispatch(
+                          DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
+                        );
+                        isPrint = !isPrint;
                       }
-                    ]
+                    }
+                  ]
                   : []
               }
               options={{
@@ -414,21 +418,21 @@ const PrintList = props => {
               editable={
                 isPrintList
                   ? {
-                      onRowDelete: oldData =>
-                        new Promise(resolve => {
-                          setTimeout(() => {
-                            logger.info('Olddata: ', oldData);
-                            const { pk, sk } = oldData;
-                            dispatch(DRLActions.deleteOneCertificate(pk, sk));
-                            resolve();
-                            setState(prevState => {
-                              const data = [...prevState.data];
-                              data.splice(data.indexOf(oldData), 1);
-                              return { ...prevState, data };
-                            });
-                          }, 600);
-                        })
-                    }
+                    onRowDelete: oldData =>
+                      new Promise(resolve => {
+                        setTimeout(() => {
+                          logger.info('Olddata: ', oldData);
+                          const { pk, sk } = oldData;
+                          dispatch(DRLActions.deleteOneCertificate(pk, sk));
+                          resolve();
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data.splice(data.indexOf(oldData), 1);
+                            return { ...prevState, data };
+                          });
+                        }, 600);
+                      })
+                  }
                   : {}
               }
             />
@@ -499,10 +503,10 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={async () => {
                     const keys = dataPrint.map(item => {
-                        return ({
-                          PK: item.pk,
-                          SK: item.sk
-                        });
+                      return ({
+                        PK: item.pk,
+                        SK: item.sk
+                      });
                     });
                     const data = await DRLHandler.PrintAllStudent(keys);
 
@@ -537,62 +541,62 @@ const PrintList = props => {
                   size="small"
                 >
                   Xem Lịch Sử
-              </Button>           
+              </Button>
               </>
             ) : (
-              <>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(DRLActions.getNotPrintYet());
-                    updateBegin = 1;
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Danh sách in
+                <>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => {
+                      dispatch(DRLActions.getNotPrintYet());
+                      updateBegin = 1;
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Danh sách in
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => setImportOpen(true)}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Import
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => setImportOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Import
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
-                >
-                  Export
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
+                  >
+                    Export
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => {
-                    dispatch(DRLActions.getListHistoryImport(filter));
-                    updateBegin = 1;
-                  }}
-                >
-                  Danh Sách Đã Import
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      dispatch(DRLActions.getListHistoryImport(filter));
+                      updateBegin = 1;
+                    }}
+                  >
+                    Danh Sách Đã Import
                 </Button>
-              </>
-            )}
+                </>
+              )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <AddDialog

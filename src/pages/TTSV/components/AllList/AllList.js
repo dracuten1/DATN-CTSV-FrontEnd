@@ -118,15 +118,16 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  // const handleAdd = newData => {
-  //   setState(prevState => {
-  //     const data = [...prevState.data];
-  //     newData.scn = data.length + 1;
-  //     // newData.case = reparseCase(newData.case);
-  //     data.push(newData);
-  //     return { ...prevState, data };
-  //   });
-  // };
+  // eslint-disable-next-line
+  const handleAdd = newData => {
+    setState(prevState => {
+      const data = [...prevState.data];
+      newData.scn = data.length + 1;
+      // newData.case = reparseCase(newData.case);
+      data.push(newData);
+      return { ...prevState, data };
+    });
+  };
 
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });

@@ -46,6 +46,7 @@ const UserList = () => {
 
   React.useEffect(() => {
     getSignerEnum();
+    // eslint-disable-next-line
   }, []);
 
 
