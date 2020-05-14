@@ -144,7 +144,6 @@ const UsersTable = props => {
 
   const handleAdd = data => {
     parseAttributes(data);
-    console.log("test:", data);
     users.push(data);
   }
 

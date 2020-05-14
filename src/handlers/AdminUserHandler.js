@@ -21,7 +21,6 @@ export const togleEnable = async (data) => {
 export const togleGroups = async (data) => {
 
     const url = `admin/changeUserGroup`;
-    console.log(data);
     return await HttpClient.sendPutWithBody(url, data);
 
 };

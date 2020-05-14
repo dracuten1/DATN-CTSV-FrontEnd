@@ -270,7 +270,6 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
-    console.log(moment(new Date()).format('x'));
     dispatch(DRLActions.getNotPrintYet());
     dispatch(
       DRLActions.getListPrintByDate(

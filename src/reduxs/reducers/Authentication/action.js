@@ -90,7 +90,6 @@ export const resetPassword = (username) => {
         // call forgotPassword on cognitoUser
         cognitoUser.forgotPassword({
             onSuccess: (result) => {
-                console.log(result);
                 dispatch(authResetPassword());
             },
             onFailure: (err) => {

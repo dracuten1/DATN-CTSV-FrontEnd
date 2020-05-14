@@ -33,7 +33,6 @@ function AddDialog(props) {
 
   const onLostFocus = field => event => {
     user[field] = event.target.value;
-    console.log(user);
   }
 
 

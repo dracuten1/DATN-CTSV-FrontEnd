@@ -240,7 +240,6 @@ const XNTruocKhiThemDialog = props => {
 
     const data = await XNSVHandler.FindStudentInfoById(id);
 
-    console.log("DATA test: ", data);
 
     const resStudentInfo = data.Items[0];
 

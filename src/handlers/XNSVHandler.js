@@ -105,7 +105,6 @@ export const PrintByType = async (type) => {
 export const PrintOneStudent = async (data) => {
 
   const url = `xnsv/printf`;
-  console.log("dataaaa:", data);
   const response = await HttpClient.sendPutWithBody(url, data);
   logger.info("XNSVhandler:: printOneCertificate: response: ", response);
 

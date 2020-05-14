@@ -25,10 +25,10 @@ const getListHistory = () => async dispatch => {
 };
 
 const getNotPrintYet = () => async dispatch => {
+  history.push('/drl');
   const status = 'ChuaIn';
   const payload = await DRLHandler.GetListCertificate(status);
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/drl');
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {

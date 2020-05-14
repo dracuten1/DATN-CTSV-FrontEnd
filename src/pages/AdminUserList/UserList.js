@@ -44,7 +44,6 @@ const UserList = () => {
         user[attribute.Name] = attribute.Value;
       });
     })
-    console.log(users);
   }
 
   React.useEffect(() => {
