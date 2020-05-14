@@ -136,7 +136,7 @@ export const AddCertificate = async value => {
 export const GetCompany = async () => {
   const url = `xnsv/company`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGetData(url);
 
   return response;
 };

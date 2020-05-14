@@ -73,7 +73,10 @@ const PrintList = props => {
   const [filter, setFilter] = React.useState({
     type: '1',
     time: `${year}-${(year + 1)}`,
-    xeploai: 'Giỏi'
+    xeploai: 'Giỏi',
+    username: '',
+    fromDate: '',
+    toDate:''
   });
 
   logger.info('history', dataPrint);
@@ -275,6 +278,7 @@ const PrintList = props => {
         moment(new Date()).format('x')
       )
     );
+    dispatch(DRLActions.getUser());
     updateBegin += 1;
   }
 
@@ -567,6 +571,7 @@ const PrintList = props => {
                   variant="contained"
                   color="primary"
                   size="small"
+                  onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
                 >
                   Export
                 </Button>

@@ -2,8 +2,8 @@ import React from 'react';
 import Filter from 'shared/components/filter/Filter';
 import { makeStyles } from '@material-ui/core/styles';
 import InputDateWithLabel from 'shared/components/inputDateWithLabel/InputDateWithLabel';
-import { useDispatch, useSelector } from 'react-redux';
-import XNSVActions from 'reduxs/reducers/XNSV/action';
+import { useSelector } from 'react-redux';
+import { logger } from 'core/services/Apploger';
 
 import './Filters.scss';
 
@@ -14,21 +14,17 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const data = ['None'];
+let tempArr = ['None'];
 
 export default function Filters(props) {
   const classes = useStyles();
   const { onFilter } = props;
 
-  const dispatch = useDispatch();
   const XNSVState = useSelector(state => state.XNSVState);
   const { listUser } = XNSVState;
   
-  if (listUser.length == 0){
-    dispatch(XNSVActions.getUser());
-  }
-
-  data.concat(listUser);
+  tempArr = tempArr.concat(listUser);
+  logger.info('dataUser: ', tempArr);
 
   const dt = new Date();
   const year = dt.getFullYear();
@@ -67,7 +63,7 @@ export default function Filters(props) {
         clickFilter={onFilter}
         prop="username"
         label="User"
-        data={data}
+        data={tempArr}
       />
 
       <InputDateWithLabel

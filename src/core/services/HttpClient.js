@@ -80,6 +80,13 @@ export const sendPostGetData = async (url, requestBody) => {
     return response.data;
 };
 
+export const sendPostWithParams = async (url) => {
+
+    const response = await httpClient.post(url);
+
+    return response.data;
+};
+
 export const sendPut = async (url) => {
 
     const response = await httpClient.put(url);
@@ -117,6 +124,15 @@ export const sendGetBody = async (url, requestBody) => {
     const { body } = response.data;
 
     return body;
+};
+
+export const sendGetData = async (url) => {
+
+    const response = await httpClient.get(url);
+
+    const { data } = response;
+
+    return data;
 };
 
 /**

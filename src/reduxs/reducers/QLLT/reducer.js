@@ -28,11 +28,11 @@ const qlltReducer = (state = INIT_STATE, action) => {
       return {
         ...state
       };
-    case ActionTypes.ADD_LINK_PRINT: {
-      const temp = state.listLink;
-      temp.push(action.listLink);
-      return { ...state, listLink: temp, dataList: action.listData };
-    }
+      case ActionTypes.ADD_LINK_EXPORT: {
+        const ex = state.listLink;
+        ex.push(action.listLink);
+        return { ...state, listLink: ex };
+      }
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
     case ActionTypes.PRINT_BY_TYPE:

@@ -26,11 +26,12 @@ const parseNHToNumber = nh => {
 };
 
 const getListWithFilter = filter => async dispatch => {
+  logger.info('TTSVAction:: getListAll: filter: ', filter);
   const response = await TTSVHandler.GetListWithFilter(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const { type } = filter;
   const data = Object.keys(response).map(key => {
-    response[key].NamHoc = parseNHToNumber(response[key].NamHoc);
+    response[key].nh = parseNHToNumber(response[key]["data"].NH);
     response[key].type = response[key]["data"].LoaiTotNghiep;
     response[key].month = response[key]["data"].DotThang;
     response[key].DTB = response[key]["data"].DTB;
@@ -39,30 +40,33 @@ const getListWithFilter = filter => async dispatch => {
   });
   
   switch (type) {
-    case 'Sinh viên nước ngoài':
+    case 'SINH VIÊN NƯỚC NGOÀI':
       dispatch({ type: Types.GET_LIST_SVNN, payload: data });
       break;
-    case 'Điểm trung bình':
+    case 'ĐIỂM TRUNG BÌNH':
       dispatch({ type: Types.GET_LIST_DTB, payload: data });
       break;
-    case 'Tốt nghiệp':
+    case 'TỐT NGHIỆP':
       dispatch({ type: Types.GET_LIST_DSTN, payload: data });
       break;
-    case 'Hoàn tất chương trình':
+    case 'HOÀN TẤT CHƯƠNG TRÌNH':
       dispatch({ type: Types.GET_LIST_HTCT, payload: data });
       break;
-    case 'Đang học':
+    case 'ĐANG HỌC':
       dispatch({ type: Types.GET_LIST_DH, payload: data });
       break;
-    case 'Cảnh cáo học vụ':
+    case 'CẢNH CÁO HỌC VỤ':
       dispatch({ type: Types.GET_LIST_CCHV, payload: data });
       break;
-    case 'Buộc thôi học':
+    case 'BUỘC THÔI HỌC':
       dispatch({ type: Types.GET_LIST_BTH, payload: data });
       break;
-    case 'Đăng ký học phần':
+    case 'ĐĂNG KÝ HỌC PHẦN':
       dispatch({ type: Types.GET_LIST_DKHP, payload: data });
       break;
+    case 'BẢO LƯU':
+      dispatch({ type: Types.GET_LIST_BL, payload: data });
+      break;  
     default:
       break;
   }

@@ -92,6 +92,26 @@ const getListHistoryImport = (filter) => async dispatch => {
   dispatch({ type: Types.GET_HISTORY_IMPORT_LIST, payload });
 };
 
+const getUser = () => async dispatch => {
+  const response = await DRLHandler.GetUser();
+  logger.info('DRLAction:: Company: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.GET_USER, payload: response.users });
+  }
+};
+
+const exportWithFilter = filter => async dispatch => {
+  logger.info('DRLAction:: filter: filter: ', filter);
+
+  const response = await DRLHandler.ExportWithFilter(filter);
+  logger.info('DRLAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body.Items });
+    history.push('/drl');
+  }
+};
+
 export default {
   handleAllList,
   handlePrintList,
@@ -103,5 +123,7 @@ export default {
   filterListData,
   getListPrintByDate,
   PrintAllStudent,
-  getListHistoryImport
+  getListHistoryImport,
+  getUser,
+  exportWithFilter
 };

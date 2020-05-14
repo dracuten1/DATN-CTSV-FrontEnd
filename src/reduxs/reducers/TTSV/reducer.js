@@ -22,8 +22,10 @@ const ttsvReducer = (state = INIT_STATE, action) => {
       return { ...state, isCase: 6 };
     case ActionTypes.BTH:
       return { ...state, isCase: 7 };
-    case ActionTypes.DKHP:
+    case ActionTypes.BL:
       return { ...state, isCase: 8 };
+    case ActionTypes.DKHP:
+      return { ...state, isCase: 9 };
     case ActionTypes.GET_LIST_SVNN:
       return {
         ...state,
@@ -66,11 +68,17 @@ const ttsvReducer = (state = INIT_STATE, action) => {
         dataList: action.payload,
         isCase: 7
       };
-    case ActionTypes.GET_LIST_DKHP:
+    case ActionTypes.GET_LIST_BL:
       return {
         ...state,
         dataList: action.payload,
         isCase: 8
+      };
+    case ActionTypes.GET_LIST_DKHP:
+      return {
+        ...state,
+        dataList: action.payload,
+        isCase: 9
       };
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;

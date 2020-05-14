@@ -146,7 +146,7 @@ const DSTN = [
   },
   {
     title: 'Năm học',
-    field: 'NamHoc',
+    field: 'nh',
     lookup: {
       1: `${(year - 6)}-${(year - 5)}`,
       2: `${(year - 5)}-${(year - 4)}`,
@@ -166,7 +166,7 @@ const DSTN = [
   }
 ];
 
-const HTTC = [
+const HTCT = [
   // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
   { title: 'MSSV', field: 'MSSV', filtering: false },
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
@@ -297,11 +297,49 @@ const DKHP = [
   }
 ];
 
+const BL = [
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
+  {
+    title: 'Học kỳ',
+    field: 'HocKy',
+    lookup: {
+      1: '1',
+      2: '2'
+    },
+    filterCellStyle: {
+      paddingTop: 1
+    }
+  },
+  {
+    title: 'Năm học',
+    field: 'nh',
+    lookup: {
+      1: `${(year - 6)}-${(year - 5)}`,
+      2: `${(year - 5)}-${(year - 4)}`,
+      3: `${(year - 4)}-${(year - 3)}`,
+      4: `${(year - 3)}-${(year - 2)}`,
+      5: `${(year - 2)}-${(year - 1)}`,
+      6: `${(year - 1)}-${year}`,
+      7: `${year}-${(year + 1)}`
+    },
+    filterCellStyle: {
+      paddingTop: 1
+    }
+  },
+  {
+    title: 'Ghi chú',
+    field: 'note'
+  }
+];
+
 export default {
   SVNN,
   DSTN,
   DKHP,
   DTB,
   CCHV,
-  HTTC
+  HTCT,
+  BL
 };

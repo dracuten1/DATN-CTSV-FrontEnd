@@ -38,7 +38,7 @@ export default function SimpleSelect(props) {
     const { data } = props;
     return data.map((val, ind) => {
       return val === 'None' ? (
-        <MenuItem key={ind} value={null}>
+        <MenuItem key={ind} value={''}>
           {val}
         </MenuItem>
       ) : (

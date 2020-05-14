@@ -60,6 +60,14 @@ export const AddCertificate = async value => {
   return response;
 };
 
+export const GetUser = async () => {
+  const url = `xnsv/company`;
+
+  const response = await HttpClient.sendGetData(url);
+
+  return response;
+};
+
 export const GetListCertificate = async status => {
   const url = `drl/getListCertificates?status=${status}`;
 
@@ -150,3 +158,12 @@ export const GetURLFileImport = async (nh,hk) => {
   return payload;
 };
 
+export const ExportWithFilter = async (filter) => {
+  const {nh, hk, type, username, fromDate, toDate} = filter;
+  const cvNH = convertNamHoc(nh);
+  const url = `drl/export?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
+
+  const response = await HttpClient.sendPatch(url);
+
+  return response;
+};

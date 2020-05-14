@@ -5,7 +5,8 @@ const INIT_STATE = {
   isPrintList: true,
   isHistoryList: false,
   dataPrint: [],
-  listLink: []
+  listLink: [],
+  listUser: []
 };
 
 const userReducer = (state = INIT_STATE, action) => {
@@ -52,6 +53,11 @@ const userReducer = (state = INIT_STATE, action) => {
         isPrintList: false,
         isHistoryList: false,
         isHisImport: true
+      };
+    case ActionTypes.GET_USER:
+      return {
+        ...state,
+        listUser: action.payload
       };
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };

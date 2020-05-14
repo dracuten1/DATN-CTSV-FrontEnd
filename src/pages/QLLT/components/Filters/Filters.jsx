@@ -34,7 +34,7 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Loại"
         prop="type"
-        data={['None', 'all', 'ktx']}
+        data={['None', 'All', 'KTX']}
       />
     </div>
   );
