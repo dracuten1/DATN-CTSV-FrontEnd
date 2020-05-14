@@ -34,6 +34,7 @@ import {
 
 import { getInitials } from 'helpers';
 import history from 'historyConfig';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -195,12 +196,12 @@ const UsersTable = props => {
                         <TableCell>{user.email}</TableCell>
                         <TableCell>{user.UserStatus}</TableCell>
                         <TableCell>
-                          <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
+                          <IconButton disabled={props.username === user.Username} onClick={toggleGroups(user.Username, user.GroupName)}  >
                             {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
                           </IconButton>
                         </TableCell>
                         <TableCell>
-                          <IconButton onClick={toggleEnabled(user.Username, user.Enabled)}  >
+                          <IconButton disabled={props.username === user.Username} onClick={toggleEnabled(user.Username, user.Enabled)}  >
                             {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
                           </IconButton>
                         </TableCell>
@@ -241,4 +242,12 @@ UsersTable.propTypes = {
   users: PropTypes.array.isRequired
 };
 
-export default UsersTable;
+const mapStateToProps = state => {
+  const tmpUsername = state.auth.cognitoUser;
+
+  return {
+    username: tmpUsername ? tmpUsername.username : '',
+  };
+};
+
+export default connect(mapStateToProps)(UsersTable);
