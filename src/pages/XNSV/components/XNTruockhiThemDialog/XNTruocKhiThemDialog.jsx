@@ -150,6 +150,7 @@ const XNTruocKhiThemDialog = props => {
     setCertificate(tmpCertificate);
   };
 
+  //loại xác nhận tiếng việt
   const dataLXNTV = [
     'Bảo lưu',
     'Đang học',
@@ -160,12 +161,24 @@ const XNTruocKhiThemDialog = props => {
     'Giới thiệu',
     'Vay vốn'
   ];
+  //loại xác nhận tiếng anh
   const dataLXNTA = [
     'Đang học',
     'Bảo lưu',
     'Xác nhận thời gian học',
     'Hoàn tất chương trình'
   ];
+
+  //tình trạng
+  const dataTT = {
+    DangHoc: 'Đang học',
+    BaoLuu: 'Bảo lưu',
+    BuocThoiHoc: 'Buộc thôi học',
+    CanhCaoHV: 'Cảnh cáo học vụ',
+    TotNghiep: 'Tốt nghiệp',
+    NN: 'Đi nước ngoài',
+    HTCT: 'Hoàn tất chương trình',
+  }
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -178,6 +191,16 @@ const XNTruocKhiThemDialog = props => {
       return (
         <MenuItem key={ind} value={val}>
           {val}
+        </MenuItem>
+      );
+    });
+  };
+
+  const drawDataObject = data => {
+    return Object.keys(data).map((val, ind) => {
+      return (
+        <MenuItem key={ind} value={val}>
+          {data[val]}
         </MenuItem>
       );
     });
@@ -497,7 +520,7 @@ const XNTruocKhiThemDialog = props => {
                 fetchCertificate();
               }}
             >
-              {drawData(dataLXNTA)}
+              {drawDataObject(dataTT)}
             </Select>
           </FormControl>
           {values.status === 'Đang học' && (
