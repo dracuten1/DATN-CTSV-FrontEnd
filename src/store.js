@@ -3,12 +3,14 @@ import thunkMiddleware from 'redux-thunk';
 import { applyMiddleware, createStore } from 'redux';
 import logger from 'redux-logger';
 import * as actions from 'reduxs/reducers/Authentication/action';
+import appConfig from 'config/app-config';
 
+const middleware = [thunkMiddleware];
+if (appConfig.appStage !== 'production') middleware.push(logger);
 const store = createStore(
     RootReducers,
     applyMiddleware(
-        thunkMiddleware,
-        logger
+        ...middleware,
     )
 );
 store.dispatch(actions.authCheckState());

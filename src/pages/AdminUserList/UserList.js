@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-
-import { UsersToolbar, UsersTable } from './components';
+import { UsersTable } from './components';
 import * as AdminUsersHandler from 'handlers/AdminUserHandler';
-import mockData from './data';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 const useStyles = makeStyles(theme => ({
@@ -44,11 +42,11 @@ const UserList = () => {
         user[attribute.Name] = attribute.Value;
       });
     })
-    console.log(users);
   }
 
   React.useEffect(() => {
     getSignerEnum();
+    // eslint-disable-next-line
   }, []);
 
 

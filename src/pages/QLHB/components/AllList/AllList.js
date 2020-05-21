@@ -44,7 +44,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { listData, isHBKK } = QLLTState;
+  const { isHBKK } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -54,135 +54,135 @@ const AllList = props => {
     data: isHBKK ? mockData.info : mockData.importInfo,
     columns: isHBKK
       ? [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
-          {
-            title: 'ĐTB',
-            field: 'ktx'
+        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+        { title: 'MSSV', field: 'mssv', filtering: false },
+        { title: 'Họ tên', field: 'name', filtering: false },
+        {
+          title: 'ĐTB',
+          field: 'ktx'
+        },
+        {
+          title: 'Xếp loại ĐRL',
+          field: 'portal'
+        },
+        {
+          title: 'Loại HB',
+          field: 'portal'
+        },
+        {
+          title: 'Số tiền HB',
+          field: 'portal'
+        },
+        {
+          title: 'Số tháng',
+          field: 'portal'
+        },
+        {
+          title: 'Tổng cộng',
+          field: 'portal'
+        },
+        {
+          title: 'CMND',
+          field: 'cmnd'
+        },
+        {
+          title: 'Số TK',
+          field: 'portal'
+        },
+        {
+          title: 'Ngân hàng',
+          field: 'portal'
+        },
+        {
+          title: 'Chi nhánh',
+          field: 'portal'
+        },
+        {
+          title: 'Năm học',
+          field: 'year',
+          lookup: {
+            1: '2016-2017',
+            2: '2017-2018',
+            3: '2018-2019',
+            4: '2019-2020'
           },
-          {
-            title: 'Xếp loại ĐRL',
-            field: 'portal'
-          },
-          {
-            title: 'Loại HB',
-            field: 'portal'
-          },
-          {
-            title: 'Số tiền HB',
-            field: 'portal'
-          },
-          {
-            title: 'Số tháng',
-            field: 'portal'
-          },
-          {
-            title: 'Tổng cộng',
-            field: 'portal'
-          },
-          {
-            title: 'CMND',
-            field: 'cmnd'
-          },
-          {
-            title: 'Số TK',
-            field: 'portal'
-          },
-          {
-            title: 'Ngân hàng',
-            field: 'portal'
-          },
-          {
-            title: 'Chi nhánh',
-            field: 'portal'
-          },
-          {
-            title: 'Năm học',
-            field: 'year',
-            lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'semester',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note'
-          },
-        ]
-      : [
-          { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-          { title: 'MSSV', field: 'mssv', filtering: false },
-          { title: 'Họ tên', field: 'name', filtering: false },
-          {
-            title: 'Tên học bổng',
-            field: 'ktx'
-          },
-          {
-            title: 'Đối tượng',
-            field: 'ktx'
-          },
-          {
-            title: 'Loại HB',
-            field: 'ktx'
-          },
-          {
-            title: 'Giá trị',
-            field: 'ktx'
-          },
-          {
-            title: 'Đơn vị tài trợ',
-            field: 'ktx'
-          },
-          {
-            title: 'Năm học',
-            field: 'year',
-            lookup: {
-              1: '2016-2017',
-              2: '2017-2018',
-              3: '2018-2019',
-              4: '2019-2020'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Học kỳ',
-            field: 'semester',
-            lookup: {
-              1: '1',
-              2: '2'
-            },
-            filterCellStyle: {
-              paddingTop: 1
-            }
-          },
-          {
-            title: 'Ghi chú',
-            field: 'note',
-            filtering: false
+          filterCellStyle: {
+            paddingTop: 1
           }
-        ]
+        },
+        {
+          title: 'Học kỳ',
+          field: 'semester',
+          lookup: {
+            1: '1',
+            2: '2'
+          },
+          filterCellStyle: {
+            paddingTop: 1
+          }
+        },
+        {
+          title: 'Ghi chú',
+          field: 'note'
+        },
+      ]
+      : [
+        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+        { title: 'MSSV', field: 'mssv', filtering: false },
+        { title: 'Họ tên', field: 'name', filtering: false },
+        {
+          title: 'Tên học bổng',
+          field: 'ktx'
+        },
+        {
+          title: 'Đối tượng',
+          field: 'ktx'
+        },
+        {
+          title: 'Loại HB',
+          field: 'ktx'
+        },
+        {
+          title: 'Giá trị',
+          field: 'ktx'
+        },
+        {
+          title: 'Đơn vị tài trợ',
+          field: 'ktx'
+        },
+        {
+          title: 'Năm học',
+          field: 'year',
+          lookup: {
+            1: '2016-2017',
+            2: '2017-2018',
+            3: '2018-2019',
+            4: '2019-2020'
+          },
+          filterCellStyle: {
+            paddingTop: 1
+          }
+        },
+        {
+          title: 'Học kỳ',
+          field: 'semester',
+          lookup: {
+            1: '1',
+            2: '2'
+          },
+          filterCellStyle: {
+            paddingTop: 1
+          }
+        },
+        {
+          title: 'Ghi chú',
+          field: 'note',
+          filtering: false
+        }
+      ]
   });
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -201,8 +201,8 @@ const AllList = props => {
                   {isHBKK ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
-                    <b>DANH SÁCH IMPORT</b>
-                  )}
+                      <b>DANH SÁCH IMPORT</b>
+                    )}
                 </div>
               }
               columns={state.columns}

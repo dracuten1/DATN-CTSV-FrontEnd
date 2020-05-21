@@ -4,7 +4,6 @@
 /* eslint-disable no-restricted-syntax */
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,11 +11,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
 import * as ImportHandler from 'handlers/ImportHandler';
 import { logger } from 'core/services/Apploger';
-import { valueOrEmpty } from 'core/ultis/stringUtil';
 import { LinearProgress } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { withStyles } from '@material-ui/styles';
-import Axios from 'axios';
 import CustomizedSnackbars from '../snackBar/SnackBar';
 
 const useStyles = makeStyles(theme => ({
@@ -124,7 +121,7 @@ const ImportDialog = props => {
         type:
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      const result = await fetch(response.uploadURL, {
+      await fetch(response.uploadURL, {
         method: 'PUT',
         body: blobData
       });
@@ -147,16 +144,16 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
 
-          const timerIdDRL = setInterval(async () => { 
+          const timerIdDRL = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatus();
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { log } = statusResponse;
-            
-            if (log.message === "thành công"){
+
+            if (log.message === "thành công") {
               setSnackBarValue(successSnackBar);
-              handleClose();              
+              handleClose();
               clearInterval(timerIdDRL);
-            } 
+            }
           }, 3000);
           break;
         case 2: case 3: //Luu tru KTX
@@ -167,26 +164,25 @@ const ImportDialog = props => {
 
           res1 = await ImportHandler.ImportQLLTInfo(importCase, {
             checkImportResult: res.checkImportResult,
-            jsonkey          : res.newKey,
+            jsonkey: res.newKey,
             // type             : res.checkImportResult.conflict ? "Conflict" : "NotInConflict"
           });
           logger.info('ImportDialog:: res1: ', res1);
-          
-          const timerIdQLLT = setInterval(async () => { 
+
+          const timerIdQLLT = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatusQLLT(res.newKey);
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
-            
-            if (data.total === data.currentAmount){
+
+            if (data.total === data.currentAmount) {
               setSnackBarValue(successSnackBar);
-              handleClose();              
+              handleClose();
               clearInterval(timerIdQLLT);
-            } 
+            }
           }, 3000);
           break;
         case 4: //TTSV
-          const { ttsvCase } = props;
           res = await ImportHandler.GetImportTTSVInfo(Case, response.key);
           logger.info('ImportDialog:: res: ', res);
 
@@ -201,28 +197,28 @@ const ImportDialog = props => {
           res1 = await ImportHandler.ImportTTSVInfo(Case, {
             checkImportResult: res.checkImportResult,
             importedStructure: res.importedStructure,
-            jsonkey          : res.newKey,
-            type             : Case
+            jsonkey: res.newKey,
+            type: Case
           });
           logger.info('ImportDialog:: res1: ', res1);
-          
-          const timerIdTTSV = setInterval(async () => { 
+
+          const timerIdTTSV = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatusTTSV(res.newKey);
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
-            
-            if (data.total === data.currentAmount){
+
+            if (data.total === data.currentAmount) {
               setSnackBarValue(successSnackBar);
-              handleClose();              
+              handleClose();
               clearInterval(timerIdTTSV);
-            } 
+            }
           }, 3000);
-          break;  
+          break;
         default:
           break;
       }
-    
+
       // setSnackBarValue(successSnackBar);
       // handleClose();
     } catch (error) {

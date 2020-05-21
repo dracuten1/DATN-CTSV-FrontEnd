@@ -19,9 +19,8 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardQLLT = () => {
   const classes = useStyles();
-
+  // eslint-disable-next-line
   const DRLState = useSelector(state => state.DRLState);
-  const { isAllList } = DRLState;
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

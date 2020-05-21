@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 const DashboardDRL = () => {
   const classes = useStyles();
 
-  const DRLState = useSelector(state => state.DRLState);
+  useSelector(state => state.DRLState);
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

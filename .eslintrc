@@ -1,55 +1,68 @@
 {
-    "extends": ["airbnb", "prettier", "prettier/react"],
-    "plugins": ["prettier"],
-    "rules": {
-      "react/jsx-filename-extension": [
-        1,
-        {
-          "extensions": [".js", ".jsx"]
-        }
-      ],
-      "react/prop-types": 0,
-      "no-underscore-dangle": 0,
-      "import/imports-first": ["error", "absolute-first"],
-      "import/newline-after-import": "error",
-      "import/prefer-default-export": 0,
-      "import/no-unresolved": "off",
-      "no-console":"off",
-      "react/no-array-index-key":"off",
-      "semi": "error",
-      "spaced-comment":"off",
-      "no-unused-vars":"off",
-      "no-param-reassign":"off",
-      "react/forbid-prop-types": "off",
-      "react/require-default-props":"off",
-      "react/no-unused-prop-types": "off",
-      "prefer-template":"off",
-      "no-case-declarations":"off",
-      "react/jsx-props-no-spreading":"off",
-      "react/destructuring-assignment":"off",
-      "jsx-a11y/anchor-is-valid": "off",
-      "eqeqeq": "off",
-      "no-use-before-define": "off",
-      "no-unused-expressions":"off",
-      "react/jsx-curly-brace-presence":"off",
-      "dot-notation": "off",
-      "react/no-unused-state": "off",
-      "vars-on-top": "off",
-      "no-var": "off",
-      "object-shorthand": "off",
-      "func-names":"off"
-    },
-    "globals": {
-      "window": true,
-      "document": true,
-      "localStorage": true,
-      "FormData": true,
-      "FileReader": true,
-      "Blob": true,
-      "navigator": true,
-      "Headers": true,
-      "Request": true,
-      "fetch": true
-    },
-    "parser": "babel-eslint"
-  }
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "react/prop-types": 0,
+    "no-underscore-dangle": 0,
+    "import/imports-first": [
+      "error",
+      "absolute-first"
+    ],
+    "import/newline-after-import": "error",
+    "import/prefer-default-export": 0,
+    "import/no-unresolved": "off",
+    "no-console": "off",
+    "react/no-array-index-key": "off",
+    "semi": "error",
+    "spaced-comment": "off",
+    "no-unused-vars": "off",
+    "no-param-reassign": "off",
+    "react/forbid-prop-types": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
+    "prefer-template": "off",
+    "no-case-declarations": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/destructuring-assignment": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "eqeqeq": "off",
+    "no-use-before-define": "off",
+    "no-unused-expressions": "off",
+    "react/jsx-curly-brace-presence": "off",
+    "dot-notation": "off",
+    "react/no-unused-state": "off",
+    "vars-on-top": "off",
+    "no-var": "off",
+    "object-shorthand": "off",
+    "func-names": "off"
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "FormData": true,
+    "FileReader": true,
+    "Blob": true,
+    "navigator": true,
+    "Headers": true,
+    "Request": true,
+    "fetch": true
+  },
+  "parser": "babel-eslint"
+}

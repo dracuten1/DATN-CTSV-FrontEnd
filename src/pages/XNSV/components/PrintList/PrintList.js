@@ -102,6 +102,7 @@ const PrintList = props => {
           valueCase = term;
         }
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.case;
         }
         return rowData;

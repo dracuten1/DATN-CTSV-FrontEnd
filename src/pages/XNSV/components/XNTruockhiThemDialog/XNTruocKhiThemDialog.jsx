@@ -65,7 +65,9 @@ const defaultValue = {
   expectedPublicationDate: moment(date).format('DD/MM/YYYY'),
   dien: '',
   doituong: '',
-  date: moment(date).format('DD/MM/YYYY')
+  date: moment(date).format('DD/MM/YYYY'),
+  addSemester: '',
+  addYear:``,
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -131,9 +133,10 @@ const XNTruocKhiThemDialog = props => {
 
     const tmpCertificate = {
       Data,
+      NgonNgu: `${tmp.language}`,
       LoaiGiayXN: tmp.case,
       LyDoXN: tmp.reason,
-      ThoiGian: tmp.date,
+      ThoiGian: `${tmp.addSemester}-${tmp.addYear}`,
       ThongTinSinhVien: {
         DiaChiThuongTru: {
           PhuongXa: tmp.ward,
@@ -150,6 +153,23 @@ const XNTruocKhiThemDialog = props => {
     setCertificate(tmpCertificate);
   };
 
+  const gernerateYearData = () =>{
+    const currentYear = moment(date).format('YYYY');
+    const rs = [
+      `${currentYear}-${Number.parseInt(currentYear)+1}`,
+      `${currentYear-1}-${currentYear}`
+    ];
+    return rs;
+  }
+
+
+  const dataSemester = [
+    'HK3',
+    'HK2',
+    'HK1',
+  ]
+
+  //loại xác nhận tiếng việt
   const dataLXNTV = [
     'Bảo lưu',
     'Đang học',
@@ -160,12 +180,23 @@ const XNTruocKhiThemDialog = props => {
     'Giới thiệu',
     'Vay vốn'
   ];
+  //loại xác nhận tiếng anh
   const dataLXNTA = [
     'Đang học',
     'Bảo lưu',
     'Xác nhận thời gian học',
-    'Hoàn tất chương trình'
   ];
+
+  //tình trạng
+  const dataTT = {
+    DangHoc: 'Đang học',
+    BaoLuu: 'Bảo lưu',
+    BuocThoiHoc: 'Buộc thôi học',
+    CanhCaoHV: 'Cảnh cáo học vụ',
+    TotNghiep: 'Tốt nghiệp',
+    NN: 'Đi nước ngoài',
+    HTCT: 'Hoàn tất chương trình',
+  }
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -178,6 +209,16 @@ const XNTruocKhiThemDialog = props => {
       return (
         <MenuItem key={ind} value={val}>
           {val}
+        </MenuItem>
+      );
+    });
+  };
+
+  const drawDataObject = data => {
+    return Object.keys(data).map((val, ind) => {
+      return (
+        <MenuItem key={ind} value={val}>
+          {data[val]}
         </MenuItem>
       );
     });
@@ -240,7 +281,6 @@ const XNTruocKhiThemDialog = props => {
 
     const data = await XNSVHandler.FindStudentInfoById(id);
 
-    console.log("DATA test: ", data);
 
     const resStudentInfo = data.Items[0];
 
@@ -498,7 +538,7 @@ const XNTruocKhiThemDialog = props => {
                 fetchCertificate();
               }}
             >
-              {drawData(dataLXNTA)}
+              {drawDataObject(dataTT)}
             </Select>
           </FormControl>
           {values.status === 'Đang học' && (
@@ -584,15 +624,40 @@ const XNTruocKhiThemDialog = props => {
           </FormControl>
 
           <Divider className={classes.divider} />
-          <TextField
-            className={classes.textField}
-            label="Ngày thêm"
-            margin="normal"
-            defaultValue={moment(date).format('DD/MM/YYYY')}
-            InputProps={{
-              readOnly: true
-            }}
-          />
+          <FormControl className={classes.textField} margin="normal">
+              <InputLabel id="demo-simple-select-helper-label">
+                Học kỳ thêm
+              </InputLabel>
+              <Select
+                // variant="outlined"
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={values.addSemester}
+                onChange={event => {
+                  handleChange('addSemester')(event);
+                  fetchCertificate('addSemester')(event);
+                }}
+              >
+                {drawData(dataSemester)}
+              </Select>
+            </FormControl>
+            <FormControl className={classes.textField} margin="normal">
+              <InputLabel id="demo-simple-select-helper-label">
+                Năm học thêm
+              </InputLabel>
+              <Select
+                // variant="outlined"
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={values.addYear}
+                onChange={event => {
+                  handleChange('addYear')(event);
+                  fetchCertificate('addYear')(event);
+                }}
+              >
+                {drawData(gernerateYearData())}
+              </Select>
+            </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDialog} color="primary">

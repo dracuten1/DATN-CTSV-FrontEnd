@@ -6,9 +6,6 @@ import { blue } from '@material-ui/core/colors';
 import { DialogContent, TextField, DialogActions, Button, LinearProgress } from '@material-ui/core';
 import * as SignersHandler from 'handlers/SignersHandler';
 import { useState } from 'react';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles({
   avatar: {
@@ -33,7 +30,6 @@ function AddDialog(props) {
 
   const onLostFocus = field => event => {
     user[field] = event.target.value;
-    console.log(user);
   }
 
 

@@ -22,7 +22,7 @@ export const disalbeUser = async data => {
 };
 
 export const GetListSigner = async () => {
-  const url = `signer`;
+  const url = `signer?status=Active`;
 
   const response = await HttpClient.sendGet(url);
 

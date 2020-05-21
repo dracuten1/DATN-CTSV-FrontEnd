@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import * as AdminUserHandler from 'handlers/AdminUserHandler';
-import CreateIcon from '@material-ui/icons/Create';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AddDialog from 'pages/AdminUserList/components/AddUserProfile';
@@ -18,8 +16,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -29,11 +25,9 @@ import {
   TablePagination,
   IconButton,
   Button,
-  Dialog
 } from '@material-ui/core';
 
-import { getInitials } from 'helpers';
-import history from 'historyConfig';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -59,59 +53,11 @@ const UsersTable = props => {
   const { className, users, rerender, ...rest } = props;
 
   const classes = useStyles();
-
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [editDialog, setEditDialog] = useState(false);
   const [page, setPage] = useState(0);
-  const [selectedUser, setSelectedUser] = useState(undefined);
-  const onCloseEditDialog = event => {
-    setEditDialog(false);
-  }
-
   const [addDialog, setAddDialog] = useState(false);
   const onCloseAddDialog = event => {
     setAddDialog(false);
-  }
-
-  const handleSelectAll = event => {
-    const { users } = props;
-
-
-    let selectedUsers;
-
-    if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
-    } else {
-      selectedUsers = [];
-    }
-
-    setSelectedUsers(selectedUsers);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
-
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedUsers(newSelectedUsers);
-  };
-
-  const editSigner = user => event => {
-    setSelectedUser(user);
-    setEditDialog(true)
   }
 
   const handlePageChange = (event, page) => {
@@ -143,7 +89,6 @@ const UsersTable = props => {
 
   const handleAdd = data => {
     parseAttributes(data);
-    console.log("test:", data);
     users.push(data);
   }
 
@@ -185,7 +130,6 @@ const UsersTable = props => {
                         className={classes.tableRow}
                         hover
                         key={user.id}
-                        selected={selectedUsers.indexOf(user.id) !== -1}
                       >
                         <TableCell >{page * rowsPerPage + index + 1}</TableCell>
                         <TableCell>
@@ -195,12 +139,12 @@ const UsersTable = props => {
                         <TableCell>{user.email}</TableCell>
                         <TableCell>{user.UserStatus}</TableCell>
                         <TableCell>
-                          <IconButton onClick={toggleGroups(user.Username, user.GroupName)}  >
+                          <IconButton disabled={props.username === user.Username} onClick={toggleGroups(user.Username, user.GroupName)}  >
                             {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
                           </IconButton>
                         </TableCell>
                         <TableCell>
-                          <IconButton onClick={toggleEnabled(user.Username, user.Enabled)}  >
+                          <IconButton disabled={props.username === user.Username} onClick={toggleEnabled(user.Username, user.Enabled)}  >
                             {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
                           </IconButton>
                         </TableCell>
@@ -241,4 +185,12 @@ UsersTable.propTypes = {
   users: PropTypes.array.isRequired
 };
 
-export default UsersTable;
+const mapStateToProps = state => {
+  const tmpUsername = state.auth.cognitoUser;
+
+  return {
+    username: tmpUsername ? tmpUsername.username : '',
+  };
+};
+
+export default connect(mapStateToProps)(UsersTable);

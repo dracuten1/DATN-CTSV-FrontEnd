@@ -44,8 +44,8 @@ export const GetDRLByIdAndType = async (id, type) => {
 };
 
 export const FilterListData = async fillter => {
-  const {type, time, xeploai} = fillter;
-  const cvNH = convertNamHoc(time);
+  const { type, time, xeploai } = fillter;
+  convertNamHoc(time);
   const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
 
   const response = await HttpClient.sendGet(url);
@@ -97,7 +97,7 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   logger.info('DRLhandler:: deleteOneCertificate: URL: ', url);
 
-  const response = await HttpClient.sendDelete(url, { data: {pk, sk} });
+  const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
 
   logger.info('DRLhandler:: deleteOneCertificate: response: ', response);
 };
@@ -136,7 +136,7 @@ export const GetPrintListByDate = async (from, to) => {
   return response;
 };
 
-export const GetURLFileImport = async (nh,hk) => {
+export const GetURLFileImport = async (nh, hk) => {
   const cvNH = convertNamHoc(nh);
   const url = `drl/exportFiles?nh=${cvNH}&hk=${hk}`;
 
@@ -159,7 +159,7 @@ export const GetURLFileImport = async (nh,hk) => {
 };
 
 export const ExportWithFilter = async (filter) => {
-  const {nh, hk, type, username, fromDate, toDate} = filter;
+  const { nh, hk, type, username, fromDate, toDate } = filter;
   const cvNH = convertNamHoc(nh);
   const url = `drl/export?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
 

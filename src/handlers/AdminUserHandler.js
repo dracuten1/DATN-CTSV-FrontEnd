@@ -1,5 +1,4 @@
 import * as HttpClient from 'core/services/HttpClient';
-import { logger } from 'core/services/Apploger';
 
 export const getAllUsers = async () => {
 
@@ -21,7 +20,6 @@ export const togleEnable = async (data) => {
 export const togleGroups = async (data) => {
 
     const url = `admin/changeUserGroup`;
-    console.log(data);
     return await HttpClient.sendPutWithBody(url, data);
 
 };

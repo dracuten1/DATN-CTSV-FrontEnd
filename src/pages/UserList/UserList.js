@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-
-import { UsersToolbar, UsersTable } from './components';
+import { UsersTable } from './components';
 import * as SignersHandler from 'handlers/SignersHandler';
-import mockData from './data';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 
 const useStyles = makeStyles(theme => ({

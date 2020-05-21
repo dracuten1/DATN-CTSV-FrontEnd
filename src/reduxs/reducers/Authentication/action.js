@@ -90,29 +90,28 @@ export const resetPassword = (username) => {
         // call forgotPassword on cognitoUser
         cognitoUser.forgotPassword({
             onSuccess: (result) => {
-                console.log(result);
                 dispatch(authResetPassword());
             },
             onFailure: (err) => {
-                console.log(err);
+                logger.info(err);
             },
         });
     };
 };
 
 export const changePassWhenForgot = (username, code, newPassword) => {
-    return dispatch => {        
+    return dispatch => {
         const cognitoUser = new CognitoUser({
             Username: username,
             Pool: userPool
         });
         cognitoUser.confirmPassword(code, newPassword, {
             onSuccess() {
-                console.log('Password confirmed!');
+                logger.info('Password confirmed!');
                 dispatch(forgotPass());
             },
             onFailure(err) {
-                console.log('Password not confirmed!');
+                logger.info('Password not confirmed!');
             },
         });
     };
@@ -127,11 +126,11 @@ export const confirmPassword = (username, verificationCode, newPassword) => {
         });
         cognitoUser.confirmPassword(verificationCode, newPassword, {
             onFailure(err) {
-                console.log('Confirm error', err);
+                logger.info('Confirm error', err);
                 dispatch(confirmFail(err));
             },
             onSuccess(result) {
-                console.log('Confirm success', result);
+                logger.info('Confirm success', result);
                 dispatch(authSuccess(cognitoUser));
             },
         });
@@ -160,14 +159,14 @@ export const auth = (email, password) => {
         cognitoAuthUser = new CognitoUser(userData);
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
-                console.log(result);
+                logger.info(result);
                 dispatch(authSuccess(cognitoAuthUser));
                 hisory.push(redirectPath);
             },
             onFailure: (err) => {
                 if (err.code === "NotAuthorizedException")
                     dispatch(authFail(err));
-                console.log(err);
+                logger.info(err);
                 dispatch(authFail(err));
             },
             newPasswordRequired: (userAttributes, requiredAttributes) => {
@@ -191,11 +190,11 @@ export const handleNewPassword = (newPassword) => {
         dispatch(authStart());
         cognitoAuthUser.completeNewPasswordChallenge(newPassword, sessionUserAttributes, {
             onSuccess: (result) => {
-                console.log(result);
+                logger.info(result);
                 dispatch(authSuccess(cognitoAuthUser));
             },
             onFailure: (err) => {
-                console.log(err);
+                logger.info(err);
                 dispatch(authFail(err));
             }
         });
@@ -231,7 +230,7 @@ export const authCheckState = () => {
 // export const ChangePass = (newPassword) =>  async dispatch => {
 //     const response = await AdminHandler.ChangePass(newPassword);
 //     logger.info('AdminAction:: update: reponse: ', response);
-    
+
 //     if (response.statusCode === 200)
 //         dispatch(logout());
 // };

@@ -44,7 +44,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
 
-  const { listData, isAlllist } = QLLTState;
+  const { isAlllist } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -52,8 +52,8 @@ const AllList = props => {
   const [state, setState] = useState({
     data: isAlllist ? mockData.info : mockData.importInfo,
     columns: [
-      { title: 'MSSV', field: 'mssv'},
-      { title: 'Họ tên', field: 'name'},
+      { title: 'MSSV', field: 'mssv' },
+      { title: 'Họ tên', field: 'name' },
       {
         title: 'Ngày sinh',
         field: 'dob'
@@ -267,8 +267,8 @@ const AllList = props => {
                   {isAlllist ? (
                     <b>THÔNG TIN SINH VIÊN</b>
                   ) : (
-                    <b>DANH SÁCH IMPORT</b>
-                  )}
+                      <b>DANH SÁCH IMPORT</b>
+                    )}
                 </div>
               }
               columns={state.columns}
