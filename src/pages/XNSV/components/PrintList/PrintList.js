@@ -47,6 +47,8 @@ const date = new Date();
 let updateBegin = 0;
 let isPrint = false;
 let valueCase = null;
+let valueLanguage = null;
+let keys = [];
 
 const PrintList = props => {
   const { className, ...rest } = props;
@@ -108,13 +110,32 @@ const PrintList = props => {
     {
       title: 'Lý do',
       field: 'reason',
-      editable: 'never'
-    },
-    {
-      title: 'Ghi chú',
-      field: 'ghiChu',
       editable: 'never',
       filtering: false
+    },
+    {
+      title: 'Ngôn ngữ',
+      field: 'language',
+      editable: 'never',
+      lookup: {
+        1: 'Tiếng Anh',
+        2: 'Tiếng Việt',
+      },
+      customFilterAndSearch: (term, rowData) => {
+        if (valueLanguage !== term) {
+          valueLanguage = term;
+          keys = keys.splice(0, keys.length);
+        }
+        if (term.length !== 0) {
+          return term == rowData.case;
+        }
+        keys.push({
+          PK: rowData.pk,
+          SK: rowData.sk
+        });
+
+        return rowData;
+      }
     },
     {
       title: 'Ngày thêm',
@@ -162,7 +183,8 @@ const PrintList = props => {
     {
       title: 'Lý do',
       field: 'reason',
-      editable: 'never'
+      editable: 'never',
+      filtering: false
     },
     {
       title: 'Ghi chú',
@@ -250,6 +272,20 @@ const PrintList = props => {
     }
   };
 
+  const reparseLanguage = tmpcase =>{
+    if (tmpcase === 'Tiếng Anh'){
+      return 1;
+    }
+    return 2;
+  };
+
+  const reparseLanguageToString = tmpcase =>{
+    if (tmpcase === 1 || tmpcase === '1'){
+      return 'Tiếng Anh';
+    }
+    return 'Tiếng Việt';
+  };
+
   const reparseCaseToString = tmpcase => {
     switch (tmpcase) {
       case '1':
@@ -288,6 +324,7 @@ const PrintList = props => {
       const data = [...prevState.data];
       newData.scn = data.length + 1;
       newData.case = reparseCase(newData.case);
+      newData.language = reparseLanguage(newData.language);
       data.push(newData);
       return { ...prevState, data };
     });}
@@ -323,8 +360,7 @@ const PrintList = props => {
                 <div>
                   {isPrintList ? (
                     <b>
-                      DANH SÁCH IN TRONG NGÀY{' '}
-                      {moment(date).format('DD/MM/YYYY')}
+                      DANH SÁCH CHƯA IN
                     </b>
                   ) : (
                       <b>LỊCH SỬ IN</b>
@@ -419,8 +455,8 @@ const PrintList = props => {
                   onClick={() => {
                     if (valueCase) {
                       dispatch(
-                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
-                      );
+                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]), reparseLanguageToString(valueLanguage[0]))
+                        );
                       isPrint = !isPrint;
                     }
                   }}
@@ -435,7 +471,7 @@ const PrintList = props => {
                   onClick={() => {
                     if (valueCase) {
                       dispatch(
-                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]))
+                        XNSVActions.handlePrintAll(keys, valueLanguage)
                       );
                       isPrint = !isPrint;
                     }

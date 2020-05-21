@@ -93,9 +93,9 @@ export const GetListCertificate = async (status) => {
   return payload;
 };
 
-export const PrintByType = async (type) => {
+export const PrintByType = async (type, language) => {
 
-  const url = `xnsv/printf?type=${type}`;
+  const url = `xnsv/printf?type=${type}&language=${language}`;
 
   const response = await HttpClient.sendPatch(url);
 
@@ -108,6 +108,14 @@ export const PrintOneStudent = async (data) => {
   console.log("dataaaa:", data);
   const response = await HttpClient.sendPutWithBody(url, data);
   logger.info("XNSVhandler:: printOneCertificate: response: ", response);
+
+  return response;
+};
+
+export const PrintAllCertificate = async (keys, language) => {
+  const url = `xnsv/printfMultipleXnsv?language=${language}`;
+
+  const response = await HttpClient.sendPatchWithBody(url, { keys });
 
   return response;
 };
@@ -152,9 +160,9 @@ export const ExportWithFilter = async (filter) => {
 };
 
 export const GetListExport = async (filter) => {
-  const {nh, hk, type, fromDate, toDate} = filter;
+  const {nh, hk, type, fromDate, toDate, username} = filter;
   const cvNH = convertNamHoc(nh);
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}`;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
 
   const response = await HttpClient.sendPut(url);
   logger.info("XNSVhandler:: GetListExport: url: ", url);

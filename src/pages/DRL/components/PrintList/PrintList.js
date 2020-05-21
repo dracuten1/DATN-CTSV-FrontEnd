@@ -456,7 +456,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                 >
-                  Xem toàn bộ
+                  Thông Tin ĐRL
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}

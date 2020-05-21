@@ -6,23 +6,37 @@ import Types from './actionTypes';
 const parseNHToNumber = nh => {
   const dt = new Date();
   const year = dt.getFullYear();
+  const convert = year % 100;
 
   switch (nh) {
-    case `${(year - 6)}-${(year - 5)}`:
+    case `${(convert - 6)}-${(convert - 5)}`:
       return 1;
-    case `${(year - 5)}-${(year - 4)}`:
+    case `${(convert - 5)}-${(convert - 4)}`:
       return 2;
-    case `${(year - 4)}-${(year - 3)}`:
+    case `${(convert - 4)}-${(convert - 3)}`:
       return 3;
-    case `${(year - 3)}-${(year - 2)}`:
+    case `${(convert - 3)}-${(convert - 2)}`:
       return 4;
-    case `${(year - 2)}-${(year - 1)}`:
+    case `${(convert - 2)}-${(convert - 1)}`:
       return 5;
-    case `${(year - 1)}-${year}`:
+    case `${(convert - 1)}-${convert}`:
           return 6;      
     default:
       return 7;
   }
+};
+
+const getListWithMSSV = filter => async dispatch => {
+  logger.info('TTSVAction:: getListAll: filter: ', filter);
+  const response = await TTSVHandler.GetListWithFilter(filter);
+  logger.info('TTSVAction:: getListAll: reponse: ', response);
+  const data = Object.keys(response).map(key => {
+    response[key].nh = parseNHToNumber(response[key]["data"].NH);
+    response[key].note = response[key]["data"].GhiChu;
+    return response[key];
+  });
+  dispatch({ type: Types.GET_TTSV_WITH_MSSV, payload: data });
+  history.push('/ttsv');
 };
 
 const getListWithFilter = filter => async dispatch => {
@@ -36,6 +50,16 @@ const getListWithFilter = filter => async dispatch => {
     response[key].month = response[key]["data"].DotThang;
     response[key].DTB = response[key]["data"].DTB;
     response[key].note = response[key]["data"].GhiChu;
+    response[key].MaMonHoc = response[key]["data"].MaMonHoc;
+    response[key].TenMonHoc = response[key]["data"].TenMonHoc;
+    response[key].Lop = response[key]["data"].Lop;
+    response[key].Nhom = response[key]["data"].Nhom;
+    if (type === 'BẢO LƯU')
+    {
+      response[key].Start = 'HK' + response[key]["data"]["Tu"].HK + '/' + response[key]["data"]["Tu"].NH;
+      response[key].Finish = 'HK' + response[key]["data"]["Den"].HK + '/' + response[key]["data"]["Den"].NH;
+      response[key].Submit = 'HK' + response[key]["data"]["ThoiDiemNopDon"].HK + '/' + response[key]["data"]["ThoiDiemNopDon"].NH;
+    }
     return response[key];
   });
   
@@ -94,6 +118,7 @@ const exportWithFilter = (filter) => async dispatch => {
 
 export default {
   getListWithFilter,
+  getListWithMSSV,
   // updateOneStudentByType
   exportWithFilter
 };

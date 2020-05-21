@@ -45,17 +45,17 @@ const convertType = type => {
     case 'ĐĂNG KÝ HỌC PHẦN':
         return 'DKHP';
     case 'ĐIỂM TRUNG BÌNH':
-      return 'DTB';
+      return 'DiemTB';
     default:
       return '';
   }
 };
 
 export const GetListWithFilter = async filter => {
-  const { type, hk, nh } = filter;
+  const { type, hk, nh, mssv } = filter;
   const cvNH = convertNamHoc(nh);
   const cvType = convertType(type);
-  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
+  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}&mssv=${mssv}`;
   logger.info('TTSVAction:: getListAll: url: ', url);
   const response = await HttpClient.sendPut(url);
   return response;

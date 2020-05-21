@@ -77,11 +77,15 @@ const AllList = props => {
       arrColumns = Columns.CCHV;
       break;
     case 8: //Bảo lưu
-      arrColumns = Columns.BL;
+      arrColumns = Columns.BL; 
       break;
-    default:
+    case 9:
       //Dang ky hoc phan
       arrColumns = Columns.DKHP;
+      break;
+    default:
+      //MSSV
+      arrColumns = Columns.MSSV;
       break;
   }
 
@@ -96,7 +100,8 @@ const AllList = props => {
   const [filter, setFilter] = React.useState({
     hk: '',
     nh: '',
-    type: ''
+    type: 'TỐT NGHIỆP',
+    mssv: ''
   });
 
   logger.info('TTSVAction:: getListAll: dataList: ', dataList);
@@ -110,7 +115,8 @@ const AllList = props => {
     dispatch(Actions.getListWithFilter({
       hk: '1',
       nh: `${year}-${year + 1}`,
-      type: 'TỐT NGHIỆP'
+      type: 'TỐT NGHIỆP',
+      mssv: ''
     }));
     updateBegin += 1;
   }
@@ -145,7 +151,10 @@ const AllList = props => {
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            dispatch(Actions.getListWithFilter(filter));
+            if (filter.mssv.length > 0)
+              dispatch(Actions.getListWithMSSV(filter));
+            else  
+              dispatch(Actions.getListWithFilter(filter));
             updateBegin = 1;
           }}
           label="Lọc sinh viên"
@@ -182,6 +191,15 @@ const AllList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Button
+              onClick={() => setImportOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Cập nhật TTSV
+            </Button>
             <Button
               onClick={() => setImportOpen(true)}
               variant="contained"

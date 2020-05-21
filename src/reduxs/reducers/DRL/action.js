@@ -16,12 +16,14 @@ const handlePrintList = () => async dispatch => {
 const filterListData = fillter => async dispatch => {
   const payload = await DRLHandler.FilterListData(fillter);
   dispatch({ type: Types.ALL_LIST, payload });
+  // history.push('/drl');
 };
 
 const getListHistory = () => async dispatch => {
   const status = 'In';
   const payload = await DRLHandler.GetListCertificate(status);
   dispatch({ type: Types.GET_HISTORY_LIST, payload });
+  history.push('/drl');
 };
 
 const getNotPrintYet = () => async dispatch => {

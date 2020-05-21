@@ -50,7 +50,7 @@ const ttsvReducer = (state = INIT_STATE, action) => {
         dataList: action.payload,
         isCase: 4
       };
-      case ActionTypes.GET_LIST_DH:
+    case ActionTypes.GET_LIST_DH:
       return {
         ...state,
         dataList: action.payload,
@@ -80,16 +80,22 @@ const ttsvReducer = (state = INIT_STATE, action) => {
         dataList: action.payload,
         isCase: 9
       };
+    case ActionTypes.GET_TTSV_WITH_MSSV:
+      return {
+        ...state,
+        dataList: action.payload,
+        isCase: 10
+      };
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;
       temp.push(action.listLink);
       return { ...state, listLink: temp, dataPrint: action.listData };
-    };
+    }
     case ActionTypes.ADD_LINK_EXPORT: {
       const ex = state.listLink;
       ex.push(action.listLink);
       return { ...state, listLink: ex };
-    };
+    }
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
     case ActionTypes.PRINT_BY_TYPE:

@@ -48,7 +48,7 @@ const convertTTSVCase = ttsvCase => {
       case 'SINH VIÊN NƯỚC NGOÀI':
         return 'NN';
       case 'ĐIỂM TRUNG BÌNH':
-        return 'DTB';
+        return 'DiemTB';
       case 'TỐT NGHIỆP':
         return 'TotNghiep';
       case 'HOÀN TẤT CHƯƠNG TRÌNH':
@@ -190,6 +190,12 @@ const ImportDialog = props => {
           res = await ImportHandler.GetImportTTSVInfo(Case, response.key);
           logger.info('ImportDialog:: res: ', res);
 
+          if (res.success === false){
+            setSnackBarValue(wrongSnackBar);
+            handleClose();        
+            break;      
+          } 
+
           setMessage(res.message + '-' + res.newKey);
 
           res1 = await ImportHandler.ImportTTSVInfo(Case, {
@@ -245,6 +251,11 @@ const ImportDialog = props => {
     open: true,
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
+  const wrongSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Import sai File!'
   };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);

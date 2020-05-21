@@ -1,5 +1,6 @@
 import React from 'react';
 import Filter from 'shared/components/filter/Filter';
+import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
 import './Filters.scss';
@@ -17,6 +18,10 @@ export default function Filters(props) {
   const dt = new Date();
   const year = dt.getFullYear();
 
+  const handleChange = event => {
+    onFilter('mssv', event.target.value);
+  };
+
   return (
     <div className={classes.container}>
       <Filter
@@ -29,7 +34,16 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Năm học"
         prop="nh"
-        data={['None', `${year}-${(year + 1)}`, `${(year - 1)}-${year}`, `${(year - 2)}-${(year - 1)}`, `${(year - 3)}-${(year - 2)}`, `${(year - 4)}-${(year - 3)}`,`${(year - 5)}-${(year - 4)}`, `${(year - 6)}-${(year - 5)}`]}
+        data={[
+          'None',
+          `${year}-${year + 1}`,
+          `${year - 1}-${year}`,
+          `${year - 2}-${year - 1}`,
+          `${year - 3}-${year - 2}`,
+          `${year - 4}-${year - 3}`,
+          `${year - 5}-${year - 4}`,
+          `${year - 6}-${year - 5}`
+        ]}
       />
       <Filter
         clickFilter={onFilter}
@@ -46,6 +60,18 @@ export default function Filters(props) {
           'ĐĂNG KÝ HỌC PHẦN',
           'ĐIỂM TRUNG BÌNH'
         ]}
+      />
+      <TextField
+        id="outlined-basic"
+        label="MSSV"
+        variant="outlined"
+        onChange={handleChange}
+        style={{marginTop: '8px'}}
+        inputProps={{
+          style: {
+            marginBottom: '-6px'
+          }
+        }}
       />
     </div>
   );

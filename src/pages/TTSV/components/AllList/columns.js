@@ -254,19 +254,19 @@ const DKHP = [
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Mã MH',
-    field: 'portal'
+    field: 'MaMonHoc'
   },
   {
     title: 'Tên MH',
-    field: 'portal'
+    field: 'TenMonHoc'
   },
   {
     title: 'Lớp',
-    field: 'portal'
+    field: 'Lop'
   },
   {
     title: 'Nhóm',
-    field: 'portal'
+    field: 'Nhom'
   },
   {
     title: 'Học kỳ',
@@ -301,6 +301,21 @@ const BL = [
   // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
   { title: 'MSSV', field: 'MSSV', filtering: false },
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
+  { title: 'Lý do', field: 'LyDo', filtering: false },
+  { title: 'Từ', field: 'Start', filtering: false },
+  { title: 'Đến', field: 'Finish', filtering: false },
+  { title: 'Nộp đơn', field: 'Submit', filtering: false },
+  {
+    title: 'Ghi chú',
+    field: 'note'
+  }
+];
+
+const MSSV = [
+  // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+  { title: 'MSSV', field: 'MSSV', filtering: false },
+  { title: 'Họ tên', field: 'HoVaTen', filtering: false },
+  { title: 'Tình trạng', field: 'TenTinhTrang', filtering: false },
   {
     title: 'Học kỳ',
     field: 'HocKy',
@@ -341,5 +356,6 @@ export default {
   DTB,
   CCHV,
   HTCT,
-  BL
+  BL,
+  MSSV
 };

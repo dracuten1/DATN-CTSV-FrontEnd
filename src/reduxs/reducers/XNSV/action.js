@@ -35,8 +35,19 @@ const deleteOneCertificate = (pk, sk) => async dispatch => {
   history.push('/xnsv');
 };
 
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
+const handlePrint = (type,language) => async dispatch => {
+  const response = await XNSVHandler.PrintByType(type, language);
+  const status = 'ChuaIn';
+  const listData = await XNSVHandler.GetListCertificate(status);
+  logger.info('XNSVAction:: PrintByType: reponse: ', response);
+  if (response.statusCode === 200) {
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+    history.push('/xnsv');
+  }
+};
+
+const handlePrintAll = (keys, language) => async dispatch => {
+  const response = await XNSVHandler.PrintAllCertificate(keys, language);
   const status = 'ChuaIn';
   const listData = await XNSVHandler.GetListCertificate(status);
   logger.info('XNSVAction:: PrintByType: reponse: ', response);
@@ -94,6 +105,7 @@ export default {
   handleAllList,
   handlePrintList,
   handlePrint,
+  handlePrintAll,
   getNotPrintYet,
   deleteOneCertificate,
   getListHistory,
