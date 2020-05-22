@@ -48,7 +48,7 @@ const AddDialog = props => {
     dob: '',
     faculty: '',
     case: null,
-    year: null,
+    year: 4,
     semester: null,
     isPrint: false,
     signer: null,
@@ -74,12 +74,35 @@ const AddDialog = props => {
     }
   };
 
+  const parseYear = key => {
+    switch (key) {
+      case 7:
+        return `${year}-${(year + 1)}`;
+      case 6:
+        return `${(year - 1)}-${year}`;
+      case 5:
+        return `${(year - 2)}-${(year - 1)}`;
+      case 4:
+        return `${(year - 3)}-${(year - 2)}`;
+      case 3:
+        return `${(year - 4)}-${(year - 3)}`;
+      case 2:
+        return `${(year - 5)}-${(year - 4)}`;
+      case 1:
+        return `${(year - 6)}-${(year - 5)}`;
+      default: 
+        return `${(year - 3)}-${(year - 2)}`;
+    }
+  }
+
   const parseSemester = key => {
     switch (key) {
       case SemesterEnum.hk1:
         return 'HK1';
-      default:
+      case SemesterEnum.hk2:
         return 'HK2';
+      default:
+        return 'HK1';
     }
   };
 
@@ -119,10 +142,13 @@ const AddDialog = props => {
   const fetchCertificate = (prop) => async event => {
     const tmp = { ...values };
     tmp[prop] = event.target.value;
+    logger.info("ADD DRL::: values: ", tmp);
     const addCase = parseCase(tmp.case);
     const response = await DRLHandler.GetDRLByIdAndType(tmp.mssv, addCase);
     const items = response.Items;
     const Data = {};
+    logger.info("ADD DRL::: items: ", items);
+
     items.forEach(element => {
       const item = { ...element };
       delete item.Time;
@@ -134,10 +160,16 @@ const AddDialog = props => {
             Data[newTime] = { ...item };
           break;
         case CaseEnum.hk:
+          
           const semester = parseSemester(tmp.semester);
+          const year = parseYear(tmp.year);
+          logger.info("ADD DRL::: in caseEnum hk: ", semester);
+          logger.info("ADD DRL::: in caseEnum newTime: ", newTime);
+          logger.info("ADD DRL::: in caseEnum: year: ", year);
+          logger.info("ADD DRL::: in caseEnum: in if: ", newTime.includes(semester) && newTime.includes(year));
           if (
             newTime.includes(semester) &&
-            newTime.includes(tmp.year)
+            newTime.includes(year)
           )
             Data[newTime] = { ...item };
           break;
@@ -157,6 +189,7 @@ const AddDialog = props => {
     const NguoiKi = parseSigner(tmp.signer);
     if (prop === "case" || prop === "year" || prop === "semester") {
 
+      logger.info("DATA: ", Data);
       if (isEmptyObj(Data)) {
         setMissingDataError(true);
       } else {
