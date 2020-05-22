@@ -96,6 +96,13 @@ export const sendPut = async (url) => {
     return body;
 };
 
+export const sendPutGetStatus = async (url) => {
+
+    const response = await httpClient.put(url);
+
+    return response.data;
+};
+
 export const sendPutWithBody = async (url, requestBody) => {
     const response = await httpClient.put(url, requestBody);
 

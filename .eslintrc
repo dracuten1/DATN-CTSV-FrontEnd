@@ -50,7 +50,8 @@
     "vars-on-top": "off",
     "no-var": "off",
     "object-shorthand": "off",
-    "func-names": "off"
+    "func-names": "off",
+    "radix": "off"
   },
   "globals": {
     "window": true,

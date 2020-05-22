@@ -10,14 +10,18 @@ import {
   CardActions,
   CardContent,
   Button,
-  Divider
+  Divider,
+  Grid
 } from '@material-ui/core';
-
+import { logger } from 'core/services/Apploger';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
-import mockData from './data';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+import * as QLHBHandler from 'handlers/QLHBHandler';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import Columns from './columns';
+import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
@@ -40,155 +44,97 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const dt = new Date();
+const year = dt.getFullYear();
+const convert = year % 100;
+
+let updateBegin = 0;
+let type = 'KK';
+
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLLTState = useSelector(state => state.QLLTState);
+  const QLHBState = useSelector(state => state.QLHBState);
+  const { dataList, isHBKK, listLink } = QLHBState;
 
-  const { isHBKK } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const [importOpen, setImportOpen] = React.useState(false);
-
-  const [state, setState] = useState({
-    data: isHBKK ? mockData.info : mockData.importInfo,
-    columns: isHBKK
-      ? [
-        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-        { title: 'MSSV', field: 'mssv', filtering: false },
-        { title: 'Họ tên', field: 'name', filtering: false },
-        {
-          title: 'ĐTB',
-          field: 'ktx'
-        },
-        {
-          title: 'Xếp loại ĐRL',
-          field: 'portal'
-        },
-        {
-          title: 'Loại HB',
-          field: 'portal'
-        },
-        {
-          title: 'Số tiền HB',
-          field: 'portal'
-        },
-        {
-          title: 'Số tháng',
-          field: 'portal'
-        },
-        {
-          title: 'Tổng cộng',
-          field: 'portal'
-        },
-        {
-          title: 'CMND',
-          field: 'cmnd'
-        },
-        {
-          title: 'Số TK',
-          field: 'portal'
-        },
-        {
-          title: 'Ngân hàng',
-          field: 'portal'
-        },
-        {
-          title: 'Chi nhánh',
-          field: 'portal'
-        },
-        {
-          title: 'Năm học',
-          field: 'year',
-          lookup: {
-            1: '2016-2017',
-            2: '2017-2018',
-            3: '2018-2019',
-            4: '2019-2020'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Học kỳ',
-          field: 'semester',
-          lookup: {
-            1: '1',
-            2: '2'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Ghi chú',
-          field: 'note'
-        },
-      ]
-      : [
-        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-        { title: 'MSSV', field: 'mssv', filtering: false },
-        { title: 'Họ tên', field: 'name', filtering: false },
-        {
-          title: 'Tên học bổng',
-          field: 'ktx'
-        },
-        {
-          title: 'Đối tượng',
-          field: 'ktx'
-        },
-        {
-          title: 'Loại HB',
-          field: 'ktx'
-        },
-        {
-          title: 'Giá trị',
-          field: 'ktx'
-        },
-        {
-          title: 'Đơn vị tài trợ',
-          field: 'ktx'
-        },
-        {
-          title: 'Năm học',
-          field: 'year',
-          lookup: {
-            1: '2016-2017',
-            2: '2017-2018',
-            3: '2018-2019',
-            4: '2019-2020'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Học kỳ',
-          field: 'semester',
-          lookup: {
-            1: '1',
-            2: '2'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Ghi chú',
-          field: 'note',
-          filtering: false
-        }
-      ]
+  const [filter, setfilter] = React.useState({
+    hk: '1',
+    nh: `${convert - 1}-${convert}`
   });
 
-  const handleImport = () => { };
+  const [state, setState] = useState({
+    data: dataList,
+    columns: Columns.HBKK
+  });
 
+  if (updateBegin === 0) {
+    dispatch(Actions.getListWithFilter(filter, type));
+    updateBegin += 1;
+  }
+
+  if (updateBegin === 1) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: isHBKK ? Columns.HBKK : Columns.HBTT
+    });
+    updateBegin += 1;
+  }
+
+  const handleFilter = (prop, data) => {
+    setfilter({ ...filter, [prop]: data });
+  };
+
+  const handleImport = () => {};
+
+  const parseNHToString = nh => {
+    switch (nh) {
+      case 1:
+        return `${convert - 6}-${convert - 5}`;
+      case 2:
+        return `${convert - 5}-${convert - 4}`;
+      case 3:
+        return `${convert - 4}-${convert - 3}`;
+      case 4:
+        return `${convert - 3}-${convert - 2}`;
+      case 5:
+        return `${convert - 2}-${convert - 1}`;
+      case 6:
+        return `${convert - 1}-${convert}`;
+      default:
+        return `${convert}-${convert + 1}`;
+    }
+  };
+
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công!'
+  };
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
+  const hiddenSnackBar = { open: false };
+  const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+  const handleSnackBarClose = current => event => {
+    setSnackBarValue({ ...current, ...hiddenSnackBar });
+  };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <Filters onFilter={handleFilter} />
+        <ContainedButton
+          handleClick={() => {
+            updateBegin = 1;
+            dispatch(Actions.getListWithFilter(filter, type));
+          }}
+          label="Lọc sinh viên"
+        />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>
@@ -198,11 +144,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isHBKK ? (
-                    <b>THÔNG TIN SINH VIÊN</b>
-                  ) : (
-                      <b>DANH SÁCH IMPORT</b>
-                    )}
+                  {isHBKK ? <b>Danh Sách HBKK</b> : <b>DANH SÁCH HBTT</b>}
                 </div>
               }
               columns={state.columns}
@@ -216,14 +158,21 @@ const AllList = props => {
                   backgroundColor: '#EEE'
                 },
                 // exportButton: true,
-                filtering: true
+                filtering: false
               }}
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
-                    setTimeout(() => {
+                    setTimeout( async () => {
                       resolve();
                       if (oldData) {
+                        logger.info('Newdata: ', newData);
+                        const response = await QLHBHandler.UpdateOneStudentByType(newData, type);
+                        if (response.statusCode !== 200){
+                            setSnackBarValue(errorSnackBar);
+                            return;
+                        }
+                        setSnackBarValue(successSnackBar);
                         setState(prevState => {
                           const data = [...prevState.data];
                           data[data.indexOf(oldData)] = newData;
@@ -232,10 +181,19 @@ const AllList = props => {
                       }
                     }, 600);
                   }),
-                onRowDelete: oldData =>
+
+                onRowDelete:  oldData =>
                   new Promise(resolve => {
-                    setTimeout(() => {
+                    setTimeout( async ()  =>  {
                       resolve();
+                      logger.info('Olddata: ', oldData);
+                      const { PK, SK, id } = oldData;
+                      const response = await QLHBHandler.DeleteOneCertificate(PK, SK, type, id);
+                      if (response.statusCode !== 200){
+                          setSnackBarValue(errorSnackBar);
+                          return;
+                      }
+                      setSnackBarValue(successSnackBar);
                       setState(prevState => {
                         const data = [...prevState.data];
                         data.splice(data.indexOf(oldData), 1);
@@ -250,36 +208,71 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Xem toàn bộ
-        </Button>
-        <Button
-          onClick={() => setImportOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <Button
+              onClick={() => {
+                type = 'KK';
+                updateBegin = 1;
+                dispatch(Actions.getListWithFilter(filter, type));
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              HBKK
+            </Button>
+            <Button
+              onClick={() => {
+                type = 'TT';
+                updateBegin = 1;
+                dispatch(Actions.getListWithFilter(filter, type));
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              HBTT
+            </Button>
+            <Button
+              onClick={() => setImportOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Import
+            </Button>
+            <Button
+              onClick={() => dispatch(Actions.exportWithFilter(filter, type))}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Export
+            </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>
       </CardActions>
       <ImportDialog
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
         importCase={'import-drl'}
+      />
+      <CustomizedSnackbars
+        value={snackBarValue}
+        handleClose={handleSnackBarClose}
       />
     </Card>
   );

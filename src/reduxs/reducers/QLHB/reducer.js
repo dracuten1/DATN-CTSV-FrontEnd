@@ -2,7 +2,7 @@ import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
   isHBKK: true,
-  listData: [],
+  dataList: [],
   listLink: []
 };
 
@@ -15,23 +15,21 @@ const qlhbReducer = (state = INIT_STATE, action) => {
     case ActionTypes.GET_DATA_HBKK:
       return {
         ...state,
-        listData: action.payload,
+        dataList: action.payload,
         isHBKK: true
       };
     case ActionTypes.GET_DATA_HBTT:
       return {
         ...state,
-        listData: action.payload,
+        dataList: action.payload,
         isHBKK: false
       };
-    case ActionTypes.ADD_LINK_PRINT: {
-      const temp = state.listLink;
-      temp.push(action.listLink);
-      return { ...state, listLink: temp, dataPrint: action.listData };
+    case ActionTypes.ADD_LINK_EXPORT: {
+      const ex = state.listLink;
+      ex.push(action.listLink);
+      return { ...state, listLink: ex };
     }
     case ActionTypes.DELETE_ONE_CERTIFICATE:
-      return { ...state };
-    case ActionTypes.PRINT_BY_TYPE:
       return { ...state };
     default:
       return { ...state };

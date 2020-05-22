@@ -10,13 +10,26 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function Filters() {
+export default function Filters(props) {
   const classes = useStyles();
+  const { onFilter } = props;
+  const dt = new Date();
+  const year = dt.getFullYear();
 
   return (
     <div className={classes.container}>
-      <Filter label="Học kỳ" data={['HKI', 'HKII', 'Cả năm']} />
-      <Filter label="Năm học" data={[2016, 2017, 2018, 2019, 2020]} />
+      <Filter
+        clickFilter={onFilter}
+        label="Học kỳ"
+        prop="hk"
+        data={['None', '1', '2', '3']}
+      />
+      <Filter
+        clickFilter={onFilter}
+        label="Năm học"
+        prop="nh"
+        data={['None', `${year}-${(year + 1)}`, `${(year - 1)}-${year}`, `${(year - 2)}-${(year - 1)}`, `${(year - 3)}-${(year - 2)}`, `${(year - 4)}-${(year - 3)}`,`${(year - 5)}-${(year - 4)}`, `${(year - 6)}-${(year - 5)}`]}
+      />
     </div>
   );
 }

@@ -59,7 +59,7 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${(convert - 1)}-${convert}`,
+    nh: `${convert - 1}-${convert}`,
     type: 'All'
   });
   const [state, setState] = useState({
@@ -72,16 +72,7 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  if (dataList.length > 0 && updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: isAlllist ? Columns.ALL : Columns.KTX
-    });
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 2) {
+  if (updateBegin === 1) {
     setState({
       ...state,
       data: dataList,
@@ -99,19 +90,19 @@ const AllList = props => {
   const parseNHToString = nh => {
     switch (nh) {
       case 1:
-        return `${(convert - 6)}-${(convert - 5)}`;
+        return `${convert - 6}-${convert - 5}`;
       case 2:
-        return `${(convert - 5)}-${(convert - 4)}`;
+        return `${convert - 5}-${convert - 4}`;
       case 3:
-        return `${(convert - 4)}-${(convert - 3)}`;
+        return `${convert - 4}-${convert - 3}`;
       case 4:
-        return `${(convert - 3)}-${(convert - 2)}`;
+        return `${convert - 3}-${convert - 2}`;
       case 5:
-        return `${(convert - 2)}-${(convert - 1)}`;
+        return `${convert - 2}-${convert - 1}`;
       case 6:
-        return `${(convert - 1)}-${convert}`;
+        return `${convert - 1}-${convert}`;
       default:
-        return `${convert}-${(convert + 1)}`;
+        return `${convert}-${convert + 1}`;
     }
   };
 
@@ -124,7 +115,7 @@ const AllList = props => {
             if (filter.type === 'All')
               dispatch(Actions.getAllListWithFilter(filter));
             else dispatch(Actions.getKtxListWithFilter(filter));
-            updateBegin = 2;
+            updateBegin = 1;
           }}
           label="Lọc sinh viên"
         />
@@ -204,24 +195,24 @@ const AllList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
-          <Button
-            onClick={() => setImportOpen(true)}
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: '8px' }}
-          >
-            Import
-          </Button>
-          <Button
-            onClick={() => dispatch(Actions.exportWithFilter(filter))}
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: '8px' }}
-          >
-            Export
-          </Button>
+            <Button
+              onClick={() => setImportOpen(true)}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Import
+            </Button>
+            <Button
+              onClick={() => dispatch(Actions.exportWithFilter(filter))}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Export
+            </Button>
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -230,7 +221,7 @@ const AllList = props => {
           ) : (
             ''
           )}
-        </Grid>  
+        </Grid>
       </CardActions>
       <ImportDialog
         open={importOpen}

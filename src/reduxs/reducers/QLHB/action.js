@@ -1,72 +1,71 @@
-import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as QLHBHandler from 'handlers/QLHBHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
 
-const handleAllList = () => async dispatch => {
-  dispatch({ type: Types.ALL_LIST });
-  history.push('/xnsv');
-};
+const parseNHToNumber = nh => {
+  const dt = new Date();
+  const year = dt.getFullYear();
+  const convert = year % 100;
 
-const handlePrintList = () => async dispatch => {
-  dispatch({ type: Types.PRINT_LIST });
-  history.push('/xnsv');
-};
-
-const getNotPrintYet = () => async dispatch => {
-  const status = 'ChuaIn';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/xnsv');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
-};
-
-const deleteOneCertificate = (pk, sk) => async dispatch => {
-  const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
-
-  logger.info('XNSVAction:: deleteOneCertificate: reponse: ', response);
-
-  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-  history.push('/xnsv');
-};
-
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
-  const status = 'ChuaIn';
-  const listData = await XNSVHandler.GetListCertificate(status);
-  logger.info('XNSVAction:: PrintByType: reponse: ', response);
-  if (response.statusCode === 200) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-    history.push('/xnsv');
+  switch (nh) {
+    case `${(convert - 6)}-${(convert - 5)}`:
+      return 1;
+    case `${(convert - 5)}-${(convert - 4)}`:
+      return 2;
+    case `${(convert - 4)}-${(convert - 3)}`:
+      return 3;
+    case `${(convert - 3)}-${(convert - 2)}`:
+      return 4;
+    case `${(convert - 2)}-${(convert - 1)}`:
+      return 5;
+    case `${(convert - 1)}-${convert}`:
+          return 6;      
+    default:
+      return 7;
   }
 };
 
-const getCompany = () => async dispatch => {
-  const response = await XNSVHandler.GetCompany();
-  logger.info('XNSVAction:: Company: reponse: ', response);
-  history.push('/xnsv');
+const getListWithFilter = (filter, type) => async dispatch => {
+  logger.info('QLHBAction:: getListAll: filter: ', filter, type);
+  const response = await QLHBHandler.GetListWithFilter(filter, type);
+  logger.info('QLHBAction:: getListAll: reponse: ', response);
+  const data = Object.keys(response).map(key => {
+    response[key].nh = parseNHToNumber(response[key].NH);
+    response[key].id = response[key].id ? response[key].id : '';
+    return response[key];
+  });
+  if (type === "KK")
+    dispatch({ type: Types.GET_DATA_HBKK, payload: data });
+  else
+    dispatch({ type: Types.GET_DATA_HBTT, payload: data });
+
+  history.push('/qlhb');
 };
 
-const exportWithFilter = (filter) => async dispatch => {
-  logger.info('XNSVAction:: filter: filter: ', filter);
-  
-  const response = await XNSVHandler.exportWithFilter(filter);
-  logger.info('XNSVAction:: Exportfilter: reponse: ', response);
-  history.push('/xnsv');
+const exportWithFilter = (filter, type) => async dispatch => {
+  logger.info('QLHBAction:: filter: filter: ', filter, type);
+
+  const response = await QLHBHandler.ExportWithFilter(filter, type);
+  logger.info('QLHBAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+    history.push('/qlhb');
+  }
+};
+
+const deleteOneCertificate = (PK, SK, type, id) => async dispatch => {
+  const response = await QLHBHandler.DeleteOneCertificate(PK, SK, type, id);
+
+  logger.info('QLHBAction:: deleteOneCertificate: reponse: ', response);
+
+  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
+  history.push('/qlhb');
 };
 
 export default {
-  handleAllList,
-  handlePrintList,
-  handlePrint,
-  getNotPrintYet,
-  deleteOneCertificate,
-  getListHistory,
-  getCompany,
-  exportWithFilter
+  getListWithFilter,
+  exportWithFilter,
+  deleteOneCertificate
 };

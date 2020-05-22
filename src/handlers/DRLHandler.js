@@ -100,6 +100,7 @@ export const DeleteOneCertificate = async (pk, sk) => {
   const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
 
   logger.info('DRLhandler:: deleteOneCertificate: response: ', response);
+  return response;
 };
 
 export const ExportToDocx = async type => {

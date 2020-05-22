@@ -383,7 +383,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  DANH SÁCH DỮ LIỆU
+                  <b>DANH SÁCH DỮ LIỆU</b>
                 </div>
               }
               columns={state.columns}
