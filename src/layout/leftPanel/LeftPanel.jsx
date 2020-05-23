@@ -31,7 +31,12 @@ import Avatar from '@material-ui/core/Avatar';
 import { ListSubheader, Collapse, Typography, TextField } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+
 const drawerWidth = 240;
+const appStage = process.env.REACT_APP_STAGE.trim();
+
+const isProduction =
+  appStage !== undefined && appStage !== null && appStage.trim() === "production";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -67,18 +72,18 @@ const useStyles = makeStyles(theme => ({
     marginRight: 10,
   },
   userinfo: {
-    paddingTop:30,
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    flexDirection:'column'
+    paddingTop: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
   },
   nested: {
     paddingLeft: theme.spacing(4),
   },
   avatar: {
-    marginBottom:25,
-     width: theme.spacing(7),
+    marginBottom: 25,
+    width: theme.spacing(7),
     height: theme.spacing(7),
   }
 }));
@@ -107,9 +112,11 @@ function ResponsiveDrawer(props) {
     console.log(props.token);
   }
 
-  const navigatePage = url => event =>{
+  const navigatePage = url => event => {
     history.push(url);
   }
+
+
 
   const drawer = (
     <div>
@@ -123,31 +130,31 @@ function ResponsiveDrawer(props) {
         <ListItem onClick={handleMyAccountClick}>
           <ListItemText primary="MY ACCOUNT" />
           {myAccountCollapse ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
+        </ListItem>
         <Collapse in={myAccountCollapse} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          {props.group === 'Admins' ?
-           <div>
-              <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                <ListItemText primary="Quản lý người dùng" />
-              </ListItem>
-              <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
-                <ListItemIcon>
-                  <BorderColorIcon />
-                </ListItemIcon>
-                <ListItemText primary="Quản lý người ký" />
-              </ListItem>
-           </div>:<div></div>}
+            {props.group === 'Admins' ?
+              <div>
+                <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
+                  <ListItemIcon>
+                    <SupervisorAccountIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quản lý người dùng" />
+                </ListItem>
+                <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
+                  <ListItemIcon>
+                    <BorderColorIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quản lý người ký" />
+                </ListItem>
+              </div> : <div></div>}
             <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary="Đổi mật khẩu" />
             </ListItem>
-            <ListItem button className={classes.nested} onClick={()=>{
+            <ListItem button className={classes.nested} onClick={() => {
               dispatch(AuthActions.logout());
               history.push('/');
             }}>
@@ -161,12 +168,14 @@ function ResponsiveDrawer(props) {
 
         <Divider />
         <ListSubheader>MAIN</ListSubheader>
-        <ListItem button className={classes.nested} onClick={copyToken}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                <ListItemText primary="Copy token to clipboard" />
-              </ListItem>
+        {!isProduction &&
+          <ListItem button className={classes.nested} onClick={copyToken}>
+            <ListItemIcon>
+              <SupervisorAccountIcon />
+            </ListItemIcon>
+            <ListItemText primary="Console log token" />
+          </ListItem>
+        }
         <ListItem
           className={classes.nested}
           button
@@ -272,9 +281,11 @@ function ResponsiveDrawer(props) {
 }
 
 const mapStateToProps = state => {
+
   const tmpUsername = state.auth.cognitoUser;
   const tmpGroup = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.payload['cognito:groups'] : '';
-  const token = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.jwtToken : '';
+  const token = !isProduction && state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.jwtToken : '';
+
   return {
     username: tmpUsername ? tmpUsername.username : '',
     group: tmpGroup ? tmpGroup[0] : '',

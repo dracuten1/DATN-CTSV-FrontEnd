@@ -43,7 +43,9 @@
     "start": "set REACT_APP_STAGE=development && react-scripts start",
     "build": "set REACT_APP_STAGE=development && react-scripts build",
     "build-prod": "set REACT_APP_STAGE=production && react-scripts build",
-    "deploy": "set REACT_APP_STAGE=production && react-scripts build && aws s3 sync build/ s3://ctsvapp",
+    "build-test": "set REACT_APP_STAGE=test && react-scripts build",
+    "deploy-prod": "aws s3 sync build/ s3://ctsvapp",
+    "deploy-test": "aws s3 sync build/ s3://testctsvapp",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -4,7 +4,7 @@ import local from "./app-config-local";
 import { getOperatingSystem } from 'core/DetectOSAndBrowser/index';
 
 
-const appStage = getOperatingSystem(window) === 'Linux OS' ? process.env.NODE_ENV.trim() : process.env.REACT_APP_STAGE.trim();
+const appStage = process.env.REACT_APP_STAGE.trim();
 
 const isDev =
   appStage !== undefined && appStage !== null && appStage.trim() === "development";
@@ -12,12 +12,16 @@ const isDev =
 const isProduction =
   appStage !== undefined && appStage !== null && appStage.trim() === "production";
 
+const isTest =
+  appStage !== undefined && appStage !== null && appStage.trim() === "test";
+
+
 let config = local;
 
 if (isDev) {
   config = dev;
 
-} else if (isProduction) {
+} else if (isTest || isProduction) {
   config = prod;
 }
 
