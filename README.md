@@ -72,6 +72,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ad
             Default output format [None]: ENTER
 
     Deploy script: npm run deploy || yarn deploy
+    Open .env file and set stage before build stage = development || production || test
     URL: http://ctsvapp.s3-website-ap-southeast-1.amazonaws.com
     URL test: http://testctsvapp.s3-website-ap-southeast-1.amazonaws.com
 
