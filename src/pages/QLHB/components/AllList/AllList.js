@@ -67,7 +67,7 @@ const AllList = props => {
 
   const [state, setState] = useState({
     data: dataList,
-    columns: Columns.HBKK
+    columns: isHBKK ? Columns.HBKK : Columns.HBTT
   });
 
   if (updateBegin === 0) {
@@ -130,8 +130,8 @@ const AllList = props => {
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            updateBegin = 1;
             dispatch(Actions.getListWithFilter(filter, type));
+            updateBegin = 1;
           }}
           label="Lọc sinh viên"
         />

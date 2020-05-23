@@ -28,10 +28,11 @@ const convertNamHoc = nh => {
 
 const formatNumber = (num) => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-}
+};
 
 export const GetListWithFilter = async (filter, type) => {
     filter.nh     = convertNamHoc(filter.nh);
+    logger.info('QLHBHandler:: getListAll: filter: ', filter, type);
     const url     = `hb/list?type=${type}&nh=${filter.nh}&hk=${filter.hk}`;
     const response = await HttpClient.sendGet(url);
     return response;

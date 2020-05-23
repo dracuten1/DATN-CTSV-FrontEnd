@@ -21,8 +21,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Routers from 'layout/router/Router';
 import { useDispatch, connect } from 'react-redux';
-import DRLActions from 'reduxs/reducers/DRL/action';
-import XNSVActions from 'reduxs/reducers/XNSV/action';
+
 import * as AuthActions from 'reduxs/reducers/Authentication/action';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
@@ -31,6 +30,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { ListSubheader, Collapse, Typography } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -64,22 +64,22 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3)
   },
   icon: {
-    marginRight: 10,
+    marginRight: 10
   },
   userinfo: {
-    paddingTop:30,
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    flexDirection:'column'
+    paddingTop: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(4)
   },
   avatar: {
-    marginBottom:25,
-     width: theme.spacing(7),
-    height: theme.spacing(7),
+    marginBottom: 25,
+    width: theme.spacing(7),
+    height: theme.spacing(7)
   }
 }));
 
@@ -101,50 +101,73 @@ function ResponsiveDrawer(props) {
     setMyAccountCollapse(!myAccountCollapse);
   };
 
-  const navigatePage = url => event =>{
+  const navigatePage = url => event => {
     history.push(url);
-  }
+  };
 
   const drawer = (
     <div>
-      <div className={classes.userinfo} >
-        <Avatar className={classes.avatar}></Avatar>
-        <Typography variant="h2" gutterBottom>{props.username.toUpperCase()}</Typography>
-        <Typography variant="h5" gutterBottom>Admin</Typography>
+      <div className={classes.userinfo}>
+        <Avatar className={classes.avatar} />
+        <Typography variant="h2" gutterBottom>
+          {props.username.toUpperCase()}
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          Admin
+        </Typography>
       </div>
       <List>
         <Divider />
         <ListItem onClick={handleMyAccountClick}>
           <ListItemText primary="MY ACCOUNT" />
           {myAccountCollapse ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
+        </ListItem>
         <Collapse in={myAccountCollapse} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          {props.group === 'Admins' ?
-           <div>
-              <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                <ListItemText primary="Quản lý người dùng" />
-              </ListItem>
-              <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
-                <ListItemIcon>
-                  <BorderColorIcon />
-                </ListItemIcon>
-                <ListItemText primary="Quản lý người ký" />
-              </ListItem>
-           </div>:<div></div>}
-            <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
+            {props.group === 'Admins' ? (
+              <div>
+                <ListItem
+                  button
+                  className={classes.nested}
+                  onClick={navigatePage('/admin')}
+                >
+                  <ListItemIcon>
+                    <SupervisorAccountIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quản lý người dùng" />
+                </ListItem>
+                <ListItem
+                  button
+                  className={classes.nested}
+                  onClick={navigatePage('/signers')}
+                >
+                  <ListItemIcon>
+                    <BorderColorIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quản lý người ký" />
+                </ListItem>
+              </div>
+            ) : (
+              <div />
+            )}
+            <ListItem
+              button
+              className={classes.nested}
+              onClick={navigatePage('/changepassword')}
+            >
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary="Đổi mật khẩu" />
             </ListItem>
-            <ListItem button className={classes.nested} onClick={()=>{
-              dispatch(AuthActions.logout());
-              history.push('/');
-            }}>
+            <ListItem
+              button
+              className={classes.nested}
+              onClick={() => {
+                dispatch(AuthActions.logout());
+                history.push('/');
+              }}
+            >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
@@ -159,7 +182,7 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/xnsv')}
         >
           <ListItemIcon>
             <InboxIcon />
@@ -170,51 +193,83 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => dispatch(DRLActions.getNotPrintYet())}
+          onClick={() => history.push('/drl')}
         >
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>
           <ListItemText primary="Điểm rèn luyện" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/ttsv')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/ttsv')}
+        >
           <ListItemIcon>
             <Status />
           </ListItemIcon>
           <ListItemText primary="Tình trạng sinh viên" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/qllt')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/qllt')}
+        >
           <ListItemIcon>
             <Home />
           </ListItemIcon>
           <ListItemText primary="Quản lý lưu trú" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/shcd')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/shcd')}
+        >
           <ListItemIcon>
             <Activity />
           </ListItemIcon>
           <ListItemText primary="Sinh hoạt công dân" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/ktkl')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/ktkl')}
+        >
           <ListItemIcon>
             <BlockIcon />
           </ListItemIcon>
           <ListItemText primary="Khen thưởng - Kỷ luật" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/qlhb')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/qlhb')}
+        >
           <ListItemIcon>
             <Scholarship />
           </ListItemIcon>
           <ListItemText primary="Quản lý học bổng" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/hssv')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() =>
+            history.push('/qlhb')
+          }
+        >
           <ListItemIcon>
             <Description />
           </ListItemIcon>
           <ListItemText primary="Hồ sơ sinh viên" />
         </ListItem>
       </List>
-    </div >
+    </div>
   );
 
   return (
@@ -261,11 +316,13 @@ function ResponsiveDrawer(props) {
 
 const mapStateToProps = state => {
   const tmpUsername = state.auth.cognitoUser;
-  const tmpGroup = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.payload['cognito:groups'] : '';
+  const tmpGroup = state.auth.cognitoUser
+    ? state.auth.cognitoUser.signInUserSession.idToken.payload['cognito:groups']
+    : '';
 
   return {
     username: tmpUsername ? tmpUsername.username : '',
-    group: tmpGroup ? tmpGroup[0] : '',
+    group: tmpGroup ? tmpGroup[0] : ''
   };
 };
 

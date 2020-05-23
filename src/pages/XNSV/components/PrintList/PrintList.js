@@ -59,20 +59,7 @@ const PrintList = props => {
   const XNSVState = useSelector(state => state.XNSVState);
   const { dataList, listLink, isPrintList, isHistoryList } = XNSVState;
 
-  logger.info('dataList: ', dataList);
-
   const Print = [
-    {
-      title: 'Đã In',
-      field: 'isPrint',
-      editable: 'onAdd',
-      type: 'boolean',
-      render: rowData => (
-        <div style={{ marginLeft: '10px' }}>
-          {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
-        </div>
-      )
-    },
     { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
     { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
     {
@@ -120,21 +107,29 @@ const PrintList = props => {
       editable: 'never',
       lookup: {
         1: 'Tiếng Anh',
-        2: 'Tiếng Việt',
+        2: 'Tiếng Việt'
       },
       customFilterAndSearch: (term, rowData) => {
         if (valueLanguage !== term) {
           valueLanguage = term;
-          keys = keys.splice(0, keys.length);
+          keys = [];
         }
-        if (term.length !== 0) {
-          return term == rowData.case;
+        switch (term.length) {
+          case 1:
+            if (rowData.language === parseInt(term[0])) {
+              keys.push({
+                PK: rowData.pk,
+                SK: rowData.sk
+              });
+            }
+            break;
+          default:
+            keys = [];
         }
-        keys.push({
-          PK: rowData.pk,
-          SK: rowData.sk
-        });
 
+        if (term.length !== 0) {
+          return term == rowData.language;
+        }
         return rowData;
       }
     },
@@ -188,12 +183,14 @@ const PrintList = props => {
       filtering: false
     },
     {
-      title: 'Ghi chú',
-      field: 'ghiChu',
+      title: 'Ngôn ngữ',
+      field: 'language',
       editable: 'never',
-      filtering: false
+      lookup: {
+        1: 'Tiếng Anh',
+        2: 'Tiếng Việt'
+      }
     },
-
     {
       title: 'Ngày in',
       field: 'ngayin',
@@ -221,23 +218,30 @@ const PrintList = props => {
   });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: isPrintList ? dataList : dataList,
-    columns: Print
+    data: dataList,
+    columns: isPrintList ? Print : His
   });
 
   if (updateBegin === 0) {
-    dispatch(XNSVActions.getNotPrintYet());
     dispatch(XNSVActions.getUser());
+    dispatch(XNSVActions.getNotPrintYet());
     updateBegin += 1;
   }
-
-  if (dataList.length > 0 && updateBegin === 1) {
-    setState({ ...state, data: dataList, columns: isPrintList ? Print : His });
+  logger.info('XNSVAction:: datalist: ', dataList);
+  if (updateBegin === 1) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: isPrintList ? Print : His
+    });
     updateBegin += 1;
   }
-
-  if (updateBegin === 2) {
-    setState({ ...state, data: dataList, columns: isPrintList ? Print : His });
+  if (updateBegin === 2 && state.data.length !== dataList.length) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: isPrintList ? Print : His
+    });
     updateBegin += 1;
   }
 
@@ -245,10 +249,6 @@ const PrintList = props => {
     setState({ ...state, data: dataList });
     isPrint = !isPrint;
   }
-
-  // if (isHistoryList && state.data.length !== dataList.length) {
-  //   setState({ ...state, data: dataList });
-  // }
 
   const reparseCase = tmpcase => {
     switch (tmpcase) {
@@ -273,15 +273,15 @@ const PrintList = props => {
     }
   };
 
-  const reparseLanguage = tmpcase =>{
-    if (tmpcase === 'Tiếng Anh'){
+  const reparseLanguage = tmpcase => {
+    if (tmpcase === 'Tiếng Anh') {
       return 1;
     }
     return 2;
   };
 
-  const reparseLanguageToString = tmpcase =>{
-    if (tmpcase === 1 || tmpcase === '1'){
+  const reparseLanguageToString = tmpcase => {
+    if (tmpcase === 1 || tmpcase === '1') {
       return 'Tiếng Anh';
     }
     return 'Tiếng Việt';
@@ -322,35 +322,37 @@ const PrintList = props => {
     setOpen(false);
     if (valid) {
       setState(prevState => {
-      const data = [...prevState.data];
-      newData.scn = data.length + 1;
-      newData.case = reparseCase(newData.case);
-      newData.language = reparseLanguage(newData.language);
-      data.push(newData);
-      return { ...prevState, data };
-    });}
+        const data = [...prevState.data];
+        newData.scn = data.length + 1;
+        newData.case = reparseCase(newData.case);
+        newData.language = reparseLanguage(newData.language);
+        data.push(newData);
+        return { ...prevState, data };
+      });
+    }
   };
 
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
   };
+  console.log("ListLink:", listLink);
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {isPrintList ? (
         ''
       ) : (
-          <CardActions className={classes.actions}>
-            <Filters onFilter={handleFilter} />
-            <ContainedButton
-              handleClick={() => {
-                dispatch(XNSVActions.getListExport(filter));
-                updateBegin = 2;
-              }}
-              label="Lọc sinh viên"
-            />
-          </CardActions>
-        )}
+        <CardActions className={classes.actions}>
+          <Filters onFilter={handleFilter} />
+          <ContainedButton
+            handleClick={() => {
+              dispatch(XNSVActions.getListExport(filter));
+              updateBegin = 1;
+            }}
+            label="Lọc sinh viên"
+          />
+        </CardActions>
+      )}
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -359,13 +361,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  {isPrintList ? (
-                    <b>
-                      DANH SÁCH CHƯA IN
-                    </b>
-                  ) : (
-                      <b>LỊCH SỬ IN</b>
-                    )}
+                  {isPrintList ? <b>DANH SÁCH CHƯA IN</b> : <b>LỊCH SỬ IN</b>}
                 </div>
               }
               columns={state.columns}
@@ -373,20 +369,20 @@ const PrintList = props => {
               actions={
                 !isHistoryList
                   ? [
-                    {
-                      icon: icons.Print,
-                      tooltip: 'Print',
-                      onClick: (event, rowData) => {
-                        const data = {
-                          pk: rowData.pk,
-                          sk: rowData.sk,
-                          type: reparseCaseToString(rowData.case)
-                        };
-                        dispatch(XNSVActions.handlePrintOneStudent(data));
-                        isPrint = !isPrint;
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print',
+                        onClick: (event, rowData) => {
+                          const data = {
+                            pk: rowData.pk,
+                            sk: rowData.sk,
+                            type: reparseCaseToString(rowData.case)
+                          };
+                          dispatch(XNSVActions.handlePrintOneStudent(data));
+                          isPrint = !isPrint;
+                        }
                       }
-                    }
-                  ]
+                    ]
                   : []
               }
               options={{
@@ -403,21 +399,21 @@ const PrintList = props => {
               editable={
                 !isHistoryList
                   ? {
-                    onRowDelete: oldData =>
-                      new Promise(resolve => {
-                        setTimeout(() => {
-                          logger.info('Olddata: ', oldData);
-                          const { pk, sk } = oldData;
-                          dispatch(XNSVActions.deleteOneCertificate(pk, sk));
-                          resolve();
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data.splice(data.indexOf(oldData), 1);
-                            return { ...prevState, data };
-                          });
-                        }, 600);
-                      })
-                  }
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(() => {
+                            logger.info('Olddata: ', oldData);
+                            const { pk, sk } = oldData;
+                            dispatch(XNSVActions.deleteOneCertificate(pk, sk));
+                            resolve();
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
                   : {}
               }
             />
@@ -454,10 +450,14 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    if (valueCase) {
+                    if (valueCase && valueLanguage) {
                       dispatch(
-                        XNSVActions.handlePrint(reparseCaseToString(valueCase[0]), reparseLanguageToString(valueLanguage[0]))
-                        );
+                        XNSVActions.handlePrintByType(
+                          keys,
+                          reparseCaseToString(valueCase[0]),
+                          reparseLanguageToString(valueLanguage[0])
+                        )
+                      );
                       isPrint = !isPrint;
                     }
                   }}
@@ -470,10 +470,9 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    if (valueCase) {
-                      dispatch(
-                        XNSVActions.handlePrintAll(keys, valueLanguage)
-                      );
+                    if (valueLanguage) {
+                      console.log('keys:', keys);
+                      dispatch(XNSVActions.handlePrintAll(keys, reparseLanguageToString(valueLanguage[0])));
                       isPrint = !isPrint;
                     }
                   }}
@@ -485,47 +484,47 @@ const PrintList = props => {
                 </Button>
               </>
             ) : (
-                <>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => {
-                      dispatch(XNSVActions.getNotPrintYet());
-                      updateBegin = 1;
-                    }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Danh sách in
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(XNSVActions.getNotPrintYet());
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Danh sách in
                 </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Import
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Import
                 </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Export
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Export
                 </Button>
-                </>
-              )}
+              </>
+            )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-              ''
-            )}
+            ''
+          )}
         </Grid>
       </CardActions>
       <XNTKTDialog

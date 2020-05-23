@@ -87,13 +87,11 @@ const ttsvReducer = (state = INIT_STATE, action) => {
         isCase: 10
       };
     case ActionTypes.ADD_LINK_PRINT: {
-      const temp = state.listLink;
-      temp.push(action.listLink);
+      const temp = state.listLink.concat(action.listLink);
       return { ...state, listLink: temp, dataPrint: action.listData };
     }
     case ActionTypes.ADD_LINK_EXPORT: {
-      const ex = state.listLink;
-      ex.push(action.listLink);
+      const ex = state.listLink.concat(action.listLink);
       return { ...state, listLink: ex };
     }
     case ActionTypes.DELETE_ONE_CERTIFICATE:

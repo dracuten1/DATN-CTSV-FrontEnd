@@ -27,7 +27,6 @@ const parseNHToNumber = nh => {
 };
 
 const getListWithFilter = (filter, type) => async dispatch => {
-  logger.info('QLHBAction:: getListAll: filter: ', filter, type);
   const response = await QLHBHandler.GetListWithFilter(filter, type);
   logger.info('QLHBAction:: getListAll: reponse: ', response);
   const data = Object.keys(response).map(key => {
