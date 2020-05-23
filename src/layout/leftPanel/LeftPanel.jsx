@@ -28,7 +28,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Avatar from '@material-ui/core/Avatar';
-import { ListSubheader, Collapse, Typography } from '@material-ui/core';
+import { ListSubheader, Collapse, Typography, TextField } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 const drawerWidth = 240;
@@ -101,6 +101,12 @@ function ResponsiveDrawer(props) {
     setMyAccountCollapse(!myAccountCollapse);
   };
 
+  let textArea;
+
+  const copyToken = (event) => {
+    console.log(props.token);
+  }
+
   const navigatePage = url => event =>{
     history.push(url);
   }
@@ -155,6 +161,12 @@ function ResponsiveDrawer(props) {
 
         <Divider />
         <ListSubheader>MAIN</ListSubheader>
+        <ListItem button className={classes.nested} onClick={copyToken}>
+                <ListItemIcon>
+                  <SupervisorAccountIcon />
+                </ListItemIcon>
+                <ListItemText primary="Copy token to clipboard" />
+              </ListItem>
         <ListItem
           className={classes.nested}
           button
@@ -262,10 +274,11 @@ function ResponsiveDrawer(props) {
 const mapStateToProps = state => {
   const tmpUsername = state.auth.cognitoUser;
   const tmpGroup = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.payload['cognito:groups'] : '';
-
+  const token = state.auth.cognitoUser ? state.auth.cognitoUser.signInUserSession.idToken.jwtToken : '';
   return {
     username: tmpUsername ? tmpUsername.username : '',
     group: tmpGroup ? tmpGroup[0] : '',
+    token: token,
   };
 };
 
