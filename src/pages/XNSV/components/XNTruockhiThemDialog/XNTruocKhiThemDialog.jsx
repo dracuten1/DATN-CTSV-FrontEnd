@@ -68,7 +68,7 @@ const defaultValue = {
   date: moment(date).format('DD/MM/YYYY'),
   addSemester: '',
   addYear: ``,
-  startDateBaoLuu: date,
+  startDateBaoLuu: moment(date).format('DD/MM/YYYY'),
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -84,14 +84,10 @@ const XNTruocKhiThemDialog = props => {
   const [newCertificate, setCertificate] = React.useState({});
 
   const fetchCertificate = (prop) => event => {
+
+    const value = event.target ? event.target.value : moment(event).format('DD/MM/YYYY');
     let tmp = { ...values };
-    if (prop === 'startDateBaoLuu') {
-      tmp[prop] = event;
-
-    } else {
-      tmp[prop] = event.target.value;
-    }
-
+    tmp[prop] = value;
     let Data;
     logger.info("FECTCH DATA:: ", tmp);
     switch (tmp.language) {
@@ -149,7 +145,7 @@ const XNTruocKhiThemDialog = props => {
           case 'Bảo lưu':
             Data = {
               NgonNgu: `${tmp.language}`,
-              startDateBaoLuu: moment(tmp.startDateBaoLuu).format('DD/MM/YYYY'),
+              startDateBaoLuu: `${tmp.startDateBaoLuu}`,
             }
             break;
           case 'Thời gian học':
@@ -232,13 +228,11 @@ const XNTruocKhiThemDialog = props => {
     'Đăng ký học phần',
   ]
 
-  const handleDateChange = prop => date => {
-    setValues({ ...values, [prop]: date });
-  };
 
   const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value });
-    if (event.target.value === "Vay vốn") setIsOpenVayVonDialog(true)
+    const value = event.target ? event.target.value : moment(event).format('DD/MM/YYYY');
+    setValues({ ...values, [prop]: value });
+    if (value === "Vay vốn") setIsOpenVayVonDialog(true)
     else setIsOpen(true);
   };
 
@@ -531,17 +525,38 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Ngày bắt đầu bảo lưu"
                 format="dd/MM/yyyy"
-                value={values.startDateBaoLuu}
+                value={Date.parse(values.startDateBaoLuu)}
                 style={{ width: '400px', marginLeft: '8px' }}
-                onChange={date => {
-                  handleDateChange('startDateBaoLuu')(date);
-                  fetchCertificate('startDateBaoLuu')(date);
+                onChange={event => {
+                  handleChange('startDateBaoLuu')(event);
+                  fetchCertificate('startDateBaoLuu')(event);
                 }}
                 KeyboardButtonProps={{
-                'aria-label': 'change date'
-              }}
+                  'aria-label': 'change date'
+                }}
               />
             </MuiPickersUtilsProvider>
+          )}
+          {values.language === 'Tiếng Việt' && values.case === 'Thời gian học' && (
+            <div className={classes.container}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date-picker-dialog"
+                  label="Đến ngày"
+                  format="dd/MM/yyyy"
+                  value={Date.parse(values.studingEndDate)}
+                  style={{ width: '400px', marginLeft: '8px' }}
+                  onChange={event => {
+                    handleChange('studingEndDate')(event);
+                    fetchCertificate('studingEndDate')(event);
+                  }}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </MuiPickersUtilsProvider>
+            </div>
           )}
           {values.case === 'Chờ xét tốt nghiệp' && (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -550,11 +565,11 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Chọn ngày công bố dự kiến"
                 format="dd/MM/yyyy"
-                value={date}
+                value={Date.parse(values.expectedPublicationDate)}
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('expectedPublicationDate')(event);
-                  fetchCertificate();
+                  fetchCertificate('expectedPublicationDate')(event);
                 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
@@ -569,11 +584,11 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Chọn ngày công bố dự kiến"
                 format="dd/MM/yyyy"
-                value={date}
+                value={Date.parse(values.expectedPublicationDate)}
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('expectedPublicationDate')(event);
-                  // fetchCertificate();
+                  fetchCertificate('expectedPublicationDate')(event);
                 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
@@ -625,44 +640,6 @@ const XNTruocKhiThemDialog = props => {
                   fetchCertificate();
                 }}
               />
-            </div>
-          )}
-          {values.status === 'Thời gian học' && (
-            <div className={classes.container}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  label="Từ ngày"
-                  format="dd/MM/yyyy"
-                  value={date}
-                  style={{ width: '400px', marginLeft: '8px' }}
-                  onChange={event => {
-                    handleChange('studingBeginDate')(event);
-                    fetchCertificate();
-                  }}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date'
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  label="Đến ngày"
-                  format="dd/MM/yyyy"
-                  value={date}
-                  style={{ width: '400px', marginLeft: '8px' }}
-                  onChange={event => {
-                    handleChange('studingEndDate')(event);
-                    fetchCertificate();
-                  }}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date'
-                  }}
-                />
-              </MuiPickersUtilsProvider>
             </div>
           )}
           <FormControl className={classes.textField} margin="normal">
