@@ -40,10 +40,10 @@ const ProtectRoute = () => {
         else {
             history.push('/');
         }
+    } else if (window.location.pathname==='/') {
+        history.push('/dashboard');
     }
-    else {
-        history.push('/dashboard')
-    }
+    
     return (<RootRouter />);
 };
 

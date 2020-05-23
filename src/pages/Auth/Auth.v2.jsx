@@ -145,7 +145,8 @@ const mapStateToProps = state => {
     error: state.auth.error,
     isAuthenticated: state.auth.token !== null,
     resetPassword: state.auth.resetPassword,
-    authRedirectPath: state.auth.authRedirectPath
+    authRedirectPath: state.auth.authRedirectPath,
+    cognitoUser: state.auth,
   };
 };
 
