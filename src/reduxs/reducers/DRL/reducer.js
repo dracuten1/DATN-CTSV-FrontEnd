@@ -27,7 +27,7 @@ const userReducer = (state = INIT_STATE, action) => {
         isHistoryList: false,
         isHisImport: false
       };
-    case ActionTypes.GET_NOT_PRINT_YET:
+    case ActionTypes.GET_LIST_WITH_STATUS:
       return {
         ...state,
         dataPrint: action.payload,
