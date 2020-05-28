@@ -27,7 +27,7 @@ const convertNamHoc = nh => {
 
 export const GetListWithFilter = async filter => {
   const url     = `ttluutru/sv`;
-  filter.limit  = 1000;
+  filter.limit  = 10000;
   filter.nh     = convertNamHoc(filter.nh);
   const response = await HttpClient.sendPutWithBody(url, filter);
   return response;
@@ -52,7 +52,7 @@ export const ExportWithFilter = async (filter) => {
       type = 'KTX';
   }
 
-  const url = `ttluutru/get?nh=${cvNH}&hk=${hk}&type=${type}&limit=4000`;
+  const url = `ttluutru/get?nh=${cvNH}&hk=${hk}&type=${type}&limit=10000`;
 
   const response = await HttpClient.sendGetData(url);
 

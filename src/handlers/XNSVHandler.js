@@ -16,7 +16,7 @@ export const GetXNSVByType = async (type) => {
 
   const url = `xnsv/listCertificateByType?type=${type}`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGet(url); 
 
   return response;
 };
@@ -72,32 +72,32 @@ export const GetListCertificate = async (status) => {
   const url = `xnsv/certificate?status=${status}`;
 
   const response = await HttpClient.sendPut(url);
-  logger.info(response);
 
   const payload = response.map((item, index) => {
-    return {
-      scn: item.SCN,
-      name: item.ThongTinSinhVien.Ten,
-      mssv: item.ThongTinSinhVien.MSSV,
-      case: parseCase(item.LoaiGiayXN),
-      reason: item.LyDoXN,
-      isPrint: item.TrangThai !== 'Chưa In',
-      date: moment(item.ngayThem).format('DD/MM/YYYY'),
-      pk: item.PK,
-      sk: item.SK,
-      ngayin: item.NgayIn ? moment(parseFloat(item.NgayIn)).format('DD/MM/YYYY') : null,
-      link: item.linkDownloadPrint ? item.linkDownloadPrint : null
-    };
+    item.scn = item.SCN;
+    item.language = item.NgonNgu === "Tiếng Việt" ? 2 : 1;
+    item.name = item.ThongTinSinhVien.Ten;
+    item.mssv = item.ThongTinSinhVien.MSSV;
+    item.case = parseCase(item.LoaiGiayXN);
+    item.reason = item.LyDoXN;
+    item.date = moment(item.ngayThem).format('DD/MM/YYYY');
+    item.pk = item.PK;
+    item.sk = item.SK;
+    item.ngayin = item.NgayIn ? moment(parseFloat(item.NgayIn)).format('DD/MM/YYYY')  : null;
+    item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
+    return item;
   });
 
   return payload;
 };
 
-export const PrintByType = async (type, language) => {
+export const PrintByType = async (keys, type, language) => {
 
   const url = `xnsv/printf?type=${type}&language=${language}`;
+  logger.info('XNSVHandler:: PrintByType: url: ', url);
+  logger.info('XNSVHandler:: PrintByType: keys: ', keys);
 
-  const response = await HttpClient.sendPatch(url);
+  const response = await HttpClient.sendPatchWithBody(url, { keys });;
 
   return response;
 };

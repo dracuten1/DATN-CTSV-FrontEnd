@@ -37,6 +37,7 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         dataList: action.payload,
         isHistoryList: false,
+        isHisImport: false,
         isPrintList: true
       };
     case ActionTypes.GET_HISTORY_LIST:
@@ -44,7 +45,8 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         dataList: action.payload,
         isPrintList: false,
-        isHistoryList: true
+        isHistoryList: true,
+        isHisImport: false
       };
     case ActionTypes.GET_HISTORY_IMPORT_LIST:
       return {
@@ -60,13 +62,11 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         listUser: action.payload
       };
     case ActionTypes.ADD_LINK_PRINT: {
-      const temp = state.listLink;
-      temp.push(action.listLink);
+      const temp = state.listLink.concat(action.listLink);
       return { ...state, listLink: temp, dataList: action.listData };
     }
     case ActionTypes.ADD_LINK_EXPORT: {
-      const ex = state.listLink;
-      ex.push(action.listLink);
+      const ex = state.listLink.concat(action.listLink);
       return { ...state, listLink: ex };
     }
     case ActionTypes.DELETE_ONE_CERTIFICATE:

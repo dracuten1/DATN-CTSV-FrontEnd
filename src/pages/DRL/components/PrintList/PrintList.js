@@ -51,6 +51,7 @@ const dt = new Date();
 const year = dt.getFullYear();
 
 let valueCase = null;
+let valueType = null;
 let updateBegin = 0;
 let isPrint = false;
 let typeColumns = [];
@@ -70,15 +71,6 @@ const PrintList = props => {
     isAllList
   } = DRLState;
 
-  const [filter, setFilter] = React.useState({
-    type: '1',
-    time: `${year}-${(year + 1)}`,
-    xeploai: 'Giỏi',
-    username: '',
-    fromDate: '',
-    toDate: ''
-  });
-
   logger.info('history', dataPrint);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
@@ -86,16 +78,18 @@ const PrintList = props => {
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+    { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
     {
-      title: 'URL', field: 'url', editable: 'never', filtering: false, render: rowData => (
-        <Link
-          style={{ textDecoration: 'none' }}
-          href={rowData.url}
-        >
+      title: 'URL',
+      field: 'url',
+      editable: 'never',
+      filtering: false,
+      render: rowData => (
+        <Link style={{ textDecoration: 'none' }} href={rowData.url}>
           {`${rowData.url.substring(0, 200)}...`}
         </Link>
       )
@@ -104,57 +98,27 @@ const PrintList = props => {
 
   const HistoryColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-    { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
-    {
-      title: 'Họ tên',
-      field: 'name',
-      editable: 'never',
-      filtering: false
-    },
-    {
-      title: 'Trường hợp',
-      field: 'case',
-      lookup: {
-        HK: 'Năm học-Học kỳ',
-        NH: 'Năm Học',
-        All: 'Tất cả',
-        TK: 'Toàn Khoá'
-      },
-      filterCellStyle: {
-        paddingTop: 1
-      },
-      customFilterAndSearch: (term, rowData) => {
-        if (valueCase !== term) {
-          valueCase = term;
-        }
-        if (term.length !== 0) {
-          // eslint-disable-next-line
-          return term == rowData.case;
-        }
-        return rowData;
-      }
-    },
     {
       title: 'Ngày in',
       field: 'date',
       editable: 'never',
       type: 'date',
       filtering: false
+    },
+    {
+      title: 'URL',
+      field: 'DL',
+      editable: 'never',
+      filtering: false,
+      render: rowData => (
+        <Link style={{ textDecoration: 'none' }} href={rowData.DL}>
+          {`${rowData.DL.substring(0, 200)}...`}
+        </Link>
+      )
     }
   ];
 
   const PrintColumns = [
-    {
-      title: 'Đã In',
-      field: 'isPrint',
-      editable: 'onAdd',
-      type: 'boolean',
-      render: rowData => (
-        <div style={{ marginLeft: '10px' }}>
-          {rowData.isPrint ? <icons.CheckBox /> : <icons.CheckBlank />}
-        </div>
-      )
-    },
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
     { title: 'MSSV', field: 'mssv', editable: 'onAdd', filtering: false },
     {
@@ -196,48 +160,28 @@ const PrintList = props => {
   ];
 
   const AllColumns = [
-    // { title: 'STT', field: 'stt', editable: 'never', filtering: false },
     { title: 'MSSV', field: 'mssv', filtering: false },
     { title: 'Họ tên', field: 'name', filtering: false },
     {
       title: 'Năm học',
       field: 'year',
-      lookup: {
-        1: `${(year - 6)}-${(year - 5)}`,
-        2: `${(year - 5)}-${(year - 4)}`,
-        3: `${(year - 4)}-${(year - 3)}`,
-        4: `${(year - 3)}-${(year - 2)}`,
-        5: `${(year - 2)}-${(year - 1)}`,
-        6: `${(year - 1)}-${year}`,
-        7: `${year}-${(year + 1)}`
-      },
-      filterCellStyle: {
-        paddingTop: 1
-      }
+      filtering: false
     },
     {
       title: 'Học kỳ',
       field: 'semester',
-      lookup: {
-        1: '1',
-        2: '2',
-        3: '3',
-        4: 'Cả năm'
-      },
-      filterCellStyle: {
-        paddingTop: 1
-      }
+      filtering: false
     },
     {
       title: 'Điểm',
-      field: 'score'
+      field: 'Diem'
     },
     {
       title: 'Xếp loại',
       field: 'grade',
       lookup: {
         1: 'Xuất sắc',
-        2: 'Giỏi',
+        2: 'Tốt',
         3: 'Khá',
         4: 'Trung bình',
         5: 'Yếu',
@@ -256,33 +200,49 @@ const PrintList = props => {
 
   if (isAllList) {
     typeColumns = AllColumns;
+    valueType = 0;
   } else if (isPrintList) {
     typeColumns = PrintColumns;
+    valueType = 1;
   } else if (isHistoryList) {
     typeColumns = HistoryColumns;
+    valueType = 2;
   } else {
     typeColumns = UrlsColumns;
+    valueType = 3;
   }
-
 
   const [state, setState] = useState({
     data: dataPrint,
     columns: typeColumns
   });
 
+  const [filter, setFilter] = React.useState({
+    type: '1',
+    time: `${year}-${year + 1}`,
+    xeploai: 'Giỏi',
+    status: 'Chưa In',
+    username: '',
+    from: new Date(),
+    to: new Date()
+  });
+
   if (updateBegin === 0) {
-    dispatch(DRLActions.getNotPrintYet());
-    dispatch(
-      DRLActions.getListPrintByDate(
-        moment(new Date().setHours(0)).format('x'),
-        moment(new Date()).format('x')
-      )
-    );
+    dispatch(DRLActions.getListWithStatus(filter.status, filter.username));
     dispatch(DRLActions.getUser());
     updateBegin += 1;
   }
 
   if (updateBegin === 1) {
+    setState({
+      ...state,
+      data: dataPrint,
+      columns: typeColumns
+    });
+    updateBegin += 1;
+  }
+
+  if (updateBegin === 2 && state.data.length !== dataPrint.length) {
     setState({
       ...state,
       data: dataPrint,
@@ -359,22 +319,64 @@ const PrintList = props => {
   };
   logger.info('dataTable: ', state.data);
 
+  //set actions of table
+  let actions;
+  let editTable;
+  if (isPrintList && filter.status === 'Chưa In') {
+    actions = [
+      {
+        icon: icons.Print,
+        tooltip: 'Print',
+        onClick: (event, rowData) => {
+          dispatch(DRLActions.PrintOneStudent(rowData.pk, rowData.sk));
+          isPrint = !isPrint;
+        }
+      }
+    ];
+    editTable = {
+      onRowDelete: oldData =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            logger.info('Olddata: ', oldData);
+            const { pk, sk } = oldData;
+            dispatch(DRLActions.deleteOneCertificate(pk, sk));
+            resolve();
+            setState(prevState => {
+              const data = [...prevState.data];
+              data.splice(data.indexOf(oldData), 1);
+              return { ...prevState, data };
+            });
+          }, 600);
+        })
+    };
+  } else {
+    actions = [];
+    editTable = {};
+  }
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
       <Divider />
-      {isPrintList ? ('') : (
-        <CardActions className={classes.actions}>
-          <Filters onFilter={handleFilter} />
-          <ContainedButton
-            handleClick={() => {
+      <CardActions className={classes.actions}>
+        <Filters valueType={valueType} onFilter={handleFilter} />
+        <ContainedButton
+          handleClick={() => {
+            if (isAllList) {
               dispatch(DRLActions.filterListData(filter));
-              updateBegin = 1;
-            }}
-            label="Lọc sinh viên"
-          />
-        </CardActions>
-      )}
+            } else if (isPrintList) {
+              dispatch(DRLActions.getListWithStatus(filter));
+            } else if (isHistoryList) {
+              dispatch(DRLActions.getListPrintByDate(filter));
+            } else {
+              dispatch(DRLActions.getListHistoryImport(filter));
+            }
+            updateBegin = 1;
+          }}
+          label="Lọc dữ liệu"
+        />
+      </CardActions>
+
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -383,27 +385,16 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH DỮ LIỆU</b>
+                  {isPrintList ? (
+                    <b>Danh Sách {filter.status}</b>
+                  ) : (
+                    <b>DANH SÁCH DỮ LIỆU</b>
+                  )}
                 </div>
               }
               columns={state.columns}
               data={state.data}
-              actions={
-                isPrintList
-                  ? [
-                    {
-                      icon: icons.Print,
-                      tooltip: 'Print',
-                      onClick: (event, rowData) => {
-                        dispatch(
-                          DRLActions.PrintOneStudent(rowData.pk, rowData.sk)
-                        );
-                        isPrint = !isPrint;
-                      }
-                    }
-                  ]
-                  : []
-              }
+              actions={actions}
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -415,26 +406,7 @@ const PrintList = props => {
                 // exportButton: true,
                 filtering: true
               }}
-              editable={
-                isPrintList
-                  ? {
-                    onRowDelete: oldData =>
-                      new Promise(resolve => {
-                        setTimeout(() => {
-                          logger.info('Olddata: ', oldData);
-                          const { pk, sk } = oldData;
-                          dispatch(DRLActions.deleteOneCertificate(pk, sk));
-                          resolve();
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data.splice(data.indexOf(oldData), 1);
-                            return { ...prevState, data };
-                          });
-                        }, 600);
-                      })
-                  }
-                  : {}
-              }
+              editable={editTable}
             />
           </div>
         </PerfectScrollbar>
@@ -447,9 +419,7 @@ const PrintList = props => {
               <>
                 <Button
                   onClick={() => {
-                    dispatch(
-                      DRLActions.filterListData(filter)
-                    );
+                    dispatch(DRLActions.filterListInfoDRL(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -503,10 +473,10 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={async () => {
                     const keys = dataPrint.map(item => {
-                      return ({
+                      return {
                         PK: item.pk,
                         SK: item.sk
-                      });
+                      };
                     });
                     const data = await DRLHandler.PrintAllStudent(keys);
 
@@ -533,70 +503,75 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(DRLActions.getListHistory());
+                    dispatch(DRLActions.getListPrintByDate(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
                   color="primary"
                   size="small"
                 >
-                  Xem Lịch Sử
-              </Button>
+                  Link đã in
+                </Button>
               </>
             ) : (
-                <>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => {
-                      dispatch(DRLActions.getNotPrintYet());
-                      updateBegin = 1;
-                    }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Danh sách in
+              <>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch(
+                      DRLActions.getListWithStatus(
+                        filter.status,
+                        filter.username
+                      )
+                    );
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Danh sách in
                 </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => setImportOpen(true)}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Import
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Import
                 </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
-                  >
-                    Export
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
+                >
+                  Export
                 </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => {
-                      dispatch(DRLActions.getListHistoryImport(filter));
-                      updateBegin = 1;
-                    }}
-                  >
-                    Danh Sách Đã Import
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => {
+                    dispatch(DRLActions.getListHistoryImport(filter));
+                    updateBegin = 1;
+                  }}
+                >
+                  Danh Sách Đã Import
                 </Button>
-                </>
-              )}
+              </>
+            )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-              ''
-            )}
+            ''
+          )}
         </Grid>
       </CardActions>
       <AddDialog

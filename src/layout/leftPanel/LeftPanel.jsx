@@ -21,8 +21,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Routers from 'layout/router/Router';
 import { useDispatch, connect } from 'react-redux';
-import DRLActions from 'reduxs/reducers/DRL/action';
-import XNSVActions from 'reduxs/reducers/XNSV/action';
+
 import * as AuthActions from 'reduxs/reducers/Authentication/action';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
@@ -69,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3)
   },
   icon: {
-    marginRight: 10,
+    marginRight: 10
   },
   userinfo: {
     paddingTop: 30,
@@ -79,12 +78,12 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column'
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(4)
   },
   avatar: {
     marginBottom: 25,
     width: theme.spacing(7),
-    height: theme.spacing(7),
+    height: theme.spacing(7)
   }
 }));
 
@@ -110,20 +109,24 @@ function ResponsiveDrawer(props) {
 
   const copyToken = (event) => {
     console.log(props.token);
-  }
+  };
 
   const navigatePage = url => event => {
     history.push(url);
-  }
+  };
 
 
 
   const drawer = (
     <div>
-      <div className={classes.userinfo} >
-        <Avatar className={classes.avatar}></Avatar>
-        <Typography variant="h2" gutterBottom>{props.username.toUpperCase()}</Typography>
-        <Typography variant="h5" gutterBottom>Admin</Typography>
+      <div className={classes.userinfo}>
+        <Avatar className={classes.avatar} />
+        <Typography variant="h2" gutterBottom>
+          {props.username.toUpperCase()}
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          Admin
+        </Typography>
       </div>
       <List>
         <Divider />
@@ -147,7 +150,7 @@ function ResponsiveDrawer(props) {
                   </ListItemIcon>
                   <ListItemText primary="Quản lý người ký" />
                 </ListItem>
-              </div> : <div></div>}
+              </div> : <div />}
             <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
               <ListItemIcon>
                 <LockIcon />
@@ -180,7 +183,7 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => dispatch(XNSVActions.getNotPrintYet())}
+          onClick={() => history.push('/xnsv')}
         >
           <ListItemIcon>
             <InboxIcon />
@@ -191,51 +194,83 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => dispatch(DRLActions.getNotPrintYet())}
+          onClick={() => history.push('/drl')}
         >
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>
           <ListItemText primary="Điểm rèn luyện" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/ttsv')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/ttsv')}
+        >
           <ListItemIcon>
             <Status />
           </ListItemIcon>
           <ListItemText primary="Tình trạng sinh viên" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/qllt')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/qllt')}
+        >
           <ListItemIcon>
             <Home />
           </ListItemIcon>
           <ListItemText primary="Quản lý lưu trú" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/shcd')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/shcd')}
+        >
           <ListItemIcon>
             <Activity />
           </ListItemIcon>
           <ListItemText primary="Sinh hoạt công dân" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/ktkl')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/ktkl')}
+        >
           <ListItemIcon>
             <BlockIcon />
           </ListItemIcon>
           <ListItemText primary="Khen thưởng - Kỷ luật" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/qlhb')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/qlhb')}
+        >
           <ListItemIcon>
             <Scholarship />
           </ListItemIcon>
           <ListItemText primary="Quản lý học bổng" />
         </ListItem>
-        <ListItem className={classes.nested} button component="a" onClick={() => history.push('/hssv')}>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() =>
+            history.push('/qlhb')
+          }
+        >
           <ListItemIcon>
             <Description />
           </ListItemIcon>
           <ListItemText primary="Hồ sơ sinh viên" />
         </ListItem>
       </List>
-    </div >
+    </div>
   );
 
   return (

@@ -1,4 +1,5 @@
 import * as HttpClient from 'core/services/HttpClient';
+import * as HttpClient2 from 'core/services/HttpClient2';
 import { logger } from 'core/services/Apploger';
 import moment from 'moment';
 
@@ -44,9 +45,8 @@ export const GetDRLByIdAndType = async (id, type) => {
 };
 
 export const FilterListData = async fillter => {
-  const { type, time, xeploai } = fillter;
-  convertNamHoc(time);
-  const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}`;
+  const { type, time, xeploai} = fillter;
+  const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}&limit=5000`;
 
   const response = await HttpClient.sendGet(url);
 
@@ -68,10 +68,10 @@ export const GetUser = async () => {
   return response;
 };
 
-export const GetListCertificate = async status => {
-  const url = `drl/getListCertificates?status=${status}`;
+export const GetListCertificate = async (status, username) => {
+  const url = `drl/getListCertificates?status=${status}&username=${username}&from=0&to=9`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient2.sendGet(url);
   const items = response.Items;
 
   logger.info('PrintList:: getListNotPrintYet: ', items);
@@ -129,10 +129,13 @@ export const PrintAllStudent = async (keys) => {
 };
 
 
-export const GetPrintListByDate = async (from, to) => {
-  const url = `drl/printf?from=${from}&to=${to}`;
+export const GetPrintListByDate = async (filter) => {
+  const {from, to, username} = filter;
+  const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
+  const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
+  const url = `drl/printf?from=${fromDate}&to=${toDate}&username=${username}`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient2.sendGet(url);
 
   return response;
 };

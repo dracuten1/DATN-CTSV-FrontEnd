@@ -1,7 +1,25 @@
 import * as DRLHandler from 'handlers/DRLHandler';
+import moment from 'moment';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+
+const parseGradeToInt = grade => {
+  switch (grade) {
+    case 'Xuất sắc':
+      return 1;
+    case 'Tốt':
+      return 2;
+    case 'Khá':
+      return 3;
+    case 'Trung bình':
+      return 4;
+    case 'Yếu':
+      return 5;
+    default:
+      return 6;
+  }
+};
 
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
@@ -13,24 +31,35 @@ const handlePrintList = () => async dispatch => {
   history.push('/drl');
 };
 
-const filterListData = fillter => async dispatch => {
-  const payload = await DRLHandler.FilterListData(fillter);
+const filterListInfoDRL = filter => async dispatch => {
+  const response = await DRLHandler.FilterListData(filter);
+  const payload = response.map((item, index) => {
+    item.name     = item.info.hvt;
+    item.mssv     = item.PK.replace("OE-Drl#", '');
+    item.semester = filter.type;
+    item.year     = filter.time;
+    item.grade    = item.DL;
+    item.note     = item.GhiChu;
+    item.pk       = item.PK;
+    item.sk       = item.SK;
+    return item;
+  });
   dispatch({ type: Types.ALL_LIST, payload });
-  // history.push('/drl');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await DRLHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
   history.push('/drl');
 };
 
-const getNotPrintYet = () => async dispatch => {
+const getListWithStatus = (filter) => async dispatch => {
+  const {status , username} = filter;
+  logger.info('DRLAction:: getListWithStatus: status: ', status , username);
+  if (status === 'Đã In'){
+    const payload = await DRLHandler.GetListCertificate('In', username);
+    dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
+  }
+  else{
+    const payload = await DRLHandler.GetListCertificate('ChuaIn', username);
+    dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
+  }
   history.push('/drl');
-  const status = 'ChuaIn';
-  const payload = await DRLHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
@@ -64,7 +93,7 @@ const PrintOneStudent = (pk, sk) => async dispatch => {
   }
 };
 
-const PrintAllStudent = (keys) => async dispatch => {
+const PrintAllStudent = keys => async dispatch => {
   const response = await DRLHandler.PrintAllStudent(keys);
   const status = 'ChuaIn';
   const listData = await DRLHandler.GetListCertificate(status);
@@ -75,18 +104,22 @@ const PrintAllStudent = (keys) => async dispatch => {
   }
 };
 
-const getListPrintByDate = (from, to) => async dispatch => {
-  const response = await DRLHandler.GetPrintListByDate(from, to);
+const getListPrintByDate = (filter) => async dispatch => {
+  const response = await DRLHandler.GetPrintListByDate(filter);
   logger.info('DRLAction:: listPrintByDate: reponse: ', response);
-  const payload = response.Items.map(item => {
-    return item.DL;
+  const payload = response.Items.map((item, index) => {
+    item.stt    = index + 1;
+    item.pk     = item.PK;
+    item.sk     = item.SK;
+    item.date   = moment(parseFloat(item.SK)).format('DD/MM/YYYY');
+    return item;
   });
-  dispatch({ type: Types.GET_LIST_DOCX, payload });
+  dispatch({ type: Types.GET_HISTORY_LIST, payload });
   history.push('/drl');
 };
 
-const getListHistoryImport = (filter) => async dispatch => {
-  const {type, time } = filter;
+const getListHistoryImport = filter => async dispatch => {
+  const { type, time } = filter;
   const nh = time;
   const hk = type;
   const payload = await DRLHandler.GetURLFileImport(nh, hk);
@@ -118,11 +151,10 @@ export default {
   handleAllList,
   handlePrintList,
   handlePrint,
-  getNotPrintYet,
   deleteOneCertificate,
-  getListHistory,
+  getListWithStatus,
   PrintOneStudent,
-  filterListData,
+  filterListInfoDRL,
   getListPrintByDate,
   PrintAllStudent,
   getListHistoryImport,

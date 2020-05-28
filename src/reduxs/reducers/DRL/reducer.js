@@ -27,7 +27,7 @@ const userReducer = (state = INIT_STATE, action) => {
         isHistoryList: false,
         isHisImport: false
       };
-    case ActionTypes.GET_NOT_PRINT_YET:
+    case ActionTypes.GET_LIST_WITH_STATUS:
       return {
         ...state,
         dataPrint: action.payload,
@@ -62,8 +62,7 @@ const userReducer = (state = INIT_STATE, action) => {
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };
     case ActionTypes.ADD_LINK_PRINT: {
-      const temp = state.listLink;
-      temp.push(action.listLink);
+      const temp = state.listLink.concat(action.listLink);
       return { ...state, listLink: temp, dataPrint: action.listData };
     }
     case ActionTypes.GET_LIST_DOCX: {

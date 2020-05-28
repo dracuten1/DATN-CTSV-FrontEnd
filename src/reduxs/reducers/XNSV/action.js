@@ -16,6 +16,7 @@ const handlePrintList = () => async dispatch => {
 const getNotPrintYet = () => async dispatch => {
   const status = 'ChuaIn';
   const payload = await XNSVHandler.GetListCertificate(status);
+  logger.info("response: ", payload);
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
   history.push('/xnsv');
 };
@@ -24,6 +25,7 @@ const getListHistory = () => async dispatch => {
   const status = 'In';
   const payload = await XNSVHandler.GetListCertificate(status);
   dispatch({ type: Types.GET_HISTORY_LIST, payload });
+  history.push('/xnsv');
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
@@ -35,8 +37,8 @@ const deleteOneCertificate = (pk, sk) => async dispatch => {
   history.push('/xnsv');
 };
 
-const handlePrint = (type,language) => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type, language);
+const handlePrintByType = (keys, type,language) => async dispatch => {
+  const response = await XNSVHandler.PrintByType(keys, type, language);
   const status = 'ChuaIn';
   const listData = await XNSVHandler.GetListCertificate(status);
   logger.info('XNSVAction:: PrintByType: reponse: ', response);
@@ -47,11 +49,12 @@ const handlePrint = (type,language) => async dispatch => {
 };
 
 const handlePrintAll = (keys, language) => async dispatch => {
+  logger.info('XNSVAction:: PrintByType: keys: ', keys, language);
   const response = await XNSVHandler.PrintAllCertificate(keys, language);
   const status = 'ChuaIn';
   const listData = await XNSVHandler.GetListCertificate(status);
   logger.info('XNSVAction:: PrintByType: reponse: ', response);
-  if (response.statusCode === 200) {
+  if (response.statusCode === 200 && response.body !== "Không có gì để in") {
     dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
     history.push('/xnsv');
   }
@@ -104,7 +107,7 @@ const getListExport = filter => async dispatch => {
 export default {
   handleAllList,
   handlePrintList,
-  handlePrint,
+  handlePrintByType,
   handlePrintAll,
   getNotPrintYet,
   deleteOneCertificate,
