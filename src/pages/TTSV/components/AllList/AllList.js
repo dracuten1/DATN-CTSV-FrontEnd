@@ -21,6 +21,7 @@ import icons from 'shared/icons';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
+import UpdateDialog from '../AddDialog/index';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -76,7 +77,7 @@ const AllList = props => {
       arrColumns = Columns.CCHV;
       break;
     case 8: //Bảo lưu
-      arrColumns = Columns.BL; 
+      arrColumns = Columns.BL;
       break;
     case 9:
       //Dang ky hoc phan
@@ -139,15 +140,24 @@ const AllList = props => {
     setFilter({ ...filter, [prop]: data });
   };
 
+  const [updateDialogStage, setUpdateDialogStage] = useState(false);
+  const handleCloseUpdateDialog = () => {
+    setUpdateDialogStage(false);
+  }
+  const handleOpenUpdateDialog = () => {
+    setUpdateDialogStage(true);
+  }
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
+      <UpdateDialog open={updateDialogStage} handleClose={handleCloseUpdateDialog} />
       <CardActions className={classes.actions}>
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
             if (filter.mssv.length > 0)
               dispatch(Actions.getListWithMSSV(filter));
-            else  
+            else
               dispatch(Actions.getListWithFilter(filter));
             updateBegin = 1;
           }}
@@ -185,8 +195,8 @@ const AllList = props => {
       <CardActions className={classes.actions}>
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
-          <Button
-              onClick={() => setImportOpen(true)}
+            <Button
+              onClick={handleOpenUpdateDialog}
               variant="contained"
               color="primary"
               size="small"
