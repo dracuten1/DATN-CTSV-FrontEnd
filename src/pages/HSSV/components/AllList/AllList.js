@@ -10,15 +10,17 @@ import {
   CardActions,
   CardContent,
   Button,
-  Divider
+  Divider,
+  Grid
 } from '@material-ui/core';
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
-import mockData from './data';
-import Actions from '../../../../reduxs/reducers/DRL/action';
+import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
-import { AddDialog } from '../AddDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -40,221 +42,417 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+let isImportDTB = false;
+let updateBegin = 0;
+
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLLTState = useSelector(state => state.QLLTState);
+  const HSSVState = useSelector(state => state.HSSVState);
 
-  const { isAlllist } = QLLTState;
+  const { dataInfo, listLink} = HSSVState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
-    data: isAlllist ? mockData.info : mockData.importInfo,
+    data: dataInfo,
     columns: [
-      { title: 'MSSV', field: 'mssv' },
-      { title: 'Họ tên', field: 'name' },
+      { title: 'MSSV', field: 'mssv', editable: 'never' },
+      { title: 'Họ', field: 'Ho',
+      cellStyle: {
+        minWidth: '200px'
+      } },
+      { title: 'Tên', field: 'Ten',
+      cellStyle: {
+        minWidth: '150px'
+      } },
       {
         title: 'Ngày sinh',
-        field: 'dob'
+        field: 'NgaySinh',
+        cellStyle: {
+          minWidth: '150px'
+        }
       },
       {
         title: 'Nơi sinh',
-        field: 'portal'
+        field: 'NoiSinh',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Nơi sinh khác',
-        field: 'isConfirm'
+        field: 'NoiSinhKhac',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Giới tính',
-        field: 'gender'
+        field: 'GioiTinh',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '150px'
+        }
       },
       {
         title: 'Ngày vào trường',
-        field: 'semester',
+        field: 'NgayVaoTruong',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Khóa học',
-        field: 'receiver',
+        field: 'KhoaHoc',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Bậc đào tạo',
-        field: 'receiver',
+        field: 'BacDaoTao',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Loại hình đào tạo',
-        field: 'receiver',
+        field: 'HeDaoTao',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ngành',
-        field: 'receiver',
+        field: 'Nganh',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Chuyên ngành',
-        field: 'receiver',
+        field: 'ChuyenNganh',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Tình trạng',
-        field: 'receiver',
+        field: 'TinhTrang',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'CMND',
-        field: 'cmnd',
+        field: 'CMND',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ngày cấp CMND',
-        field: 'receiver',
+        field: 'NgayCapCMND',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Nơi cấp CMND',
-        field: 'receiver',
+        field: 'NoiCapCMND',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Dân tộc',
-        field: 'receiver',
+        field: 'DanToc',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Tôn giáo',
-        field: 'receiver',
+        field: 'TonGiao',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Quốc tịch',
-        field: 'receiver',
+        field: 'QuocTich',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Địa chỉ',
-        field: 'receiver',
+        field: 'SoNha',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Phường xã',
-        field: 'receiver',
+        field: 'PhuongXa',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Quận huyện',
-        field: 'receiver',
+        field: 'QuanHuyen',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Tỉnh/TP',
-        field: 'receiver',
+        field: 'TinhTP',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Tạm trú',
-        field: 'receiver',
+        field: 'TamTru',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
-        title: 'ĐT nhà',
-        field: 'receiver',
+        title: 'SĐT nhà',
+        field: 'SDTNha',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
-        title: 'ĐT di động',
-        field: 'receiver',
+        title: 'SĐT di động',
+        field: 'DTDD',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Thành phần GĐ',
-        field: 'receiver',
+        field: 'ThanhPhanGiaDinh',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Email',
-        field: 'email',
+        field: 'Email',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Email cá nhân',
-        field: 'receiver',
+        field: 'EmailCaNhan',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Đoàn viên',
-        field: 'isConfirm',
+        field: 'DoanVien',
+        editable: 'never',
         type: 'boolean',
         render: rowData => (
           <div style={{ marginLeft: '10px' }}>
-            {rowData.isConfirm ? <icons.CheckBox /> : <icons.CheckBlank />}
+            {rowData.DoanVien ? <icons.CheckBox /> : <icons.CheckBlank />}
           </div>
         )
       },
       {
         title: 'Ngày vào Đoàn',
-        field: 'receiver',
+        field: 'NgayVaoDoan',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Đảng viên',
-        field: 'isConfirm',
+        field: 'DangVien',
+        editable: 'never',
         type: 'boolean',
         render: rowData => (
           <div style={{ marginLeft: '10px' }}>
-            {rowData.isConfirm ? <icons.CheckBox /> : <icons.CheckBlank />}
+            {rowData.DangVien ? <icons.CheckBox /> : <icons.CheckBlank />}
           </div>
         )
       },
       {
         title: 'Ngày vào Đảng',
-        field: 'receiver',
+        field: 'NgayVaoDang',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ngân hàng',
-        field: 'receiver',
+        field: 'NganHang',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'STK',
-        field: 'receiver',
+        field: 'SoTK',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Chi nhánh',
-        field: 'receiver',
+        field: 'ChiNhanh',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ghi chú',
-        field: 'note',
+        field: 'GhiChu',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Người liên lạc',
-        field: 'receiver',
+        field: 'TenNLL',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Địa chỉ NLL',
-        field: 'receiver',
+        field: 'DiaChiNLL',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Điện thoại NLL',
-        field: 'receiver',
+        field: 'SDTNLL',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Email NLL',
-        field: 'receiver',
+        field: 'EmailNLL',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Quan hệ NLL',
-        field: 'receiver',
+        field: 'QuanHe',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ghi chú NLL',
-        field: 'receiver',
+        field: 'GhiChuNLL',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Ngoại ngữ',
-        field: 'receiver',
+        field: 'NgoaiNgu',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
       },
       {
         title: 'Tin học',
-        field: 'receiver',
-      },
+        field: 'TinHoc',
+        editable: 'never',
+        cellStyle: {
+          minWidth: '200px'
+        }
+      }
     ]
   });
 
-  const handleAdd = newData => {
-    setState(prevState => {
-      const data = [...prevState.data];
-      data.push(newData);
-      return { ...prevState, data };
+  if (updateBegin === 1) {
+    setState({
+      ...state,
+      data: dataInfo,
     });
-    setOpen(false);
+    updateBegin += 1;
+  }
+
+  const [importOpen, setImportOpen] = React.useState(false);
+
+  const handleImport = () => {};
+
+  const [filter, setFilter] = React.useState({
+    mssv: ''
+  });
+
+  const handleFilter = (prop, data) => {
+    setFilter({ ...filter, [prop]: data });
+  };
+
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công!'
+  };
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
+  const hiddenSnackBar = { open: false };
+  const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+  const handleSnackBarClose = current => event => {
+    setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <Filters onFilter={handleFilter}/>
+        <ContainedButton
+          handleClick={() => {
+            dispatch(Actions.getInfoStudent(filter.mssv));
+            updateBegin = 1;
+          }}
+          label="Tìm kiếm"
+        />
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>
@@ -264,15 +462,24 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? (
-                    <b>THÔNG TIN SINH VIÊN</b>
-                  ) : (
-                      <b>DANH SÁCH IMPORT</b>
-                    )}
+                    <b>HỒ SƠ SINH VIÊN</b>
                 </div>
               }
               columns={state.columns}
               data={state.data}
+              actions={[
+                {
+                  icon: icons.Print,
+                  tooltip: 'Print',
+                  onClick: (event, rowData) => {
+                    const data = {
+                      pk: rowData.PK,
+                      sk: rowData.SK,
+                    };
+                    dispatch(Actions.handlePrint(data));
+                  }
+                }
+              ]}
               options={{
                 headerStyle: {
                   backgroundColor: '#01579b',
@@ -280,7 +487,7 @@ const AllList = props => {
                 },
                 rowStyle: {
                   backgroundColor: '#EEE'
-                },
+                }
               }}
               editable={{
                 onRowUpdate: (newData, oldData) =>
@@ -289,22 +496,17 @@ const AllList = props => {
                       resolve();
                       if (oldData) {
                         setState(prevState => {
+                          newData["DiaChiThuongTru"]["PhuongXa"]    = newData.PhuongXa;
+                          newData["DiaChiThuongTru"]["QuanHuyen"]   = newData.QuanHuyen;
+                          newData["DiaChiThuongTru"]["SoNha"]       = newData.SoNha;
+                          newData["DiaChiThuongTru"]["TinhTP"]      = newData.TinhTP;
+                          
                           const data = [...prevState.data];
                           data[data.indexOf(oldData)] = newData;
                           return { ...prevState, data };
                         });
+                        dispatch(Actions.updateStudentInfo(newData));
                       }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
                     }, 600);
                   })
               }}
@@ -314,43 +516,51 @@ const AllList = props => {
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Xem toàn bộ
-        </Button>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Thêm sinh viên in
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Import
-        </Button>
-        <Button
-          onClick={() => dispatch(Actions.handleAllList())}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Export
-        </Button>
+        <Grid container spacing={4}>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <Button
+              onClick={() => {
+                isImportDTB = false;
+                setImportOpen(true);
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Import HSSV
+            </Button>
+            <Button
+              onClick={() => {
+                isImportDTB = true;
+                setImportOpen(true);
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Import ĐTB
+            </Button>
+          </Grid>
+          {listLink.length > 0 ? (
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <ListLinkDocx data={listLink} />
+            </Grid>
+          ) : (
+            ''
+          )}
+        </Grid>
       </CardActions>
-      <AddDialog
-        open={open}
-        handleClose={() => setOpen(false)}
-        handleAdd={handleAdd}
+      <ImportDialog
+        open={importOpen}
+        handleClose={() => setImportOpen(false)}
+        handleImport={handleImport}
+        importCase={isImportDTB ? 'DiemTB' : 'import-hssv'}
+      />
+      <CustomizedSnackbars
+        value={snackBarValue}
+        handleClose={handleSnackBarClose}
       />
     </Card>
   );

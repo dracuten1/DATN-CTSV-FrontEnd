@@ -1,4 +1,5 @@
 import * as HttpClient from 'core/services/HttpClient';
+import * as HttpClient2 from 'core/services/HttpClient2';
 import { logger } from 'core/services/Apploger';
 
 const convertNamHoc = nh => {
@@ -72,4 +73,38 @@ export const ExportWithFilter = async (filter, type) => {
     const response = await HttpClient.sendPutGetStatus(url);
 
     return response;
+};
+
+export const CountingWithMSSV = async (filter) => {
+  const {fromHK, fromNH, toHK, toNH, mssv}  = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+  
+  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendGet(url);
+
+  return response;
+};
+
+export const GetDataFilter = async () => {
+  const url = `hb/common`;
+
+  const response = await HttpClient2.sendGetData(url);
+
+  return response;
+};
+
+export const ExportCountingWithMSSV = async (filter) => {
+  const {fromHK, fromNH, toHK, toNH, mssv, LoaiHB, DoiTuong, DonViTaiTro}  = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+  
+  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}&DonViTaiTro=${DonViTaiTro}&DoiTuong=${DoiTuong}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutGetStatus(url);
+
+  return response;
 };

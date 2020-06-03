@@ -1,72 +1,53 @@
-import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as HSSVHandler from 'handlers/HSSVHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
 
-const handleAllList = () => async dispatch => {
-  dispatch({ type: Types.ALL_LIST });
-  history.push('/xnsv');
+const getInfoStudent = (mssv) => async dispatch => {
+  const payload       = await HSSVHandler.GetInfoStudent(mssv);
+  payload.mssv        = payload.SK.replace("SV#", '');
+  payload.Name        = payload.Ho + ' ' + payload.Ten;
+  payload.SoNha       = payload.DiaChiThuongTru.SoNha;
+  payload.PhuongXa    = payload.DiaChiThuongTru.PhuongXa;
+  payload.TinhTP      = payload.DiaChiThuongTru.TinhTP;
+  payload.QuanHuyen   = payload.DiaChiThuongTru.QuanHuyen;
+  payload.SoTK        = payload.TaiKhoanNganHang.SoTK;
+  payload.NganHang    = payload.TaiKhoanNganHang.NganHang;
+  payload.ChiNhanh    = payload.TaiKhoanNganHang.ChiNhanh;
+  payload.TenNLL      = payload.NguoiLienLac.Ten;
+  payload.DiaChiNLL   = payload.NguoiLienLac.DiaChi;
+  payload.EmailNLL    = payload.NguoiLienLac.Email;
+  payload.TenNLL      = payload.NguoiLienLac.Ten;
+  payload.SDTNLL      = payload.NguoiLienLac.DT;
+  payload.GhiChuNLL   = payload.NguoiLienLac.GhiChu;
+  payload.QuanHe      = payload.NguoiLienLac.QuanHe;
+  payload.NgoaiNgu    = payload.NguoiLienLac.NgoaiNgu;
+  payload.TinHoc      = payload.NguoiLienLac.TinHoc;
+
+  dispatch({ type: Types.GET_INFO, payload });
+  history.push('/hssv');
 };
 
-const handlePrintList = () => async dispatch => {
-  dispatch({ type: Types.PRINT_LIST });
-  history.push('/xnsv');
+const updateStudentInfo = (data) => async dispatch => {
+  const response = await HSSVHandler.UpdateStudentInfo(data);
+
+  logger.info('HSSVAction:: updateStudentInfo: reponse: ', response);
+
+  dispatch({ type: Types.UPDATE_INFO});
+  history.push('/hssv');
 };
 
-const getNotPrintYet = () => async dispatch => {
-  const status = 'ChuaIn';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/xnsv');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
-};
-
-const deleteOneCertificate = (pk, sk) => async dispatch => {
-  const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
-
-  logger.info('XNSVAction:: deleteOneCertificate: reponse: ', response);
-
-  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-  history.push('/xnsv');
-};
-
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
-  const status = 'ChuaIn';
-  const listData = await XNSVHandler.GetListCertificate(status);
-  logger.info('XNSVAction:: PrintByType: reponse: ', response);
+const handlePrint = data => async dispatch => {
+  const response = await HSSVHandler.PrintStudentInfo(data);
+  logger.info('HSSVAction:: Print: reponse: ', response);
   if (response.statusCode === 200) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-    history.push('/xnsv');
+    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body });
+    history.push('/HSSV');
   }
 };
 
-const getCompany = () => async dispatch => {
-  const response = await XNSVHandler.GetCompany();
-  logger.info('XNSVAction:: Company: reponse: ', response);
-  history.push('/xnsv');
-};
-
-const exportWithFilter = (filter) => async dispatch => {
-  logger.info('XNSVAction:: filter: filter: ', filter);
-  
-  const response = await XNSVHandler.exportWithFilter(filter);
-  logger.info('XNSVAction:: Exportfilter: reponse: ', response);
-  history.push('/xnsv');
-};
-
 export default {
-  handleAllList,
-  handlePrintList,
   handlePrint,
-  getNotPrintYet,
-  deleteOneCertificate,
-  getListHistory,
-  getCompany,
-  exportWithFilter
+  getInfoStudent,
+  updateStudentInfo
 };

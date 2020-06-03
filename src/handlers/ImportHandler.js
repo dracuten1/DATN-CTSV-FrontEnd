@@ -3,7 +3,7 @@ import { logger } from 'core/services/Apploger';
 
 export const GetUploadURL = async (type) => {
   const url = `s3?type=${type}`;
-
+  logger.info('ImportDialog:: type: ', type);
   const response = await HttpClient.sendGet(url);
 
   return response;
@@ -100,7 +100,7 @@ export const GetImportTTSVInfo = async (ttsvCase, key) => {
   return response;
 };
 
-export const ImportTTSVInfo = async (ttsvCase, value) => {
+export const ImportTTSVInfo = async (value) => {
   const url = `/tthocvu/process-import`;
   // const type = convertType(ttsvCase);
   // value.type = ttsvCase;
@@ -117,3 +117,49 @@ export const GetImportStatusTTSV = async (key) => {
 
   return response;
 };
+
+/* Import QLHB */
+export const GetImportQLHBInfo = async (value) => {
+  const url = `hb/process-import`;
+
+  const response = await HttpClient.sendPost(url, value);;
+
+  return response;
+};
+
+
+export const GetImportStatusQLHB = async (key) => {
+  const url = `ttluutru/getLog?key=${key}`;
+ 
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};
+
+
+/*Import HSSV */
+export const GetImportHSSVInfo = async (key) => {
+  const url = `hssv/import?key=${key}`;
+  logger.info('ImportDialog:: url: ', url);
+
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};
+
+export const ImportHSSVInfo = async (value) => {
+  const url = `hssv/import`;
+  logger.info('ImportDialog:: value: ', value);
+  const response = await HttpClient.sendPost(url, value);
+
+  return response;
+};
+
+export const GetImportStatusHSSV = async (key) => {
+  const url = `ttluutru/getLog?key=${key}`;
+ 
+  const response = await HttpClient.sendGet(url);
+
+  return response;
+};
+

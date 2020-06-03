@@ -261,7 +261,7 @@ function ResponsiveDrawer(props) {
           button
           component="a"
           onClick={() =>
-            history.push('/qlhb')
+            history.push('/hssv')
           }
         >
           <ListItemIcon>

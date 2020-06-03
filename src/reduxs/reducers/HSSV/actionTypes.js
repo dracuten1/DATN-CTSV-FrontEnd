@@ -1,9 +1,7 @@
 const ActionTypes = {
-    ALLLIST: 'ALLLIST',
-    GET_ALLLIST: 'GET_ALLLIST',
-    DELETE_ONE_CERTIFICATE: 'DELETE_ONE_CERTIFICATE',
+    GET_INFO: 'GET_INFO',
+    UPDATE_INFO: 'UPDATE_INFO',
     ADD_LINK_PRINT: 'ADD_LINK_PRINT',
-    PRINT_BY_TYPE: 'PRINT_BY_TYPE'
   };
   
   export default ActionTypes;

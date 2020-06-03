@@ -1,29 +1,26 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isAlllist: true,
-  listData: [],
+  dataInfo: [],
   listLink: []
 };
 
 const xnsvReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
-    case ActionTypes.ALLLIST:
-      return { ...state, isAlllist: true };
-    case ActionTypes.GET_ALLLIST:
+    case ActionTypes.GET_INFO:{
+      const arr = [];
+      arr.push(action.payload);
       return {
         ...state,
-        listData: action.payload,
-        isAlllist: true,
+        dataInfo: arr,
       };
+    }
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;
       temp.push(action.listLink);
-      return { ...state, listLink: temp, dataPrint: action.listData };
+      return { ...state, listLink: temp };
     }
-    case ActionTypes.DELETE_ONE_CERTIFICATE:
-      return { ...state };
-    case ActionTypes.PRINT_BY_TYPE:
+    case ActionTypes.UPDATE_INFO:
       return { ...state };
     default:
       return { ...state };

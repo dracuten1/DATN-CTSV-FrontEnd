@@ -112,7 +112,8 @@ const PrintList = props => {
       filtering: false,
       render: rowData => (
         <Link style={{ textDecoration: 'none' }} href={rowData.DL}>
-          {`${rowData.DL.substring(0, 200)}...`}
+          {/* {`${rowData.DL.substring(0, 200)}...`} */}
+          {rowData.DL}
         </Link>
       )
     }

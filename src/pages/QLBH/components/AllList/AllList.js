@@ -50,50 +50,27 @@ const convert = year % 100;
 
 let updateBegin = 0;
 let type = 'KK';
-let columns = [];
 
 const AllList = props => {
   const { className, ...rest } = props;
   const QLHBState = useSelector(state => state.QLHBState);
-  const { dataList, isHBKK, isCounting, listLink } = QLHBState;
+  const { dataList, isHBKK, listLink } = QLHBState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  let title;
-  if (isHBKK) {
-    columns = Columns.HBKK;
-    title = 'Học Bổng Khuyến Khích';
-  } else if (isCounting) {
-    columns = Columns.COUNTING;
-    title = 'Thống Kê';
-  } else {
-    columns = Columns.HBTT;
-    title = 'Học Bổng Tài Trợ';
-  }
-
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${convert - 1}-${convert}`,
-    fromHK: '1',
-    fromNH: `${convert - 1}-${convert}`,
-    toHK: '2',
-    toNH: `${convert - 1}-${convert}`,
-    mssv: '',
-    LoaiHB: '',
-    DoiTuong: '',
-    DonViTaiTro: ''
+    nh: `${convert - 1}-${convert}`
   });
 
   const [state, setState] = useState({
-    isTK: false,
     data: dataList,
-    columns: columns
+    columns: isHBKK ? Columns.HBKK : Columns.HBTT
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getDataFilter());
     dispatch(Actions.getListWithFilter(filter, type));
     updateBegin += 1;
   }
@@ -102,7 +79,7 @@ const AllList = props => {
     setState({
       ...state,
       data: dataList,
-      columns: columns
+      columns: isHBKK ? Columns.HBKK : Columns.HBTT
     });
     updateBegin += 1;
   }
@@ -111,7 +88,7 @@ const AllList = props => {
     setState({
       ...state,
       data: dataList,
-      columns: columns
+      columns: isHBKK ? Columns.HBKK : Columns.HBTT
     });
     updateBegin += 1;
   }
@@ -156,17 +133,16 @@ const AllList = props => {
   const handleSnackBarClose = current => event => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
-
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            isCounting ? dispatch(Actions.countingWithFilter(filter)) : dispatch(Actions.getListWithFilter(filter, type));
+            dispatch(Actions.getListWithFilter(filter, type));
             updateBegin = 1;
           }}
-          label="Lọc dữ liệu"
+          label="Lọc sinh viên"
         />
       </CardActions>
       <Divider />
@@ -177,7 +153,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>{title}</b>
+                  {isHBKK ? <b>Danh Sách HBKK</b> : <b>DANH SÁCH HBTT</b>}
                 </div>
               }
               columns={state.columns}
@@ -193,20 +169,17 @@ const AllList = props => {
                 // exportButton: true,
                 filtering: false
               }}
-              editable={isCounting ? {} : {
+              editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
-                    setTimeout(async () => {
+                    setTimeout( async () => {
                       resolve();
                       if (oldData) {
                         logger.info('Newdata: ', newData);
-                        const response = await QLHBHandler.UpdateOneStudentByType(
-                          newData,
-                          type
-                        );
-                        if (response.statusCode !== 200) {
-                          setSnackBarValue(errorSnackBar);
-                          return;
+                        const response = await QLHBHandler.UpdateOneStudentByType(newData, type);
+                        if (response.statusCode !== 200){
+                            setSnackBarValue(errorSnackBar);
+                            return;
                         }
                         setSnackBarValue(successSnackBar);
                         setState(prevState => {
@@ -218,21 +191,16 @@ const AllList = props => {
                     }, 600);
                   }),
 
-                onRowDelete: oldData =>
+                onRowDelete:  oldData =>
                   new Promise(resolve => {
-                    setTimeout(async () => {
+                    setTimeout( async ()  =>  {
                       resolve();
                       logger.info('Olddata: ', oldData);
                       const { PK, SK, id } = oldData;
-                      const response = await QLHBHandler.DeleteOneCertificate(
-                        PK,
-                        SK,
-                        type,
-                        id
-                      );
-                      if (response.statusCode !== 200) {
-                        setSnackBarValue(errorSnackBar);
-                        return;
+                      const response = await QLHBHandler.DeleteOneCertificate(PK, SK, type, id);
+                      if (response.statusCode !== 200){
+                          setSnackBarValue(errorSnackBar);
+                          return;
                       }
                       setSnackBarValue(successSnackBar);
                       setState(prevState => {
@@ -287,25 +255,13 @@ const AllList = props => {
               Import
             </Button>
             <Button
-              onClick={() => isCounting ? dispatch(Actions.exportCountingWithFilter(filter)) : dispatch(Actions.exportWithFilter(filter, type))}
+              onClick={() => dispatch(Actions.exportWithFilter(filter, type))}
               variant="contained"
               color="primary"
               size="small"
               style={{ marginLeft: '8px' }}
             >
               Export
-            </Button>
-            <Button
-              onClick={() => {
-                dispatch(Actions.changeCountingColumns());
-                updateBegin = 1;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thống kê
             </Button>
           </Grid>
           {listLink.length > 0 ? (

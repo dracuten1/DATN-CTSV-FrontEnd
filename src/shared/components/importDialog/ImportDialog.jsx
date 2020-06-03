@@ -42,26 +42,26 @@ const useStyles = makeStyles(theme => ({
 
 const convertTTSVCase = ttsvCase => {
   switch (ttsvCase) {
-      case 'SINH VIÊN NƯỚC NGOÀI':
-        return 'NN';
-      case 'ĐIỂM TRUNG BÌNH':
-        return 'DiemTB';
-      case 'TỐT NGHIỆP':
-        return 'TotNghiep';
-      case 'HOÀN TẤT CHƯƠNG TRÌNH':
-        return 'HTCT';
-      case 'ĐANG HỌC':
-        return 'DangHoc';
-      case 'CẢNH CÁO HỌC VỤ':
-        return 'CanhCaoHV';
-      case 'BUỘC THÔI HỌC':
-        return 'BuocThoiHoc';
-      case 'BẢO LƯU':
-        return 'BaoLuu';
-      case 'ĐĂNG KÝ HỌC PHẦN':
-        return 'DKHP';
-      default:
-        return '';
+    case 'SINH VIÊN NƯỚC NGOÀI':
+      return 'NN';
+    case 'ĐIỂM TRUNG BÌNH':
+      return 'DiemTB';
+    case 'TỐT NGHIỆP':
+      return 'TotNghiep';
+    case 'HOÀN TẤT CHƯƠNG TRÌNH':
+      return 'HTCT';
+    case 'ĐANG HỌC':
+      return 'DangHoc';
+    case 'CẢNH CÁO HỌC VỤ':
+      return 'CanhCaoHV';
+    case 'BUỘC THÔI HỌC':
+      return 'BuocThoiHoc';
+    case 'BẢO LƯU':
+      return 'BaoLuu';
+    case 'ĐĂNG KÝ HỌC PHẦN':
+      return 'DKHP';
+    default:
+      return '';
   }
 };
 
@@ -86,6 +86,14 @@ const ImportDialog = props => {
       case 4:
         const { ttsvCase } = props;
         return convertTTSVCase(ttsvCase);
+      case 'KK': //QLHB
+        return 'KK';
+      case 'TT': //QLHB
+        return 'TT';
+      case 'import-hssv':
+        return 'import-hssv';
+      case 'DiemTB':
+        return 'DiemTB';
       default:
         return '';
     }
@@ -126,7 +134,9 @@ const ImportDialog = props => {
         body: blobData
       });
 
-      let res; let res1; let statusResponse;
+      let res;
+      let res1;
+      let statusResponse;
       switch (importCase) {
         case 1: //DRL
           res = await ImportHandler.GetImportDRLInfo(response.key);
@@ -149,14 +159,15 @@ const ImportDialog = props => {
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { log } = statusResponse;
 
-            if (log.message === "thành công") {
+            if (log.message === 'thành công') {
               setSnackBarValue(successSnackBar);
               handleClose();
               clearInterval(timerIdDRL);
             }
           }, 3000);
           break;
-        case 2: case 3: //Luu tru KTX
+        case 2:
+        case 3: //Luu tru KTX
           res = await ImportHandler.GetImportQLLTInfo(importCase, response.key);
           logger.info('ImportDialog:: res: ', res);
 
@@ -164,13 +175,15 @@ const ImportDialog = props => {
 
           res1 = await ImportHandler.ImportQLLTInfo(importCase, {
             checkImportResult: res.checkImportResult,
-            jsonkey: res.newKey,
+            jsonkey: res.newKey
             // type             : res.checkImportResult.conflict ? "Conflict" : "NotInConflict"
           });
           logger.info('ImportDialog:: res1: ', res1);
 
           const timerIdQLLT = setInterval(async () => {
-            statusResponse = await ImportHandler.GetImportStatusQLLT(res.newKey);
+            statusResponse = await ImportHandler.GetImportStatusQLLT(
+              res.newKey
+            );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
@@ -182,19 +195,19 @@ const ImportDialog = props => {
             }
           }, 3000);
           break;
-        case 4: //TTSV
+        case 4: case 'DiemTB': //TTSV
           res = await ImportHandler.GetImportTTSVInfo(Case, response.key);
           logger.info('ImportDialog:: res: ', res);
 
-          if (res.success === false){
+          if (res.success === false) {
             setSnackBarValue(wrongSnackBar);
-            handleClose();        
-            break;      
-          } 
+            handleClose();
+            break;
+          }
 
           setMessage(res.message + '-' + res.newKey);
 
-          res1 = await ImportHandler.ImportTTSVInfo(Case, {
+          res1 = await ImportHandler.ImportTTSVInfo({
             checkImportResult: res.checkImportResult,
             importedStructure: res.importedStructure,
             jsonkey: res.newKey,
@@ -203,7 +216,9 @@ const ImportDialog = props => {
           logger.info('ImportDialog:: res1: ', res1);
 
           const timerIdTTSV = setInterval(async () => {
-            statusResponse = await ImportHandler.GetImportStatusTTSV(res.newKey);
+            statusResponse = await ImportHandler.GetImportStatusTTSV(
+              res.newKey
+            );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
@@ -212,6 +227,82 @@ const ImportDialog = props => {
               setSnackBarValue(successSnackBar);
               handleClose();
               clearInterval(timerIdTTSV);
+            }
+          }, 3000);
+          break;
+        case 'KK':
+        case 'TT': //QLHB
+          res = await ImportHandler.GetImportQLHBInfo({
+            type: Case,
+            fileKey: response.key,
+            method: 'GET'
+          });
+          logger.info('ImportDialog:: res: ', res);
+
+          if (res.success === false) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
+            break;
+          }
+
+          setMessage(res.message + '-' + res.newKey);
+
+          res1 = await ImportHandler.GetImportQLHBInfo({
+            type: Case,
+            fileKey: res.newKey,
+            method: 'POST'
+          });
+          logger.info('ImportDialog:: res1: ', res1);
+
+          const timerIdQLHB = setInterval(async () => {
+            statusResponse = await ImportHandler.GetImportStatusQLHB(
+              res.newKey
+            );
+            logger.info('ImportDialog:: statusResponse: ', statusResponse);
+            const { Item } = statusResponse;
+            const { data } = Item;
+
+            if (data.total === data.currentAmount) {
+              setSnackBarValue(successSnackBar);
+              handleClose();
+              clearInterval(timerIdQLHB);
+            }
+          }, 3000);
+          break;
+        case 'import-hssv': //HSSV
+          res = await ImportHandler.GetImportHSSVInfo(response.key);
+          logger.info('ImportDialog:: res: ', res);
+
+          if (res.success === false) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
+            break;
+          }
+
+          setMessage(res.message + '-' + res.newKey);
+
+          res1 = await ImportHandler.ImportHSSVInfo({
+            checkImportResult: res.checkImportResult,
+            importedStructure: res.importedStructure,
+            GhiChu: res.GhiChu,
+            NguoiLienLac: res.NguoiLienLac,
+            key: res.newKey,
+            NH: res.NH
+          });
+          logger.info('ImportDialog:: res1: ', res1);
+
+          const timerIdHSSV = setInterval(async () => {
+            statusResponse = await ImportHandler.GetImportStatusHSSV(
+              res.newKey
+            );
+            logger.info('ImportDialog:: statusResponse: ', statusResponse);
+            const { Item } = statusResponse;
+            const { data } = Item;
+
+            if (data.total === data.currentAmount) {
+              setSnackBarValue(successSnackBar);
+              handleClose();
+              clearInterval(timerIdHSSV);
             }
           }, 3000);
           break;

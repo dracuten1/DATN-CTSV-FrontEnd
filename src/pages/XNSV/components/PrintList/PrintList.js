@@ -204,7 +204,7 @@ const PrintList = props => {
       editable: 'never',
       width: 300,
       filtering: false,
-      render: rowData => <Link href={rowData.link}>Link Download</Link>
+      render: rowData => <Link href={rowData.link}>{rowData.link ? 'Link Download' : ''}</Link>
     }
   ];
 
@@ -335,7 +335,7 @@ const PrintList = props => {
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
   };
-  console.log("ListLink:", listLink);
+  console.log('ListLink:', listLink);
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -472,7 +472,12 @@ const PrintList = props => {
                   onClick={() => {
                     if (valueLanguage) {
                       console.log('keys:', keys);
-                      dispatch(XNSVActions.handlePrintAll(keys, reparseLanguageToString(valueLanguage[0])));
+                      dispatch(
+                        XNSVActions.handlePrintAll(
+                          keys,
+                          reparseLanguageToString(valueLanguage[0])
+                        )
+                      );
                       isPrint = !isPrint;
                     }
                   }}
