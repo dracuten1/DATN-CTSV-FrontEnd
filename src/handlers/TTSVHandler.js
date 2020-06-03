@@ -43,7 +43,7 @@ const convertType = type => {
     case 'CẢNH CÁO HỌC VỤ':
       return 'CanhCaoHV';
     case 'ĐĂNG KÝ HỌC PHẦN':
-        return 'DKHP';
+      return 'DKHP';
     case 'ĐIỂM TRUNG BÌNH':
       return 'DiemTB';
     default:
@@ -73,9 +73,15 @@ export const ExportWithFilter = async (filter) => {
   const cvNH = convertNamHoc(nh);
   const cvType = convertType(type);
   const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
-  
+
   const response = await HttpClient.sendPatch(url);
 
   return response;
-  };
-  
+};
+
+export const UpdateStudentStatus = async (body) => {
+
+  const url = `xnsv/updateTTHV`;
+  logger.info('TTSVHandler:: update status:: body: ', body);
+  const response = await HttpClient.sendGetBody(url, body)
+}
