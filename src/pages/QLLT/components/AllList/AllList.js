@@ -16,8 +16,11 @@ import {
 
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import * as QLLTHandler from 'handlers/QLLTHandler';
+import Types from 'reduxs/reducers/QLLT/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
@@ -106,6 +109,23 @@ const AllList = props => {
     }
   };
 
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công!'
+  };
+  const errorExportSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Export thất bại!'
+  };
+  const hiddenSnackBar = { open: false };
+  const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+  const handleSnackBarClose = current => event => {
+    setSnackBarValue({ ...current, ...hiddenSnackBar });
+  };
+
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
@@ -142,7 +162,7 @@ const AllList = props => {
                   backgroundColor: '#EEE'
                 },
                 // exportButton: true,
-                filtering: true
+                filtering: false
               }}
               editable={{
                 onRowUpdate: (newData, oldData) =>
@@ -205,7 +225,16 @@ const AllList = props => {
               Import
             </Button>
             <Button
-              onClick={() => dispatch(Actions.exportWithFilter(filter))}
+              onClick={async () => {
+                const response = await QLLTHandler.ExportWithFilter(filter);
+                if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                  setSnackBarValue(errorExportSnackBar);
+                  return;
+                }
+                setSnackBarValue(successSnackBar);
+                const { body } = response;
+                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+              }}
               variant="contained"
               color="primary"
               size="small"
@@ -228,6 +257,10 @@ const AllList = props => {
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
         importCase={filter.type === 'KTX' ? 2 : 3}
+      />
+       <CustomizedSnackbars
+        value={snackBarValue}
+        handleClose={handleSnackBarClose}
       />
     </Card>
   );

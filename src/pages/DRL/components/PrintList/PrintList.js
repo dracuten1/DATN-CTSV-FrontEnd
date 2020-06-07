@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as DRLHandler from 'handlers/DRLHandler';
 import DRLActions from 'reduxs/reducers/DRL/action';
 import { logger } from 'core/services/Apploger';
+import Types from 'reduxs/reducers/DRL/actionTypes';
 import icons from 'shared/icons';
 import { CaseEnum } from 'pages/DRL/components/AddDialog/DRLEnum';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
@@ -243,7 +244,7 @@ const PrintList = props => {
     updateBegin += 1;
   }
 
-  if (updateBegin === 2 && state.data.length !== dataPrint.length) {
+  if (updateBegin === 2) {
     setState({
       ...state,
       data: dataPrint,
@@ -328,8 +329,23 @@ const PrintList = props => {
       {
         icon: icons.Print,
         tooltip: 'Print',
-        onClick: (event, rowData) => {
-          dispatch(DRLActions.PrintOneStudent(rowData.pk, rowData.sk));
+        onClick: async (event, rowData) => {
+          const response = await DRLHandler.PrintOneStudent(
+            rowData.pk,
+            rowData.sk
+          );
+          const status = 'ChuaIn';
+          const listData = await DRLHandler.GetListCertificate(status);
+          logger.info('DRLAction:: exporttodocx: reponse: ', response);
+          if (
+            response.statusCode !== 200
+          ) {
+            setSnackBarValue(errorSnackBar);
+            return;
+          }
+          setSnackBarValue(successSnackBar);
+          const { body } = response;
+          dispatch({ type: Types.ADD_LINK_PRINT, listLink: body, listData });
           isPrint = !isPrint;
         }
       }
@@ -389,7 +405,7 @@ const PrintList = props => {
                   {isPrintList ? (
                     <b>Danh Sách {filter.status}</b>
                   ) : (
-                    <b>DANH SÁCH DỮ LIỆU</b>
+                    <b>Danh Sách Dữ Liệu</b>
                   )}
                 </div>
               }

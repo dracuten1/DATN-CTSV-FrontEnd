@@ -231,6 +231,14 @@ const HBTT = [
 
 const COUNTING = [
   {
+    title: 'MSSV',
+    field: 'MSSV',
+    cellStyle: {
+      minWidth: '150px'
+    }
+    , editable: false 
+  },
+  {
     title: 'Họ tên',
     field: 'HoVaTen',
     cellStyle: {

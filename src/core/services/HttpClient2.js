@@ -111,6 +111,12 @@ export const sendPutWithBody = async (url, requestBody) => {
     return body;
 };
 
+export const sendPutWithBodyGetStatus = async (url, requestBody) => {
+    const response = await httpClient.put(url, requestBody);
+
+    return response.data;
+};
+
 /**
  *
  * @param {*} url
@@ -153,6 +159,13 @@ export const sendDelete = async (url, requestBody) => {
 
     const { body } = response.data;
     return body;
+};
+
+export const sendDeleteWithStatusCode = async (url, requestBody) => {
+
+    const response = await httpClient.delete(url, requestBody);
+
+    return response.data;
 };
 
 export const sendPatch = async (url) => {

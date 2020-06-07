@@ -16,8 +16,11 @@ import {
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import { logger } from 'core/services/Apploger';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import Types from 'reduxs/reducers/TTSV/actionTypes';
+import * as TTSVHandler from 'handlers/TTSVHandler';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
@@ -136,6 +139,22 @@ const AllList = props => {
     });
   };
 
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công!'
+  };
+  const errorExportSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Export thất bại!'
+  };
+  const hiddenSnackBar = { open: false };
+  const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+  const handleSnackBarClose = current => event => {
+    setSnackBarValue({ ...current, ...hiddenSnackBar });
+  };
+
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
   };
@@ -214,7 +233,16 @@ const AllList = props => {
               Import
             </Button>
             <Button
-              onClick={() => dispatch(Actions.exportWithFilter(filter))}
+              onClick={async () => {
+                const response = await TTSVHandler.ExportWithFilter(filter);
+                if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                  setSnackBarValue(errorExportSnackBar);
+                  return;
+                }
+                setSnackBarValue(successSnackBar);
+                const { body } = response;
+                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+              }}
               variant="contained"
               color="primary"
               size="small"
@@ -232,6 +260,10 @@ const AllList = props => {
             )}
         </Grid>
       </CardActions>
+      <CustomizedSnackbars
+        value={snackBarValue}
+        handleClose={handleSnackBarClose}
+      />
       <ImportDialog
         open={importOpen}
         handleClose={() => setImportOpen(false)}

@@ -7,7 +7,7 @@ import {
   Print,
   Title,
   AllList
-} from 'pages/QLHB/components';
+} from 'pages/QLBH/components';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,14 +15,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardQLHB = () => {
+const DashboardQLBH = () => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Title url="/drl" title="Quản Lý Học Bổng" />
+          <Title url="/drl" title="Quản Lý Bảo Hiểm" />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Export many={20} />
@@ -42,4 +42,4 @@ const DashboardQLHB = () => {
   );
 };
 
-export default DashboardQLHB;
+export default DashboardQLBH;

@@ -17,11 +17,12 @@ import { logger } from 'core/services/Apploger';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
-import * as QLHBHandler from 'handlers/QLHBHandler';
-import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import * as QLBHHandler from 'handlers/QLBHHandler';
+import ImportDialogNewHost from 'shared/components/importDialogNewHost/ImportDialogNewHost';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import Actions from 'reduxs/reducers/QLBH/action';
+import Types from 'reduxs/reducers/QLBH/actionTypes';
 import Columns from './columns';
-import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
@@ -49,12 +50,13 @@ const year = dt.getFullYear();
 const convert = year % 100;
 
 let updateBegin = 0;
-let type = 'KK';
+let type = 'YT';
+let columns = [];
 
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLHBState = useSelector(state => state.QLHBState);
-  const { dataList, isHBKK, listLink } = QLHBState;
+  const QLBHState = useSelector(state => state.QLBHState);
+  const { dataList, isBHYT, isBHTN, isCounting, listLink } = QLBHState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -62,12 +64,33 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${convert - 1}-${convert}`
+    nh: `${convert - 1}-${convert}`,
+    fromHK: '1',
+    fromNH: `${convert - 1}-${convert}`,
+    toHK: '2',
+    toNH: `${convert - 1}-${convert}`,
+    mssv: '',
+    type: 'Bồi thường'
   });
+
+  let title;
+  if (isBHYT) {
+    title = 'Bảo Hiểm Y Tế';
+    type = 'YT';
+    columns = Columns.BHYT;
+  } else if (isBHTN) {
+    title = 'Bảo Hiểm Tai Nạn';
+    type = 'TN';
+    columns = Columns.BHTN;
+  } else {
+    title = 'Thống Kê';
+    type = 'BT';
+    columns = Columns.TTBT;
+  }
 
   const [state, setState] = useState({
     data: dataList,
-    columns: isHBKK ? Columns.HBKK : Columns.HBTT
+    columns: columns
   });
 
   if (updateBegin === 0) {
@@ -79,7 +102,7 @@ const AllList = props => {
     setState({
       ...state,
       data: dataList,
-      columns: isHBKK ? Columns.HBKK : Columns.HBTT
+      columns: columns
     });
     updateBegin += 1;
   }
@@ -88,7 +111,7 @@ const AllList = props => {
     setState({
       ...state,
       data: dataList,
-      columns: isHBKK ? Columns.HBKK : Columns.HBTT
+      columns: columns
     });
     updateBegin += 1;
   }
@@ -128,6 +151,11 @@ const AllList = props => {
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
+  const errorExportSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Export thất bại!'
+  };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
   const handleSnackBarClose = current => event => {
@@ -136,13 +164,15 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={handleFilter} isCounting={isCounting} />
         <ContainedButton
           handleClick={() => {
-            dispatch(Actions.getListWithFilter(filter, type));
+            isCounting
+              ? dispatch(Actions.countingWithMSSV(filter))
+              : dispatch(Actions.getListWithFilter(filter, type));
             updateBegin = 1;
           }}
-          label="Lọc sinh viên"
+          label="Lọc dữ liệu"
         />
       </CardActions>
       <Divider />
@@ -153,7 +183,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isHBKK ? <b>Danh Sách HBKK</b> : <b>DANH SÁCH HBTT</b>}
+                  <b>{title}</b>
                 </div>
               }
               columns={state.columns}
@@ -169,48 +199,72 @@ const AllList = props => {
                 // exportButton: true,
                 filtering: false
               }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout( async () => {
-                      resolve();
-                      if (oldData) {
-                        logger.info('Newdata: ', newData);
-                        const response = await QLHBHandler.UpdateOneStudentByType(newData, type);
-                        if (response.statusCode !== 200){
-                            setSnackBarValue(errorSnackBar);
-                            return;
-                        }
-                        setSnackBarValue(successSnackBar);
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
+              editable={
+                isBHYT
+                  ? {
+                      onRowUpdate: (newData, oldData) =>
+                        new Promise(resolve => {
+                          setTimeout(async () => {
+                            resolve();
+                            if (oldData) {
+                              newData.DuLieu.PK = newData.PK;
+                              newData.DuLieu.SK = newData.SK;
+                              newData.DuLieu.type = 'YT';
+                              newData.DuLieu.MaSo.MaTinh = newData.MaTinh;
+                              newData.DuLieu.MaSo.MaBHXH = newData.MaBHXH;
+                              newData.DuLieu.MaSo.DoiTuong = newData.DoiTuong;
+                              newData.DuLieu.NoiDKKCB.MaBV = newData.MaBV;
+                              newData.DuLieu.NoiDKKCB.TenBV = newData.TenBV;
+                              newData.DuLieu.TinhTrangNhanThe.DaNhan =
+                                newData.DaNhan;
+                              newData.DuLieu.TinhTrangNhanThe.Ngay =
+                                newData.NgayNhanThe;
+                              newData.DuLieu.HSD.Tu = newData.HSDTu;
+                              newData.DuLieu.HSD.Den = newData.HSDDen;
+                              logger.info('Newdata: ', newData);
+                              const response = await QLBHHandler.UpdateOneStudentByType(
+                                newData.DuLieu
+                              );
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                return;
+                              }
+                              setSnackBarValue(successSnackBar);
+                              setState(prevState => {
+                                const data = [...prevState.data];
+                                data[data.indexOf(oldData)] = newData;
+                                return { ...prevState, data };
+                              });
+                            }
+                          }, 600);
+                        }),
 
-                onRowDelete:  oldData =>
-                  new Promise(resolve => {
-                    setTimeout( async ()  =>  {
-                      resolve();
-                      logger.info('Olddata: ', oldData);
-                      const { PK, SK, id } = oldData;
-                      const response = await QLHBHandler.DeleteOneCertificate(PK, SK, type, id);
-                      if (response.statusCode !== 200){
-                          setSnackBarValue(errorSnackBar);
-                          return;
-                      }
-                      setSnackBarValue(successSnackBar);
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(async () => {
+                            resolve();
+                            logger.info('Olddata: ', oldData);
+                            const { PK, SK } = oldData;
+                            const response = await QLBHHandler.DeleteOneCertificate(
+                              PK,
+                              SK,
+                              'YT'
+                            );
+                            if (response.statusCode !== 200) {
+                              setSnackBarValue(errorSnackBar);
+                              return;
+                            }
+                            setSnackBarValue(successSnackBar);
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+                  : {}
+              }
             />
           </div>
         </PerfectScrollbar>
@@ -221,7 +275,7 @@ const AllList = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
               onClick={() => {
-                type = 'KK';
+                type = 'YT';
                 updateBegin = 1;
                 dispatch(Actions.getListWithFilter(filter, type));
               }}
@@ -230,11 +284,11 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              HBKK
+              BHYT
             </Button>
             <Button
               onClick={() => {
-                type = 'TT';
+                type = 'TN';
                 updateBegin = 1;
                 dispatch(Actions.getListWithFilter(filter, type));
               }}
@@ -243,26 +297,68 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              HBTT
+              BHTN
             </Button>
             <Button
-              onClick={() => setImportOpen(true)}
+              onClick={() => {
+                type = 'BT';
+                updateBegin = 1;
+                dispatch(Actions.changeCountingColumns());
+              }}
               variant="contained"
               color="primary"
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Import
+              Thống kê
             </Button>
-            <Button
-              onClick={() => dispatch(Actions.exportWithFilter(filter, type))}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Export
-            </Button>
+            {isCounting ? (
+              ''
+            ) : (
+              <Button
+                onClick={() => setImportOpen(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Import
+              </Button>
+            )}
+            {isBHTN ? (
+              ''
+            ) : (
+              <Button
+                onClick={async () =>  {
+                  if (isBHYT) {
+                    const response = await QLBHHandler.ExportWithFilter(filter, 'YT');
+                    if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                      setSnackBarValue(errorExportSnackBar);
+                      return;
+                    }
+                    setSnackBarValue(successSnackBar);
+                    const { body } = response;
+                    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                  }
+                  if (filter.type === 'Bồi thường' && isCounting) {
+                    const response = await QLBHHandler.ExportCountingWithMSSV(filter);
+                    if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                      setSnackBarValue(errorExportSnackBar);
+                      return;
+                    }
+                    setSnackBarValue(successSnackBar);
+                    const { body } = response;
+                    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                  }
+                }}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Export
+              </Button>
+            )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -273,11 +369,11 @@ const AllList = props => {
           )}
         </Grid>
       </CardActions>
-      <ImportDialog
+      <ImportDialogNewHost
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={isHBKK ? 'KK' : 'TT'}
+        importCase={isBHYT ? 'YT' : 'TN'}
       />
       <CustomizedSnackbars
         value={snackBarValue}

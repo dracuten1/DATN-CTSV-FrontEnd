@@ -19,6 +19,8 @@ import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import * as HSSVHandler from 'handlers/HSSVHandler';
+import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
 
@@ -49,7 +51,7 @@ const AllList = props => {
   const { className, ...rest } = props;
   const HSSVState = useSelector(state => state.HSSVState);
 
-  const { dataInfo, listLink} = HSSVState;
+  const { dataInfo, listLink } = HSSVState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -57,14 +59,20 @@ const AllList = props => {
     data: dataInfo,
     columns: [
       { title: 'MSSV', field: 'mssv', editable: 'never' },
-      { title: 'Họ', field: 'Ho',
-      cellStyle: {
-        minWidth: '200px'
-      } },
-      { title: 'Tên', field: 'Ten',
-      cellStyle: {
-        minWidth: '150px'
-      } },
+      {
+        title: 'Họ',
+        field: 'Ho',
+        cellStyle: {
+          minWidth: '200px'
+        }
+      },
+      {
+        title: 'Tên',
+        field: 'Ten',
+        cellStyle: {
+          minWidth: '150px'
+        }
+      },
       {
         title: 'Ngày sinh',
         field: 'NgaySinh',
@@ -409,7 +417,7 @@ const AllList = props => {
   if (updateBegin === 1) {
     setState({
       ...state,
-      data: dataInfo,
+      data: dataInfo
     });
     updateBegin += 1;
   }
@@ -445,7 +453,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter}/>
+        <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
             dispatch(Actions.getInfoStudent(filter.mssv));
@@ -462,7 +470,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                    <b>HỒ SƠ SINH VIÊN</b>
+                  <b>HỒ SƠ SINH VIÊN</b>
                 </div>
               }
               columns={state.columns}
@@ -471,12 +479,19 @@ const AllList = props => {
                 {
                   icon: icons.Print,
                   tooltip: 'Print',
-                  onClick: (event, rowData) => {
+                  onClick: async (event, rowData) => {
                     const data = {
                       pk: rowData.PK,
-                      sk: rowData.SK,
+                      sk: rowData.SK
                     };
-                    dispatch(Actions.handlePrint(data));
+                    const response = await HSSVHandler.PrintStudentInfo(data);
+                    if (response.statusCode !== 200) {
+                      setSnackBarValue(errorSnackBar);
+                      return;
+                    }
+                    setSnackBarValue(successSnackBar);
+                    const { body } = response;
+                    dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
                   }
                 }
               ]}
@@ -496,11 +511,13 @@ const AllList = props => {
                       resolve();
                       if (oldData) {
                         setState(prevState => {
-                          newData["DiaChiThuongTru"]["PhuongXa"]    = newData.PhuongXa;
-                          newData["DiaChiThuongTru"]["QuanHuyen"]   = newData.QuanHuyen;
-                          newData["DiaChiThuongTru"]["SoNha"]       = newData.SoNha;
-                          newData["DiaChiThuongTru"]["TinhTP"]      = newData.TinhTP;
-                          
+                          newData['DiaChiThuongTru']['PhuongXa'] =
+                            newData.PhuongXa;
+                          newData['DiaChiThuongTru']['QuanHuyen'] =
+                            newData.QuanHuyen;
+                          newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
+                          newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
+
                           const data = [...prevState.data];
                           data[data.indexOf(oldData)] = newData;
                           return { ...prevState, data };

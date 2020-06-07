@@ -20,6 +20,7 @@ import icons from 'shared/icons';
 import * as QLHBHandler from 'handlers/QLHBHandler';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import Types from 'reduxs/reducers/QLHB/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
@@ -150,6 +151,11 @@ const AllList = props => {
     open: true,
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
+  const errorExportSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Export thất bại!'
   };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
@@ -287,7 +293,27 @@ const AllList = props => {
               Import
             </Button>
             <Button
-              onClick={() => isCounting ? dispatch(Actions.exportCountingWithFilter(filter)) : dispatch(Actions.exportWithFilter(filter, type))}
+              onClick={async () => {
+                if (isCounting){
+                  const response = await QLHBHandler.ExportCountingWithMSSV(filter);
+                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                    setSnackBarValue(errorExportSnackBar);
+                    return;
+                  }
+                  setSnackBarValue(successSnackBar);
+                  const { body } = response;
+                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                }else{
+                  const response = await QLHBHandler.ExportWithFilter(filter, type);
+                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                    setSnackBarValue(errorExportSnackBar);
+                    return;
+                  }
+                  setSnackBarValue(successSnackBar);
+                  const { body } = response;
+                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                } 
+              }}
               variant="contained"
               color="primary"
               size="small"

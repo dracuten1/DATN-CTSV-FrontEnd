@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -29,7 +30,7 @@ export default function SimpleSelect(props) {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const { label, prop, clickFilter } = props;
+  const { label, prop, clickFilter, helperText } = props;
   const handleChange = event => {
     setSelectItem(event.target.value);
     clickFilter(prop, event.target.value);
@@ -75,6 +76,7 @@ export default function SimpleSelect(props) {
         >
           {drawData()}
         </Select>
+        {helperText ? <FormHelperText>{helperText}</FormHelperText> : <div/>}
       </FormControl>
     </div>
   );
