@@ -67,6 +67,7 @@ export default function Filters(props) {
         variant="outlined"
         onChange={handleChange}
         style={{marginTop: '8px'}}
+        helperText="Ưu tiên"
         inputProps={{
           style: {
             marginBottom: '-6px'

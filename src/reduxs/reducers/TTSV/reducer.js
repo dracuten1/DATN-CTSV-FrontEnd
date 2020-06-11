@@ -8,6 +8,8 @@ const INIT_STATE = {
 
 const ttsvReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case ActionTypes.NO_DATA:
+      return { ...state, dataList: [] };
     case ActionTypes.SVNN:
       return { ...state, isCase: 1 };
     case ActionTypes.DTB:
