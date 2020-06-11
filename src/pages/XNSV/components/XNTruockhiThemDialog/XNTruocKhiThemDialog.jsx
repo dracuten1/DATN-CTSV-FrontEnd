@@ -24,6 +24,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
 import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as AdminHandler from 'handlers/AdminHandler';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -60,6 +61,7 @@ const defaultValue = {
   year: null,
   isPrint: false,
   note: '',
+  signer: '',
   studingBeginDate: moment(date).format('DD/MM/YYYY'),
   studingEndDate: moment(date).format('DD/MM/YYYY'),
   expectedPublicationDate: moment(date).format('DD/MM/YYYY'),
@@ -80,8 +82,32 @@ const XNTruocKhiThemDialog = props => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [values, setValues] = React.useState(defaultValue);
   const [progress, setProgress] = React.useState(true);
-
+  const [signer, setSigner] = React.useState({});
+  const [signerObj, setSignerObj] = React.useState({});
   const [newCertificate, setCertificate] = React.useState({});
+
+
+  const getSignerEnum = async () => {
+
+    const response = await AdminHandler.GetListSigner();
+
+    const SignerEnum = {};
+    const SignerObj = {};
+    const { Items } = response;
+    Items.forEach((item, index) => {
+      const key = "singer" + index;
+      SignerEnum[key] = item.hvtnguoiki;
+      SignerObj[item.hvtnguoiki] = { chucvu: item.chucvu, hvtnguoiki: item.hvtnguoiki, KT: item.KT, TL: item.TL };
+    });
+    logger.info("DRL:: Add dialog:: signerEnum: ", SignerEnum);
+    setSigner(SignerEnum);
+    setSignerObj(SignerObj);
+    return SignerEnum;
+  };
+
+  React.useEffect(() => {
+    getSignerEnum();
+  }, []);
 
   const fetchCertificate = (prop) => event => {
 
@@ -161,6 +187,7 @@ const XNTruocKhiThemDialog = props => {
 
     const tmpCertificate = {
       Data,
+      HoVaTenNguoiKy: `${tmp.signer}`,
       NgonNgu: `${tmp.language}`,
       LoaiGiayXN: tmp.case,
       LyDoXN: tmp.reason,
@@ -241,6 +268,17 @@ const XNTruocKhiThemDialog = props => {
       return (
         <MenuItem key={ind} value={val}>
           {val}
+        </MenuItem>
+      );
+    });
+  };
+
+  const drawMenuItem = data => {
+    logger.info("DRL:: Add dialog:: drawMenuItem data: ", data);
+    return Object.keys(data).map(key => {
+      return (
+        <MenuItem key={key} value={data[key]}>
+          {data[key]}
         </MenuItem>
       );
     });
@@ -691,6 +729,22 @@ const XNTruocKhiThemDialog = props => {
               }}
             >
               {drawData(gernerateYearData())}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.textField}>
+            <InputLabel id="demo-simple-select-helper-label">
+              Người kí
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              onChange={event => {
+                handleChange('signer')(event);
+                fetchCertificate('signer')(event);
+              }}
+              value={values.signer}
+            >
+              {drawMenuItem(signer)}
             </Select>
           </FormControl>
         </DialogContent>
