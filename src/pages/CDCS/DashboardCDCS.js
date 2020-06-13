@@ -7,7 +7,7 @@ import {
   Print,
   Title,
   AllList
-} from 'pages/TTSV/components';
+} from 'pages/CDCS/components';
 
 const useStyles = makeStyles(theme => ({
   root: {

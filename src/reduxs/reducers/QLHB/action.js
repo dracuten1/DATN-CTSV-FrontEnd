@@ -34,10 +34,16 @@ const changeCountingColumns = () => async dispatch => {
 const getListWithFilter = (filter, type) => async dispatch => {
   const response = await QLHBHandler.GetListWithFilter(filter, type);
   logger.info('QLHBAction:: getListAll: reponse: ', response);
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key].NH);
-    response[key].id = response[key].id ? response[key].id : '';
-    return response[key];
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  const { body } = response;
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].ID = body[key].ID ? body[key].ID : '';
+    return body[key];
   });
   if (type === "KK")
     dispatch({ type: Types.GET_DATA_HBKK, payload: data });
@@ -72,11 +78,17 @@ const countingWithMSSV = (filter) => async dispatch => {
   const response = await QLHBHandler.CountingWithMSSV(filter);
 
   logger.info('QLHBAction:: CountingWithMSSV: reponse: ', response);
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
   
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key].NH);
-    response[key].type = response[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
-    return response[key];
+  const { body } = response;
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
+    return body[key];
   });
 
   dispatch({ type: Types.GET_DATA_TKMSSV, payload: data });
@@ -84,35 +96,39 @@ const countingWithMSSV = (filter) => async dispatch => {
 };
 
 const countingWithFilter = (filter) => async dispatch => {
-  const {LoaiHB, DoiTuong, DonViTaiTro, mssv}  = filter;
+  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
 
   const response = await QLHBHandler.CountingWithMSSV(filter);
-
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  
+  const { body } = response;
 
   const arrLoaiHB   = [];
   const arrDoiTuong = [];
   const arrDVTT     = [];
 
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key].NH);
-    response[key].type = response[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
-    if (response[key].LoaiHB        === LoaiHB)    arrLoaiHB.push(response[key]);
-    if (response[key].DoiTuong      === DoiTuong)  arrDoiTuong.push(response[key]);
-    if (response[key].DonViTaiTro   === DonViTaiTro) arrDVTT.push(response[key]);
-    return response[key];
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
+    if (body[key].LoaiHB        === LoaiHB)    arrLoaiHB.push(body[key]);
+    if (body[key].DoiTuong      === DoiTuong)  arrDoiTuong.push(body[key]);
+    if (body[key].DonViTaiTro   === DonViTaiTro) arrDVTT.push(body[key]);
+    return body[key];
   });
 
-  if (mssv !== ''){
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-  }else if (LoaiHB !== ''){
+  if (LoaiHB !== ''){
     dispatch({ type: Types.GET_DATA_COUNTING, payload: arrLoaiHB });
   }else if (DoiTuong !== ''){
     dispatch({ type: Types.GET_DATA_COUNTING, payload: arrDoiTuong });
   }else if (DonViTaiTro !== ''){
     dispatch({ type: Types.GET_DATA_COUNTING, payload: arrDVTT });
   }else{
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+    dispatch({ type: Types.GET_NULL_DATA });
   }
 
   history.push('/qlhb');

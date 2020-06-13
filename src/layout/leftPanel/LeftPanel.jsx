@@ -16,6 +16,7 @@ import Scholarship from '@material-ui/icons/School';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import Policy from '@material-ui/icons/Accessible';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
@@ -267,6 +268,17 @@ function ResponsiveDrawer(props) {
             <Hospital />
           </ListItemIcon>
           <ListItemText primary="Quản lý bảo hiểm" />
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => history.push('/cdcs')}
+        >
+          <ListItemIcon>
+            <Policy />
+          </ListItemIcon>
+          <ListItemText primary="Chế độ chính sách" />
         </ListItem>
         <ListItem
           className={classes.nested}

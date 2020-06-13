@@ -1,5 +1,7 @@
 const ActionTypes = {
   TK: 'TK',
+  DS: 'DS',
+  GET_NULL_DATA: 'GET_NULL_DATA',
   GET_LIST_DTTS: 'GET_LIST_DTTS',
   GET_LIST_HTDX: 'GET_LIST_HTDX',
   GET_LIST_TCXH: 'GET_LIST_TCXH',

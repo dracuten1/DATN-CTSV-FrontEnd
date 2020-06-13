@@ -169,7 +169,11 @@ const AllList = props => {
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            isCounting ? dispatch(Actions.countingWithFilter(filter)) : dispatch(Actions.getListWithFilter(filter, type));
+            if (isCounting){
+              filter.mssv === '' ? dispatch(Actions.countingWithFilter(filter)) : dispatch(Actions.countingWithMSSV(filter));
+            }else{
+              dispatch(Actions.getListWithFilter(filter, type));
+            }
             updateBegin = 1;
           }}
           label="Lọc dữ liệu"
@@ -229,12 +233,12 @@ const AllList = props => {
                     setTimeout(async () => {
                       resolve();
                       logger.info('Olddata: ', oldData);
-                      const { PK, SK, id } = oldData;
+                      const { PK, SK, ID } = oldData;
                       const response = await QLHBHandler.DeleteOneCertificate(
                         PK,
                         SK,
                         type,
-                        id
+                        ID
                       );
                       if (response.statusCode !== 200) {
                         setSnackBarValue(errorSnackBar);

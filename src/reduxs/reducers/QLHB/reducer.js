@@ -18,6 +18,9 @@ const qlhbReducer = (state = INIT_STATE, action) => {
       return { ...state, isHBKK: false, isCounting: false };
     case ActionTypes.TK:
       return { ...state, isHBKK: false, isCounting: true, dataList: [] };
+    case ActionTypes.GET_NULL_DATA:
+      return { ...state, dataList: []};
+
     case ActionTypes.GET_DATA_HBKK:
       return {
         ...state,

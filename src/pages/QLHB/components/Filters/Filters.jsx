@@ -25,9 +25,12 @@ export default function Filters(props) {
   const QLHBState = useSelector(state => state.QLHBState);
   const { isCounting, listLoaiHB, listDoiTuong, listDonViTaiTro } = QLHBState;
 
-  arrLoaiHB = arrLoaiHB.concat(listLoaiHB);
-  arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
-  arrDVTT = arrDVTT.concat(listDonViTaiTro);
+  if (arrLoaiHB.length === 1)
+  {
+    arrLoaiHB = arrLoaiHB.concat(listLoaiHB);
+    arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
+    arrDVTT = arrDVTT.concat(listDonViTaiTro);
+  }
 
   logger.info('listLoaiHB: ', listLoaiHB);
 

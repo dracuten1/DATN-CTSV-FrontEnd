@@ -64,7 +64,7 @@ export const CountingWithMSSV = async filter => {
   const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
-  const response = await HttpClient2.sendGet(url);
+  const response = await HttpClient2.sendGetData(url);
 
   return response;
 };

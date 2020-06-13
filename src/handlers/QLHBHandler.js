@@ -33,9 +33,9 @@ const formatNumber = (num) => {
 
 export const GetListWithFilter = async (filter, type) => {
     filter.nh     = convertNamHoc(filter.nh);
-    logger.info('QLHBHandler:: getListAll: filter: ', filter, type);
     const url     = `hb/list?type=${type}&nh=${filter.nh}&hk=${filter.hk}`;
-    const response = await HttpClient.sendGet(url);
+    logger.info('QLHBHandler:: getListAll: URL: ', url);
+    const response = await HttpClient.sendGetData(url);
     return response;
 };
 
@@ -76,14 +76,14 @@ export const ExportWithFilter = async (filter, type) => {
 };
 
 export const CountingWithMSSV = async (filter) => {
-  const {fromHK, fromNH, toHK, toNH, mssv}  = filter;
+  const {fromHK, fromNH, toHK, toNH, mssv, LoaiHB, DoiTuong, DonViTaiTro}  = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
   
-  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}&DonViTaiTro=${DonViTaiTro}&DoiTuong=${DoiTuong}`;
   logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
 
-  const response = await HttpClient2.sendGet(url);
+  const response = await HttpClient2.sendGetData(url);
 
   return response;
 };

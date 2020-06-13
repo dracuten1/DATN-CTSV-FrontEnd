@@ -26,60 +26,80 @@ const parseNHToNumber = nh => {
   }
 };
 
-const getListWithMSSV = filter => async dispatch => {
+const changeCountingColumnsCounting = () => async dispatch => {
+  dispatch({ type: Types.TK});
+};
+
+const changeCountingColumnsList = () => async dispatch => {
+  dispatch({ type: Types.DS});
+};
+
+const countingWithMSSV = filter => async dispatch => {
   logger.info('CDCSAction:: getListAll: filter: ', filter);
   const response = await CDCSHanlder.CountingWithMSSV(filter);
   logger.info('CDCSAction:: getListAll: reponse: ', response);
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key]["DuLieu"].NH);
-    response[key].hk              = response[key]["DuLieu"].hk;
-    response[key].GhiChu = response[key]["DuLieu"].GhiChu;
-    response[key].DoiTuong        = response[key]["DuLieu"].DoiTuong;
-    if (response[key]["DuLieu"].TongTien)     response[key].TongTien        = response[key]["DuLieu"].TongTien;
-    if (response[key]["DuLieu"].KinhPhi)      response[key].TongTien        = response[key]["DuLieu"].KinhPhi;
-    if (response[key]["DuLieu"].ThanhTien)    response[key].TongTien        = response[key]["DuLieu"].ThanhTien;
-    if (response[key]["DuLieu"].SoTien)       response[key].TongTien        = response[key]["DuLieu"].SoTien;
-    response[key].DoiTuong        = response[key]["DuLieu"].DoiTuong;
-    response[key].MSSV            = response[key]["DuLieu"].MSSV;
-    response[key].HoTen           = response[key]["DuLieu"].HoTen;
 
-    return response[key];
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  
+  const { body } = response;
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key]["DuLieu"].NH);
+    body[key].hk              = body[key]["DuLieu"].HK;
+    body[key].GhiChu = body[key]["DuLieu"].GhiChu;
+    body[key].DoiTuong        = body[key]["DuLieu"].DoiTuong;
+    if (body[key]["DuLieu"].TongTien)     body[key].TongTien        = body[key]["DuLieu"].TongTien;
+    if (body[key]["DuLieu"].KinhPhi)      body[key].TongTien        = body[key]["DuLieu"].KinhPhi;
+    if (body[key]["DuLieu"].ThanhTien)    body[key].TongTien        = body[key]["DuLieu"].ThanhTien;
+    if (body[key]["DuLieu"].SoTien)       body[key].TongTien        = body[key]["DuLieu"].SoTien;
+    body[key].MSSV            = body[key]["DuLieu"].MSSV;
+    body[key].HoTen           = body[key]["DuLieu"].HoTen;
+
+    return body[key];
   });
   dispatch({ type: Types.GET_LIST_MSSV, payload: data });
   history.push('/cdcs');
 };
 
-const getListWithFilter = filter => async dispatch => {
+const countingWithFilter = filter => async dispatch => {
   logger.info('CDCSAction:: getListAll: filter: ', filter);
   const response = await CDCSHanlder.CountingWithFilter(filter);
   logger.info('CDCSAction:: getListAll: reponse: ', response);
   
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")  return;
   
-  const { typeCDCS } = filter;
-  const data = Object.keys(response).map(key => {
-    response[key].nh              = parseNHToNumber(response[key]["DuLieu"].NH);
-    response[key].hk              = response[key]["DuLieu"].hk;
-    response[key].ChiNhanh        = response[key]["DuLieu"].ChiNhanh;
-    response[key].MucHB           = response[key]["DuLieu"].MucHB;
-    response[key].NganHang        = response[key]["DuLieu"].NganHang;
-    response[key].MucHoTroCPPT    = response[key]["DuLieu"].MucHoTroCPPT;
-    response[key].TongTien        = response[key]["DuLieu"].TongTien;
-    response[key].MSSV            = response[key]["DuLieu"].MSSV;
-    response[key].DoiTuong        = response[key]["DuLieu"].DoiTuong;
-    response[key].SoTK            = response[key]["DuLieu"].SoTK;
-    response[key].GhiChu          = response[key]["DuLieu"].GhiChu;
-    response[key].HoTen           = response[key]["DuLieu"].HoTen;
-    response[key].CMND            = response[key]["DuLieu"].CMND;
-    response[key].SoThang         = response[key]["DuLieu"].SoThang;
-    response[key].MucHoTro        = response[key]["DuLieu"].MucHoTro;
-    response[key].KinhPhi         = response[key]["DuLieu"].KinhPhi;
-    response[key].MucGiamHP       = response[key]["DuLieu"].MucGiamHP;
-    response[key].MucTroCap       = response[key]["DuLieu"].MucTroCap;
-    response[key].ThanhTien       = response[key]["DuLieu"].ThanhTien;
-    response[key].SoTien          = response[key]["DuLieu"].SoTien;
+  const { typeCDCS }  = filter;
+  const { body }      = response;
 
-    return response[key];
+  const data = Object.keys(body).map(key => {
+    body[key].nh              = parseNHToNumber(body[key]["DuLieu"].NH);
+    body[key].hk              = body[key]["DuLieu"].HK;
+    body[key].ChiNhanh        = body[key]["DuLieu"].ChiNhanh;
+    body[key].ChiNhanh        = body[key]["DuLieu"].ChiNhanh;
+    body[key].NTNS            = body[key]["DuLieu"].NTNS;
+    body[key].DanToc          = body[key]["DuLieu"].DanToc;
+    body[key].MucHB           = body[key]["DuLieu"].MucHB;
+    body[key].NganHang        = body[key]["DuLieu"].NganHang;
+    body[key].MucHoTroCPPT    = body[key]["DuLieu"].MucHoTroCPPT;
+    body[key].TongTien        = body[key]["DuLieu"].TongTien;
+    body[key].MSSV            = body[key]["DuLieu"].MSSV;
+    body[key].DoiTuong        = body[key]["DuLieu"].DoiTuong;
+    body[key].SoTK            = body[key]["DuLieu"].SoTK;
+    body[key].GhiChu          = body[key]["DuLieu"].GhiChu;
+    body[key].HoTen           = body[key]["DuLieu"].HoTen;
+    body[key].CMND            = body[key]["DuLieu"].CMND;
+    body[key].SoThang         = body[key]["DuLieu"].SoThang;
+    body[key].MucHoTro        = body[key]["DuLieu"].MucHoTro;
+    body[key].KinhPhi         = body[key]["DuLieu"].KinhPhi;
+    body[key].MucGiamHP       = body[key]["DuLieu"].MucGiamHP;
+    body[key].MucTroCap       = body[key]["DuLieu"].MucTroCap;
+    body[key].ThanhTien       = body[key]["DuLieu"].ThanhTien;
+    body[key].SoTien          = body[key]["DuLieu"].SoTien;
+
+    return body[key];
   });
   
   switch (typeCDCS) {
@@ -115,7 +135,9 @@ const getDataFilter = () => async dispatch => {
 
 
 export default {
-  getListWithFilter,
-  getListWithMSSV,
-  getDataFilter
+  countingWithFilter,
+  countingWithMSSV,
+  getDataFilter,
+  changeCountingColumnsCounting,
+  changeCountingColumnsList
 };

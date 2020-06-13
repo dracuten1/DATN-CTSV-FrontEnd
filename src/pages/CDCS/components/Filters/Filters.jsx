@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
 let arrDoiTuong = ['None'];
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, isCounting } = props;
+  const { onFilter, isCase } = props;
   const dt = new Date();
   const year = dt.getFullYear();
 
@@ -30,7 +30,7 @@ export default function Filters(props) {
 
   return (
     <div className={classes.container}>
-      {isCounting ? (
+      {isCase === 6 ? (
         <>
           <TextField
             id="outlined-basic"
@@ -38,27 +38,19 @@ export default function Filters(props) {
             variant="outlined"
             onChange={handleChange}
             style={{ marginTop: '8px', width: '80%' }}
-            helperText="BHYT and BHTN need MSSV"
             inputProps={{
               style: {
                 marginBottom: '-6px'
               }
             }}
           />
-           <Filter
-            clickFilter={onFilter}
-            label="Loại"
-            prop="type"
-            data={['DTTS', 'HTDX', 'TCXH', 'MGHP', 'SVKT']}
-          />
-          <Filter
-            clickFilter={onFilter}
-            prop="doituong"
-            label="Đối tượng"
-            data={arrDoiTuong}
-          />
           <div
-            style={{ display: 'flex', marginLeft: '10px' ,alignItems: 'center', fontSize: '15px' }}
+            style={{
+              display: 'flex',
+              marginLeft: '10px',
+              alignItems: 'center',
+              fontSize: '15px'
+            }}
           >
             Start
           </div>
@@ -120,6 +112,29 @@ export default function Filters(props) {
         <>
           <Filter
             clickFilter={onFilter}
+            label="Loại"
+            prop="typeCDCS"
+            data={['DTTS', 'HTDX', 'TCXH', 'MGHP', 'SVKT']}
+          />
+          <Filter
+            clickFilter={onFilter}
+            prop="doituong"
+            label="Đối tượng"
+            helperText="Chọn loại CDCS"
+            data={arrDoiTuong}
+          />
+          <div
+            style={{
+              display: 'flex',
+              marginLeft: '10px',
+              alignItems: 'center',
+              fontSize: '15px'
+            }}
+          >
+            Start
+          </div>
+          <Filter
+            clickFilter={onFilter}
             label="Học kỳ"
             prop="fromHK"
             data={['None', '1', '2', '3']}
@@ -139,11 +154,37 @@ export default function Filters(props) {
               `${year - 6}-${year - 5}`
             ]}
           />
+
+          <div
+            style={{
+              marginLeft: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '15px'
+            }}
+          >
+            End
+          </div>
           <Filter
             clickFilter={onFilter}
-            label="Loại"
-            prop="typeCDCS"
-            data={['DTTS', 'HTDX', 'TCXH', 'MGHP', 'SVKT']}
+            label="Học kỳ"
+            prop="toHK"
+            data={['None', '1', '2', '3']}
+          />
+          <Filter
+            clickFilter={onFilter}
+            label="Năm học"
+            prop="toNH"
+            data={[
+              'None',
+              `${year}-${year + 1}`,
+              `${year - 1}-${year}`,
+              `${year - 2}-${year - 1}`,
+              `${year - 3}-${year - 2}`,
+              `${year - 4}-${year - 3}`,
+              `${year - 5}-${year - 4}`,
+              `${year - 6}-${year - 5}`
+            ]}
           />
         </>
       )}

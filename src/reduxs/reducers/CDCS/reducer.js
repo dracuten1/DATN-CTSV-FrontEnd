@@ -11,6 +11,10 @@ const cdcsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case ActionTypes.TK:
       return { ...state, isCase: 6, dataList: [] };
+    case ActionTypes.DS:
+      return { ...state, isCase: 1, dataList: [] };
+    case ActionTypes.GET_NULL_DATA:
+      return { ...state, dataList: [] };
     case ActionTypes.GET_LIST_DTTS:
       return {
         ...state,
