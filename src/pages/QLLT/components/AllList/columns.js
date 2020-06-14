@@ -72,7 +72,7 @@ const ALL = [
   },
   {
     title: 'Ghi chú',
-    field: 'Ghi chú',
+    field: 'GhiChu',
     filtering: false
   }
 ];
@@ -114,7 +114,7 @@ const KTX = [
   },
   {
     title: 'Ghi chú',
-    field: 'Ghi chú',
+    field: 'GhiChu',
     filtering: false
   }
 ];

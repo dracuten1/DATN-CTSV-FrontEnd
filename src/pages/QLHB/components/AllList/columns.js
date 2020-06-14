@@ -109,6 +109,7 @@ const HBKK = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Học kỳ',
@@ -124,6 +125,7 @@ const HBKK = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Ghi chú',
@@ -204,6 +206,7 @@ const HBTT = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Học kỳ',
@@ -219,6 +222,7 @@ const HBTT = [
     cellStyle: {
       minWidth: '100px'
     }
+    , editable: false 
   },
   {
     title: 'Ghi chú',
@@ -299,6 +303,7 @@ const COUNTING = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Học kỳ',
@@ -314,6 +319,7 @@ const COUNTING = [
     cellStyle: {
       minWidth: '100px'
     }
+    , editable: false 
   },
   {
     title: 'Ghi chú',

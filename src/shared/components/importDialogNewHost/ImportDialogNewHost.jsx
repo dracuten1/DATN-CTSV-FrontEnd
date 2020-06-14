@@ -40,31 +40,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const convertTTSVCase = ttsvCase => {
-  switch (ttsvCase) {
-    case 'SINH VIÊN NƯỚC NGOÀI':
-      return 'NN';
-    case 'ĐIỂM TRUNG BÌNH':
-      return 'DiemTB';
-    case 'TỐT NGHIỆP':
-      return 'TotNghiep';
-    case 'HOÀN TẤT CHƯƠNG TRÌNH':
-      return 'HTCT';
-    case 'ĐANG HỌC':
-      return 'DangHoc';
-    case 'CẢNH CÁO HỌC VỤ':
-      return 'CanhCaoHV';
-    case 'BUỘC THÔI HỌC':
-      return 'BuocThoiHoc';
-    case 'BẢO LƯU':
-      return 'BaoLuu';
-    case 'ĐĂNG KÝ HỌC PHẦN':
-      return 'DKHP';
-    default:
-      return '';
-  }
-};
-
 const DropZone = withStyles({
   uploadIconSize: {
     display: 'none'

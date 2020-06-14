@@ -171,18 +171,27 @@ const ImportDialog = props => {
           res = await ImportHandler.GetImportQLLTInfo(importCase, response.key);
           logger.info('ImportDialog:: res: ', res);
 
-          setMessage(res.message + '-' + res.newKey);
+          if (res.statusCode !== 200) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
+            break;
+          }
 
           res1 = await ImportHandler.ImportQLLTInfo(importCase, {
-            checkImportResult: res.checkImportResult,
-            jsonkey: res.newKey
-            // type             : res.checkImportResult.conflict ? "Conflict" : "NotInConflict"
+            checkImportResult: res.body.checkImportResult,
+            jsonkey: res.body.newKey
           });
           logger.info('ImportDialog:: res1: ', res1);
 
+          if (res1.statuscode !== 200) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
+            break;
+          }
+
           const timerIdQLLT = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatusQLLT(
-              res.newKey
+              res.body.newKey
             );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;

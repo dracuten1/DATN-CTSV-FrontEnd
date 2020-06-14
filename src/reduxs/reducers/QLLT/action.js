@@ -26,23 +26,34 @@ const parseNHToNumber = nh => {
   }
 };
 
+const getNullData = () => async dispatch => {
+  dispatch({ type: Types.GET_NULL_DATA});
+};
+
 const getAllListWithFilter = filter => async dispatch => {
   filter.type = 'all';
   logger.info('QLLTAction:: getListAll: filter: ', filter);
   const response = await QLLTHandler.GetListWithFilter(filter);
   logger.info('QLLTAction:: getListAll: reponse: ', response);
-  const data = Object.keys(response).map(key => {
-    response[key].ktx = response[key]['Nội trú']['KTX'];
-    if (response[key]['Nội trú']['Cập nhật Portal'] !== ''){
-      response[key].portal =
-        response[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
+
+  const { statusCode, body } = response;
+  if (statusCode !== 200 || body.length === 0)
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  const data = Object.keys(body).map(key => {
+    body[key].ktx = body[key]['Nội trú']['KTX'];
+    if (body[key]['Nội trú']['Cập nhật Portal'] !== ''){
+      body[key].portal =
+        body[key]['Nội trú']['Cập nhật Portal'] === 'Đã cập nhật';
     }
     else{
-      response[key].xnnt =
-        response[key]['Xác nhận ngoại trú'] === 'Đã xác nhận';
+      body[key].xnnt =
+        body[key]['Xác nhận ngoại trú'] === 'Đã xác nhận';
     }
-    response[key].nh = parseNHToNumber(response[key].NH);
-      return response[key];
+    body[key].nh = parseNHToNumber(body[key].NH);
+      return body[key];
   });
   dispatch({ type: Types.GET_ALLLIST, payload: data });
   history.push('/qllt');
@@ -53,9 +64,15 @@ const getKtxListWithFilter = filter => async dispatch => {
   logger.info('QLLTAction:: getListAll: filter: ', filter);
   const response = await QLLTHandler.GetListWithFilter(filter);
   logger.info('QLLTAction:: getListKTX: reponse: ', response);
-  const data = Object.keys(response).map(key => {
-    response[key].nh =parseNHToNumber(response[key].NH);
-      return response[key];
+  const { statusCode, body } = response;
+  if (statusCode !== 200 || body.length === 0)
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  const data = Object.keys(body).map(key => {
+    body[key].nh =parseNHToNumber(body[key].NH);
+      return body[key];
   });  
   dispatch({ type: Types.GET_KTX_LIST, payload: data });
   history.push('/qllt');
@@ -84,5 +101,6 @@ export default {
   getAllListWithFilter,
   getKtxListWithFilter,
   updateOneStudentByType,
-  exportWithFilter
+  exportWithFilter,
+  getNullData
 };

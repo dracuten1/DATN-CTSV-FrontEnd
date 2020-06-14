@@ -41,7 +41,7 @@ export const GetImportQLLTInfo = async (importCase, key) => {
   let url = null;
   importCase === 2 ? url = `ttluutru/ktx/import?key=${key}` : url = `ttluutru/all/import?key=${key}`;
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGetData(url);
 
   return response;
 };
@@ -50,7 +50,7 @@ export const ImportQLLTInfo = async (importCase, value) => {
   let url = null;
   importCase === 2 ? url = `ttluutru/ktx/import` : url = `ttluutru/all/import`;
   logger.info('ImportDialog:: value: ', value);
-  const response = await HttpClient.sendPost(url, value);
+  const response = await HttpClient.sendPostGetData(url, value);
 
   return response;
 };

@@ -31,15 +31,21 @@ const changeCountingColumns = () => async dispatch => {
   history.push('/qlbh');
 };
 
+const getNullData = () => async dispatch => {
+  dispatch({ type: Types.NO_DATA });
+  history.push('/qlbh');
+};
+
 const getListWithFilter = (filter, type) => async dispatch => {
   const response = await QLBHHandler.GetListWithFilter(filter, type);
   logger.info('QLBHAction:: getListAll: reponse: ', response);
-  if (response === 'Không có dữ liệu') {
+  const { statusCode, body } = response;
+  if (statusCode !== 200 || body === 'Không có dữ liệu') {
     dispatch({ type: Types.NO_DATA });
-    return; 
+    return;
   }
 
-  const { Items } = response;
+  const { Items } = body;
   if (type === 'YT') {
     const data = Object.keys(Items).map(key => {
       Items[key].HoTen = Items[key].DuLieu.HoTen;
@@ -116,24 +122,27 @@ const countingWithMSSV = filter => async dispatch => {
   const response = await QLBHHandler.CountingWithMSSV(filter);
 
   logger.info('QLBHAction:: CountingWithMSSV: reponse: ', response);
-  if (response.statusCode === 200) {
-    const { body } = response;
-    const data = Object.keys(body).map(key => {
-      body[key].nh = parseNHToNumber(body[key].NH);
-      body[key].SoTien =
-        filter.type === 'BHTN' ? body[key].SoTienBH : body[key].SoTien;
-      body[key].CongTyBH = filter.type === 'BHYT' ? '' : body[key].CongTyBaoHiem;
-
-      body[key].MaBV = filter.type === 'BHYT' ? body[key].NoiDKKCB.MaBV : '';
-      body[key].TenBV = filter.type === 'BHYT' ? body[key].NoiDKKCB.TenBV : '';
-      body[key].HSDTu = filter.type === 'BHYT' ? body[key].HSD.Tu : '';
-      body[key].HSDDen = filter.type === 'BHYT' ? body[key].HSD.Den : '';
-      return body[key];
-    });
-
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-    history.push('/qlbh');
+  const { statusCode, body } = response;
+  if (statusCode !== 200 || body === 'Không có dữ liệu') {
+    dispatch({ type: Types.NO_DATA });
+    return;
   }
+
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].SoTien =
+      filter.type === 'BHTN' ? body[key].SoTienBH : body[key].SoTien;
+    body[key].CongTyBH = filter.type === 'BHYT' ? '' : body[key].CongTyBaoHiem;
+
+    body[key].MaBV = filter.type === 'BHYT' ? body[key].NoiDKKCB.MaBV : '';
+    body[key].TenBV = filter.type === 'BHYT' ? body[key].NoiDKKCB.TenBV : '';
+    body[key].HSDTu = filter.type === 'BHYT' ? body[key].HSD.Tu : '';
+    body[key].HSDDen = filter.type === 'BHYT' ? body[key].HSD.Den : '';
+    return body[key];
+  });
+
+  dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+  history.push('/qlbh');
 };
 
 const exportCountingWithFilter = filter => async dispatch => {
@@ -154,5 +163,6 @@ export default {
   deleteOneCertificate,
   countingWithMSSV,
   changeCountingColumns,
-  exportCountingWithFilter
+  exportCountingWithFilter,
+  getNullData
 };

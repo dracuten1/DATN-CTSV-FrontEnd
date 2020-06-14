@@ -111,6 +111,12 @@ export const sendPutWithBody = async (url, requestBody) => {
     return body;
 };
 
+export const sendPutWithBodyGetStatus = async (url, requestBody) => {
+    const response = await httpClient.put(url, requestBody);
+
+    return response.data;
+};
+
 /**
  *
  * @param {*} url

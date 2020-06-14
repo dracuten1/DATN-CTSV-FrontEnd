@@ -42,7 +42,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
   const { body } = response;
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
-    body[key].ID = body[key].ID ? body[key].ID : '';
+    body[key].id = body[key].id ? body[key].id : '';
     return body[key];
   });
   if (type === "KK")

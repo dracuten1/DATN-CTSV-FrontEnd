@@ -45,8 +45,10 @@ export const UpdateOneStudentByType = async (data, type) => {
     if (type === 'KK'){
       const {SoTienMoiThang, SoThang} = data;
       const money = SoTienMoiThang.split('.').join('');
-      data.TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
-      data.SoTienMoiThang = formatNumber(SoTienMoiThang);
+      // data.TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
+      // data.SoTienMoiThang = formatNumber(SoTienMoiThang);
+      data.TongSoTien = (parseFloat(money)*parseInt(SoThang));
+      data.SoTienMoiThang = (SoTienMoiThang);
     }
     
     data.type = type;

@@ -110,12 +110,7 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getListWithFilter({
-      hk: '1',
-      nh: `${year}-${year + 1}`,
-      type: 'TỐT NGHIỆP',
-      mssv: ''
-    }));
+    dispatch({ type: Types.NO_DATA });
     updateBegin += 1;
   }
 

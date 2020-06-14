@@ -75,7 +75,7 @@ export const GetListCertificate = async (status) => {
 
   const payload = response.map((item, index) => {
     item.scn = item.SCN;
-    item.language = item.NgonNgu === "Tiếng Việt" ? 2 : 1;
+    item.language = item.NgonNgu.trim() === "Tiếng Việt" ? 2 : 1;
     item.name = item.ThongTinSinhVien.Ten;
     item.mssv = item.ThongTinSinhVien.MSSV;
     item.case = parseCase(item.LoaiGiayXN);
