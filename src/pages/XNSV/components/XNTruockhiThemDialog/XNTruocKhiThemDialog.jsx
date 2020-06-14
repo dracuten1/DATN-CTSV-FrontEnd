@@ -56,21 +56,22 @@ const defaultValue = {
   language: '',
   status: '',
   reason: '',
-  case: null,
-  semester: null,
-  year: null,
+  case: '',
+  semester: '',
+  year: '',
   isPrint: false,
   note: '',
   signer: '',
-  studingBeginDate: moment(date).format('DD/MM/YYYY'),
-  studingEndDate: moment(date).format('DD/MM/YYYY'),
-  expectedPublicationDate: moment(date).format('DD/MM/YYYY'),
+  studentEndYear: '',
+  studingBeginDate: date,
+  studingEndDate: date,
+  expectedPublicationDate: date,
   dien: '',
   doituong: '',
-  date: moment(date).format('DD/MM/YYYY'),
+  date: date,
   addSemester: '',
   addYear: ``,
-  startDateBaoLuu: moment(date).format('DD/MM/YYYY'),
+  startDateBaoLuu: date,
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -111,7 +112,7 @@ const XNTruocKhiThemDialog = props => {
 
   const fetchCertificate = (prop) => event => {
 
-    const value = event.target ? event.target.value : moment(event).format('DD/MM/YYYY');
+    const value = event.target ? event.target.value : event;
     let tmp = { ...values };
     tmp[prop] = value;
     let Data;
@@ -133,7 +134,7 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Chờ xét hoàn tất chương trình':
             Data = {
-              NgayCongBoKetQua: `${tmp.expectedPublicationDate}`,
+              NgayCongBoKetQua: `${moment(tmp.expectedPublicationDate).format('DD/MM/YYYY')}`,
               NgonNgu: `${tmp.language}`
             }
             break;
@@ -145,18 +146,23 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Thời gian học':
             Data = {
-              NamKetThuc: `${tmp.studingEndDate}`,
+              NamKetThuc: `${tmp.studentEndYear}`,
               NgonNgu: `${tmp.language}`,
             }
             break;
           case 'Vay vốn':
             Data = {
               NgonNgu: `${tmp.language}`,
-              ThoiGianRaTruong: `${tmp.studingEndDate}`,
+              ThoiGianRaTruong: `${moment(tmp.studingEndDate).format('DD/MM/YYYY')}`,
               ThuocDien: `${tmp.dien}`,
               ThuocDoiTuong: `${tmp.doituong}`,
             }
             break;
+          case 'Chờ xét tốt nghiệp':
+            Data = {
+              NgonNgu: `${tmp.language}`,
+              NgayCongBoKetQua: `${moment(tmp.expectedPublicationDate).format('DD/MM/YYYY')}`,
+            }
           default:
             break;
         }
@@ -171,12 +177,12 @@ const XNTruocKhiThemDialog = props => {
           case 'Bảo lưu':
             Data = {
               NgonNgu: `${tmp.language}`,
-              startDateBaoLuu: `${tmp.startDateBaoLuu}`,
+              startDateBaoLuu: `${moment(tmp.startDateBaoLuu).format('DD/MM/YYYY')}`,
             }
             break;
           case 'Thời gian học':
             Data = {
-              NgonNgu: `${tmp.language}`,
+              NgonNgu: `${tmp.language} `,
             }
             break;
           default:
@@ -187,11 +193,11 @@ const XNTruocKhiThemDialog = props => {
 
     const tmpCertificate = {
       Data,
-      HoVaTenNguoiKy: `${tmp.signer}`,
-      NgonNgu: `${tmp.language}`,
+      HoVaTenNguoiKy: `${tmp.signer} `,
+      NgonNgu: `${tmp.language} `,
       LoaiGiayXN: tmp.case,
       LyDoXN: tmp.reason,
-      ThoiGian: `${tmp.addSemester}-${tmp.addYear}`,
+      ThoiGian: `${tmp.addSemester} -${tmp.addYear} `,
       ThongTinSinhVien: {
         DiaChiThuongTru: {
           PhuongXa: tmp.ward,
@@ -211,8 +217,8 @@ const XNTruocKhiThemDialog = props => {
   const gernerateYearData = () => {
     const currentYear = moment(date).format('YYYY');
     const rs = [
-      `${currentYear}-${Number.parseInt(currentYear) + 1}`,
-      `${currentYear - 1}-${currentYear}`
+      `${currentYear} -${Number.parseInt(currentYear) + 1} `,
+      `${currentYear - 1} -${currentYear} `
     ];
     return rs;
   }
@@ -257,7 +263,7 @@ const XNTruocKhiThemDialog = props => {
 
 
   const handleChange = prop => event => {
-    const value = event.target ? event.target.value : moment(event).format('DD/MM/YYYY');
+    const value = event.target ? event.target.value : event;
     setValues({ ...values, [prop]: value });
     if (value === "Vay vốn") setIsOpenVayVonDialog(true)
     else setIsOpen(true);
@@ -526,14 +532,14 @@ const XNTruocKhiThemDialog = props => {
                   value={values.year}
                   onChange={event => {
                     handleChange('year')(event);
-                    fetchCertificate();
+                    fetchCertificate('year')(event);
                   }}
                 >
-                  <MenuItem selected value={3}>
+                  <MenuItem selected value={"3"}>
                     2019-2020
                   </MenuItem>
-                  <MenuItem value={2}>2018-2019</MenuItem>
-                  <MenuItem value={1}>2017-2018</MenuItem>
+                  <MenuItem value={"2"}>2018-2019</MenuItem>
+                  <MenuItem value={"1"}>2017-2018</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.textField} margin="normal">
@@ -547,11 +553,11 @@ const XNTruocKhiThemDialog = props => {
                   value={values.semester}
                   onChange={event => {
                     handleChange('semester')(event);
-                    fetchCertificate();
+                    fetchCertificate('semester')(event);
                   }}
                 >
-                  <MenuItem value={1}>Học kỳ 1</MenuItem>
-                  <MenuItem value={2}>Học kỳ 2</MenuItem>
+                  <MenuItem value={"1"}>Học kỳ 1</MenuItem>
+                  <MenuItem value={"2"}>Học kỳ 2</MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -563,7 +569,7 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Ngày bắt đầu bảo lưu"
                 format="dd/MM/yyyy"
-                value={Date.parse(values.startDateBaoLuu)}
+                value={values.startDateBaoLuu}
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('startDateBaoLuu')(event);
@@ -577,23 +583,27 @@ const XNTruocKhiThemDialog = props => {
           )}
           {values.language === 'Tiếng Việt' && values.case === 'Thời gian học' && (
             <div className={classes.container}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  label="Đến ngày"
-                  format="dd/MM/yyyy"
-                  value={Date.parse(values.studingEndDate)}
-                  style={{ width: '400px', marginLeft: '8px' }}
+              <FormControl className={classes.textField} margin="normal">
+                <InputLabel id="demo-simple-select-helper-label">
+                  Đến năm
+                </InputLabel>
+                <Select
+                  // variant="outlined"
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={values.studentEndYear}
                   onChange={event => {
-                    handleChange('studingEndDate')(event);
-                    fetchCertificate('studingEndDate')(event);
+                    handleChange('studentEndYear')(event);
+                    fetchCertificate('studentEndYear')(event);
                   }}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date'
-                  }}
-                />
-              </MuiPickersUtilsProvider>
+                >
+                  <MenuItem value="2024">2024</MenuItem>
+                  <MenuItem value="2023">2023</MenuItem>
+                  <MenuItem value="2022">2022</MenuItem>
+                  <MenuItem value="2021">2021</MenuItem>
+                  <MenuItem value="2020">2020</MenuItem>
+                </Select>
+              </FormControl>
             </div>
           )}
           {values.case === 'Chờ xét tốt nghiệp' && (
@@ -603,7 +613,7 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Chọn ngày công bố dự kiến"
                 format="dd/MM/yyyy"
-                value={Date.parse(values.expectedPublicationDate)}
+                value={values.expectedPublicationDate}
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('expectedPublicationDate')(event);
@@ -622,7 +632,7 @@ const XNTruocKhiThemDialog = props => {
                 id="date-picker-dialog"
                 label="Chọn ngày công bố dự kiến"
                 format="dd/MM/yyyy"
-                value={Date.parse(values.expectedPublicationDate)}
+                value={values.expectedPublicationDate}
                 style={{ width: '400px', marginLeft: '8px' }}
                 onChange={event => {
                   handleChange('expectedPublicationDate')(event);

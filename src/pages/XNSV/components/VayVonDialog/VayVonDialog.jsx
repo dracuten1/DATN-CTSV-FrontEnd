@@ -49,7 +49,7 @@ const VayVonDialog = props => {
     address: '',
     dien: '',
     doituong: '',
-    thoigianratruong: moment(date).format('DD/MM/YYYY'),
+    thoigianratruong: date,
     date: moment(date).format('DD/MM/YYYY')
   });
 
@@ -57,7 +57,8 @@ const VayVonDialog = props => {
   const dataDoiTuong = ['Mồ côi', 'Không mồ côi'];
 
   const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value });
+    const value = event.target ? event.target.value : event;
+    setValues({ ...values, [prop]: value });
   };
 
   const drawData = data => {
@@ -112,7 +113,7 @@ const VayVonDialog = props => {
                 id="date-picker-dialog"
                 label="Thời gian ra trường"
                 format="dd/MM/yyyy"
-                value={date}
+                value={values.thoigianratruong}
                 onChange={handleChange('thoigianratruong')}
                 KeyboardButtonProps={{
                   'aria-label': 'change date'
