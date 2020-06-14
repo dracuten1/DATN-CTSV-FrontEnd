@@ -1,4 +1,5 @@
 const ActionTypes = {
+  NO_DATA: 'NO_DATA',
   SVNN: 'SVNN',
   DTB: 'DTB',
   DSTN: 'DSTN',

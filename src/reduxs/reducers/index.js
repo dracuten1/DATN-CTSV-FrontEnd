@@ -8,6 +8,7 @@ import QLBHState from './QLBH/reducer';
 import QLLTState from './QLLT/reducer';
 import SHCDState from './SHCD/reducer';
 import TTSVState from './TTSV/reducer';
+import CDCSState from './CDCS/reducer';
 import Authentication from './Authentication/reducer';
 
 export default combineReducers({
@@ -20,5 +21,6 @@ export default combineReducers({
   SHCDState,
   QLLTState,
   QLBHState,
+  CDCSState,
   auth: Authentication
 });

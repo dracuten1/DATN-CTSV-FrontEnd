@@ -62,21 +62,21 @@ const data = [
     description: 'Quản lý nơi cư trú của Sinh Viên theo từng năm học.',
     icon: Home,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/qllt0'
   },
   {
     title: 'Tình trạng sinh viên',
     description: 'Quản lý tình trạng Sinh Viên theo từng học kỳ.',
     icon: Status,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/ttsv'
   },
   {
     title: 'Hồ sơ sinh viên',
     description: 'Quản lý hồ sơ Sinh Viên.',
     icon: Description,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/hssv'
   },
   {
     title: 'Chế độ chính sách',
@@ -84,21 +84,21 @@ const data = [
       'Quản lý và cung cấp những hỗ trợ cho Sinh Viên theo từng chế độ chính sách.',
     icon: Policy,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/cdcs'
   },
   {
     title: 'Sinh hoạt công dân',
     description: 'Quản lý và tổ chức các lớp Sinh Hoạt Công Dân mỗi năm học.',
     icon: Activity,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/shcd'
   },
   {
     title: 'Tài khoản ngân hàng',
     description: 'Quản lý tài khoản ngân hàng của Sinh Viên.',
     icon: Card,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/tknh'
   },
   {
     title: 'Bảo hiểm',
@@ -106,7 +106,7 @@ const data = [
       'Quản lý và cung cấp bảo hiểm cho Sinh Viên theo từng năm học.',
     icon: Hospital,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/qlbh'
   },
   {
     title: 'Sinh viên nhận học bổng',
@@ -114,14 +114,14 @@ const data = [
       'Quản lý và khen thưởng cho Sinh Viên đạt được giải thưởng, học bổng.',
     icon: Scholarship,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/qlhb'
   },
   {
     title: 'Khen thưởng - Kỷ luật',
     description: 'Quản lý sinh viên được khen thưởng và bị kỷ luật Sinh Viên.',
     icon: BlockIcon,
     iconColor: 'info',
-    link: '/xnsv'
+    link: '/ktkl'
   }
 ];
 

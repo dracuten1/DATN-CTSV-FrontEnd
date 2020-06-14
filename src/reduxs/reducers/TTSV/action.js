@@ -32,7 +32,7 @@ const getListWithMSSV = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const data = Object.keys(response).map(key => {
     response[key].nh = parseNHToNumber(response[key]["data"].NH);
-    response[key].note = response[key]["data"].GhiChu;
+    response[key].GhiChu = response[key]["data"].GhiChu;
     return response[key];
   });
   dispatch({ type: Types.GET_TTSV_WITH_MSSV, payload: data });
@@ -43,24 +43,49 @@ const getListWithFilter = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: filter: ', filter);
   const response = await TTSVHandler.GetListWithFilter(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
+  const {statusCode, body} = response;
+  if (statusCode !== 200 || body.length === 0){
+    dispatch({ type: Types.NO_DATA });
+    return;
+  } 
   const { type } = filter;
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key]["data"].NH);
-    response[key].type = response[key]["data"].LoaiTotNghiep;
-    response[key].month = response[key]["data"].DotThang;
-    response[key].DTB = response[key]["data"].DTB;
-    response[key].note = response[key]["data"].GhiChu;
-    response[key].MaMonHoc = response[key]["data"].MaMonHoc;
-    response[key].TenMonHoc = response[key]["data"].TenMonHoc;
-    response[key].Lop = response[key]["data"].Lop;
-    response[key].Nhom = response[key]["data"].Nhom;
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key]["data"].NH);
+    body[key].type = body[key]["data"].LoaiTotNghiep;
+    body[key].month = body[key]["data"].DotThang;
+    body[key].DTB = body[key]["data"].DTB;
+    body[key].GhiChu = body[key]["data"].GhiChu;
+    body[key].MaMonHoc = body[key]["data"].MaMonHoc;
+    body[key].TenMonHoc = body[key]["data"].TenMonHoc;
+    body[key].Lop = body[key]["data"].Lop;
+    body[key].Nhom = body[key]["data"].Nhom;
+    body[key].LyDo = body[key]["data"].LyDo;
+    body[key].DonViDeCu = body[key]["data"].DonViDeCu;
+    body[key].NgayCap = body[key]["data"].NgayCap;
+    body[key].NoiDen = body[key]["data"].NoiDen;
+    body[key].SoQuyetDinh = body[key]["data"].SoQuyetDinh;
+    body[key].TenChuongTrinh = body[key]["data"].TenChuongTrinh;
+    body[key].TheLoai = body[key]["data"].TheLoai;
+    body[key].ThoiGianThamDu = body[key]["data"].ThoiGianThamDu;
+    body[key].KinhPhi = body[key]["data"].KinhPhi;
+
+    if (type === 'BUỘC THÔI HỌC')
+    {
+    body[key].DTB1 = body[key].DTB[0].Diem + ' - HK' + body[key].DTB[0].HK + '/' + body[key].DTB[0].NH;
+    body[key].DTB2 = body[key].DTB[1].Diem + ' - HK' + body[key].DTB[1].HK + '/' + body[key].DTB[1].NH;
+    }
+    if (type === 'CẢNH CÁO HỌC VỤ')
+    {
+    body[key].DTB1 = body[key]["data"].DTB1;
+    body[key].DTB2 = body[key]["data"].DTB2;
+    }
     if (type === 'BẢO LƯU')
     {
-      response[key].Start = 'HK' + response[key]["data"]["Tu"].HK + '/' + response[key]["data"]["Tu"].NH;
-      response[key].Finish = 'HK' + response[key]["data"]["Den"].HK + '/' + response[key]["data"]["Den"].NH;
-      response[key].Submit = 'HK' + response[key]["data"]["ThoiDiemNopDon"].HK + '/' + response[key]["data"]["ThoiDiemNopDon"].NH;
+      body[key].Start = 'HK' + body[key]["data"]["Tu"].HK + '/' + body[key]["data"]["Tu"].NH;
+      body[key].Finish = 'HK' + body[key]["data"]["Den"].HK + '/' + body[key]["data"]["Den"].NH;
+      body[key].Submit = 'HK' + body[key]["data"]["ThoiDiemNopDon"].HK + '/' + body[key]["data"]["ThoiDiemNopDon"].NH;
     }
-    return response[key];
+    return body[key];
   });
   
   switch (type) {

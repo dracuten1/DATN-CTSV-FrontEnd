@@ -11,7 +11,7 @@ export const GetUploadURL = async (type) => {
 
 /* Import QLBH */
 export const GetImportQLBHInfo = async (value) => {
-  const url = `bh/process-import`;
+  const url = `bh/import-bhxh`;
 
   const response = await HttpClient2.sendPost(url, value);;
 

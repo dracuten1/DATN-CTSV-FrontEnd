@@ -17,12 +17,12 @@ import { logger } from 'core/services/Apploger';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
-import * as QLHBHandler from 'handlers/QLHBHandler';
+import * as CDCSHandler from 'handlers/CDCSHandler';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
-import Types from 'reduxs/reducers/QLHB/actionTypes';
+import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Columns from './columns';
-import Actions from '../../../../reduxs/reducers/QLHB/action';
+import Actions from '../../../../reduxs/reducers/CDCS/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
@@ -55,36 +55,50 @@ let columns = [];
 
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLHBState = useSelector(state => state.QLHBState);
-  const { dataList, isHBKK, isCounting, listLink } = QLHBState;
+  const CDCSState = useSelector(state => state.CDCSState);
+  const { dataList, isCase, listLink } = CDCSState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
   let title;
-  if (isHBKK) {
-    columns = Columns.HBKK;
-    title = 'Học Bổng Khuyến Khích';
-  } else if (isCounting) {
-    columns = Columns.COUNTING;
-    title = 'Thống Kê';
-  } else {
-    columns = Columns.HBTT;
-    title = 'Học Bổng Tài Trợ';
+  switch (isCase) {
+    case 1:
+      columns = Columns.DTTS;
+      title = 'Dân Tộc Thiểu Số';
+      break;
+    case 2: //DTB
+      columns = Columns.HTDX;
+      title = 'Hỗ Trợ DX';
+      break;
+    case 3: //Danh sach tot nghiep
+      columns = Columns.TCXH;
+      title = 'Trợ Cấp Xã Hội';
+      break;
+    case 4: //Hoan thanh tin chi
+      columns = Columns.MGHP;
+      title = 'Miễn Giảm Học Phí';
+      break;
+    case 5: //Dang hoc
+      columns = Columns.SVKT;
+      title = 'Sinh Viên Khuyết Tật';
+      break;
+    default:
+      //MSSV
+      columns = Columns.TKMSSV;
+      title = 'Thống Kê Theo MSSV';
+      break;
   }
 
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
-    hk: '1',
-    nh: `${convert - 1}-${convert}`,
-    fromHK: '1',
-    fromNH: `${convert - 1}-${convert}`,
-    toHK: '2',
-    toNH: `${convert - 1}-${convert}`,
+    fromHK: '',
+    fromNH: '',
+    toHK: '',
+    toNH: '',
     mssv: '',
-    LoaiHB: '',
-    DoiTuong: '',
-    DonViTaiTro: ''
+    typeCDCS: '',
+    doituong: ''
   });
 
   const [state, setState] = useState({
@@ -94,8 +108,8 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getDataFilter());
-    dispatch(Actions.getListWithFilter(filter, type));
+    // dispatch(Actions.getDataFilter());
+    dispatch(Actions.changeCountingColumnsList());
     updateBegin += 1;
   }
 
@@ -166,13 +180,13 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={handleFilter} isCase={isCase} />
         <ContainedButton
           handleClick={() => {
-            if (isCounting){
-              filter.mssv === '' ? dispatch(Actions.countingWithFilter(filter)) : dispatch(Actions.countingWithMSSV(filter));
-            }else{
-              dispatch(Actions.getListWithFilter(filter, type));
+            if (isCase === 6) {
+              dispatch(Actions.countingWithMSSV(filter));
+            } else {
+              dispatch(Actions.countingWithFilter(filter));
             }
             updateBegin = 1;
           }}
@@ -203,56 +217,6 @@ const AllList = props => {
                 // exportButton: true,
                 filtering: false
               }}
-              editable={isCounting ? {} : {
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      if (oldData) {
-                        logger.info('Newdata: ', newData);
-                        const response = await QLHBHandler.UpdateOneStudentByType(
-                          newData,
-                          type
-                        );
-                        if (response.statusCode !== 200) {
-                          setSnackBarValue(errorSnackBar);
-                          return;
-                        }
-                        setSnackBarValue(successSnackBar);
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
-
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      logger.info('Olddata: ', oldData);
-                      const { PK, SK, ID } = oldData;
-                      const response = await QLHBHandler.DeleteOneCertificate(
-                        PK,
-                        SK,
-                        type,
-                        ID
-                      );
-                      if (response.statusCode !== 200) {
-                        setSnackBarValue(errorSnackBar);
-                        return;
-                      }
-                      setSnackBarValue(successSnackBar);
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
             />
           </div>
         </PerfectScrollbar>
@@ -263,29 +227,28 @@ const AllList = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
               onClick={() => {
-                type = 'KK';
+                type = 'TT';
                 updateBegin = 1;
-                dispatch(Actions.getListWithFilter(filter, type));
+                dispatch(Actions.changeCountingColumnsList());
               }}
               variant="contained"
               color="primary"
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              HBKK
+              Danh sách
             </Button>
             <Button
               onClick={() => {
-                type = 'TT';
+                dispatch(Actions.changeCountingColumnsCounting());
                 updateBegin = 1;
-                dispatch(Actions.getListWithFilter(filter, type));
               }}
               variant="contained"
               color="primary"
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              HBTT
+              Thống kê theo MSSV
             </Button>
             <Button
               onClick={() => setImportOpen(true)}
@@ -298,25 +261,35 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
-                if (isCounting){
-                  const response = await QLHBHandler.ExportCountingWithMSSV(filter);
-                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                if (isCase === 6) {
+                  const response = await CDCSHandler.ExportCountingWithMSSV(
+                    filter
+                  );
+                  if (
+                    response.statusCode !== 200 ||
+                    response.body === 'Không có gì để export'
+                  ) {
                     setSnackBarValue(errorExportSnackBar);
                     return;
                   }
                   setSnackBarValue(successSnackBar);
                   const { body } = response;
                   dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                }else{
-                  const response = await QLHBHandler.ExportWithFilter(filter, type);
-                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                } else {
+                  const response = await CDCSHandler.ExportCountingWithFilter(
+                    filter
+                  );
+                  if (
+                    response.statusCode !== 200 ||
+                    response.body === 'Không có gì để export'
+                  ) {
                     setSnackBarValue(errorExportSnackBar);
                     return;
                   }
                   setSnackBarValue(successSnackBar);
                   const { body } = response;
                   dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                } 
+                }
               }}
               variant="contained"
               color="primary"
@@ -324,18 +297,6 @@ const AllList = props => {
               style={{ marginLeft: '8px' }}
             >
               Export
-            </Button>
-            <Button
-              onClick={() => {
-                dispatch(Actions.changeCountingColumns());
-                updateBegin = 1;
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thống kê
             </Button>
           </Grid>
           {listLink.length > 0 ? (
@@ -351,7 +312,7 @@ const AllList = props => {
         open={importOpen}
         handleClose={() => setImportOpen(false)}
         handleImport={handleImport}
-        importCase={isHBKK ? 'KK' : 'TT'}
+        importCase={filter.typeCDCS}
       />
       <CustomizedSnackbars
         value={snackBarValue}

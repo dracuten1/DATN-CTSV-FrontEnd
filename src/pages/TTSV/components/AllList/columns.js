@@ -7,36 +7,36 @@ const SVNN = [
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'Tên chương trình',
-    field: 'ktx'
+    field: 'TenChuongTrinh'
   },
   {
     title: 'Nơi đến',
-    field: 'portal'
+    field: 'NoiDen'
   },
   {
     title: 'Thể loại',
-    field: 'portal'
+    field: 'TheLoai'
   },
   {
     title: 'Kinh phí',
-    field: 'portal'
+    field: 'KinhPhi'
   },
   {
     title: 'Thời gian',
-    field: 'portal'
+    field: 'ThoiGianThamDu'
   },
   {
     title: 'Đơn vị đề cử',
-    field: 'portal'
+    field: 'DonViDeCu'
   },
   {
     title: 'Số quyết định',
-    field: 'receiver',
+    field: 'SoQuyetDinh',
     filtering: false
   },
   {
     title: 'Ngày cấp',
-    field: 'note',
+    field: 'NgayCap',
     filtering: false
   },
   {
@@ -113,7 +113,7 @@ const DTB = [
   },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 
@@ -162,7 +162,7 @@ const DSTN = [
   },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 
@@ -199,7 +199,7 @@ const HTCT = [
   },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 
@@ -209,11 +209,11 @@ const CCHV = [
   { title: 'Họ tên', field: 'HoVaTen', filtering: false },
   {
     title: 'ĐTB1',
-    field: 'portal'
+    field: 'DTB1'
   },
   {
     title: 'ĐTB2',
-    field: 'portal'
+    field: 'DTB2'
   },
   {
     title: 'Học kỳ',
@@ -244,7 +244,7 @@ const CCHV = [
   },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 
@@ -307,7 +307,7 @@ const BL = [
   { title: 'Nộp đơn', field: 'Submit', filtering: false },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 
@@ -345,7 +345,7 @@ const MSSV = [
   },
   {
     title: 'Ghi chú',
-    field: 'note'
+    field: 'GhiChu'
   }
 ];
 

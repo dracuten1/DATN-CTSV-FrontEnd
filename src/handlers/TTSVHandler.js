@@ -57,7 +57,7 @@ export const GetListWithFilter = async filter => {
   const cvType = convertType(type);
   const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}&mssv=${mssv}`;
   logger.info('TTSVAction:: getListAll: url: ', url);
-  const response = await HttpClient.sendPut(url);
+  const response = await HttpClient.sendPutGetStatus(url);
   return response;
 };
 
