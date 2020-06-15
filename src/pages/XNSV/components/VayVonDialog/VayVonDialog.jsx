@@ -41,7 +41,7 @@ const VayVonDialog = props => {
   const classes = useStyles();
   // const dispatch = useDispatch();
 
-  const { open, handleClose, handleConfirm } = props;
+  const { open, handleClose, handleConfirm, CMNDInfo } = props;
   const date = new Date();
 
   const [values, setValues] = React.useState({
@@ -81,28 +81,29 @@ const VayVonDialog = props => {
           <TextField
             className={classes.textField}
             label="CMND"
-            defaultValue="1612123"
-            onChange={handleChange('cmnd')}
+            defaultValue={CMNDInfo.CMND}
             margin="normal"
+            disabled
           />
           <TextField
             className={classes.textField}
             label="Nơi cấp"
             margin="normal"
-            defaultValue="Bà Rịa - Vũng Tàu"
-            onChange={handleChange('address')}
+            defaultValue={CMNDInfo.NoiCapCMND}
+            disabled
           />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               margin="normal"
               id="date-picker-dialog"
               label="Ngày cấp"
+              style={{ width: '400px', marginLeft: '8px' }}
               format="dd/MM/yyyy"
-              value={date}
-              onChange={handleChange('date')}
+              value={moment(CMNDInfo.NgayCapCMND, "DD/MM/YYYY")}
               KeyboardButtonProps={{
                 'aria-label': 'change date'
               }}
+              disabled
             />
           </MuiPickersUtilsProvider>
           <Divider className={classes.divider} />
