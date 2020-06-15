@@ -72,6 +72,9 @@ const defaultValue = {
   addSemester: '',
   addYear: ``,
   startDateBaoLuu: date,
+  CMND: '',
+  NoiCapCMND: '',
+  NgayCapCMND: date,
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -146,7 +149,7 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Thời gian học':
             Data = {
-              NamKetThuc: `${tmp.studentEndYear}`,
+              NamKetThucHoc: `${tmp.studentEndYear}`,
               NgonNgu: `${tmp.language}`,
             }
             break;
@@ -197,7 +200,7 @@ const XNTruocKhiThemDialog = props => {
       NgonNgu: `${tmp.language} `,
       LoaiGiayXN: tmp.case,
       LyDoXN: tmp.reason,
-      ThoiGian: `${tmp.addSemester} -${tmp.addYear} `,
+      ThoiGian: `${tmp.addSemester}-${tmp.addYear} `,
       ThongTinSinhVien: {
         DiaChiThuongTru: {
           PhuongXa: tmp.ward,
@@ -378,6 +381,9 @@ const XNTruocKhiThemDialog = props => {
       district: valueOrEmpty(DiaChiThuongTru.QuanHuyen),
       ward: valueOrEmpty(DiaChiThuongTru.PhuongXa),
       status: resStudentInfo.TTHV,
+      CMND: resStudentInfo.CMND,
+      NoiCapCMND: resStudentInfo.NoiCapCMND,
+      NgayCapCMND: resStudentInfo.NgayCapCMND
     };
 
     logger.info("findStudentInfoById: ", studentInfo);
@@ -508,6 +514,11 @@ const XNTruocKhiThemDialog = props => {
                 setValues({ ...values, case: '' });
               }}
               open={isOpenVayVonDialog}
+              CMNDInfo={{
+                CMND: values.CMND,
+                NgayCapCMND: values.NgayCapCMND,
+                NoiCapCMND: values.NoiCapCMND
+              }}
             />
           )}
           {values.case === 'Giới thiệu' && (
@@ -535,11 +546,11 @@ const XNTruocKhiThemDialog = props => {
                     fetchCertificate('year')(event);
                   }}
                 >
-                  <MenuItem selected value={"3"}>
+                  <MenuItem selected value={"2019-2020"}>
                     2019-2020
                   </MenuItem>
-                  <MenuItem value={"2"}>2018-2019</MenuItem>
-                  <MenuItem value={"1"}>2017-2018</MenuItem>
+                  <MenuItem value={"2018-2019"}>2018-2019</MenuItem>
+                  <MenuItem value={"2017-2018"}>2017-2018</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.textField} margin="normal">
