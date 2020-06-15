@@ -19,7 +19,7 @@ let arrDVTT = ['None'];
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter } = props;
+  const { onFilter, mssv } = props;
   const dt = new Date();
   const year = dt.getFullYear();
   const QLHBState = useSelector(state => state.QLHBState);
@@ -116,6 +116,7 @@ export default function Filters(props) {
             id="outlined-basic"
             label="MSSV"
             variant="outlined"
+            defaultValue={mssv}
             onChange={handleChange}
             style={{ marginTop: '8px', width: '80%' }}
             inputProps={{

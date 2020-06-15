@@ -69,10 +69,11 @@ export const GetListWithFilter = async filter => {
 // };
 
 export const ExportWithFilter = async (filter) => {
-  const { type, hk, nh } = filter;
+  const { type, hk, nh, mssv } = filter;
   const cvNH = convertNamHoc(nh);
   const cvType = convertType(type);
-  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
+  const url = mssv === '' ? `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}` : `xnsv/ttsv?mssv=${mssv}`;
+  logger.info('TTSVHandler:: update status:: url: ', url);
 
   const response = await HttpClient.sendPatch(url);
 
@@ -83,5 +84,5 @@ export const UpdateStudentStatus = async (body) => {
 
   const url = `xnsv/updateTTHV`;
   logger.info('TTSVHandler:: update status:: body: ', body);
-  const response = await HttpClient.sendPutWithBody(url, body)
+  const response = await HttpClient.sendPutWithBody(url, body);
 }

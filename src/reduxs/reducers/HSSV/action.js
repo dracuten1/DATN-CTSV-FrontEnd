@@ -5,26 +5,35 @@ import Types from './actionTypes';
 
 const getInfoStudent = (mssv) => async dispatch => {
   const payload       = await HSSVHandler.GetInfoStudent(mssv);
-  payload.mssv        = payload.SK.replace("SV#", '');
-  payload.Name        = payload.Ho + ' ' + payload.Ten;
-  payload.SoNha       = payload.DiaChiThuongTru.SoNha;
-  payload.PhuongXa    = payload.DiaChiThuongTru.PhuongXa;
-  payload.TinhTP      = payload.DiaChiThuongTru.TinhTP;
-  payload.QuanHuyen   = payload.DiaChiThuongTru.QuanHuyen;
-  payload.SoTK        = payload.TaiKhoanNganHang.SoTK;
-  payload.NganHang    = payload.TaiKhoanNganHang.NganHang;
-  payload.ChiNhanh    = payload.TaiKhoanNganHang.ChiNhanh;
-  payload.TenNLL      = payload.NguoiLienLac.Ten;
-  payload.DiaChiNLL   = payload.NguoiLienLac.DiaChi;
-  payload.EmailNLL    = payload.NguoiLienLac.Email;
-  payload.TenNLL      = payload.NguoiLienLac.Ten;
-  payload.SDTNLL      = payload.NguoiLienLac.DT;
-  payload.GhiChuNLL   = payload.NguoiLienLac.GhiChu;
-  payload.QuanHe      = payload.NguoiLienLac.QuanHe;
-  payload.NgoaiNgu    = payload.NguoiLienLac.NgoaiNgu;
-  payload.TinHoc      = payload.NguoiLienLac.TinHoc;
 
-  dispatch({ type: Types.GET_INFO, payload });
+  const {statusCode, body} = payload;
+
+  if (statusCode !== 200 || body === "Không tìm thấy học sinh này !")
+  {
+    dispatch({ type: Types.GET_NULL});
+    return;
+  }
+
+  body.mssv        = body.SK.replace("SV#", '');
+  body.Name        = body.Ho + ' ' + body.Ten;
+  body.SoNha       = body.DiaChiThuongTru.SoNha;
+  body.PhuongXa    = body.DiaChiThuongTru.PhuongXa;
+  body.TinhTP      = body.DiaChiThuongTru.TinhTP;
+  body.QuanHuyen   = body.DiaChiThuongTru.QuanHuyen;
+  body.SoTK        = body.TaiKhoanNganHang.SoTK;
+  body.NganHang    = body.TaiKhoanNganHang.NganHang;
+  body.ChiNhanh    = body.TaiKhoanNganHang.ChiNhanh;
+  body.TenNLL      = body.NguoiLienLac.Ten;
+  body.DiaChiNLL   = body.NguoiLienLac.DiaChi;
+  body.EmailNLL    = body.NguoiLienLac.Email;
+  body.TenNLL      = body.NguoiLienLac.Ten;
+  body.SDTNLL      = body.NguoiLienLac.DT;
+  body.GhiChuNLL   = body.NguoiLienLac.GhiChu;
+  body.QuanHe      = body.NguoiLienLac.QuanHe;
+  body.NgoaiNgu    = body.NguoiLienLac.NgoaiNgu;
+  body.TinHoc      = body.NguoiLienLac.TinHoc;
+
+  dispatch({ type: Types.GET_INFO, payload: body });
   history.push('/hssv');
 };
 

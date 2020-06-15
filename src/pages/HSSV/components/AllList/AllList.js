@@ -444,6 +444,11 @@ const AllList = props => {
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
+  const nullSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Không tìm thấy thông tin!'
+  };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
   const handleSnackBarClose = current => event => {
@@ -507,22 +512,27 @@ const AllList = props => {
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
-                    setTimeout(() => {
+                    setTimeout(async () => {
                       resolve();
                       if (oldData) {
+                        newData['DiaChiThuongTru']['PhuongXa'] =
+                        newData.PhuongXa;
+                        newData['DiaChiThuongTru']['QuanHuyen'] =
+                        newData.QuanHuyen;
+                        newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
+                        newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
+                        
+                        const response = await HSSVHandler.UpdateStudentInfo(newData);
+                        if (response.statusCode !== 200) {
+                          setSnackBarValue(errorSnackBar);
+                          return;
+                        }
+                        setSnackBarValue(successSnackBar);
                         setState(prevState => {
-                          newData['DiaChiThuongTru']['PhuongXa'] =
-                            newData.PhuongXa;
-                          newData['DiaChiThuongTru']['QuanHuyen'] =
-                            newData.QuanHuyen;
-                          newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
-                          newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
-
                           const data = [...prevState.data];
                           data[data.indexOf(oldData)] = newData;
                           return { ...prevState, data };
                         });
-                        dispatch(Actions.updateStudentInfo(newData));
                       }
                     }, 600);
                   })

@@ -328,6 +328,7 @@ const TTBT = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Học kỳ',
@@ -343,6 +344,7 @@ const TTBT = [
     cellStyle: {
       minWidth: '150px'
     }
+    , editable: false 
   },
   {
     title: 'Ghi chú',

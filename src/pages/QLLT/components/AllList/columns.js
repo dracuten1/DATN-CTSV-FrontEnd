@@ -15,27 +15,27 @@ const ALL = [
   },
   {
     title: 'Nội trú - Portal',
-    field: 'portal',
-    type: 'boolean',
-    render: rowData => (
-      <div style={{ marginLeft: '10px' }}>
-        {rowData.portal ? <icons.CheckBox /> : <icons.CheckBlank />}
-      </div>
-    )
+    field: 'portal'
+    // type: 'boolean',
+    // render: rowData => (
+    //   <div style={{ marginLeft: '10px' }}>
+    //     {rowData.portal ? <icons.CheckBox /> : <icons.CheckBlank />}
+    //   </div>
+    // )
   },
   {
     title: 'Xác nhận ngoại trú',
-    field: 'xnnt',
-    type: 'boolean',
-    render: rowData => (
-      <div style={{ marginLeft: '10px' }}>
-        {rowData.xnnt ? (
-          <icons.CheckBox />
-        ) : (
-          <icons.CheckBlank />
-        )}
-      </div>
-    )
+    field: 'xnnt'
+    // type: 'boolean',
+    // render: rowData => (
+    //   <div style={{ marginLeft: '10px' }}>
+    //     {rowData.xnnt ? (
+    //       <icons.CheckBox />
+    //     ) : (
+    //       <icons.CheckBlank />
+    //     )}
+    //   </div>
+    // )
   },
   {
     title: 'Năm học',
@@ -52,6 +52,7 @@ const ALL = [
     filterCellStyle: {
       paddingTop: 1
     }
+    , editable: 'never'
   },
   {
     title: 'Học kỳ',
@@ -64,6 +65,7 @@ const ALL = [
     filterCellStyle: {
       paddingTop: 1
     }
+    , editable: 'never'
   },
   {
     title: 'Người nhận',
@@ -99,6 +101,7 @@ const KTX = [
     filterCellStyle: {
       paddingTop: 1
     }
+    , editable: 'never'
   },
   {
     title: 'Học kỳ',
@@ -111,6 +114,7 @@ const KTX = [
     filterCellStyle: {
       paddingTop: 1
     }
+    , editable: 'never'
   },
   {
     title: 'Ghi chú',

@@ -177,17 +177,9 @@ const AllList = props => {
                         setState(prevState => {
                           const data = [...prevState.data];
                           if (isAlllist) {
-                            if (newData.portal)
                               newData['Nội trú']['Cập nhật Portal'] =
-                                'Đã cập nhật';
-                            else
-                              newData['Nội trú']['Cập nhật Portal'] =
-                                'Không cập nhật';
-                            if (newData.xnnt)
-                              newData['Xác nhận ngoại trú'] = 'Đã xác nhận';
-                            else
-                              newData['Xác nhận ngoại trú'] = 'Không xác nhận';
-                            newData['Nội trú']['KTX'] = newData.ktx;
+                              newData.portal;
+                              newData['Xác nhận ngoại trú'] = newData.xnnt;
                           }
 
                           data[data.indexOf(oldData)] = newData;
