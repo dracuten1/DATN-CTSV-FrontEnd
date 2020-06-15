@@ -1,4 +1,5 @@
 import * as HttpClient from 'core/services/HttpClient';
+import { logger } from 'core/services/Apploger';
 
 const convertNamHoc = nh => {
   const dt = new Date();
@@ -29,14 +30,15 @@ export const GetListWithFilter = async filter => {
   const url     = `ttluutru/sv`;
   filter.limit  = 10000;
   filter.nh     = convertNamHoc(filter.nh);
-  const response = await HttpClient.sendPutWithBody(url, filter);
+  const response = await HttpClient.sendPutWithBodyGetStatus(url, filter);
   return response;
 };
 
 export const UpdateOneStudentByType = async (data, type) => {
   const url = `ttluutru/sv`;
   const keys = { data, type };
-  const response = await HttpClient.sendPost(url, keys);
+  logger.info('keys: ', keys);
+  const response = await HttpClient.sendPostGetData(url, keys);
   return response;
 };
 

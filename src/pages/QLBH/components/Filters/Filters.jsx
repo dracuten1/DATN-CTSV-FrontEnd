@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, isCounting } = props;
+  const { onFilter, isCounting, mssv } = props;
   const dt = new Date();
   const year = dt.getFullYear();
 
@@ -30,6 +30,7 @@ export default function Filters(props) {
             id="outlined-basic"
             label="MSSV"
             variant="outlined"
+            defaultValue={mssv}
             onChange={handleChange}
             style={{ marginTop: '8px', width: '80%' }}
             helperText="BHYT and BHTN need MSSV"

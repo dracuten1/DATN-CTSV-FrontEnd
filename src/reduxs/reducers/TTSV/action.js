@@ -30,10 +30,16 @@ const getListWithMSSV = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: filter: ', filter);
   const response = await TTSVHandler.GetListWithFilter(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
-  const data = Object.keys(response).map(key => {
-    response[key].nh = parseNHToNumber(response[key]["data"].NH);
-    response[key].GhiChu = response[key]["data"].GhiChu;
-    return response[key];
+  const {statusCode, body} = response;
+  if (statusCode !== 200 || body === "Không có dữ liệu"){
+    dispatch({ type: Types.NO_DATA });
+    return;
+  } 
+
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key]["data"].NH);
+    body[key].GhiChu = body[key]["data"].GhiChu;
+    return body[key];
   });
   dispatch({ type: Types.GET_TTSV_WITH_MSSV, payload: data });
   history.push('/ttsv');
@@ -44,7 +50,7 @@ const getListWithFilter = filter => async dispatch => {
   const response = await TTSVHandler.GetListWithFilter(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const {statusCode, body} = response;
-  if (statusCode !== 200 || body.length === 0){
+  if (statusCode !== 200 || body === "Không có dữ liệu"){
     dispatch({ type: Types.NO_DATA });
     return;
   } 

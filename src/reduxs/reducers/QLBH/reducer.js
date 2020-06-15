@@ -20,6 +20,33 @@ const qlbhReducer = (state = INIT_STATE, action) => {
         isCounting: true,
         dataList: []
       };
+    case ActionTypes.NO_DATA_BHYT:
+      return {
+        ...state,
+        isBHYT: true,
+        isBHTN: false,
+        isTTBT: false,
+        isCounting: false,
+        dataList: []
+      };
+    case ActionTypes.NO_DATA_BHTN:
+      return {
+        ...state,
+        isBHYT: false,
+        isBHTN: true,
+        isTTBT: false,
+        isCounting: false,
+        dataList: []
+      };
+    case ActionTypes.NO_DATA_TTBT:
+      return {
+        ...state,
+        isBHYT: false,
+        isBHTN: false,
+        isTTBT: true,
+        isCounting: false,
+        dataList: []
+      };
     case ActionTypes.NO_DATA:
       return {
         ...state,

@@ -13,7 +13,7 @@ import {
   Divider,
   Grid
 } from '@material-ui/core';
-
+import { logger } from 'core/services/Apploger';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
@@ -71,7 +71,7 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getAllListWithFilter(filter));
+    dispatch(Actions.getNullData());
     updateBegin += 1;
   }
 
@@ -114,6 +114,11 @@ const AllList = props => {
     type: 'success',
     message: 'Thực hiện thành công!'
   };
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
   const errorExportSnackBar = {
     open: true,
     type: 'error',
@@ -125,14 +130,13 @@ const AllList = props => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
-
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            if (filter.type === 'All')
+            if (filter.type === 'All' || filter.type === 'all')
               dispatch(Actions.getAllListWithFilter(filter));
             else dispatch(Actions.getKtxListWithFilter(filter));
             updateBegin = 1;
@@ -167,7 +171,7 @@ const AllList = props => {
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise(resolve => {
-                    setTimeout(() => {
+                    setTimeout(async () => {
                       resolve();
                       if (oldData) {
                         setState(prevState => {
@@ -191,19 +195,21 @@ const AllList = props => {
                         });
                         newData.NH = parseNHToString(newData.nh);
                         const type = isAlllist ? 'all' : 'ktx';
-                        dispatch(Actions.updateOneStudentByType(newData, type));
+                        logger.info('Newdata: ', newData);
+                        const response = await QLLTHandler.UpdateOneStudentByType(
+                          newData, type
+                        );
+                        if (response.statusCode !== 200) {
+                          setSnackBarValue(errorSnackBar);
+                          return;
+                        }
+                        setSnackBarValue(successSnackBar);
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data[data.indexOf(oldData)] = newData;
+                          return { ...prevState, data };
+                        });
                       }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
                     }, 600);
                   })
               }}
@@ -227,7 +233,10 @@ const AllList = props => {
             <Button
               onClick={async () => {
                 const response = await QLLTHandler.ExportWithFilter(filter);
-                if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                if (
+                  response.statusCode !== 200 ||
+                  response.body === 'Không có gì để export'
+                ) {
                   setSnackBarValue(errorExportSnackBar);
                   return;
                 }
@@ -258,7 +267,7 @@ const AllList = props => {
         handleImport={handleImport}
         importCase={filter.type === 'KTX' ? 2 : 3}
       />
-       <CustomizedSnackbars
+      <CustomizedSnackbars
         value={snackBarValue}
         handleClose={handleSnackBarClose}
       />

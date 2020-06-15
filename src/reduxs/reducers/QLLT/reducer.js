@@ -8,6 +8,8 @@ const INIT_STATE = {
 
 const qlltReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case ActionTypes.GET_NULL_DATA:
+      return { ...state, dataList: [] };
     case ActionTypes.ALLLIST:
       return { ...state, isAlllist: true };
     case ActionTypes.KTX:
@@ -33,8 +35,6 @@ const qlltReducer = (state = INIT_STATE, action) => {
         return { ...state, listLink: ex };
       }
     case ActionTypes.DELETE_ONE_CERTIFICATE:
-      return { ...state };
-    case ActionTypes.PRINT_BY_TYPE:
       return { ...state };
     default:
       return { ...state };

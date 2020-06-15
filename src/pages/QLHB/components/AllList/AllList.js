@@ -95,7 +95,7 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(Actions.getDataFilter());
-    dispatch(Actions.getListWithFilter(filter, type));
+    dispatch({type: Types.HBKK});
     updateBegin += 1;
   }
 
@@ -108,39 +108,20 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  if (updateBegin === 2 && state.data.length !== dataList.length) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: columns
-    });
-    updateBegin += 1;
-  }
+  // if (updateBegin === 2 && state.data.length !== dataList.length) {
+  //   setState({
+  //     ...state,
+  //     data: dataList,
+  //     columns: columns
+  //   });
+  //   updateBegin += 1;
+  // }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
 
   const handleImport = () => {};
-
-  const parseNHToString = nh => {
-    switch (nh) {
-      case 1:
-        return `${convert - 6}-${convert - 5}`;
-      case 2:
-        return `${convert - 5}-${convert - 4}`;
-      case 3:
-        return `${convert - 4}-${convert - 3}`;
-      case 4:
-        return `${convert - 3}-${convert - 2}`;
-      case 5:
-        return `${convert - 2}-${convert - 1}`;
-      case 6:
-        return `${convert - 1}-${convert}`;
-      default:
-        return `${convert}-${convert + 1}`;
-    }
-  };
 
   const successSnackBar = {
     open: true,
@@ -233,12 +214,12 @@ const AllList = props => {
                     setTimeout(async () => {
                       resolve();
                       logger.info('Olddata: ', oldData);
-                      const { PK, SK, ID } = oldData;
+                      const { PK, SK, id } = oldData;
                       const response = await QLHBHandler.DeleteOneCertificate(
                         PK,
                         SK,
                         type,
-                        ID
+                        id
                       );
                       if (response.statusCode !== 200) {
                         setSnackBarValue(errorSnackBar);
@@ -265,8 +246,7 @@ const AllList = props => {
               onClick={() => {
                 type = 'KK';
                 updateBegin = 1;
-                dispatch(Actions.getListWithFilter(filter, type));
-              }}
+                dispatch({type: Types.HBKK});              }}
               variant="contained"
               color="primary"
               size="small"
@@ -278,8 +258,7 @@ const AllList = props => {
               onClick={() => {
                 type = 'TT';
                 updateBegin = 1;
-                dispatch(Actions.getListWithFilter(filter, type));
-              }}
+                dispatch({type: Types.HBTT});              }}
               variant="contained"
               color="primary"
               size="small"
