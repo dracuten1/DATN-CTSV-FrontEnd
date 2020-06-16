@@ -185,7 +185,7 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Thời gian học':
             Data = {
-              NgonNgu: `${tmp.language} `,
+              NgonNgu: `${tmp.language}`,
             }
             break;
           default:
@@ -196,11 +196,11 @@ const XNTruocKhiThemDialog = props => {
 
     const tmpCertificate = {
       Data,
-      HoVaTenNguoiKy: `${tmp.signer} `,
-      NgonNgu: `${tmp.language} `,
+      HoVaTenNguoiKy: `${tmp.signer}`,
+      NgonNgu: `${tmp.language}`,
       LoaiGiayXN: tmp.case,
       LyDoXN: tmp.reason,
-      ThoiGian: `${tmp.addSemester}-${tmp.addYear} `,
+      ThoiGian: `${tmp.addSemester}-${tmp.addYear}`,
       ThongTinSinhVien: {
         DiaChiThuongTru: {
           PhuongXa: tmp.ward,
@@ -220,8 +220,8 @@ const XNTruocKhiThemDialog = props => {
   const gernerateYearData = () => {
     const currentYear = moment(date).format('YYYY');
     const rs = [
-      `${currentYear} -${Number.parseInt(currentYear) + 1} `,
-      `${currentYear - 1} -${currentYear} `
+      `${currentYear}-${Number.parseInt(currentYear) + 1}`,
+      `${currentYear - 1}-${currentYear}`
     ];
     return rs;
   }
