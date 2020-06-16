@@ -70,7 +70,7 @@ export const CountingWithMSSV = async filter => {
 };
 
 export const GetDataFilter = async () => {
-  const url = `chinhsach/common`;
+  const url = `hb/common`;
 
   const response = await HttpClient2.sendGetData(url);
 

@@ -69,7 +69,11 @@ const countingWithFilter = filter => async dispatch => {
   const response = await CDCSHanlder.CountingWithFilter(filter);
   logger.info('CDCSAction:: getListAll: reponse: ', response);
   
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")  return;
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   
   const { typeCDCS }  = filter;
   const { body }      = response;

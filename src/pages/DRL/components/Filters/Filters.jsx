@@ -22,8 +22,8 @@ function FiltersDRL(props) {
   const DRLState = useSelector(state => state.DRLState);
   const { listUser } = DRLState;
 
-  tempArr = tempArr.concat(listUser);
-  logger.info('dataUser: ', tempArr);
+  if (tempArr.length === 1)
+    tempArr = tempArr.concat(listUser);
 
   const dt = new Date();
   const year = dt.getFullYear();

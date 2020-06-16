@@ -23,8 +23,8 @@ export default function Filters(props) {
   const XNSVState = useSelector(state => state.XNSVState);
   const { listUser } = XNSVState;
   
-  tempArr = tempArr.concat(listUser);
-  logger.info('dataUser: ', tempArr);
+  if (tempArr.length === 1)
+    tempArr = tempArr.concat(listUser);
 
   const dt = new Date();
   const year = dt.getFullYear();

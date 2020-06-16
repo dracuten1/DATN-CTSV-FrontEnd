@@ -91,7 +91,7 @@ const countingWithMSSV = (filter) => async dispatch => {
     return body[key];
   });
 
-  dispatch({ type: Types.GET_DATA_TKMSSV, payload: data });
+  dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
   history.push('/qlhb');
 };
 
@@ -128,7 +128,7 @@ const countingWithFilter = (filter) => async dispatch => {
   }else if (DonViTaiTro !== ''){
     dispatch({ type: Types.GET_DATA_COUNTING, payload: arrDVTT });
   }else{
-    dispatch({ type: Types.GET_NULL_DATA });
+    dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
   }
 
   history.push('/qlhb');

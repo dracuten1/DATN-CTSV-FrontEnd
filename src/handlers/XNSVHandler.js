@@ -80,10 +80,10 @@ export const GetListCertificate = async (status) => {
     item.mssv = item.ThongTinSinhVien.MSSV;
     item.case = parseCase(item.LoaiGiayXN);
     item.reason = item.LyDoXN;
-    item.date = moment(item.ngayThem).format('DD/MM/YYYY');
+    item.date = moment(item.NgayThemGXN).format('DD/MM/YYYY');
     item.pk = item.PK;
     item.sk = item.SK;
-    item.ngayin = item.NgayIn ? moment(parseFloat(item.NgayIn)).format('DD/MM/YYYY')  : null;
+    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY')  : null;
     item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
     return item;
   });

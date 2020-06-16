@@ -108,7 +108,7 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    // dispatch(Actions.getDataFilter());
+    dispatch(Actions.getDataFilter());
     dispatch(Actions.changeCountingColumnsList());
     updateBegin += 1;
   }

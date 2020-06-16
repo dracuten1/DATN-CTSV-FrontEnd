@@ -107,6 +107,7 @@ export const ExportCountingWithMSSV = async (filter) => {
   logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendPutGetStatus(url);
+  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
 
   return response;
 };

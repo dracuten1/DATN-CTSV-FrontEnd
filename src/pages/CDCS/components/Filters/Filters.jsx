@@ -1,5 +1,6 @@
 import React from 'react';
 import Filter from 'shared/components/filter/Filter';
+import FilterCDCS from 'shared/components/filter/FilterObject';
 import TextField from '@material-ui/core/TextField';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,7 +23,9 @@ export default function Filters(props) {
 
   const CDCSState = useSelector(state => state.CDCSState);
   const { listDoiTuong } = CDCSState;
-  arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
+
+  if (arrDoiTuong.length === 1)
+    arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -116,7 +119,7 @@ export default function Filters(props) {
             prop="typeCDCS"
             data={['DTTS', 'HTDX', 'TCXH', 'MGHP', 'SVKT']}
           />
-          <Filter
+          <FilterCDCS
             clickFilter={onFilter}
             prop="doituong"
             label="Đối tượng"

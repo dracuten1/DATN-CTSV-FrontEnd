@@ -52,10 +52,10 @@ const cdcsReducer = (state = INIT_STATE, action) => {
         isCase: 6
       };
     case ActionTypes.GET_DATA_FILTER:
-      const { DoiTuong } = action.payload;
+      const { DoiTuongCDCS } = action.payload;
       return {
         ...state,
-        listDoiTuong: DoiTuong
+        listDoiTuong: DoiTuongCDCS
       };
     case ActionTypes.ADD_LINK_EXPORT: {
       const ex = state.listLink.concat(action.listLink);
