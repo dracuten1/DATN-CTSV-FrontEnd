@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter } = props;
+  const { onFilter, mssv } = props;
   const dt = new Date();
   const year = dt.getFullYear();
 
@@ -66,6 +66,7 @@ export default function Filters(props) {
         label="MSSV"
         variant="outlined"
         onChange={handleChange}
+        defaultValue={mssv}
         style={{marginTop: '8px'}}
         helperText="Ưu tiên"
         inputProps={{

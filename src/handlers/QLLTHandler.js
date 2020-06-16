@@ -50,8 +50,11 @@ export const ExportWithFilter = async (filter) => {
     case 'all': case 'All':
       type = 'All';
       break;
-    default:
+    case 'ktx': case 'KTX':
       type = 'KTX';
+      break;
+    default:
+      type = '';
   }
 
   const url = `ttluutru/get?nh=${cvNH}&hk=${hk}&type=${type}&limit=10000`;

@@ -43,8 +43,8 @@ export const UpdateOneStudentByType = async (data) => {
 
 export const DeleteOneCertificate = async (PK, SK, type) => {
   const url = `bh/list`;
-  logger.info('QLBHHandler: ', PK, SK, type);
-  const response = await HttpClient2.sendDeleteWithStatusCode(url, { PK, SK, type });
+  logger.info('QLBHHandler: body: ', {PK, SK, type});
+  const response = await HttpClient2.sendDeleteWithStatusCode(url, {data: {PK, SK, type}});
   logger.info('QLBHHandler: response', response);
   return response;
 };

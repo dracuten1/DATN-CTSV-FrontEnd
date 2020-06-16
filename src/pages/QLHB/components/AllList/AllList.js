@@ -147,7 +147,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={handleFilter} mssv={filter.mssv}/>
         <ContainedButton
           handleClick={() => {
             if (isCounting){

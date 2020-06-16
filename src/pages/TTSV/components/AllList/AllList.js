@@ -166,7 +166,7 @@ const AllList = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <UpdateDialog open={updateDialogStage} handleClose={handleCloseUpdateDialog} />
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={handleFilter} mssv={filter.mssv} />
         <ContainedButton
           handleClick={() => {
             if (filter.mssv.length > 0)
