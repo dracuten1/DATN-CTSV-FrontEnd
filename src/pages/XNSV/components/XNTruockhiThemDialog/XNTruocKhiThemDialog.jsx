@@ -220,8 +220,8 @@ const XNTruocKhiThemDialog = props => {
   const gernerateYearData = () => {
     const currentYear = moment(date).format('YYYY');
     const rs = [
-      `${currentYear} -${Number.parseInt(currentYear) + 1} `,
-      `${currentYear - 1} -${currentYear} `
+      `${currentYear}-${Number.parseInt(currentYear) + 1} `,
+      `${currentYear - 1}-${currentYear} `
     ];
     return rs;
   }
