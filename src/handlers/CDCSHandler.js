@@ -57,11 +57,11 @@ export const ExportCountingWithFilter = async filter => {
 };
 
 export const CountingWithMSSV = async filter => {
-  const { fromHK, fromNH, toHK, toNH, mssv } = filter;
+  const { fromHK, fromNH, toHK, toNH, mssv, doituong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
 
-  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendGetData(url);
@@ -78,11 +78,11 @@ export const GetDataFilter = async () => {
 };
 
 export const ExportCountingWithMSSV = async filter => {
-  const { fromHK, fromNH, toHK, toNH, mssv } = filter;
+  const { fromHK, fromNH, toHK, toNH, mssv, doituong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
 
-  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendPutGetStatus(url);

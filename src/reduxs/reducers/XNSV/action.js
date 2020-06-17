@@ -17,6 +17,10 @@ const getNotPrintYet = () => async dispatch => {
   const status = 'ChuaIn';
   const payload = await XNSVHandler.GetListCertificate(status);
   logger.info("response: ", payload);
+  if (payload.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
   history.push('/xnsv');
 };
@@ -24,6 +28,11 @@ const getNotPrintYet = () => async dispatch => {
 const getListHistory = () => async dispatch => {
   const status = 'In';
   const payload = await XNSVHandler.GetListCertificate(status);
+  logger.info("payload: ", payload);
+  if (payload.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   dispatch({ type: Types.GET_HISTORY_LIST, payload });
   history.push('/xnsv');
 };
@@ -100,6 +109,10 @@ const getListExport = filter => async dispatch => {
 
   const response = await XNSVHandler.GetListExport(filter);
   logger.info('XNSVAction:: ListExportfilter: reponse: ', response);
+  if (response.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   dispatch({ type: Types.GET_HISTORY_LIST, payload: response });
   history.push('/xnsv');
 };

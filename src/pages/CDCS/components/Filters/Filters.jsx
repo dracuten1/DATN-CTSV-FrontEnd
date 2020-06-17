@@ -47,6 +47,12 @@ export default function Filters(props) {
               }
             }}
           />
+           <FilterCDCS
+            clickFilter={onFilter}
+            prop="doituong"
+            label="Đối tượng"
+            data={arrDoiTuong}
+          />
           <div
             style={{
               display: 'flex',

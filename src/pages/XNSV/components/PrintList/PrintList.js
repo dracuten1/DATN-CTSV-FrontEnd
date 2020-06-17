@@ -18,7 +18,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { logger } from 'core/services/Apploger';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import * as XNSVHandler from 'handlers/XNSVHandler';import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import Types from 'reduxs/reducers/XNSV/actionTypes';
 import icons from 'shared/icons';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 import Filters from '../filters/Filters';
@@ -227,7 +229,6 @@ const PrintList = props => {
     dispatch(XNSVActions.getNotPrintYet());
     updateBegin += 1;
   }
-  logger.info('XNSVAction:: datalist: ', dataList);
   if (updateBegin === 1) {
     setState({
       ...state,
@@ -244,12 +245,13 @@ const PrintList = props => {
     });
     updateBegin += 1;
   }
-
+  
   if (isPrint) {
     setState({ ...state, data: dataList });
     isPrint = !isPrint;
   }
-
+  
+  logger.info('XNSVAction:: data: ', state.data);
   const reparseCase = tmpcase => {
     switch (tmpcase) {
       case 'Đang học':
@@ -335,7 +337,35 @@ const PrintList = props => {
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
   };
-  console.log('ListLink:', listLink);
+
+  const handlePrintOne = (oldData) => {
+    setState(prevState => {
+      const data = [...prevState.data];
+      data.splice(data.indexOf(oldData), 1);
+      return { ...prevState, data };
+    });
+  };
+
+  const successSnackBar = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công!'
+  };
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+  };
+  const errorExportSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Export thất bại!'
+  };
+  const hiddenSnackBar = { open: false };
+  const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
+  const handleSnackBarClose = current => event => {
+    setSnackBarValue({ ...current, ...hiddenSnackBar });
+  };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -372,14 +402,20 @@ const PrintList = props => {
                       {
                         icon: icons.Print,
                         tooltip: 'Print',
-                        onClick: (event, rowData) => {
+                        onClick: async (event, rowData) => {
                           const data = {
                             pk: rowData.pk,
                             sk: rowData.sk,
                             type: reparseCaseToString(rowData.case)
                           };
-                          dispatch(XNSVActions.handlePrintOneStudent(data));
-                          isPrint = !isPrint;
+                          const response = await XNSVHandler.PrintOneStudent(data);
+                          if (response.statusCode !== 200) {
+                            setSnackBarValue(errorSnackBar);
+                            return;
+                          }
+                          handlePrintOne(rowData);
+                          dispatch({ type: Types.ADD_LINK_PRINT_HANDLER, listLink: response.body});
+                          setSnackBarValue(successSnackBar);
                         }
                       }
                     ]
@@ -401,11 +437,17 @@ const PrintList = props => {
                   ? {
                       onRowDelete: oldData =>
                         new Promise(resolve => {
-                          setTimeout(() => {
-                            logger.info('Olddata: ', oldData);
-                            const { pk, sk } = oldData;
-                            dispatch(XNSVActions.deleteOneCertificate(pk, sk));
+                          setTimeout(async () => {
                             resolve();
+                            const { pk, sk } = oldData;
+                            const response = await XNSVHandler.DeleteOneCertificate(
+                              pk, sk
+                            );
+                            if (response.statusCode !== 200) {
+                              setSnackBarValue(errorSnackBar);
+                              return;
+                            }
+                            setSnackBarValue(successSnackBar);
                             setState(prevState => {
                               const data = [...prevState.data];
                               data.splice(data.indexOf(oldData), 1);
@@ -429,7 +471,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(XNSVActions.getListHistory());
+                    dispatch({ type: Types.HISTORY_LIST});
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -536,6 +578,10 @@ const PrintList = props => {
         handleAdd={handleAdd}
         open={open}
         handleClose={() => setOpen(false)}
+      />
+      <CustomizedSnackbars
+        value={snackBarValue}
+        handleClose={handleSnackBarClose}
       />
     </Card>
   );

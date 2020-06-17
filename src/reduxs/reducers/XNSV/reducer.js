@@ -11,26 +11,34 @@ const INIT_STATE = {
 
 const xnsvReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case ActionTypes.GET_NULL_DATA:
+      return {
+        ...state,
+        dataList: []
+      };
     case ActionTypes.HISTORY_LIST:
       return {
         ...state,
         isHistoryList: true,
         isPrintList: false,
-        isHisImport: false
+        isHisImport: false,
+        dataList: []
       };
     case ActionTypes.PRINT_LIST:
       return {
         ...state,
         isHistoryList: false,
         isPrintList: true,
-        isHisImport: false
+        isHisImport: false,
+        dataList: []
       };
     case ActionTypes.HISTORY_IMPORT_LIST:
       return {
         ...state,
         isHistoryList: false,
         isPrintList: false,
-        isHisImport: true
+        isHisImport: true,
+        dataList: []
       };
     case ActionTypes.GET_NOT_PRINT_YET:
       return {
@@ -64,6 +72,10 @@ const xnsvReducer = (state = INIT_STATE, action) => {
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink.concat(action.listLink);
       return { ...state, listLink: temp, dataList: action.listData };
+    }
+    case ActionTypes.ADD_LINK_PRINT_HANDLER: {
+      const temp = state.listLink.concat(action.listLink);
+      return { ...state, listLink: temp};
     }
     case ActionTypes.ADD_LINK_EXPORT: {
       const ex = state.listLink.concat(action.listLink);
