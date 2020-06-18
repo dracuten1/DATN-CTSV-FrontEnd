@@ -33,6 +33,15 @@ const handlePrintList = () => async dispatch => {
 
 const filterListInfoDRL = filter => async dispatch => {
   const response = await DRLHandler.FilterListData(filter);
+  logger.info('PrintList:: filterListInfoDRL: ', response);
+
+  const {statusCode, body} = response;
+  const {Items} = body;
+
+  if (statusCode !== 200 || Items.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   const payload = response.map((item, index) => {
     item.name     = item.info.hvt;
     item.mssv     = item.PK.replace("OE-Drl#", '');
@@ -53,10 +62,18 @@ const getListWithStatus = (filter) => async dispatch => {
   logger.info('DRLAction:: getListWithStatus: status: ', status , username);
   if (status === 'Đã In'){
     const payload = await DRLHandler.GetListCertificate('In', username);
+    if (payload.length === 0){
+      dispatch({ type: Types.GET_NULL_DATA });
+      return;
+    }
     dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
   }
   else{
     const payload = await DRLHandler.GetListCertificate('ChuaIn', username);
+    if (payload.length === 0){
+      dispatch({ type: Types.GET_NULL_DATA });
+      return;
+    }
     dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
   }
   history.push('/drl');

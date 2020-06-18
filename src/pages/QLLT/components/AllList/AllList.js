@@ -179,6 +179,8 @@ const AllList = props => {
                           if (isAlllist) {
                               newData['Nội trú']['Cập nhật Portal'] =
                               newData.portal;
+                              newData['Nội trú']['KTX'] =
+                              newData.ktx;
                               newData['Xác nhận ngoại trú'] = newData.xnnt;
                           }
 

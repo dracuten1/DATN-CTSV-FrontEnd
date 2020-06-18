@@ -186,7 +186,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  <b>DANH SÁCH {filter.type}</b>
+                  {filter.mssv !== '' ? <b>Tình Trạng Sinh Viên</b> : <b>DANH SÁCH {filter.type}</b>}
                 </div>
               }
               columns={state.columns}

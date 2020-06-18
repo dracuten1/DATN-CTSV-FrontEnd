@@ -11,20 +11,45 @@ const INIT_STATE = {
 
 const userReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case ActionTypes.GET_NULL_DATA:
+      return {
+        ...state,
+        dataPrint: []
+      };
     case ActionTypes.ALL_LIST:
       return {
         ...state,
-        dataPrint: action.payload,
+        dataPrint: [],
         isAllList: true,
         isPrintList: false,
-        isHistoryList: false
+        isHistoryList: false,
+        isHisImport: false
       };
     case ActionTypes.PRINT_LIST:
       return {
         ...state,
+        dataPrint: [],
         isAllList: false,
         isPrintList: true,
         isHistoryList: false,
+        isHisImport: false
+      };
+    case ActionTypes.IMPORT_LIST:
+      return {
+        ...state,
+        dataPrint: [],
+        isAllList: false,
+        isPrintList: false,
+        isHistoryList: false,
+        isHisImport: true
+      };
+    case ActionTypes.HISTORY_LIST:
+      return {
+        ...state,
+        dataPrint: [],
+        isAllList: false,
+        isPrintList: false,
+        isHistoryList: true,
         isHisImport: false
       };
     case ActionTypes.GET_LIST_WITH_STATUS:

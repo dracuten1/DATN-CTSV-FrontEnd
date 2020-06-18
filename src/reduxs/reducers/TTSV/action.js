@@ -37,7 +37,7 @@ const getListWithMSSV = filter => async dispatch => {
   } 
 
   const data = Object.keys(body).map(key => {
-    body[key].nh = parseNHToNumber(body[key]["data"].NH);
+    body[key].nh = parseNHToNumber(body[key].NamHoc);
     body[key].GhiChu = body[key]["data"].GhiChu;
     return body[key];
   });

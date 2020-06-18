@@ -155,9 +155,18 @@ export const GetCompany = async () => {
 };
 
 export const ExportWithFilter = async (filter) => {
-  const {nh, hk, type, username, fromDate, toDate} = filter;
+  const {nh, hk, type, username} = filter;
   const cvNH = convertNamHoc(nh);
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
+  const url = `xnsv/exportExcelXNSVPrinted?nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
+
+  const response = await HttpClient.sendPatch(url);
+
+  return response;
+};
+
+export const ExportWithFilterByDate = async (filter) => {
+  const {username, fromDate, toDate} = filter;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&username=${username}`;
 
   const response = await HttpClient.sendPatch(url);
 
@@ -194,3 +203,31 @@ export const GetListExport = async (filter) => {
   return payload;
 };
 
+export const GetListExportByDate = async (filter) => {
+  const {fromDate, toDate, username} = filter;
+  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&username=${username}`;
+  logger.info("XNSVhandler:: GetListExport: url: ", url);
+
+  const response = await HttpClient.sendPutGetStatus(url);
+  logger.info("XNSVhandler:: GetListExport: response: ", response);
+  const {statusCode,body} = response;
+
+  if (statusCode !== 200 || body.length === 0){
+    return [];
+  }
+  const payload = body.map((item, index) => {
+    item.scn = item.SCN;
+    item.language = item.NgonNgu.trim() === "Tiếng Việt" ? 2 : 1;
+    item.name = item.Ten;
+    item.mssv = item.MSSV;
+    item.case = parseCase(item.LoaiGiayXN);
+    item.reason = item.LyDoXN;
+    item.date = moment(item.NgayThemGXN).format('DD/MM/YYYY');
+    item.pk = item.PK;
+    item.sk = item.SK;
+    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY')  : null;
+    item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
+    return item;
+  });
+  return payload;
+};

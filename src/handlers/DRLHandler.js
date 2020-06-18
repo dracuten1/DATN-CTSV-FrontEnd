@@ -46,10 +46,10 @@ export const GetDRLByIdAndType = async (id, type) => {
 
 export const FilterListData = async fillter => {
   const { type, time, xeploai} = fillter;
-  const url = `drl/sv-type?type=${type}&time=${time}$xeploai=${xeploai}&limit=5000`;
+  const url = `drl/sv-type?type=${type}&time=${time}&xeploai=${xeploai}&limit=10000`;
 
-  const response = await HttpClient.sendGet(url);
-
+  const response = await HttpClient.sendGetData(url);
+  
   return response;
 };
 
@@ -70,23 +70,28 @@ export const GetUser = async () => {
 
 export const GetListCertificate = async (status, username) => {
   const url = `drl/getListCertificates?status=${status}&username=${username}&from=0&to=9`;
+  logger.info('PrintList:: getListNotPrintYet: ', url);
 
-  const response = await HttpClient2.sendGet(url);
-  const items = response.Items;
+  const response = await HttpClient2.sendGetData(url);
+  logger.info('PrintList:: getListNotPrintYet: ', response);
 
-  logger.info('PrintList:: getListNotPrintYet: ', items);
+  const {statusCode, body} = response;
+  const {Items} = body;
 
-  const payload = items.map((item, index) => {
-    return {
-      stt: index + 1,
-      name: item.SinhVien.Ten,
-      mssv: item.SinhVien.MSSV,
-      case: item.LoaiXN,
-      isPrint: item.status !== 'Chưa In',
-      date: moment(item.ngayThem).format('DD/MM/YYYY'),
-      pk: item.PK,
-      sk: item.SK
-    };
+  if (statusCode !== 200 || Items.length === 0){
+    return [];
+  }
+
+  const payload   = Items.map((item, index) => {
+    item.stt      = index + 1;
+    item.name     = item.SinhVien.Ten;
+    item.mssv     = item.SinhVien.MSSV;
+    item.case     = item.LoaiXN;
+    item.isPrint  = item.status !== 'Chưa In';
+    item.date     = moment(item.ngayThem).format('DD/MM/YYYY');
+    item.pk       = item.PK;
+    item.sk       = item.SL;
+    return item;
   });
 
   return payload;

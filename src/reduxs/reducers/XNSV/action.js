@@ -117,6 +117,19 @@ const getListExport = filter => async dispatch => {
   history.push('/xnsv');
 };
 
+const getListExportByDate = filter => async dispatch => {
+  logger.info('XNSVAction:: filter: filter: ', filter);
+
+  const response = await XNSVHandler.GetListExportByDate(filter);
+  logger.info('XNSVAction:: ListExportfilter: reponse: ', response);
+  if (response.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
+  dispatch({ type: Types.GET_HISTORY_LIST_BY_DATE, payload: response });
+  history.push('/xnsv');
+};
+
 export default {
   handleAllList,
   handlePrintList,
@@ -129,5 +142,6 @@ export default {
   exportWithFilter,
   getListExport,
   handlePrintOneStudent,
-  getUser
+  getUser,
+  getListExportByDate
 };

@@ -19,7 +19,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logger } from 'core/services/Apploger';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
-import * as XNSVHandler from 'handlers/XNSVHandler';import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+import * as XNSVHandler from 'handlers/XNSVHandler';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import Types from 'reduxs/reducers/XNSV/actionTypes';
 import icons from 'shared/icons';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
@@ -206,7 +207,9 @@ const PrintList = props => {
       editable: 'never',
       width: 300,
       filtering: false,
-      render: rowData => <Link href={rowData.link}>{rowData.link ? 'Link Download' : ''}</Link>
+      render: rowData => (
+        <Link href={rowData.link}>{rowData.link ? 'Link Download' : ''}</Link>
+      )
     }
   ];
 
@@ -245,12 +248,12 @@ const PrintList = props => {
     });
     updateBegin += 1;
   }
-  
+
   if (isPrint) {
     setState({ ...state, data: dataList });
     isPrint = !isPrint;
   }
-  
+
   logger.info('XNSVAction:: data: ', state.data);
   const reparseCase = tmpcase => {
     switch (tmpcase) {
@@ -338,7 +341,7 @@ const PrintList = props => {
     setFilter({ ...filter, [prop]: data });
   };
 
-  const handlePrintOne = (oldData) => {
+  const handlePrintOne = oldData => {
     setState(prevState => {
       const data = [...prevState.data];
       data.splice(data.indexOf(oldData), 1);
@@ -376,7 +379,9 @@ const PrintList = props => {
           <Filters onFilter={handleFilter} />
           <ContainedButton
             handleClick={() => {
-              dispatch(XNSVActions.getListExport(filter));
+              isHistoryList
+                ? dispatch(XNSVActions.getListExport(filter))
+                : dispatch(XNSVActions.getListExportByDate(filter));
               updateBegin = 1;
             }}
             label="Lọc sinh viên"
@@ -397,7 +402,7 @@ const PrintList = props => {
               columns={state.columns}
               data={state.data}
               actions={
-                !isHistoryList
+                isPrintList
                   ? [
                       {
                         icon: icons.Print,
@@ -408,13 +413,18 @@ const PrintList = props => {
                             sk: rowData.sk,
                             type: reparseCaseToString(rowData.case)
                           };
-                          const response = await XNSVHandler.PrintOneStudent(data);
+                          const response = await XNSVHandler.PrintOneStudent(
+                            data
+                          );
                           if (response.statusCode !== 200) {
                             setSnackBarValue(errorSnackBar);
                             return;
                           }
                           handlePrintOne(rowData);
-                          dispatch({ type: Types.ADD_LINK_PRINT_HANDLER, listLink: response.body});
+                          dispatch({
+                            type: Types.ADD_LINK_PRINT_HANDLER,
+                            listLink: response.body
+                          });
                           setSnackBarValue(successSnackBar);
                         }
                       }
@@ -433,7 +443,7 @@ const PrintList = props => {
                 filtering: true
               }}
               editable={
-                !isHistoryList
+                isPrintList
                   ? {
                       onRowDelete: oldData =>
                         new Promise(resolve => {
@@ -441,7 +451,8 @@ const PrintList = props => {
                             resolve();
                             const { pk, sk } = oldData;
                             const response = await XNSVHandler.DeleteOneCertificate(
-                              pk, sk
+                              pk,
+                              sk
                             );
                             if (response.statusCode !== 200) {
                               setSnackBarValue(errorSnackBar);
@@ -471,7 +482,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch({ type: Types.HISTORY_LIST});
+                    dispatch({ type: Types.HISTORY_LIST });
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -479,6 +490,18 @@ const PrintList = props => {
                   size="small"
                 >
                   Xem lịch sử
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem lịch sử theo ngày
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
@@ -535,6 +558,30 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
+                    dispatch({ type: Types.HISTORY_LIST });
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem lịch sử
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                    updateBegin = 1;
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  Xem lịch sử theo ngày
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
                     dispatch(XNSVActions.getNotPrintYet());
                     updateBegin = 1;
                   }}
@@ -546,16 +593,51 @@ const PrintList = props => {
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Import
-                </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => dispatch(XNSVActions.exportWithFilter(filter))}
+                  onClick={async () => {
+                    if (isHistoryList) {
+                      const response = await XNSVHandler.ExportWithFilter(
+                        filter
+                      );
+                      logger.info(
+                        'XNSVAction:: Exportfilter: reponse: ',
+                        response
+                      );
+                      if (
+                        response.statusCode !== 200 ||
+                        response.body.Items === 'Không có gì để export'
+                      ) {
+                        setSnackBarValue(errorExportSnackBar);
+                        return;
+                      }
+                      setSnackBarValue(successSnackBar);
+                      const { body } = response;
+                      dispatch({
+                        type: Types.ADD_LINK_EXPORT,
+                        listLink: body.Items
+                      });
+                    } else {
+                      const response = await XNSVHandler.ExportWithFilterByDate(
+                        filter
+                      );
+                      logger.info(
+                        'XNSVAction:: Exportfilter: reponse: ',
+                        response
+                      );
+                      if (
+                        response.statusCode !== 200 ||
+                        response.body.Items === 'Không có gì để export'
+                      ) {
+                        setSnackBarValue(errorExportSnackBar);
+                        return;
+                      }
+                      setSnackBarValue(successSnackBar);
+                      const { body } = response;
+                      dispatch({
+                        type: Types.ADD_LINK_EXPORT,
+                        listLink: body.Items
+                      });
+                    }
+                  }}
                   variant="contained"
                   color="primary"
                   size="small"

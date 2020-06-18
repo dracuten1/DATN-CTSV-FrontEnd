@@ -230,7 +230,7 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(DRLActions.getListWithStatus(filter.status, filter.username));
+    dispatch({ type: Types.GET_NULL_DATA });
     dispatch(DRLActions.getUser());
     updateBegin += 1;
   }
@@ -436,7 +436,7 @@ const PrintList = props => {
               <>
                 <Button
                   onClick={() => {
-                    dispatch(DRLActions.filterListInfoDRL(filter));
+                    dispatch(DRLActions.handleAllList());
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -520,7 +520,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(DRLActions.getListPrintByDate(filter));
+                    dispatch({ type: Types.HISTORY_LIST });
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -536,10 +536,7 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
                     dispatch(
-                      DRLActions.getListWithStatus(
-                        filter.status,
-                        filter.username
-                      )
+                      DRLActions.handlePrintList()
                     );
                     updateBegin = 1;
                   }}
@@ -573,7 +570,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                   onClick={() => {
-                    dispatch(DRLActions.getListHistoryImport(filter));
+                    dispatch({ type: Types.IMPORT_LIST });
                     updateBegin = 1;
                   }}
                 >

@@ -3,7 +3,6 @@ import ActionTypes from './actionTypes';
 const INIT_STATE = {
   isHistoryList: false,
   isPrintList: true,
-  isHisImport: false,
   dataList: [],
   listLink: [],
   listUser: []
@@ -21,7 +20,6 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         isHistoryList: true,
         isPrintList: false,
-        isHisImport: false,
         dataList: []
       };
     case ActionTypes.PRINT_LIST:
@@ -29,15 +27,13 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         isHistoryList: false,
         isPrintList: true,
-        isHisImport: false,
         dataList: []
       };
-    case ActionTypes.HISTORY_IMPORT_LIST:
+    case ActionTypes.HISTORY_LIST_BY_DATE:
       return {
         ...state,
         isHistoryList: false,
         isPrintList: false,
-        isHisImport: true,
         dataList: []
       };
     case ActionTypes.GET_NOT_PRINT_YET:
@@ -45,7 +41,6 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         dataList: action.payload,
         isHistoryList: false,
-        isHisImport: false,
         isPrintList: true
       };
     case ActionTypes.GET_HISTORY_LIST:
@@ -53,16 +48,14 @@ const xnsvReducer = (state = INIT_STATE, action) => {
         ...state,
         dataList: action.payload,
         isPrintList: false,
-        isHistoryList: true,
-        isHisImport: false
+        isHistoryList: true
       };
-    case ActionTypes.GET_HISTORY_IMPORT_LIST:
+    case ActionTypes.GET_HISTORY_LIST_BY_DATE:
       return {
         ...state,
         dataList: action.payload,
         isPrintList: false,
-        isHistoryList: false,
-        isHisImport: true
+        isHistoryList: false
       };
     case ActionTypes.GET_USER:
       return {
@@ -75,7 +68,7 @@ const xnsvReducer = (state = INIT_STATE, action) => {
     }
     case ActionTypes.ADD_LINK_PRINT_HANDLER: {
       const temp = state.listLink.concat(action.listLink);
-      return { ...state, listLink: temp};
+      return { ...state, listLink: temp };
     }
     case ActionTypes.ADD_LINK_EXPORT: {
       const ex = state.listLink.concat(action.listLink);
