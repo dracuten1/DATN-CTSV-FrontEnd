@@ -28,7 +28,7 @@ class Routers extends React.PureComponent {
             <Route exact path="/dashboard">
               <Dashboard />
             </Route>
-            <Route exact path="/changepass">
+            <Route exact path="/changepassword">
               <ChangePass />
             </Route>
             <Route exact path="/drl">
