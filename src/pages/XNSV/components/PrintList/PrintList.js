@@ -169,12 +169,13 @@ const PrintList = props => {
       filterCellStyle: {
         paddingTop: 1
       },
+      filtering: false,
       customFilterAndSearch: (term, rowData) => {
         if (valueCase !== term) {
           valueCase = term;
         }
         if (term.length !== 0) {
-          return term === rowData.case;
+          return term == rowData.case;
         }
         return rowData;
       }
@@ -189,6 +190,7 @@ const PrintList = props => {
       title: 'Ngôn ngữ',
       field: 'language',
       editable: 'never',
+      filtering: false,
       lookup: {
         1: 'Tiếng Anh',
         2: 'Tiếng Việt'

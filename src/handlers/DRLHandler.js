@@ -46,7 +46,8 @@ export const GetDRLByIdAndType = async (id, type) => {
 
 export const FilterListData = async fillter => {
   const { type, time, xeploai} = fillter;
-  const url = `drl/sv-type?type=${type}&time=${time}&xeploai=${xeploai}&limit=10000`;
+  const nh = convertNamHoc(time);
+  const url = `drl/sv-type?type=${type}&time=${nh}&xeploai=${xeploai}&limit=10000`;
 
   const response = await HttpClient.sendGetData(url);
   
@@ -68,8 +69,8 @@ export const GetUser = async () => {
   return response;
 };
 
-export const GetListCertificate = async (status, username) => {
-  const url = `drl/getListCertificates?status=${status}&username=${username}&from=0&to=9`;
+export const GetListCertificate = async (status, username, fromDate, toDate) => {
+  const url = `drl/getListCertificates?status=${status}&username=${username}&from=${fromDate}&to=${toDate}`;
   logger.info('PrintList:: getListNotPrintYet: ', url);
 
   const response = await HttpClient2.sendGetData(url);
@@ -90,7 +91,7 @@ export const GetListCertificate = async (status, username) => {
     item.isPrint  = item.status !== 'Chưa In';
     item.date     = moment(item.ngayThem).format('DD/MM/YYYY');
     item.pk       = item.PK;
-    item.sk       = item.SL;
+    item.sk       = item.SK;
     return item;
   });
 
@@ -102,19 +103,30 @@ export const DeleteOneCertificate = async (pk, sk) => {
 
   logger.info('DRLhandler:: deleteOneCertificate: URL: ', url);
 
-  const response = await HttpClient.sendDelete(url, { data: { pk, sk } });
+  const response = await HttpClient.sendDeleteWithStatusCode(url, { data: { pk, sk } });
 
   logger.info('DRLhandler:: deleteOneCertificate: response: ', response);
   return response;
 };
 
-export const ExportToDocx = async type => {
+export const ExportToDocx = async (type, filter) => {
+  const {username, from , to} = filter;
+  const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
+  const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
+
   const url = `drl/printf?type=${type}&status=ChuaIn`;
+  const url2 = `drl/getListCertificates?status=ChuaIn&username=${username}&from=${fromDate}&to=${toDate}`;
 
   const response = await HttpClient.sendPatch(url);
-  logger.info('DRLHandler:: exporttodocx: response: ', response);
+  const response2 = await HttpClient2.sendGet(url2);
 
-  return response;
+  
+  const data = {
+    response,
+    listData: response2
+  };
+  logger.info('DRLHandler:: exporttodocx: response: ', data);
+  return data;
 };
 
 export const PrintOneStudent = async (PK, SK) => {
@@ -127,9 +139,9 @@ export const PrintOneStudent = async (PK, SK) => {
 
 export const PrintAllStudent = async (keys) => {
   const url = `drl/printfmulti`;
-
+  logger.info('DRLHandler:: PrintAllStudent: keys: ', keys);
   const response = await HttpClient.sendPatchWithBody(url, { keys });
-
+  logger.info('DRLHandler:: PrintAllStudent: response: ', response);
   return response;
 };
 
@@ -139,8 +151,8 @@ export const GetPrintListByDate = async (filter) => {
   const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
   const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
   const url = `drl/printf?from=${fromDate}&to=${toDate}&username=${username}`;
-
-  const response = await HttpClient2.sendGet(url);
+  logger.info('GetPrintListByDate:: URL: ', url);
+  const response = await HttpClient2.sendGetData(url);
 
   return response;
 };
@@ -151,28 +163,35 @@ export const GetURLFileImport = async (nh, hk) => {
 
   logger.info('GetURLFileImport:: URL: ', url);
 
-  const response = await HttpClient.sendGet(url);
+  const response = await HttpClient.sendGetData(url);
 
   logger.info('GetURLFileImport:: GetURLFileImport: ', response);
 
-  const { urls } = response;
+  const {statusCode, body} = response;
+  const {urls} = body;
+
+  if (statusCode !== 200 || urls.length === 0){
+    return [];
+  }
 
   const payload = urls.map((item, index) => {
     return {
-      stt: index + 1,
-      url: item
-    };
+      stt : index,
+      url : item
+      };
   });
 
   return payload;
 };
 
 export const ExportWithFilter = async (filter) => {
-  const { nh, hk, type, username, fromDate, toDate } = filter;
-  const cvNH = convertNamHoc(nh);
-  const url = `drl/export?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
+  const { nh,username, from, to } = filter;
+  const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
+  const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
+  const url = `drl/export?from=${fromDate}&to=${toDate}&username=${username}`;
 
-  const response = await HttpClient.sendPatch(url);
+  const response = await HttpClient2.sendGetData(url);
+  logger.info('ExportWithFilter:: ExportWithFilter: ', response);
 
   return response;
 };

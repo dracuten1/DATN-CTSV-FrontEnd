@@ -83,7 +83,7 @@ const PrintList = props => {
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-    { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
+    // { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
     {
       title: 'URL',
       field: 'url',
@@ -176,22 +176,24 @@ const PrintList = props => {
     },
     {
       title: 'Điểm',
-      field: 'Diem'
+      field: 'Diem',
+      filtering: false
     },
     {
       title: 'Xếp loại',
       field: 'grade',
-      lookup: {
-        1: 'Xuất sắc',
-        2: 'Tốt',
-        3: 'Khá',
-        4: 'Trung bình',
-        5: 'Yếu',
-        6: 'Kém'
-      },
-      filterCellStyle: {
-        paddingTop: 1
-      }
+      filtering: false
+      // lookup: {
+      //   1: 'Xuất sắc',
+      //   2: 'Tốt',
+      //   3: 'Khá',
+      //   4: 'Trung bình',
+      //   5: 'Yếu',
+      //   6: 'Kém'
+      // },
+      // filterCellStyle: {
+      //   paddingTop: 1
+      // }
     },
     {
       title: 'Ghi chú',
@@ -200,18 +202,23 @@ const PrintList = props => {
     }
   ];
 
+  let title;
   if (isAllList) {
     typeColumns = AllColumns;
     valueType = 0;
+    title = 'Thông Tin Điểm Rèn Luyện';
   } else if (isPrintList) {
     typeColumns = PrintColumns;
     valueType = 1;
+    title = 'Danh Sách In Theo Trạng Thái';
   } else if (isHistoryList) {
     typeColumns = HistoryColumns;
     valueType = 2;
+    title = 'Thống Kê Lịch Sử In';
   } else {
     typeColumns = UrlsColumns;
     valueType = 3;
+    title = 'Thống Kê Lịch Sử Import';
   }
 
   const [state, setState] = useState({
@@ -220,6 +227,8 @@ const PrintList = props => {
   });
 
   const [filter, setFilter] = React.useState({
+    nh: '',
+    hk: '',
     type: '1',
     time: `${year}-${year + 1}`,
     xeploai: 'Giỏi',
@@ -244,14 +253,14 @@ const PrintList = props => {
     updateBegin += 1;
   }
 
-  if (updateBegin === 2) {
-    setState({
-      ...state,
-      data: dataPrint,
-      columns: typeColumns
-    });
-    updateBegin += 1;
-  }
+  // if (updateBegin === 2 && state.data.length !== dataPrint.length) {
+  //   setState({
+  //     ...state,
+  //     data: dataPrint,
+  //     columns: typeColumns
+  //   });
+  //   updateBegin += 1;
+  // }
 
   if (isPrint) {
     setState({ ...state, data: dataPrint });
@@ -276,7 +285,7 @@ const PrintList = props => {
   const successSnackBar = {
     open: true,
     type: 'success',
-    message: 'Thêm thành công!'
+    message: 'Thực hiện thành công!'
   };
   const printSuccessSnackBar = {
     open: true,
@@ -321,6 +330,18 @@ const PrintList = props => {
   };
   logger.info('dataTable: ', state.data);
 
+  const handlePrintAll = () => {
+    setState({ ...state, data: [] });
+  };
+
+  const handlePrintOne = oldData => {
+    setState(prevState => {
+      const data = [...prevState.data];
+      data.splice(data.indexOf(oldData), 1);
+      return { ...prevState, data };
+    });
+  };
+
   //set actions of table
   let actions;
   let editTable;
@@ -331,33 +352,35 @@ const PrintList = props => {
         tooltip: 'Print',
         onClick: async (event, rowData) => {
           const response = await DRLHandler.PrintOneStudent(
-            rowData.pk,
-            rowData.sk
+            rowData.PK,
+            rowData.SK
           );
           const status = 'ChuaIn';
-          const listData = await DRLHandler.GetListCertificate(status);
           logger.info('DRLAction:: exporttodocx: reponse: ', response);
-          if (
-            response.statusCode !== 200
-          ) {
+          if (response.statusCode !== 200) {
             setSnackBarValue(errorSnackBar);
             return;
           }
-          setSnackBarValue(successSnackBar);
+          handlePrintOne(rowData);
           const { body } = response;
-          dispatch({ type: Types.ADD_LINK_PRINT, listLink: body, listData });
-          isPrint = !isPrint;
+          const {data} = state;
+          dispatch({ type: Types.ADD_LINK_PRINT, listLink: body, listData: data.splice(data.indexOf(rowData), 1) });
+          setSnackBarValue(successSnackBar);
         }
       }
     ];
     editTable = {
       onRowDelete: oldData =>
         new Promise(resolve => {
-          setTimeout(() => {
-            logger.info('Olddata: ', oldData);
-            const { pk, sk } = oldData;
-            dispatch(DRLActions.deleteOneCertificate(pk, sk));
+          setTimeout(async () => {
             resolve();
+            const { pk, sk } = oldData;
+            const response = await DRLHandler.DeleteOneCertificate(pk, sk);
+            if (response.statusCode !== 200) {
+              setSnackBarValue(errorSnackBar);
+              return;
+            }
+            setSnackBarValue(successSnackBar);
             setState(prevState => {
               const data = [...prevState.data];
               data.splice(data.indexOf(oldData), 1);
@@ -380,7 +403,7 @@ const PrintList = props => {
         <ContainedButton
           handleClick={() => {
             if (isAllList) {
-              dispatch(DRLActions.filterListData(filter));
+              dispatch(DRLActions.filterListInfoDRL(filter));
             } else if (isPrintList) {
               dispatch(DRLActions.getListWithStatus(filter));
             } else if (isHistoryList) {
@@ -402,11 +425,7 @@ const PrintList = props => {
               icons={icons}
               title={
                 <div>
-                  {isPrintList ? (
-                    <b>Danh Sách {filter.status}</b>
-                  ) : (
-                    <b>Danh Sách Dữ Liệu</b>
-                  )}
+                  <b>{title}</b>
                 </div>
               }
               columns={state.columns}
@@ -457,28 +476,34 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={async () => {
-                    if (valueCase !== null) {
-                      const data = await DRLHandler.ExportToDocx(valueCase[0]);
-                      const listData = await DRLHandler.GetListCertificate(
-                        'ChuaIn'
-                      );
+                    if (filter.status !== 'Đã In') {
+                      if (valueCase !== null) {
+                        const data = await DRLHandler.ExportToDocx(
+                          valueCase[0],
+                          filter
+                        );
+                        const { response, listData } = data;
+                        if (
+                          response.statusCode !== 200 ||
+                          response.body === 'Không có gì để in'
+                        ) {
+                          setSnackBarValue(errorSnackBar);
+                          return;
+                        }
 
-                      if (data.statusCode === 200) {
                         dispatch({
-                          type: 'ADD_LINK_PRINT',
-                          listLink: data.body,
-                          listData
+                          type: Types.ADD_LINK_PRINT,
+                          listLink: response.body,
+                          listData: listData.Items
                         });
 
+                        isPrint = !isPrint;
+                        valueCase = null;
                         setSnackBarValue(printSuccessSnackBar);
                       } else {
                         setSnackBarValue(errorSnackBar);
                       }
-                    } else {
-                      setSnackBarValue(errorSnackBar);
                     }
-                    isPrint = !isPrint;
-                    valueCase = null;
                   }}
                   variant="contained"
                   color="primary"
@@ -489,33 +514,63 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={async () => {
-                    const keys = dataPrint.map(item => {
-                      return {
-                        PK: item.pk,
-                        SK: item.sk
-                      };
-                    });
-                    const data = await DRLHandler.PrintAllStudent(keys);
+                    if (filter.status !== 'Đã In') {
+                      const keys = state.data.map(item => {
+                        return {
+                          PK: item.pk,
+                          SK: item.sk
+                        };
+                      });
+                      const data = await DRLHandler.PrintAllStudent(keys);
 
-                    if (data.statusCode === 200) {
+                      if (
+                        data.statusCode !== 200 ||
+                        data.body === 'Không có gì để in'
+                      ) {
+                        setSnackBarValue(errorSnackBar);
+                        return;
+                      }
                       dispatch({
-                        type: 'ADD_LINK_PRINT',
+                        type: Types.ADD_LINK_PRINT,
                         listLink: data.body,
                         listData: []
                       });
-
+                      handlePrintAll();
                       setSnackBarValue(printSuccessSnackBar);
-                    } else {
-                      setSnackBarValue(errorSnackBar);
+                      valueCase = null;
                     }
-                    isPrint = !isPrint;
-                    valueCase = null;
                   }}
                   variant="contained"
                   color="primary"
                   size="small"
                 >
                   In tất cả
+                </Button>
+                <Button
+                  style={{ marginLeft: '8px' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={async () => {
+                    if (filter.status === 'Đã In') {
+                      const response = await DRLHandler.ExportWithFilter(
+                        filter
+                      );
+                      const { statusCode, body } = response;
+
+                      if (statusCode !== 200 || body.Items === '') {
+                        setSnackBarValue(errorSnackBar);
+                        return;
+                      }
+                      setSnackBarValue(printSuccessSnackBar);
+                      dispatch({
+                        type: Types.ADD_LINK_EXPORT,
+                        listLink: body.Items
+                      });
+                    }
+                  }}
+                >
+                  Export
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
@@ -535,9 +590,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch(
-                      DRLActions.handlePrintList()
-                    );
+                    dispatch(DRLActions.handlePrintList());
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -546,24 +599,31 @@ const PrintList = props => {
                 >
                   Danh sách in
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => setImportOpen(true)}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Import
-                </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => dispatch(DRLActions.exportWithFilter(filter))}
-                >
-                  Export
-                </Button>
+                {isAllList ? (
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => setImportOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Import
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      dispatch(DRLActions.handleAllList());
+                      updateBegin = 1;
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '8px' }}
+                  >
+                    Thông Tin ĐRL
+                  </Button>
+                )}
+
                 <Button
                   style={{ marginLeft: '8px' }}
                   variant="contained"

@@ -53,7 +53,7 @@ function FiltersDRL(props) {
               `${year - 6}-${year - 5}`
             ]}
           />
-          {/* <Filter
+          <Filter
             clickFilter={onFilter}
             label="Xếp loại"
             prop="xeploai"
@@ -66,7 +66,7 @@ function FiltersDRL(props) {
               'Yếu',
               'Kém'
             ]}
-          /> */}
+          />
         </>
       );
     case 1:
@@ -83,6 +83,16 @@ function FiltersDRL(props) {
             prop="username"
             label="User"
             data={tempArr}
+          />
+          <InputDateWithLabel
+            prop="from"
+            clickFilter={onFilter}
+            label="Từ ngày"
+          />
+          <InputDateWithLabel
+            prop="to"
+            clickFilter={onFilter}
+            label="Đến ngày"
           />
         </>  
       );
