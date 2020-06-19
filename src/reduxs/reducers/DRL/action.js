@@ -42,7 +42,7 @@ const filterListInfoDRL = filter => async dispatch => {
     dispatch({ type: Types.GET_NULL_DATA });
     return;
   }
-  const payload = response.map((item, index) => {
+  const payload = Items.map((item, index) => {
     item.name     = item.info.hvt;
     item.mssv     = item.PK.replace("OE-Drl#", '');
     item.semester = filter.type;
@@ -53,15 +53,18 @@ const filterListInfoDRL = filter => async dispatch => {
     item.sk       = item.SK;
     return item;
   });
-  dispatch({ type: Types.ALL_LIST, payload });
+  dispatch({ type: Types.GET_LIST_INFO, payload });
   history.push('/drl');
 };
 
 const getListWithStatus = (filter) => async dispatch => {
-  const {status , username} = filter;
+  const {status , username, from , to} = filter;
+  const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
+  const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
+
   logger.info('DRLAction:: getListWithStatus: status: ', status , username);
   if (status === 'Đã In'){
-    const payload = await DRLHandler.GetListCertificate('In', username);
+    const payload = await DRLHandler.GetListCertificate('In', username, fromDate, toDate);
     if (payload.length === 0){
       dispatch({ type: Types.GET_NULL_DATA });
       return;
@@ -69,7 +72,7 @@ const getListWithStatus = (filter) => async dispatch => {
     dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
   }
   else{
-    const payload = await DRLHandler.GetListCertificate('ChuaIn', username);
+    const payload = await DRLHandler.GetListCertificate('ChuaIn', username, fromDate, toDate);
     if (payload.length === 0){
       dispatch({ type: Types.GET_NULL_DATA });
       return;
@@ -124,7 +127,14 @@ const PrintAllStudent = keys => async dispatch => {
 const getListPrintByDate = (filter) => async dispatch => {
   const response = await DRLHandler.GetPrintListByDate(filter);
   logger.info('DRLAction:: listPrintByDate: reponse: ', response);
-  const payload = response.Items.map((item, index) => {
+  const {statusCode, body} = response;
+  const {Items} = body;
+
+  if (statusCode !== 200 || Items.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
+  const payload = Items.map((item, index) => {
     item.stt    = index + 1;
     item.pk     = item.PK;
     item.sk     = item.SK;
@@ -136,11 +146,13 @@ const getListPrintByDate = (filter) => async dispatch => {
 };
 
 const getListHistoryImport = filter => async dispatch => {
-  const { type, time } = filter;
-  const nh = time;
-  const hk = type;
+  const { nh, hk } = filter;
   const payload = await DRLHandler.GetURLFileImport(nh, hk);
   logger.info('GetURLFileImport:: payload: ', payload);
+  if (payload.length === 0){
+    dispatch({ type: Types.GET_NULL_DATA });
+    return;
+  }
   dispatch({ type: Types.GET_HISTORY_IMPORT_LIST, payload });
 };
 

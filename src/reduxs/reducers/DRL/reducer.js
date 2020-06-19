@@ -52,12 +52,21 @@ const userReducer = (state = INIT_STATE, action) => {
         isHistoryList: true,
         isHisImport: false
       };
-    case ActionTypes.GET_LIST_WITH_STATUS:
+      case ActionTypes.GET_LIST_WITH_STATUS:
       return {
         ...state,
         dataPrint: action.payload,
         isAllList: false,
         isPrintList: true,
+        isHistoryList: false,
+        isHisImport: false
+      };
+    case ActionTypes.GET_LIST_INFO:
+      return {
+        ...state,
+        dataPrint: action.payload,
+        isAllList: true,
+        isPrintList: false,
         isHistoryList: false,
         isHisImport: false
       };
@@ -92,6 +101,10 @@ const userReducer = (state = INIT_STATE, action) => {
     }
     case ActionTypes.GET_LIST_DOCX: {
       return { ...state, listLink: action.payload };
+    }
+    case ActionTypes.ADD_LINK_EXPORT: {
+      const temp = state.listLink.concat(action.listLink);
+      return { ...state, listLink: temp };
     }
     case ActionTypes.EXPORT_TO_DOCX:
       return { ...state };
