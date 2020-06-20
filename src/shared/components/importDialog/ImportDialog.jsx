@@ -387,7 +387,7 @@ const ImportDialog = props => {
             showFileNamesInPreview
             onChange={onFileChange}
           />
-          <div>{message}</div>
+          {/* <div>{message}</div> */}
         </DialogContent>
         <DialogActions>
           <Button
