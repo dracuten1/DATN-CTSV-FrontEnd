@@ -18,6 +18,7 @@ import Link from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
 import * as DRLHandler from 'handlers/DRLHandler';
 import DRLActions from 'reduxs/reducers/DRL/action';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action'
 import { logger } from 'core/services/Apploger';
 import Types from 'reduxs/reducers/DRL/actionTypes';
 import icons from 'shared/icons';
@@ -79,7 +80,7 @@ const PrintList = props => {
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
@@ -363,7 +364,7 @@ const PrintList = props => {
           }
           handlePrintOne(rowData);
           const { body } = response;
-          const {data} = state;
+          const { data } = state;
           dispatch({ type: Types.ADD_LINK_PRINT, listLink: body, listData: data.splice(data.indexOf(rowData), 1) });
           setSnackBarValue(successSnackBar);
         }
@@ -586,66 +587,66 @@ const PrintList = props => {
                 </Button>
               </>
             ) : (
-              <>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(DRLActions.handlePrintList());
-                    updateBegin = 1;
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Danh sách in
-                </Button>
-                {isAllList ? (
+                <>
                   <Button
                     style={{ marginLeft: '8px' }}
-                    onClick={() => setImportOpen(true)}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Import
-                  </Button>
-                ) : (
-                  <Button
                     onClick={() => {
-                      dispatch(DRLActions.handleAllList());
+                      dispatch(DRLActions.handlePrintList());
                       updateBegin = 1;
                     }}
                     variant="contained"
                     color="primary"
                     size="small"
-                    style={{ marginLeft: '8px' }}
                   >
-                    Thông Tin ĐRL
-                  </Button>
-                )}
-
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => {
-                    dispatch({ type: Types.IMPORT_LIST });
-                    updateBegin = 1;
-                  }}
-                >
-                  Danh Sách Đã Import
+                    Danh sách in
                 </Button>
-              </>
-            )}
+                  {isAllList ? (
+                    <Button
+                      style={{ marginLeft: '8px' }}
+                      onClick={() => setImportOpen(true)}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                    >
+                      Import
+                    </Button>
+                  ) : (
+                      <Button
+                        onClick={() => {
+                          dispatch(DRLActions.handleAllList());
+                          updateBegin = 1;
+                        }}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        style={{ marginLeft: '8px' }}
+                      >
+                        Thông Tin ĐRL
+                      </Button>
+                    )}
+
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      dispatch({ type: Types.IMPORT_LIST });
+                      updateBegin = 1;
+                    }}
+                  >
+                    Danh Sách Đã Import
+                </Button>
+                </>
+              )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <AddDialog

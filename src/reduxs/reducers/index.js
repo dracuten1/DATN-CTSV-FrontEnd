@@ -10,6 +10,7 @@ import SHCDState from './SHCD/reducer';
 import TTSVState from './TTSV/reducer';
 import CDCSState from './CDCS/reducer';
 import Authentication from './Authentication/reducer';
+import ProgressState from './LinearProgress/reducer';
 
 export default combineReducers({
   DRLState,
@@ -22,5 +23,6 @@ export default combineReducers({
   QLLTState,
   QLBHState,
   CDCSState,
-  auth: Authentication
+  ProgressState,
+  auth: Authentication,
 });

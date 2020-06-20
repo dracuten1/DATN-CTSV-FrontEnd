@@ -20,6 +20,7 @@ import { logger } from 'core/services/Apploger';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action'
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import Types from 'reduxs/reducers/XNSV/actionTypes';
 import icons from 'shared/icons';
@@ -232,6 +233,7 @@ const PrintList = props => {
   if (updateBegin === 0) {
     dispatch(XNSVActions.getUser());
     dispatch(XNSVActions.getNotPrintYet());
+
     updateBegin += 1;
   }
   if (updateBegin === 1) {
@@ -252,7 +254,10 @@ const PrintList = props => {
   }
 
   if (isPrint) {
-    setState({ ...state, data: dataList });
+    setState({ ...state, data: dataList }, () => {
+      dispatch(ProgressActions.hideProgress())
+
+    });
     isPrint = !isPrint;
   }
 
@@ -375,6 +380,11 @@ const PrintList = props => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
+  React.useEffect(() => {
+    dispatch(ProgressActions.hideProgress());
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {isPrintList ? (
@@ -384,6 +394,7 @@ const PrintList = props => {
             <Filters onFilter={handleFilter} />
             <ContainedButton
               handleClick={() => {
+                dispatch(ProgressActions.showProgres());
                 isHistoryList
                   ? dispatch(XNSVActions.getListExport(filter))
                   : dispatch(XNSVActions.getListExportByDate(filter));

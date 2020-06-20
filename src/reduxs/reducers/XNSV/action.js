@@ -2,10 +2,12 @@ import * as XNSVHandler from 'handlers/XNSVHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
   history.push('/xnsv');
+
 };
 
 const handlePrintList = () => async dispatch => {
@@ -114,6 +116,7 @@ const getListExport = filter => async dispatch => {
     return;
   }
   dispatch({ type: Types.GET_HISTORY_LIST, payload: response });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/xnsv');
 };
 
