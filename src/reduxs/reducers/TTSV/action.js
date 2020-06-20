@@ -56,7 +56,7 @@ const getListWithFilter = filter => async dispatch => {
   } 
   const { type } = filter;
   const data = Object.keys(body).map(key => {
-    body[key].nh = parseNHToNumber(body[key]["data"].NH);
+    body[key].nh = parseNHToNumber(body[key].NamHoc);
     body[key].type = body[key]["data"].LoaiTotNghiep;
     body[key].month = body[key]["data"].DotThang;
     body[key].DTB = body[key]["data"].DTB;

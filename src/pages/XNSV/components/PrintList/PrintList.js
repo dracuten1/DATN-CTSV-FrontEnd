@@ -220,8 +220,8 @@ const PrintList = props => {
     nh: '',
     type: '',
     username: '',
-    fromDate: new Date(),
-    toDate: new Date()
+    fromDate: moment(new Date()).format('YYYY-MM-DD'),
+    toDate: moment(new Date()).format('YYYY-MM-DD')
   });
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({

@@ -224,6 +224,12 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
 
+          if (res1.message === "success"){
+            setSnackBarValue(successSnackBar);
+            handleClose();
+            return;
+          }
+          
           const timerIdTTSV = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatusTTSV(
               res.newKey
