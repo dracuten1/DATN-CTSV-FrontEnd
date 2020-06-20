@@ -176,7 +176,7 @@ export const ExportWithFilterByDate = async (filter) => {
 export const GetListExport = async (filter) => {
   const {nh, hk, type, fromDate, toDate, username} = filter;
   const cvNH = convertNamHoc(nh);
-  const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
+  const url = `xnsv/exportExcelXNSVPrinted?nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
   logger.info("XNSVhandler:: GetListExport: url: ", url);
 
   const response = await HttpClient.sendPutGetStatus(url);
