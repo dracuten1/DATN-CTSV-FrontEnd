@@ -6,7 +6,7 @@ export const createUser = async data => {
 
   logger.info('AdminHandler:: createUser: URL: ', url);
 
-  const response = await HttpClient.sendPost(url, data);
+  const response = await HttpClient.sendPutWithBody(url, data);
 
   logger.info('AdminHandler:: createUser: reponse: ', response);
 };
