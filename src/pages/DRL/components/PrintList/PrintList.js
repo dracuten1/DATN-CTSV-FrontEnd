@@ -231,7 +231,7 @@ const PrintList = props => {
     hk: '',
     type: '1',
     time: `${year}-${year + 1}`,
-    xeploai: 'Giỏi',
+    xeploai: '',
     status: 'Chưa In',
     username: '',
     from: new Date(),
