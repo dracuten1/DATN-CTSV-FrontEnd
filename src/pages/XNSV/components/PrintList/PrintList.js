@@ -13,7 +13,9 @@ import {
   Grid,
   Button,
   Divider,
-  Link
+  Link,
+  createMuiTheme,
+  MuiThemeProvider
 } from '@material-ui/core';
 import { useDispatch, useSelector, connect } from 'react-redux';
 import { logger } from 'core/services/Apploger';
@@ -26,6 +28,31 @@ import Types from 'reduxs/reducers/XNSV/actionTypes';
 import icons from 'shared/icons';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 import Filters from '../filters/Filters';
+
+const themeTable = createMuiTheme({
+  overrides: {
+    MuiTableRow: {
+      root: {
+        "&:nth-of-type(odd)": {
+          backgroundColor: "white !important"
+        },
+        "&:hover": {
+          backgroundColor: "rgba(33, 150, 243, 0.5) !important"
+        },
+        "&:nth-of-type(1)": {
+          backgroundColor: "white !important"
+        }
+      }
+    },
+    MuiTableCell: {
+      head: {
+        "&": {
+          backgroundColor: "#3274b6 !important"
+        }
+      }
+    }
+  }
+});
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -412,90 +439,92 @@ const PrintList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  {isPrintList ? <b>DANH SÁCH CHƯA IN</b> : <b>LỊCH SỬ IN</b>}
-                </div>
-              }
-              options={{ headerStyle: { position: 'sticky', top: 0 } }}
-              columns={state.columns}
-              data={state.data}
-              actions={
-                isPrintList
-                  ? [
-                    {
-                      icon: icons.Print,
-                      tooltip: 'Print',
-                      onClick: async (event, rowData) => {
-                        dispatch(ProgressActions.showProgres());
-                        const data = {
-                          pk: rowData.pk,
-                          sk: rowData.sk,
-                          type: reparseCaseToString(rowData.case)
-                        };
-                        const response = await XNSVHandler.PrintOneStudent(
-                          data
-                        );
-                        if (response.statusCode !== 200) {
-                          dispatch(ProgressActions.hideProgress());
-                          setSnackBarValue(errorSnackBar);
-                          return;
-                        }
-                        handlePrintOne(rowData);
-                        dispatch({
-                          type: Types.ADD_LINK_PRINT_HANDLER,
-                          listLink: response.body
-                        });
-                        dispatch(ProgressActions.hideProgress());
-                        setSnackBarValue(successSnackBar);
-                      }
-                    }
-                  ]
-                  : []
-              }
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                // exportButton: true,
-                filtering: true
-              }}
-              editable={
-                isPrintList
-                  ? {
-                    onRowDelete: oldData =>
-                      new Promise(resolve => {
-                        setTimeout(async () => {
-                          resolve();
-                          const { pk, sk } = oldData;
-                          const response = await XNSVHandler.DeleteOneCertificate(
-                            pk,
-                            sk
+            <MuiThemeProvider theme={themeTable}>
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    {isPrintList ? <b>DANH SÁCH CHƯA IN</b> : <b>LỊCH SỬ IN</b>}
+                  </div>
+                }
+                options={{ headerStyle: { position: 'sticky', top: 0 } }}
+                columns={state.columns}
+                data={state.data}
+                actions={
+                  isPrintList
+                    ? [
+                      {
+                        icon: icons.Print,
+                        tooltip: 'Print',
+                        onClick: async (event, rowData) => {
+                          dispatch(ProgressActions.showProgres());
+                          const data = {
+                            pk: rowData.pk,
+                            sk: rowData.sk,
+                            type: reparseCaseToString(rowData.case)
+                          };
+                          const response = await XNSVHandler.PrintOneStudent(
+                            data
                           );
                           if (response.statusCode !== 200) {
                             dispatch(ProgressActions.hideProgress());
                             setSnackBarValue(errorSnackBar);
                             return;
                           }
+                          handlePrintOne(rowData);
+                          dispatch({
+                            type: Types.ADD_LINK_PRINT_HANDLER,
+                            listLink: response.body
+                          });
                           dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(successSnackBar);
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data.splice(data.indexOf(oldData), 1);
-                            return { ...prevState, data };
-                          });
-                        }, 600);
-                      })
-                  }
-                  : {}
-              }
-            />
+                        }
+                      }
+                    ]
+                    : []
+                }
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  // exportButton: true,
+                  filtering: true
+                }}
+                editable={
+                  isPrintList
+                    ? {
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(async () => {
+                            resolve();
+                            const { pk, sk } = oldData;
+                            const response = await XNSVHandler.DeleteOneCertificate(
+                              pk,
+                              sk
+                            );
+                            if (response.statusCode !== 200) {
+                              dispatch(ProgressActions.hideProgress());
+                              setSnackBarValue(errorSnackBar);
+                              return;
+                            }
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(successSnackBar);
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+                    : {}
+                }
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
