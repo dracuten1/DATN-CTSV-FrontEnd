@@ -345,6 +345,9 @@ const PrintList = props => {
         return { ...prevState, data };
       });
     }
+    else {
+      setSnackBarValue(errorSnackBar);
+    }
   };
 
   const handleFilter = (prop, data) => {
@@ -533,7 +536,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                 >
-                  Thêm sinh viên in
+                  Thêm giấy xác nhận
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}

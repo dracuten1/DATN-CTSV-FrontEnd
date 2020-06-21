@@ -309,14 +309,29 @@ const XNTruocKhiThemDialog = props => {
     handleClose();
   };
 
+  const validateCertificate = (certificate) => {
+    return !Object.values(certificate).every(prop => prop === null || prop === {} || prop === '')
+  }
+
   const addData = async () => {
+    logger.info("THEM XAC NHAN SINH VIEN:: ", newCertificate)
+    logger.info("THEM XAC NHAN SINH VIEN:: ", validateCertificate(newCertificate));
+
     setProgress(false);
     const res = await XNSVHandler.AddCertificate(newCertificate);
-    if (res.statusCode === 200) {
-      handleAdd(values, true);
-    } else {
-      // TO DO: SHOW ERROR
+    try {
+      if (res.statusCode === 200) {
+        handleAdd(values, true);
+      } else {
+        // TO DO: SHOW ERROR
+        handleAdd({}, false);
+        
+      }  
+    } catch (error) {
+      handleAdd({}, false);
+      
     }
+    
     setProgress(true);
     handleClose();
   };
@@ -426,6 +441,7 @@ const XNTruocKhiThemDialog = props => {
                   label="Họ tên"
                   value={values.name}
                   onChange={handleChange('name')}
+                  disabled
                   margin="normal"
                   InputProps={{
                     readOnly: true
