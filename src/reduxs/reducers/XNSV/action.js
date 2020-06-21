@@ -7,12 +7,14 @@ import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
   history.push('/xnsv');
-
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const handlePrintList = () => async dispatch => {
   dispatch({ type: Types.PRINT_LIST });
   history.push('/xnsv');
+
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getNotPrintYet = () => async dispatch => {
@@ -22,6 +24,7 @@ const getNotPrintYet = () => async dispatch => {
   dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
   dispatch({ type: HIDE_PROGRESS });
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getListHistory = () => async dispatch => {
@@ -31,6 +34,7 @@ const getListHistory = () => async dispatch => {
   dispatch({ type: Types.GET_HISTORY_LIST, payload });
   dispatch({ type: HIDE_PROGRESS });
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const deleteOneCertificate = (pk, sk) => async dispatch => {
@@ -40,9 +44,10 @@ const deleteOneCertificate = (pk, sk) => async dispatch => {
 
   dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
-const handlePrintByType = (keys, type,language) => async dispatch => {
+const handlePrintByType = (keys, type, language) => async dispatch => {
   const response = await XNSVHandler.PrintByType(keys, type, language);
   const status = 'ChuaIn';
   const listData = await XNSVHandler.GetListCertificate(status);
@@ -51,6 +56,7 @@ const handlePrintByType = (keys, type,language) => async dispatch => {
     dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
     history.push('/xnsv');
   }
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const handlePrintAll = (keys, language) => async dispatch => {
@@ -63,6 +69,7 @@ const handlePrintAll = (keys, language) => async dispatch => {
     dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
     history.push('/xnsv');
   }
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const handlePrintOneStudent = data => async dispatch => {
@@ -72,12 +79,14 @@ const handlePrintOneStudent = data => async dispatch => {
   logger.info('XNSVAction:: PrintOneStudent: reponse: ', response);
   dispatch({ type: Types.ADD_LINK_PRINT, listLink: response, listData });
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getCompany = () => async dispatch => {
   const response = await XNSVHandler.GetCompany();
   logger.info('XNSVAction:: Company: reponse: ', response);
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getUser = () => async dispatch => {
@@ -86,6 +95,7 @@ const getUser = () => async dispatch => {
   if (response.statusCode === 200) {
     dispatch({ type: Types.GET_USER, payload: response.users });
   }
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const exportWithFilter = filter => async dispatch => {
@@ -98,6 +108,8 @@ const exportWithFilter = filter => async dispatch => {
     dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body.Items });
     history.push('/xnsv');
   }
+
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getListExport = filter => async dispatch => {
@@ -106,8 +118,9 @@ const getListExport = filter => async dispatch => {
   const response = await XNSVHandler.GetListExport(filter);
   logger.info('XNSVAction:: ListExportfilter: reponse: ', response);
   dispatch({ type: Types.GET_HISTORY_LIST, payload: response });
-  dispatch({ type: HIDE_PROGRESS });
+
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 const getListExportByDate = filter => async dispatch => {
@@ -118,6 +131,7 @@ const getListExportByDate = filter => async dispatch => {
   dispatch({ type: Types.GET_HISTORY_LIST_BY_DATE, payload: response });
   dispatch({ type: HIDE_PROGRESS });
   history.push('/xnsv');
+  dispatch({ type: HIDE_PROGRESS })
 };
 
 export default {

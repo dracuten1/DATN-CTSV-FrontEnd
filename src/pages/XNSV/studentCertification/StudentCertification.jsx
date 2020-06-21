@@ -19,10 +19,10 @@ const StudentCertification = () => {
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
+        <Grid item lg={4} sm={6} xl={3} xs={12}>
           <Title url="/" title="Xác Nhận Sinh Viên" />
         </Grid>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
+        {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Export many={20} />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
@@ -30,7 +30,7 @@ const StudentCertification = () => {
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Print many={20} />
-        </Grid>
+        </Grid> */}
         <Grid item lg={12} md={12} xl={12} xs={12}>
           <PrintList />
         </Grid>
