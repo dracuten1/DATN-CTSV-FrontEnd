@@ -17,15 +17,14 @@ const useStyles = makeStyles(() => ({
 let arrDoiTuong = ['None'];
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, isCase } = props;
+  const { onFilter, isCase, filter } = props;
   const dt = new Date();
   const year = dt.getFullYear();
 
   const CDCSState = useSelector(state => state.CDCSState);
   const { listDoiTuong } = CDCSState;
-
-  if (arrDoiTuong.length === 1)
-    arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
+  const { fromHK, fromNH, toHK, toNH, mssv, typeCDCS, doituong } = filter;
+  if (arrDoiTuong.length === 1) arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -40,6 +39,7 @@ export default function Filters(props) {
             label="MSSV"
             variant="outlined"
             onChange={handleChange}
+            defaultValue={mssv}
             style={{ marginTop: '8px', width: '80%' }}
             inputProps={{
               style: {
@@ -47,10 +47,11 @@ export default function Filters(props) {
               }
             }}
           />
-           <FilterCDCS
+          <FilterCDCS
             clickFilter={onFilter}
             prop="doituong"
             label="Đối tượng"
+            defaultValue={doituong}
             data={arrDoiTuong}
           />
           <div
@@ -67,12 +68,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="fromHK"
+            defaultValue={fromHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="fromNH"
+            defaultValue={fromNH}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -99,12 +102,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="toHK"
+            defaultValue={toHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="toNH"
+            defaultValue={toNH}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -123,11 +128,13 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Loại"
             prop="typeCDCS"
+            defaultValue={typeCDCS}
             data={['DTTS', 'HTDX', 'TCXH', 'MGHP', 'SVKT']}
           />
           <FilterCDCS
             clickFilter={onFilter}
             prop="doituong"
+            defaultValue={doituong}
             label="Đối tượng"
             helperText="Chọn loại CDCS"
             data={arrDoiTuong}
@@ -146,12 +153,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="fromHK"
+            defaultValue={fromHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="fromNH"
+            defaultValue={fromNH}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -178,12 +187,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="toHK"
+            defaultValue={toHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="toNH"
+            defaultValue={toNH}
             data={[
               'None',
               `${year}-${year + 1}`,

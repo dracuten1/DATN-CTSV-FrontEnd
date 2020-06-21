@@ -4,22 +4,22 @@ import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
 
-const parseGradeToInt = grade => {
-  switch (grade) {
-    case 'Xuất sắc':
-      return 1;
-    case 'Tốt':
-      return 2;
-    case 'Khá':
-      return 3;
-    case 'Trung bình':
-      return 4;
-    case 'Yếu':
-      return 5;
-    default:
-      return 6;
-  }
-};
+// const parseGradeToInt = grade => {
+//   switch (grade) {
+//     case 'Xuất sắc':
+//       return 1;
+//     case 'Tốt':
+//       return 2;
+//     case 'Khá':
+//       return 3;
+//     case 'Trung bình':
+//       return 4;
+//     case 'Yếu':
+//       return 5;
+//     default:
+//       return 6;
+//   }
+// };
 
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
@@ -39,7 +39,9 @@ const filterListInfoDRL = filter => async dispatch => {
   const {Items} = body;
 
   if (statusCode !== 200 || Items.length === 0){
-    dispatch({ type: Types.GET_NULL_DATA });
+    // dispatch({ type: Types.GET_NULL_DATA });
+    dispatch({ type: Types.GET_LIST_INFO, payload: [] });
+    history.push('/drl');
     return;
   }
   const payload = Items.map((item, index) => {
@@ -65,18 +67,10 @@ const getListWithStatus = (filter) => async dispatch => {
   logger.info('DRLAction:: getListWithStatus: status: ', status , username);
   if (status === 'Đã In'){
     const payload = await DRLHandler.GetListCertificate('In', username, fromDate, toDate);
-    if (payload.length === 0){
-      dispatch({ type: Types.GET_NULL_DATA });
-      return;
-    }
     dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
   }
   else{
     const payload = await DRLHandler.GetListCertificate('ChuaIn', username, fromDate, toDate);
-    if (payload.length === 0){
-      dispatch({ type: Types.GET_NULL_DATA });
-      return;
-    }
     dispatch({ type: Types.GET_LIST_WITH_STATUS, payload });
   }
   history.push('/drl');
@@ -131,7 +125,9 @@ const getListPrintByDate = (filter) => async dispatch => {
   const {Items} = body;
 
   if (statusCode !== 200 || Items.length === 0){
-    dispatch({ type: Types.GET_NULL_DATA });
+    // dispatch({ type: Types.GET_NULL_DATA });
+    dispatch({ type: Types.GET_HISTORY_LIST, payload: [] });
+    history.push('/drl');
     return;
   }
   const payload = Items.map((item, index) => {
@@ -149,10 +145,6 @@ const getListHistoryImport = filter => async dispatch => {
   const { nh, hk } = filter;
   const payload = await DRLHandler.GetURLFileImport(nh, hk);
   logger.info('GetURLFileImport:: payload: ', payload);
-  if (payload.length === 0){
-    dispatch({ type: Types.GET_NULL_DATA });
-    return;
-  }
   dispatch({ type: Types.GET_HISTORY_IMPORT_LIST, payload });
 };
 

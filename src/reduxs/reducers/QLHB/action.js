@@ -95,10 +95,10 @@ const countingWithMSSV = (filter) => async dispatch => {
   history.push('/qlhb');
 };
 
-const countingWithFilter = (filter) => async dispatch => {
+const countingWithLoaiHB = (filter) => async dispatch => {
   const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
 
-  const response = await QLHBHandler.CountingWithMSSV(filter);
+  const response = await QLHBHandler.CountingWithLoaiHB(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
@@ -108,36 +108,107 @@ const countingWithFilter = (filter) => async dispatch => {
   
   const { body } = response;
 
-  const arrLoaiHB   = [];
-  const arrDoiTuong = [];
-  const arrDVTT     = [];
-
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
     body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
-    if (body[key].LoaiHB        === LoaiHB)    arrLoaiHB.push(body[key]);
-    if (body[key].DoiTuong      === DoiTuong)  arrDoiTuong.push(body[key]);
-    if (body[key].DonViTaiTro   === DonViTaiTro) arrDVTT.push(body[key]);
     return body[key];
   });
 
-  if (LoaiHB !== ''){
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: arrLoaiHB });
-  }else if (DoiTuong !== ''){
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: arrDoiTuong });
-  }else if (DonViTaiTro !== ''){
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: arrDVTT });
-  }else{
-    dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-  }
+  dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+
 
   history.push('/qlhb');
 };
 
-const exportCountingWithFilter = (filter) => async dispatch => {
+const countingWithDoiTuong = (filter) => async dispatch => {
+  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
+
+  const response = await QLHBHandler.CountingWithDoiTuong(filter);
+  logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  
+  const { body } = response;
+
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
+    return body[key];
+  });
+
+  dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+
+
+  history.push('/qlhb');
+};
+
+const countingWithDVTT = (filter) => async dispatch => {
+  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
+
+  const response = await QLHBHandler.CountingWithDVTT(filter);
+  logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    dispatch({ type: Types.GET_NULL_DATA});
+    return;
+  }  
+  
+  const { body } = response;
+
+  const data = Object.keys(body).map(key => {
+    body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
+    return body[key];
+  });
+
+  dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+
+  history.push('/qlhb');
+};
+
+const exportCountingWithMSSV = (filter) => async dispatch => {
   logger.info('QLHBAction:: filter: filter: ', filter);
 
   const response = await QLHBHandler.ExportCountingWithMSSV(filter);
+  logger.info('QLHBAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+    history.push('/qlhb');
+  }
+};
+
+const exportCountingWithLoaiHB = (filter) => async dispatch => {
+  logger.info('QLHBAction:: filter: filter: ', filter);
+
+  const response = await QLHBHandler.ExportCountingWithLoaiHB(filter);
+  logger.info('QLHBAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+    history.push('/qlhb');
+  }
+};
+
+const exportCountingWithDoiTuong = (filter) => async dispatch => {
+  logger.info('QLHBAction:: filter: filter: ', filter);
+
+  const response = await QLHBHandler.ExportCountingWithDoiTuong(filter);
+  logger.info('QLHBAction:: Exportfilter: reponse: ', response);
+  if (response.statusCode === 200) {
+    const { body } = response;
+    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+    history.push('/qlhb');
+  }
+};
+
+const exportCountingWithDVTT = (filter) => async dispatch => {
+  logger.info('QLHBAction:: filter: filter: ', filter);
+
+  const response = await QLHBHandler.ExportCountingWithDVTT(filter);
   logger.info('QLHBAction:: Exportfilter: reponse: ', response);
   if (response.statusCode === 200) {
     const { body } = response;
@@ -159,9 +230,14 @@ export default {
   getListWithFilter,
   exportWithFilter,
   deleteOneCertificate,
-  countingWithMSSV,
   getDataFilter,
   changeCountingColumns,
-  countingWithFilter,
-  exportCountingWithFilter
+  countingWithMSSV,
+  countingWithLoaiHB,
+  countingWithDoiTuong,
+  countingWithDVTT,
+  exportCountingWithMSSV,
+  exportCountingWithLoaiHB,
+  exportCountingWithDoiTuong,
+  exportCountingWithDVTT
 };

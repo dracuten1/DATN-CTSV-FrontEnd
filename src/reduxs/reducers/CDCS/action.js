@@ -69,15 +69,33 @@ const countingWithFilter = filter => async dispatch => {
   const response = await CDCSHanlder.CountingWithFilter(filter);
   logger.info('CDCSAction:: getListAll: reponse: ', response);
   
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
-  {
-    dispatch({ type: Types.GET_NULL_DATA });
-    return;
-  }
-  
   const { typeCDCS }  = filter;
   const { body }      = response;
 
+  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    switch (typeCDCS) {
+      case 'DTTS':
+        dispatch({ type: Types.GET_LIST_DTTS, payload: [] });
+        break;
+      case 'HTDX':
+        dispatch({ type: Types.GET_LIST_HTDX, payload: [] });
+        break;
+      case 'TCXH':
+        dispatch({ type: Types.GET_LIST_TCXH, payload: [] });
+        break;
+      case 'MGHP':
+        dispatch({ type: Types.GET_LIST_MGHP, payload: [] });
+        break;
+      case 'SVKT':
+        dispatch({ type: Types.GET_LIST_SVKT, payload: [] });
+        break;
+      default:
+        break;
+    }
+    return;
+  }
+  
   const data = Object.keys(body).map(key => {
     body[key].nh              = parseNHToNumber(body[key]["DuLieu"].NH);
     body[key].hk              = body[key]["DuLieu"].HK;

@@ -96,8 +96,8 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const handleImport = () => { };
   const [filter, setFilter] = React.useState({
-    hk: '',
-    nh: '',
+    hk: '1',
+    nh: `${year - 1}-${year}`,
     type: 'TỐT NGHIỆP',
     mssv: ''
   });
@@ -110,7 +110,8 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch({ type: Types.NO_DATA });
+    // dispatch({ type: Types.NO_DATA });
+    dispatch(Actions.getListWithFilter(filter));
     updateBegin += 1;
   }
 
@@ -166,7 +167,7 @@ const AllList = props => {
     <Card {...rest} className={clsx(classes.root, className)}>
       <UpdateDialog open={updateDialogStage} handleClose={handleCloseUpdateDialog} />
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} mssv={filter.mssv} />
+        <Filters onFilter={handleFilter} filter={filter} />
         <ContainedButton
           handleClick={() => {
             if (filter.mssv.length > 0)

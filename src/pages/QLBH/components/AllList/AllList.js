@@ -64,11 +64,11 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${convert - 1}-${convert}`,
+    nh: `${year - 1}-${year}`,
     fromHK: '1',
-    fromNH: `${convert - 1}-${convert}`,
+    fromNH: `${year - 1}-${year}`,
     toHK: '2',
-    toNH: `${convert - 1}-${convert}`,
+    toNH: `${year - 1}-${year}`,
     mssv: '',
     type: 'Bồi thường'
   });
@@ -94,7 +94,8 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getNullData());
+    // dispatch(Actions.getNullData());
+    dispatch(Actions.getListWithFilter(filter, type));
     updateBegin += 1;
   }
 
@@ -145,7 +146,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} isCounting={isCounting} mssv={filter.mssv}/>
+        <Filters onFilter={handleFilter} isCounting={isCounting} filter={filter}/>
         <ContainedButton
           handleClick={() => {
             isCounting
@@ -258,7 +259,8 @@ const AllList = props => {
               onClick={() => {
                 type = 'YT';
                 updateBegin = 1;
-                dispatch({ type: Types.NO_DATA_BHYT });
+                // dispatch({ type: Types.NO_DATA_BHYT });
+                dispatch(Actions.getListWithFilter(filter, type));
               }}
               variant="contained"
               color="primary"
@@ -271,7 +273,8 @@ const AllList = props => {
               onClick={() => {
                 type = 'TN';
                 updateBegin = 1;
-                dispatch({ type: Types.NO_DATA_BHTN });
+                // dispatch({ type: Types.NO_DATA_BHTN });
+                dispatch(Actions.getListWithFilter(filter, type));
               }}
               variant="contained"
               color="primary"
@@ -284,7 +287,8 @@ const AllList = props => {
               onClick={() => {
                 type = 'BT';
                 updateBegin = 1;
-                dispatch(Actions.changeCountingColumns());
+                // dispatch(Actions.changeCountingColumns());
+                dispatch(Actions.countingWithMSSV(filter))
               }}
               variant="contained"
               color="primary"

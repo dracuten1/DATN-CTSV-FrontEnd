@@ -14,9 +14,10 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, mssv } = props;
+  const { onFilter, filter } = props;
   const dt = new Date();
   const year = dt.getFullYear();
+  const {hk, nh, type, mssv} = filter;
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -28,12 +29,14 @@ export default function Filters(props) {
         clickFilter={onFilter}
         label="Học kỳ"
         prop="hk"
+        defaultValue={hk}
         data={['None', '1', '2', '3']}
       />
       <Filter
         clickFilter={onFilter}
         label="Năm học"
         prop="nh"
+        defaultValue={nh}
         data={[
           'None',
           `${year}-${year + 1}`,
@@ -49,6 +52,7 @@ export default function Filters(props) {
         clickFilter={onFilter}
         prop="type"
         label="Tình trạng"
+        defaultValue={type}
         data={[
           'BẢO LƯU',
           'ĐANG HỌC',
@@ -58,7 +62,7 @@ export default function Filters(props) {
           'BUỘC THÔI HỌC',
           'CẢNH CÁO HỌC VỤ',
           'ĐĂNG KÝ HỌC PHẦN',
-          'ĐIỂM TRUNG BÌNH'
+          // 'ĐIỂM TRUNG BÌNH'
         ]}
       />
       <TextField

@@ -14,9 +14,11 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, isCounting, mssv } = props;
+  const { onFilter, isCounting, filter } = props;
   const dt = new Date();
   const year = dt.getFullYear();
+
+  const {hk, nh, fromHK, fromNH, toHK, toNH, mssv, type} = filter;
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -49,12 +51,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="fromHK"
+            defaultValue={fromHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="fromNH"
+            defaultValue={fromNH}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -81,12 +85,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="toHK"
+            defaultValue={toHK}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="toNH"
+            defaultValue={toNH}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -102,6 +108,7 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Loại"
             prop="type"
+            defaultValue={type}
             helperText="BT can export"
             data={['BHYT', 'BHTN', 'Bồi thường']}
           />
@@ -112,12 +119,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="hk"
+            defaultValue={hk}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="nh"
+            defaultValue={nh}
             data={[
               'None',
               `${year}-${year + 1}`,

@@ -21,8 +21,8 @@ import * as CDCSHandler from 'handlers/CDCSHandler';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/CDCS/actionTypes';
+import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
-import Actions from '../../../../reduxs/reducers/CDCS/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
@@ -50,7 +50,6 @@ const year = dt.getFullYear();
 const convert = year % 100;
 
 let updateBegin = 0;
-let type = 'KK';
 let columns = [];
 
 const AllList = props => {
@@ -92,12 +91,12 @@ const AllList = props => {
 
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
-    fromHK: '',
-    fromNH: '',
-    toHK: '',
-    toNH: '',
+    fromHK: '1',
+    fromNH: `${year - 1}-${year}`,
+    toHK: '2',
+    toNH: `${year - 1}-${year}`,
     mssv: '',
-    typeCDCS: '',
+    typeCDCS: 'DTTS',
     doituong: ''
   });
 
@@ -109,7 +108,8 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(Actions.getDataFilter());
-    dispatch(Actions.changeCountingColumnsList());
+    // dispatch(Actions.changeCountingColumnsList());
+    dispatch(Actions.countingWithFilter(filter));
     updateBegin += 1;
   }
 
@@ -122,39 +122,20 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  if (updateBegin === 2 && state.data.length !== dataList.length) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: columns
-    });
-    updateBegin += 1;
-  }
+  // if (updateBegin === 2 && state.data.length !== dataList.length) {
+  //   setState({
+  //     ...state,
+  //     data: dataList,
+  //     columns: columns
+  //   });
+  //   updateBegin += 1;
+  // }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
 
   const handleImport = () => {};
-
-  const parseNHToString = nh => {
-    switch (nh) {
-      case 1:
-        return `${convert - 6}-${convert - 5}`;
-      case 2:
-        return `${convert - 5}-${convert - 4}`;
-      case 3:
-        return `${convert - 4}-${convert - 3}`;
-      case 4:
-        return `${convert - 3}-${convert - 2}`;
-      case 5:
-        return `${convert - 2}-${convert - 1}`;
-      case 6:
-        return `${convert - 1}-${convert}`;
-      default:
-        return `${convert}-${convert + 1}`;
-    }
-  };
 
   const successSnackBar = {
     open: true,
@@ -180,7 +161,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} isCase={isCase} />
+        <Filters onFilter={handleFilter} isCase={isCase} filter={filter}/>
         <ContainedButton
           handleClick={() => {
             if (isCase === 6) {
@@ -227,9 +208,8 @@ const AllList = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
               onClick={() => {
-                type = 'TT';
                 updateBegin = 1;
-                dispatch(Actions.changeCountingColumnsList());
+                dispatch(Actions.countingWithFilter(filter));
               }}
               variant="contained"
               color="primary"

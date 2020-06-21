@@ -44,7 +44,7 @@ export const UpdateOneStudentByType = async (data, type) => {
 
 export const ExportWithFilter = async (filter) => {
   const {nh, hk}  = filter;
-  let   { type }      = filter;
+  let   type;
   const cvNH = convertNamHoc(nh);
   switch (filter.type){
     case 'all': case 'All':

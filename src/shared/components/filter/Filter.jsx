@@ -23,14 +23,14 @@ const useStyles = makeStyles(theme => ({
 
 export default function SimpleSelect(props) {
   const classes = useStyles();
-  const [selectItem, setSelectItem] = React.useState(null);
+  const { label, prop, clickFilter, helperText, defaultValue } = props;
+  const [selectItem, setSelectItem] = React.useState(defaultValue);
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const { label, prop, clickFilter, helperText } = props;
   const handleChange = event => {
     setSelectItem(event.target.value);
     clickFilter(prop, event.target.value);

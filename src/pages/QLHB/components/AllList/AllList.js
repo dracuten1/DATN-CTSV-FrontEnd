@@ -14,6 +14,8 @@ import {
   Grid
 } from '@material-ui/core';
 import { logger } from 'core/services/Apploger';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
@@ -47,11 +49,12 @@ const useStyles = makeStyles(theme => ({
 
 const dt = new Date();
 const year = dt.getFullYear();
-const convert = year % 100;
+// const convert = year % 100;
 
 let updateBegin = 0;
 let type = 'KK';
 let columns = [];
+let isCase = 0;
 
 const AllList = props => {
   const { className, ...rest } = props;
@@ -76,11 +79,11 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${convert - 1}-${convert}`,
+    nh: `${year - 1}-${year}`,
     fromHK: '1',
-    fromNH: `${convert - 1}-${convert}`,
+    fromNH: `${year - 1}-${year}`,
     toHK: '2',
-    toNH: `${convert - 1}-${convert}`,
+    toNH: `${year - 1}-${year}`,
     mssv: '',
     LoaiHB: '',
     DoiTuong: '',
@@ -95,7 +98,8 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(Actions.getDataFilter());
-    dispatch({type: Types.HBKK});
+    // dispatch({type: Types.HBKK});
+    dispatch(Actions.getListWithFilter(filter, type));
     updateBegin += 1;
   }
 
@@ -108,20 +112,31 @@ const AllList = props => {
     updateBegin += 1;
   }
 
-  // if (updateBegin === 2 && state.data.length !== dataList.length) {
-  //   setState({
-  //     ...state,
-  //     data: dataList,
-  //     columns: columns
-  //   });
-  //   updateBegin += 1;
-  // }
+  if (updateBegin === 2 && state.data.length !== dataList.length) {
+    setState({
+      ...state,
+      data: dataList,
+      columns: columns
+    });
+    updateBegin += 1;
+  }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
 
   const handleImport = () => {};
+
+  //Create Menu
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleOpenMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const successSnackBar = {
     open: true,
@@ -147,12 +162,29 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} mssv={filter.mssv}/>
+        <Filters
+          onFilter={handleFilter}
+          isCounting={isCounting}
+          filter={filter}
+          isCase={isCase}
+        />
         <ContainedButton
           handleClick={() => {
-            if (isCounting){
-              filter.mssv === '' ? dispatch(Actions.countingWithFilter(filter)) : dispatch(Actions.countingWithMSSV(filter));
-            }else{
+            if (isCounting) {
+              switch (isCase) {
+                case 1:
+                  dispatch(Actions.countingWithMSSV(filter));
+                  break;
+                case 2:
+                  dispatch(Actions.countingWithLoaiHB(filter));
+                  break;
+                case 3:
+                  dispatch(Actions.countingWithDoiTuong(filter));
+                  break;
+                default:
+                  dispatch(Actions.countingWithDVTT(filter));
+              }
+            } else {
               dispatch(Actions.getListWithFilter(filter, type));
             }
             updateBegin = 1;
@@ -184,56 +216,60 @@ const AllList = props => {
                 // exportButton: true,
                 filtering: false
               }}
-              editable={isCounting ? {} : {
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      if (oldData) {
-                        logger.info('Newdata: ', newData);
-                        const response = await QLHBHandler.UpdateOneStudentByType(
-                          newData,
-                          type
-                        );
-                        if (response.statusCode !== 200) {
-                          setSnackBarValue(errorSnackBar);
-                          return;
-                        }
-                        setSnackBarValue(successSnackBar);
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  }),
+              editable={
+                isCounting
+                  ? {}
+                  : {
+                      onRowUpdate: (newData, oldData) =>
+                        new Promise(resolve => {
+                          setTimeout(async () => {
+                            resolve();
+                            if (oldData) {
+                              logger.info('Newdata: ', newData);
+                              const response = await QLHBHandler.UpdateOneStudentByType(
+                                newData,
+                                type
+                              );
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                return;
+                              }
+                              setSnackBarValue(successSnackBar);
+                              setState(prevState => {
+                                const data = [...prevState.data];
+                                data[data.indexOf(oldData)] = newData;
+                                return { ...prevState, data };
+                              });
+                            }
+                          }, 600);
+                        }),
 
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      logger.info('Olddata: ', oldData);
-                      const { PK, SK, id } = oldData;
-                      const response = await QLHBHandler.DeleteOneCertificate(
-                        PK,
-                        SK,
-                        type,
-                        id
-                      );
-                      if (response.statusCode !== 200) {
-                        setSnackBarValue(errorSnackBar);
-                        return;
-                      }
-                      setSnackBarValue(successSnackBar);
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
+                      onRowDelete: oldData =>
+                        new Promise(resolve => {
+                          setTimeout(async () => {
+                            resolve();
+                            logger.info('Olddata: ', oldData);
+                            const { PK, SK, id } = oldData;
+                            const response = await QLHBHandler.DeleteOneCertificate(
+                              PK,
+                              SK,
+                              type,
+                              id
+                            );
+                            if (response.statusCode !== 200) {
+                              setSnackBarValue(errorSnackBar);
+                              return;
+                            }
+                            setSnackBarValue(successSnackBar);
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data.splice(data.indexOf(oldData), 1);
+                              return { ...prevState, data };
+                            });
+                          }, 600);
+                        })
+                    }
+              }
             />
           </div>
         </PerfectScrollbar>
@@ -245,8 +281,11 @@ const AllList = props => {
             <Button
               onClick={() => {
                 type = 'KK';
+                isCase = 0;
                 updateBegin = 1;
-                dispatch({type: Types.HBKK});              }}
+                // dispatch({type: Types.HBKK});
+                dispatch(Actions.getListWithFilter(filter, type));
+              }}
               variant="contained"
               color="primary"
               size="small"
@@ -257,8 +296,11 @@ const AllList = props => {
             <Button
               onClick={() => {
                 type = 'TT';
+                isCase = 0;
                 updateBegin = 1;
-                dispatch({type: Types.HBTT});              }}
+                // dispatch({type: Types.HBTT});
+                dispatch(Actions.getListWithFilter(filter, type));
+              }}
               variant="contained"
               color="primary"
               size="small"
@@ -277,25 +319,43 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
-                if (isCounting){
-                  const response = await QLHBHandler.ExportCountingWithMSSV(filter);
-                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
-                    setSnackBarValue(errorExportSnackBar);
-                    return;
+                let response;
+                if (isCounting) {
+                  switch (isCase) {
+                    case 1:
+                      response = await QLHBHandler.ExportCountingWithMSSV(
+                        filter
+                      );
+                      break;
+                    case 2:
+                      response = await QLHBHandler.ExportCountingWithLoaiHB(
+                        filter
+                      );
+                      break;
+                    case 3:
+                      response = await QLHBHandler.ExportCountingWithDoiTuong(
+                        filter
+                      );
+                      break;
+                    default:
+                      response = await QLHBHandler.ExportCountingWithDVTT(
+                        filter
+                      );
                   }
-                  setSnackBarValue(successSnackBar);
-                  const { body } = response;
-                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                }else{
-                  const response = await QLHBHandler.ExportWithFilter(filter, type);
-                  if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
-                    setSnackBarValue(errorExportSnackBar);
-                    return;
-                  }
-                  setSnackBarValue(successSnackBar);
-                  const { body } = response;
-                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                } 
+                  response = await QLHBHandler.ExportCountingWithMSSV(filter);
+                } else {
+                  response = await QLHBHandler.ExportWithFilter(filter, type);
+                }
+                if (
+                  response.statusCode !== 200 ||
+                  response.body === 'Không có gì để export'
+                ) {
+                  setSnackBarValue(errorExportSnackBar);
+                  return;
+                }
+                setSnackBarValue(successSnackBar);
+                const { body } = response;
+                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
               }}
               variant="contained"
               color="primary"
@@ -305,10 +365,7 @@ const AllList = props => {
               Export
             </Button>
             <Button
-              onClick={() => {
-                dispatch(Actions.changeCountingColumns());
-                updateBegin = 1;
-              }}
+              onClick={handleOpenMenu}
               variant="contained"
               color="primary"
               size="small"
@@ -316,6 +373,54 @@ const AllList = props => {
             >
               Thống kê
             </Button>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem
+                onClick={() => {
+                  isCase = 1;
+                  updateBegin = 1;
+                  dispatch(Actions.countingWithMSSV(filter));
+                  handleCloseMenu();
+                }}
+              >
+                Theo MSSV
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  isCase = 2;
+                  updateBegin = 1;
+                  dispatch(Actions.countingWithLoaiHB(filter));
+                  handleCloseMenu();
+                }}
+              >
+                Theo Loại Học Bổng
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  isCase = 3;
+                  updateBegin = 1;
+                  dispatch(Actions.countingWithDoiTuong(filter));
+                  handleCloseMenu();
+                }}
+              >
+                Theo Đối Tượng
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  isCase = 4;
+                  updateBegin = 1;
+                  dispatch(Actions.countingWithDVTT(filter));
+                  handleCloseMenu();
+                }}
+              >
+                Theo Đơn Vị Tài Trợ
+              </MenuItem>
+            </Menu>
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>

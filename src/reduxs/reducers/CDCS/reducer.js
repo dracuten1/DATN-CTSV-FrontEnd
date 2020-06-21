@@ -1,7 +1,7 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isCase: 6,
+  isCase: 1,
   listDoiTuong: [],
   dataList: [],
   listLink: []

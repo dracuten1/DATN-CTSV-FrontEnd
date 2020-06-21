@@ -30,7 +30,7 @@ export default function SimpleSelectObject(props) {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const { label, prop, clickFilter, helperText } = props;
+  const { label, prop, clickFilter, helperText, defaultValue } = props;
   const handleChange = event => {
     setSelectItem(event.target.value);
     clickFilter(prop, event.target.value);
@@ -71,6 +71,7 @@ export default function SimpleSelectObject(props) {
           id="demo-simple-select-outlined"
           value={selectItem}
           onChange={handleChange}
+          defaultValue={defaultValue}
           labelWidth={labelWidth}
           inputProps={{ className: classes.select }}
         >

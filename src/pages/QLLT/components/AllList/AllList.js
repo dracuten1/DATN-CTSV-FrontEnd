@@ -62,7 +62,7 @@ const AllList = props => {
   const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
-    nh: `${convert - 1}-${convert}`,
+    nh: `${year - 1}-${year}`,
     type: 'All'
   });
   const [state, setState] = useState({
@@ -71,7 +71,8 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch(Actions.getNullData());
+    // dispatch(Actions.getNullData());
+    dispatch(Actions.getAllListWithFilter(filter));
     updateBegin += 1;
   }
 
@@ -133,7 +134,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={handleFilter} filter={filter}/>
         <ContainedButton
           handleClick={() => {
             if (filter.type === 'All' || filter.type === 'all')
@@ -152,7 +153,7 @@ const AllList = props => {
               icons={icons}
               title={
                 <div>
-                  {isAlllist ? <b>DANH SÁCH TỔNG</b> : <b>DANH SÁCH KTX</b>}
+                  {isAlllist ? <b>DANH SÁCH NGOẠI TRÚ</b> : <b>DANH SÁCH KTX</b>}
                 </div>
               }
               columns={state.columns}

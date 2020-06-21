@@ -18,10 +18,11 @@ let tempArr = ['None'];
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter } = props;
+  const { onFilter, filter } = props;
 
   const XNSVState = useSelector(state => state.XNSVState);
   const { listUser, isHistoryList } = XNSVState;
+  const {hk, nh, type, username} = filter;
 
   if (tempArr.length === 1) tempArr = tempArr.concat(listUser);
 
@@ -36,12 +37,14 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Học kỳ"
             prop="hk"
+            defaultValue={hk}
             data={['None', '1', '2', '3']}
           />
           <Filter
             clickFilter={onFilter}
             label="Năm học"
             prop="nh"
+            defaultValue={nh}
             data={[
               'None',
               `${year}-${year + 1}`,
@@ -56,6 +59,7 @@ export default function Filters(props) {
           <Filter
             clickFilter={onFilter}
             prop="type"
+            defaultValue={type}
             label="Loại xác nhận"
             data={[
               'None',
@@ -73,6 +77,7 @@ export default function Filters(props) {
             clickFilter={onFilter}
             prop="username"
             label="User"
+            defaultValue={username}
             data={tempArr}
           />
         </>
@@ -91,6 +96,7 @@ export default function Filters(props) {
           <Filter
             clickFilter={onFilter}
             prop="username"
+            defaultValue={username}
             label="User"
             data={tempArr}
           />

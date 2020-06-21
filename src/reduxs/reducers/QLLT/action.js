@@ -31,9 +31,14 @@ const getNullData = () => async dispatch => {
 };
 
 const getAllListWithFilter = filter => async dispatch => {
-  filter.type = 'all';
-  logger.info('QLLTAction:: getListAll: filter: ', filter);
-  const response = await QLLTHandler.GetListWithFilter(filter);
+  const {hk ,nh} = filter;
+  const content = {
+    hk: hk,
+    nh: nh,
+    type: 'all'
+  };
+  logger.info('QLLTAction:: getListAll: filter: ', content);
+  const response = await QLLTHandler.GetListWithFilter(content);
   logger.info('QLLTAction:: getListAll: reponse: ', response);
 
   const { statusCode, body } = response;
@@ -53,9 +58,14 @@ const getAllListWithFilter = filter => async dispatch => {
 };
 
 const getKtxListWithFilter = filter => async dispatch => {
-  filter.type = 'ktx';
-  logger.info('QLLTAction:: getListAll: filter: ', filter);
-  const response = await QLLTHandler.GetListWithFilter(filter);
+  const {hk ,nh} = filter;
+  const content = {
+    hk: hk,
+    nh: nh,
+    type: 'ktx'
+  };
+  logger.info('QLLTAction:: getListAll: filter: ', content);
+  const response = await QLLTHandler.GetListWithFilter(content);
   logger.info('QLLTAction:: getListKTX: reponse: ', response);
   const { statusCode, body } = response;
   if (statusCode !== 200 || body.length === 0) {

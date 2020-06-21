@@ -22,8 +22,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: [],
         isAllList: true,
         isPrintList: false,
-        isHistoryList: false,
-        isHisImport: false
+        isHistoryList: false
       };
     case ActionTypes.PRINT_LIST:
       return {
@@ -31,8 +30,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: [],
         isAllList: false,
         isPrintList: true,
-        isHistoryList: false,
-        isHisImport: false
+        isHistoryList: false
       };
     case ActionTypes.IMPORT_LIST:
       return {
@@ -40,8 +38,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: [],
         isAllList: false,
         isPrintList: false,
-        isHistoryList: false,
-        isHisImport: true
+        isHistoryList: false
       };
     case ActionTypes.HISTORY_LIST:
       return {
@@ -49,8 +46,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: [],
         isAllList: false,
         isPrintList: false,
-        isHistoryList: true,
-        isHisImport: false
+        isHistoryList: true
       };
       case ActionTypes.GET_LIST_WITH_STATUS:
       return {
@@ -58,8 +54,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: action.payload,
         isAllList: false,
         isPrintList: true,
-        isHistoryList: false,
-        isHisImport: false
+        isHistoryList: false
       };
     case ActionTypes.GET_LIST_INFO:
       return {
@@ -67,8 +62,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: action.payload,
         isAllList: true,
         isPrintList: false,
-        isHistoryList: false,
-        isHisImport: false
+        isHistoryList: false
       };
     case ActionTypes.GET_HISTORY_LIST:
       return {
@@ -76,8 +70,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: action.payload,
         isAllList: false,
         isPrintList: false,
-        isHistoryList: true,
-        isHisImport: false
+        isHistoryList: true
       };
     case ActionTypes.GET_HISTORY_IMPORT_LIST:
       return {
@@ -85,8 +78,7 @@ const userReducer = (state = INIT_STATE, action) => {
         dataPrint: action.payload,
         isAllList: false,
         isPrintList: false,
-        isHistoryList: false,
-        isHisImport: true
+        isHistoryList: false
       };
     case ActionTypes.GET_USER:
       return {

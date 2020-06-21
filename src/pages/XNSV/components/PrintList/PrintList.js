@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const date = new Date();
+const year = date.getFullYear();
 let updateBegin = 0;
 let isPrint = false;
 let valueCase = null;
@@ -217,9 +218,9 @@ const PrintList = props => {
   ];
 
   const [filter, setFilter] = React.useState({
-    hk: '',
-    nh: '',
-    type: '',
+    hk: '1',
+    nh: `${year - 1}-${year}`,
+    type: 'Đang học',
     username: '',
     fromDate: moment(new Date()).format('YYYY-MM-DD'),
     toDate: moment(new Date()).format('YYYY-MM-DD')
@@ -231,11 +232,12 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
     dispatch(XNSVActions.getUser());
     dispatch(XNSVActions.getNotPrintYet());
-
     updateBegin += 1;
   }
+
   if (updateBegin === 1) {
     setState({
       ...state,
@@ -244,6 +246,7 @@ const PrintList = props => {
     });
     updateBegin += 1;
   }
+
   if (updateBegin === 2 && state.data.length !== dataList.length) {
     setState({
       ...state,
@@ -255,8 +258,7 @@ const PrintList = props => {
 
   if (isPrint) {
     setState({ ...state, data: dataList }, () => {
-      dispatch(ProgressActions.hideProgress())
-
+      dispatch(ProgressActions.hideProgress());
     });
     isPrint = !isPrint;
   }
@@ -391,7 +393,7 @@ const PrintList = props => {
         ''
       ) : (
           <CardActions className={classes.actions}>
-            <Filters onFilter={handleFilter} />
+            <Filters onFilter={handleFilter} filter={filter}/>
             <ContainedButton
               handleClick={() => {
                 dispatch(ProgressActions.showProgres());
@@ -424,6 +426,7 @@ const PrintList = props => {
                       icon: icons.Print,
                       tooltip: 'Print',
                       onClick: async (event, rowData) => {
+                        dispatch(ProgressActions.showProgres());
                         const data = {
                           pk: rowData.pk,
                           sk: rowData.sk,
@@ -463,6 +466,7 @@ const PrintList = props => {
                   ? {
                     onRowDelete: oldData =>
                       new Promise(resolve => {
+                        dispatch(ProgressActions.showProgres());
                         setTimeout(async () => {
                           resolve();
                           const { pk, sk } = oldData;
@@ -498,7 +502,9 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch({ type: Types.HISTORY_LIST });
+                    // dispatch({ type: Types.HISTORY_LIST });
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(XNSVActions.getListExport(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -510,7 +516,9 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                    // dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(XNSVActions.getListExportByDate(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -531,6 +539,7 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
+                    dispatch(ProgressActions.showProgres());
                     if (valueCase && valueLanguage) {
                       dispatch(
                         XNSVActions.handlePrintByType(
@@ -551,8 +560,8 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
+                    dispatch(ProgressActions.showProgres());
                     if (valueLanguage) {
-                      console.log('keys:', keys);
                       dispatch(
                         XNSVActions.handlePrintAll(
                           keys,
@@ -574,7 +583,9 @@ const PrintList = props => {
                   <Button
                     style={{ marginLeft: '8px' }}
                     onClick={() => {
-                      dispatch({ type: Types.HISTORY_LIST });
+                      dispatch(ProgressActions.showProgres());
+                      // dispatch({ type: Types.HISTORY_LIST });
+                      dispatch(XNSVActions.getListExport(filter));
                       updateBegin = 1;
                     }}
                     variant="contained"
@@ -586,7 +597,9 @@ const PrintList = props => {
                   <Button
                     style={{ marginLeft: '8px' }}
                     onClick={() => {
-                      dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                      dispatch(ProgressActions.showProgres());
+                      // dispatch({ type: Types.HISTORY_LIST_BY_DATE });
+                      dispatch(XNSVActions.getListExportByDate(filter));
                       updateBegin = 1;
                     }}
                     variant="contained"
@@ -598,6 +611,7 @@ const PrintList = props => {
                   <Button
                     style={{ marginLeft: '8px' }}
                     onClick={() => {
+                      dispatch(ProgressActions.showProgres());
                       dispatch(XNSVActions.getNotPrintYet());
                       updateBegin = 1;
                     }}
@@ -610,6 +624,7 @@ const PrintList = props => {
                   <Button
                     style={{ marginLeft: '8px' }}
                     onClick={async () => {
+                      dispatch(ProgressActions.showProgres());
                       if (isHistoryList) {
                         const response = await XNSVHandler.ExportWithFilter(
                           filter

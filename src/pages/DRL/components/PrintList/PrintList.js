@@ -73,7 +73,6 @@ const PrintList = props => {
     isAllList
   } = DRLState;
 
-  logger.info('history', dataPrint);
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
 
@@ -84,7 +83,7 @@ const PrintList = props => {
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-    // { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
+    { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
     {
       title: 'URL',
       field: 'url',
@@ -92,7 +91,7 @@ const PrintList = props => {
       filtering: false,
       render: rowData => (
         <Link style={{ textDecoration: 'none' }} href={rowData.url}>
-          {`${rowData.url.substring(0, 200)}...`}
+          Link Download
         </Link>
       )
     }
@@ -228,11 +227,11 @@ const PrintList = props => {
   });
 
   const [filter, setFilter] = React.useState({
-    nh: '',
-    hk: '',
-    type: '1',
-    time: `${year}-${year + 1}`,
-    xeploai: '',
+    nh: `${year - 1}-${year}`,
+    hk: '1',
+    type: 'HK1',
+    time: `${year - 1}-${year}`,
+    xeploai: 'Giỏi',
     status: 'Chưa In',
     username: '',
     from: new Date(),
@@ -240,7 +239,8 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
-    dispatch({ type: Types.GET_NULL_DATA });
+    // dispatch({ type: Types.GET_NULL_DATA });
+    dispatch(DRLActions.getListWithStatus(filter));
     dispatch(DRLActions.getUser());
     updateBegin += 1;
   }
@@ -254,14 +254,14 @@ const PrintList = props => {
     updateBegin += 1;
   }
 
-  // if (updateBegin === 2 && state.data.length !== dataPrint.length) {
-  //   setState({
-  //     ...state,
-  //     data: dataPrint,
-  //     columns: typeColumns
-  //   });
-  //   updateBegin += 1;
-  // }
+  if (updateBegin === 2 && state.data.length !== dataPrint.length) {
+    setState({
+      ...state,
+      data: dataPrint,
+      columns: typeColumns
+    });
+    updateBegin += 1;
+  }
 
   if (isPrint) {
     setState({ ...state, data: dataPrint });
@@ -329,7 +329,6 @@ const PrintList = props => {
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
   };
-  logger.info('dataTable: ', state.data);
 
   const handlePrintAll = () => {
     setState({ ...state, data: [] });
@@ -400,7 +399,7 @@ const PrintList = props => {
       <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
       <Divider />
       <CardActions className={classes.actions}>
-        <Filters valueType={valueType} onFilter={handleFilter} />
+        <Filters valueType={valueType} onFilter={handleFilter} filter={filter}/>
         <ContainedButton
           handleClick={() => {
             if (isAllList) {
@@ -456,7 +455,8 @@ const PrintList = props => {
               <>
                 <Button
                   onClick={() => {
-                    dispatch(DRLActions.handleAllList());
+                    // dispatch(DRLActions.handleAllList());
+                    dispatch(DRLActions.filterListInfoDRL(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
@@ -472,7 +472,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                 >
-                  Thêm sinh viên in
+                  Thêm Sinh Viên Đăng Ký
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
@@ -510,7 +510,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                 >
-                  In theo trường hợp
+                  Xuất File Theo Trường Hợp
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
@@ -545,7 +545,7 @@ const PrintList = props => {
                   color="primary"
                   size="small"
                 >
-                  In tất cả
+                  Xuất File Tất Cả
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
@@ -576,14 +576,15 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    dispatch({ type: Types.HISTORY_LIST });
+                    // dispatch({ type: Types.HISTORY_LIST });
+                    dispatch(DRLActions.getListPrintByDate(filter));
                     updateBegin = 1;
                   }}
                   variant="contained"
                   color="primary"
                   size="small"
                 >
-                  Link đã in
+                  File Đã Lưu
                 </Button>
               </>
             ) : (
@@ -591,14 +592,15 @@ const PrintList = props => {
                   <Button
                     style={{ marginLeft: '8px' }}
                     onClick={() => {
-                      dispatch(DRLActions.handlePrintList());
+                      // dispatch(DRLActions.handlePrintList());
+                      dispatch(DRLActions.getListWithStatus(filter));
                       updateBegin = 1;
                     }}
                     variant="contained"
                     color="primary"
                     size="small"
                   >
-                    Danh sách in
+                    Danh Sách In
                 </Button>
                   {isAllList ? (
                     <Button
@@ -631,7 +633,8 @@ const PrintList = props => {
                     color="primary"
                     size="small"
                     onClick={() => {
-                      dispatch({ type: Types.IMPORT_LIST });
+                      // dispatch({ type: Types.IMPORT_LIST });
+                      dispatch(DRLActions.getListHistoryImport(filter));
                       updateBegin = 1;
                     }}
                   >

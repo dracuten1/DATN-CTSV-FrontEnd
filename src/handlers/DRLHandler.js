@@ -44,11 +44,11 @@ export const GetDRLByIdAndType = async (id, type) => {
   return response;
 };
 
-export const FilterListData = async fillter => {
-  const { type, time, xeploai} = fillter;
-  const nh = convertNamHoc(time);
-  const url = `drl/sv-type?type=${type}&time=${nh}&xeploai=${xeploai}&limit=10000`;
-
+export const FilterListData = async filter => {
+  const { type, time, xeploai} = filter;
+  const cvNH = convertNamHoc(time);
+  const url = `drl/sv-type?type=${type}&time=${cvNH}&xeploai=${xeploai}&limit=10000`;
+  logger.info('PrintList:: FilterListData: ', url);
   const response = await HttpClient.sendGetData(url);
   
   return response;
@@ -185,7 +185,7 @@ export const GetURLFileImport = async (nh, hk) => {
 };
 
 export const ExportWithFilter = async (filter) => {
-  const { nh,username, from, to } = filter;
+  const { username, from, to } = filter;
   const fromDate  = moment(new Date(from).setHours(0,0,0,0)).format('x');
   const toDate    = moment(new Date(to).setHours(23,59,59,999)).format('x');
   const url = `drl/export?from=${fromDate}&to=${toDate}&username=${username}`;

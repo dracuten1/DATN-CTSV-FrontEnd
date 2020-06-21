@@ -8,84 +8,230 @@ const convertNamHoc = nh => {
   const convert = year % 100;
 
   switch (nh) {
-    case `${year}-${(year + 1)}`:
-      return `${convert}-${(convert + 1)}`;
-    case `${(year - 1)}-${year}`:
-      return `${(convert - 1)}-${convert}`;
-    case `${(year - 2)}-${(year - 1)}`:
-      return `${(convert - 2)}-${(convert - 1)}`;
-    case `${(year - 3)}-${(year - 2)}`:
-      return `${(convert - 3)}-${(convert - 2)}`;
-    case `${(year - 4)}-${(year - 3)}`:
-      return `${(convert - 4)}-${(convert - 3)}`;
-    case `${(year - 5)}-${(year - 4)}`:
-      return `${(convert - 5)}-${(convert - 4)}`;
-    case `${(year - 6)}-${(year - 5)}`:
-      return `${(convert - 6)}-${(convert - 5)}`;
+    case `${year}-${year + 1}`:
+      return `${convert}-${convert + 1}`;
+    case `${year - 1}-${year}`:
+      return `${convert - 1}-${convert}`;
+    case `${year - 2}-${year - 1}`:
+      return `${convert - 2}-${convert - 1}`;
+    case `${year - 3}-${year - 2}`:
+      return `${convert - 3}-${convert - 2}`;
+    case `${year - 4}-${year - 3}`:
+      return `${convert - 4}-${convert - 3}`;
+    case `${year - 5}-${year - 4}`:
+      return `${convert - 5}-${convert - 4}`;
+    case `${year - 6}-${year - 5}`:
+      return `${convert - 6}-${convert - 5}`;
     default:
       return nh;
   }
 };
 
-const formatNumber = (num) => {
+const formatNumber = num => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 };
 
 export const GetListWithFilter = async (filter, type) => {
-    filter.nh     = convertNamHoc(filter.nh);
-    const url     = `hb/list?type=${type}&nh=${filter.nh}&hk=${filter.hk}`;
-    logger.info('QLHBHandler:: getListAll: URL: ', url);
-    const response = await HttpClient.sendGetData(url);
-    return response;
+  const cvNH = convertNamHoc(filter.nh);
+  const url = `hb/list?type=${type}&nh=${cvNH}&hk=${filter.hk}`;
+  logger.info('QLHBHandler:: getListAll: URL: ', url);
+  const response = await HttpClient.sendGetData(url);
+  return response;
 };
 
 export const UpdateOneStudentByType = async (data, type) => {
-    const url = `hb/list`;
+  const url = `hb/list`;
 
-    if (type === 'KK'){
-      const {SoTienMoiThang, SoThang} = data;
-      const money = SoTienMoiThang.split('.').join('');
-      // data.TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
-      // data.SoTienMoiThang = formatNumber(SoTienMoiThang);
-      data.TongSoTien = (parseFloat(money)*parseInt(SoThang));
-      data.SoTienMoiThang = (SoTienMoiThang);
-    }
-    
-    data.type = type;
+  if (type === 'KK') {
+    const { SoTienMoiThang, SoThang } = data;
+    const money = SoTienMoiThang.split('.').join('');
+    // data.TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
+    // data.SoTienMoiThang = formatNumber(SoTienMoiThang);
+    data.TongSoTien = parseFloat(money) * parseInt(SoThang);
+    data.SoTienMoiThang = SoTienMoiThang;
+  }
 
-    const response = await HttpClient.sendPostGetData(url, data);
-    logger.info('QLHBHandler: response', response); 
-    return response;
+  data.type = type;
+
+  const response = await HttpClient.sendPostGetData(url, data);
+  logger.info('QLHBHandler: response', response);
+  return response;
 };
 
 export const DeleteOneCertificate = async (PK, SK, type, id) => {
   const url = `hb/list`;
   logger.info('QLHBHandler: ', PK, SK, type, id);
-  const response = type === 'TT' ? await HttpClient.sendPatchWithBody(url, { PK, SK, type, id }) : await HttpClient.sendPatchWithBody(url, { PK, SK, type });
+  const response =
+    type === 'TT'
+      ? await HttpClient.sendPatchWithBody(url, { PK, SK, type, id })
+      : await HttpClient.sendPatchWithBody(url, { PK, SK, type });
   logger.info('QLHBHandler: response', response);
   return response;
 };
 
 export const ExportWithFilter = async (filter, type) => {
-    const {nh, hk}  = filter;
-    const cvNH = convertNamHoc(nh);
+  const { nh, hk } = filter;
+  const cvNH = convertNamHoc(nh);
 
-    const url = `hb/list?nh=${cvNH}&hk=${hk}&type=${type}`;
+  const url = `hb/list?nh=${cvNH}&hk=${hk}&type=${type}`;
 
-    const response = await HttpClient.sendPutGetStatus(url);
+  const response = await HttpClient.sendPutGetStatus(url);
 
-    return response;
+  return response;
 };
 
-export const CountingWithMSSV = async (filter) => {
-  const {fromHK, fromNH, toHK, toNH, mssv, LoaiHB, DoiTuong, DonViTaiTro}  = filter;
+export const CountingWithMSSV = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    mssv
+  } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
-  
-  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}&DonViTaiTro=${DonViTaiTro}&DoiTuong=${DoiTuong}`;
+
+  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
   logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendGetData(url);
+
+  return response;
+};
+
+export const ExportCountingWithMSSV = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    mssv
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutGetStatus(url);
+  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
+
+  return response;
+};
+
+export const CountingWithLoaiHB = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    LoaiHB
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendGetData(url);
+
+  return response;
+};
+
+export const ExportCountingWithLoaiHB = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    LoaiHB
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutGetStatus(url);
+  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
+
+  return response;
+};
+
+export const CountingWithDoiTuong = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    DoiTuong
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&DoiTuong=${DoiTuong}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendGetData(url);
+
+  return response;
+};
+
+export const ExportCountingWithDoiTuong = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    DoiTuong
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&DoiTuong=${DoiTuong}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutGetStatus(url);
+  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
+
+  return response;
+};
+
+export const CountingWithDVTT = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    DonViTaiTro
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&DonViTaiTro=${DonViTaiTro}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendGetData(url);
+
+  return response;
+};
+
+export const ExportCountingWithDVTT = async filter => {
+  const {
+    fromHK,
+    fromNH,
+    toHK,
+    toNH,
+    DonViTaiTro
+  } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&DonViTaiTro=${DonViTaiTro}`;
+  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutGetStatus(url);
+  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
 
   return response;
 };
@@ -94,20 +240,6 @@ export const GetDataFilter = async () => {
   const url = `hb/common`;
 
   const response = await HttpClient2.sendGetData(url);
-
-  return response;
-};
-
-export const ExportCountingWithMSSV = async (filter) => {
-  const {fromHK, fromNH, toHK, toNH, mssv, LoaiHB, DoiTuong, DonViTaiTro}  = filter;
-  const cvFromNH = convertNamHoc(fromNH);
-  const cvToNH = convertNamHoc(toNH);
-  
-  const url = `hb/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}&DonViTaiTro=${DonViTaiTro}&DoiTuong=${DoiTuong}`;
-  logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
-
-  const response = await HttpClient2.sendPutGetStatus(url);
-  logger.info('QLHBHanlder:: CountingWithFilter: response: ', response);
 
   return response;
 };
