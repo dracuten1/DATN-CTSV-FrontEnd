@@ -345,6 +345,9 @@ const PrintList = props => {
         return { ...prevState, data };
       });
     }
+    else {
+      setSnackBarValue(errorSnackBar);
+    }
   };
 
   const handleFilter = (prop, data) => {
