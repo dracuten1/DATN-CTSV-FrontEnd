@@ -15,7 +15,7 @@ import {
   Divider,
   Link
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, connect } from 'react-redux';
 import { logger } from 'core/services/Apploger';
 import XNSVActions from 'reduxs/reducers/XNSV/action';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
@@ -385,6 +385,7 @@ const PrintList = props => {
     // eslint-disable-next-line
   }, []);
 
+  const { isLoadding } = props;
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       {isPrintList ? (
@@ -415,6 +416,7 @@ const PrintList = props => {
                   {isPrintList ? <b>DANH SÁCH CHƯA IN</b> : <b>LỊCH SỬ IN</b>}
                 </div>
               }
+              options={{ headerStyle: { position: 'sticky', top: 0 } }}
               columns={state.columns}
               data={state.data}
               actions={
@@ -424,6 +426,7 @@ const PrintList = props => {
                       icon: icons.Print,
                       tooltip: 'Print',
                       onClick: async (event, rowData) => {
+                        dispatch(ProgressActions.showProgres());
                         const data = {
                           pk: rowData.pk,
                           sk: rowData.sk,
@@ -433,6 +436,7 @@ const PrintList = props => {
                           data
                         );
                         if (response.statusCode !== 200) {
+                          dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(errorSnackBar);
                           return;
                         }
@@ -441,6 +445,7 @@ const PrintList = props => {
                           type: Types.ADD_LINK_PRINT_HANDLER,
                           listLink: response.body
                         });
+                        dispatch(ProgressActions.hideProgress());
                         setSnackBarValue(successSnackBar);
                       }
                     }
@@ -471,9 +476,11 @@ const PrintList = props => {
                             sk
                           );
                           if (response.statusCode !== 200) {
+                            dispatch(ProgressActions.hideProgress());
                             setSnackBarValue(errorSnackBar);
                             return;
                           }
+                          dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(successSnackBar);
                           setState(prevState => {
                             const data = [...prevState.data];
@@ -622,9 +629,11 @@ const PrintList = props => {
                           response.statusCode !== 200 ||
                           response.body.Items === 'Không có gì để export'
                         ) {
+                          dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(errorExportSnackBar);
                           return;
                         }
+                        dispatch(ProgressActions.hideProgress());
                         setSnackBarValue(successSnackBar);
                         const { body } = response;
                         dispatch({
@@ -643,9 +652,11 @@ const PrintList = props => {
                           response.statusCode !== 200 ||
                           response.body.Items === 'Không có gì để export'
                         ) {
+                          dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(errorExportSnackBar);
                           return;
                         }
+                        dispatch(ProgressActions.hideProgress());
                         setSnackBarValue(successSnackBar);
                         const { body } = response;
                         dispatch({
@@ -688,5 +699,9 @@ const PrintList = props => {
 PrintList.propTypes = {
   className: PropTypes.string
 };
-
-export default PrintList;
+const mapStateToProps = state => {
+  return {
+    isLoadding: !state.ProgressState.hiddenStatus,
+  }
+}
+export default connect(mapStateToProps)(PrintList);
