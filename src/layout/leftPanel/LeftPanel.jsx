@@ -33,15 +33,7 @@ import { ListSubheader, Collapse, Typography, TextField } from '@material-ui/cor
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-//File Actions
-// import CDCSActions from 'reduxs/reducers/CDCS/action';
-// import DRLActions  from 'reduxs/reducers/DRL/action';
-// import QLBHActions from 'reduxs/reducers/QLBH/action';
-// import QLHBActions from 'reduxs/reducers/QLHB/action';
-// import QLLTActions from 'reduxs/reducers/QLLT/action';
-// import TTSVActions from 'reduxs/reducers/TTSV/action';
-// import XNSVActions from 'reduxs/reducers/XNSV/action';
-
+import { HIDE_PROGRESS } from 'reduxs/reducers/LinearProgress/ActionTypes';
 
 const drawerWidth = 240;
 const appStage = process.env.REACT_APP_STAGE.trim();
@@ -195,7 +187,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/xnsv')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/xnsv');
+          }}
         >
           <ListItemIcon>
             <InboxIcon />
@@ -206,7 +201,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/drl')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/drl');
+          }}
         >
           <ListItemIcon>
             <MailIcon />
@@ -217,7 +215,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/ttsv')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/ttsv');
+          }}
         >
           <ListItemIcon>
             <Status />
@@ -228,7 +229,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/qllt')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qllt');
+          }}
         >
           <ListItemIcon>
             <Home />
@@ -239,7 +243,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/shcd')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/shcd');
+          }}
         >
           <ListItemIcon>
             <Activity />
@@ -250,7 +257,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/ktkl')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/ktkl');
+          }}
         >
           <ListItemIcon>
             <BlockIcon />
@@ -261,7 +271,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/qlhb')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qlhb');
+          }}
         >
           <ListItemIcon>
             <Scholarship />
@@ -272,7 +285,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/qlbh')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qlbh');
+          }}
         >
           <ListItemIcon>
             <Hospital />
@@ -283,7 +299,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() => history.push('/cdcs')}
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/cdcs');
+          }}
         >
           <ListItemIcon>
             <Policy />
@@ -294,9 +313,10 @@ function ResponsiveDrawer(props) {
           className={classes.nested}
           button
           component="a"
-          onClick={() =>
-            history.push('/hssv')
-          }
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/hssv');
+          }}
         >
           <ListItemIcon>
             <Description />

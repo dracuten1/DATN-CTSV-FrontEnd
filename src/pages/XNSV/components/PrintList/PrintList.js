@@ -77,7 +77,6 @@ const useStyles = makeStyles(theme => ({
 const date = new Date();
 const year = date.getFullYear();
 let updateBegin = 0;
-let isPrint = false;
 let valueCase = null;
 let valueLanguage = null;
 let keys = [];
@@ -195,10 +194,10 @@ const PrintList = props => {
         7: 'Thời gian học',
         8: 'Hoàn tất chương trình'
       },
+      filtering: false,
       filterCellStyle: {
         paddingTop: 1
       },
-      filtering: false,
       customFilterAndSearch: (term, rowData) => {
         if (valueCase !== term) {
           valueCase = term;
@@ -261,34 +260,12 @@ const PrintList = props => {
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
     dispatch(XNSVActions.getUser());
-    dispatch(XNSVActions.getNotPrintYet());
+    dispatch(XNSVActions.getNotPrintYet()).then(payload =>
+      handleUpdateState(payload)
+    );
     updateBegin += 1;
   }
 
-  if (updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: isPrintList ? Print : His
-    });
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 2 && state.data.length !== dataList.length) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: isPrintList ? Print : His
-    });
-    updateBegin += 1;
-  }
-
-  if (isPrint) {
-    setState({ ...state, data: dataList }, () => {
-      dispatch(ProgressActions.hideProgress());
-    });
-    isPrint = !isPrint;
-  }
 
   logger.info('XNSVAction:: data: ', state.data);
   const reparseCase = tmpcase => {
@@ -390,6 +367,21 @@ const PrintList = props => {
     });
   };
 
+  const handleUpdateState = response => {
+    setState({
+      ...state,
+      data: response,
+    });
+  };
+
+  const handleUpdateStateColumn = (response, bool) => {
+    setState({
+      ...state,
+      data: response,
+      columns: bool ? Print : His
+    });
+  };
+
   const successSnackBar = {
     open: true,
     type: 'success',
@@ -404,6 +396,16 @@ const PrintList = props => {
     open: true,
     type: 'error',
     message: 'Export thất bại!'
+  };
+  const errorPrintByTypeSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Vui lòng chọn Loại Xác Nhận và Ngôn Ngữ!'
+  };
+  const errorPrintAllSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Vui lòng chọn Ngôn Ngữ!'
   };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
@@ -428,9 +430,12 @@ const PrintList = props => {
             handleClick={() => {
               dispatch(ProgressActions.showProgres());
               isHistoryList
-                ? dispatch(XNSVActions.getListExport(filter))
-                : dispatch(XNSVActions.getListExportByDate(filter));
-              updateBegin = 1;
+                ? dispatch(XNSVActions.getListExport(filter)).then(response =>
+                  handleUpdateStateColumn(response, false)
+                  )
+                : dispatch(
+                    XNSVActions.getListExportByDate(filter)
+                  ).then(response => handleUpdateStateColumn(response, false));
             }}
             label="Lọc sinh viên"
           />
@@ -493,7 +498,6 @@ const PrintList = props => {
                   rowStyle: {
                     backgroundColor: '#EEE'
                   },
-                  // exportButton: true,
                   filtering: true
                 }}
                 editable={
@@ -539,10 +543,10 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    // dispatch({ type: Types.HISTORY_LIST });
                     dispatch(ProgressActions.showProgres());
-                    dispatch(XNSVActions.getListExport(filter));
-                    updateBegin = 1;
+                    dispatch(XNSVActions.getListExport(filter)).then(response =>
+                      handleUpdateStateColumn(response, false)
+                    );
                   }}
                   variant="contained"
                   color="primary"
@@ -553,10 +557,10 @@ const PrintList = props => {
                 <Button
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
-                    // dispatch({ type: Types.HISTORY_LIST_BY_DATE });
                     dispatch(ProgressActions.showProgres());
-                    dispatch(XNSVActions.getListExportByDate(filter));
-                    updateBegin = 1;
+                    dispatch(
+                      XNSVActions.getListExportByDate(filter)
+                    ).then(response => handleUpdateStateColumn(response, false));
                   }}
                   variant="contained"
                   color="primary"
@@ -575,18 +579,26 @@ const PrintList = props => {
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
-                  onClick={() => {
+                  onClick={async () => {
                     dispatch(ProgressActions.showProgres());
                     if (valueCase && valueLanguage) {
-                      dispatch(
-                        XNSVActions.handlePrintByType(
-                          keys,
-                          reparseCaseToString(valueCase[0]),
-                          reparseLanguageToString(valueLanguage[0])
-                        )
-                      );
-                      isPrint = !isPrint;
+                      const status    = 'ChuaIn';
+                      const type      = reparseCaseToString(valueCase[0]);
+                      const language  = reparseLanguageToString(valueLanguage[0]);
+                      const response  = await XNSVHandler.PrintByType(keys, type, language);
+                      const listData  = await XNSVHandler.GetListCertificate(status);
+                      logger.info('XNSVAction:: PrintByType: reponse: ', response);
+                      if (response.statusCode === 200 && response.body !== "Không có gì để in") {
+                        setSnackBarValue(successSnackBar);
+                        dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+                        handleUpdateState(listData);
+                      }else{
+                        setSnackBarValue(errorSnackBar);
+                      }
+                    }else{
+                      setSnackBarValue(errorPrintByTypeSnackBar);
                     }
+                    dispatch(ProgressActions.hideProgress());
                   }}
                   variant="contained"
                   color="primary"
@@ -596,17 +608,25 @@ const PrintList = props => {
                 </Button>
                 <Button
                   style={{ marginLeft: '8px' }}
-                  onClick={() => {
+                  onClick={async () => {
                     dispatch(ProgressActions.showProgres());
                     if (valueLanguage) {
-                      dispatch(
-                        XNSVActions.handlePrintAll(
-                          keys,
-                          reparseLanguageToString(valueLanguage[0])
-                        )
-                      );
-                      isPrint = !isPrint;
+                      const status    = 'ChuaIn';
+                      const language  = reparseLanguageToString(valueLanguage[0]);
+                      const response  = await XNSVHandler.PrintAllCertificate(keys, language);
+                      const listData  = await XNSVHandler.GetListCertificate(status);
+                      logger.info('XNSVAction:: PrintAll: reponse: ', response);
+                      if (response.statusCode === 200 && response.body !== "Không có gì để in") {
+                        setSnackBarValue(successSnackBar);
+                        dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+                        handleUpdateState(listData);
+                      }else{
+                        setSnackBarValue(errorSnackBar);
+                      }
+                    }else{
+                      setSnackBarValue(errorPrintAllSnackBar);
                     }
+                    dispatch(ProgressActions.hideProgress());
                   }}
                   variant="contained"
                   color="primary"
@@ -621,9 +641,9 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
                     dispatch(ProgressActions.showProgres());
-                    // dispatch({ type: Types.HISTORY_LIST });
-                    dispatch(XNSVActions.getListExport(filter));
-                    updateBegin = 1;
+                    dispatch(XNSVActions.getListExport(filter)).then(response =>
+                      handleUpdateStateColumn(response, false)
+                    );
                   }}
                   variant="contained"
                   color="primary"
@@ -635,9 +655,9 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
                     dispatch(ProgressActions.showProgres());
-                    // dispatch({ type: Types.HISTORY_LIST_BY_DATE });
-                    dispatch(XNSVActions.getListExportByDate(filter));
-                    updateBegin = 1;
+                    dispatch(
+                      XNSVActions.getListExportByDate(filter)
+                    ).then(response => handleUpdateStateColumn(response, false));
                   }}
                   variant="contained"
                   color="primary"
@@ -649,8 +669,9 @@ const PrintList = props => {
                   style={{ marginLeft: '8px' }}
                   onClick={() => {
                     dispatch(ProgressActions.showProgres());
-                    dispatch(XNSVActions.getNotPrintYet());
-                    updateBegin = 1;
+                    dispatch(XNSVActions.getNotPrintYet()).then(payload =>
+                      handleUpdateStateColumn(payload, true)
+                    );
                   }}
                   variant="contained"
                   color="primary"
