@@ -24,6 +24,8 @@ import Types from 'reduxs/reducers/QLLT/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -89,7 +91,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const parseNHToString = nh => {
     switch (nh) {
@@ -134,7 +136,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} filter={filter}/>
+        <Filters onFilter={handleFilter} filter={filter} />
         <ContainedButton
           handleClick={() => {
             if (filter.type === 'All' || filter.type === 'all')
@@ -149,66 +151,68 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  {isAlllist ? <b>DANH SÁCH NGOẠI TRÚ</b> : <b>DANH SÁCH KTX</b>}
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                // exportButton: true,
-                filtering: false
-              }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          if (isAlllist) {
+            <MuiThemeProvider>
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    {isAlllist ? <b>DANH SÁCH NGOẠI TRÚ</b> : <b>DANH SÁCH KTX</b>}
+                  </div>
+                }
+                columns={state.columns}
+                data={state.data}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  // exportButton: true,
+                  filtering: false
+                }}
+                editable={{
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise(resolve => {
+                      setTimeout(async () => {
+                        resolve();
+                        if (oldData) {
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            if (isAlllist) {
                               newData['Nội trú']['Cập nhật Portal'] =
-                              newData.portal;
+                                newData.portal;
                               newData['Nội trú']['KTX'] =
-                              newData.ktx;
+                                newData.ktx;
                               newData['Xác nhận ngoại trú'] = newData.xnnt;
-                          }
+                            }
 
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                        newData.NH = parseNHToString(newData.nh);
-                        const type = isAlllist ? 'all' : 'ktx';
-                        logger.info('Newdata: ', newData);
-                        const response = await QLLTHandler.UpdateOneStudentByType(
-                          newData, type
-                        );
-                        if (response.statusCode !== 200) {
-                          setSnackBarValue(errorSnackBar);
-                          return;
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
+                          newData.NH = parseNHToString(newData.nh);
+                          const type = isAlllist ? 'all' : 'ktx';
+                          logger.info('Newdata: ', newData);
+                          const response = await QLLTHandler.UpdateOneStudentByType(
+                            newData, type
+                          );
+                          if (response.statusCode !== 200) {
+                            setSnackBarValue(errorSnackBar);
+                            return;
+                          }
+                          setSnackBarValue(successSnackBar);
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
                         }
-                        setSnackBarValue(successSnackBar);
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }, 600);
-                  })
-              }}
-            />
+                      }, 600);
+                    })
+                }}
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
@@ -252,8 +256,8 @@ const AllList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <ImportDialog

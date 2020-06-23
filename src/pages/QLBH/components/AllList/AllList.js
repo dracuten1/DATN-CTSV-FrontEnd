@@ -24,6 +24,8 @@ import Actions from 'reduxs/reducers/QLBH/action';
 import Types from 'reduxs/reducers/QLBH/actionTypes';
 import Columns from './columns';
 import { Filters } from '../Filters';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -121,7 +123,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const successSnackBar = {
     open: true,
@@ -146,7 +148,7 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} isCounting={isCounting} filter={filter}/>
+        <Filters onFilter={handleFilter} isCounting={isCounting} filter={filter} />
         <ContainedButton
           handleClick={() => {
             isCounting
@@ -161,29 +163,31 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  <b>{title}</b>
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                // exportButton: true,
-                filtering: false
-              }}
-              editable={
-                isBHYT
-                  ? {
+            <MuiThemeProvider>
+
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    <b>{title}</b>
+                  </div>
+                }
+                columns={state.columns}
+                data={state.data}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  // exportButton: true,
+                  filtering: false
+                }}
+                editable={
+                  isBHYT
+                    ? {
                       onRowUpdate: (newData, oldData) =>
                         new Promise(resolve => {
                           setTimeout(async () => {
@@ -245,9 +249,10 @@ const AllList = props => {
                           }, 600);
                         })
                     }
-                  : {}
-              }
-            />
+                    : {}
+                }
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
@@ -300,58 +305,58 @@ const AllList = props => {
             {isCounting ? (
               ''
             ) : (
-              <Button
-                onClick={() => setImportOpen(true)}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Import
-              </Button>
-            )}
+                <Button
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '8px' }}
+                >
+                  Import
+                </Button>
+              )}
             {isBHTN ? (
               ''
             ) : (
-              <Button
-                onClick={async () =>  {
-                  if (isBHYT) {
-                    const response = await QLBHHandler.ExportWithFilter(filter, 'YT');
-                    if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
-                      setSnackBarValue(errorExportSnackBar);
-                      return;
+                <Button
+                  onClick={async () => {
+                    if (isBHYT) {
+                      const response = await QLBHHandler.ExportWithFilter(filter, 'YT');
+                      if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                        setSnackBarValue(errorExportSnackBar);
+                        return;
+                      }
+                      setSnackBarValue(successSnackBar);
+                      const { body } = response;
+                      dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
                     }
-                    setSnackBarValue(successSnackBar);
-                    const { body } = response;
-                    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                  }
-                  if (filter.type === 'Bồi thường' && isCounting) {
-                    const response = await QLBHHandler.ExportCountingWithMSSV(filter);
-                    if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
-                      setSnackBarValue(errorExportSnackBar);
-                      return;
+                    if (filter.type === 'Bồi thường' && isCounting) {
+                      const response = await QLBHHandler.ExportCountingWithMSSV(filter);
+                      if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                        setSnackBarValue(errorExportSnackBar);
+                        return;
+                      }
+                      setSnackBarValue(successSnackBar);
+                      const { body } = response;
+                      dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
                     }
-                    setSnackBarValue(successSnackBar);
-                    const { body } = response;
-                    dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                  }
-                }}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Export
-              </Button>
-            )}
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '8px' }}
+                >
+                  Export
+                </Button>
+              )}
           </Grid>
           {listLink.length > 0 ? (
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <ImportDialogNewHost

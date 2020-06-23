@@ -19,6 +19,8 @@ import mockData from './data';
 import Actions from '../../../../reduxs/reducers/DRL/action';
 import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -184,57 +186,60 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  {isKyLuat ? (
-                    <b>THÔNG TIN SINH VIÊN</b>
-                  ) : (
-                      <b>DANH SÁCH IMPORT</b>
-                    )}
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                // exportButton: true,
-                filtering: true
-              }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
+            <MuiThemeProvider theme={themeTable}>
+
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    {isKyLuat ? (
+                      <b>THÔNG TIN SINH VIÊN</b>
+                    ) : (
+                        <b>DANH SÁCH IMPORT</b>
+                      )}
+                  </div>
+                }
+                columns={state.columns}
+                data={state.data}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  // exportButton: true,
+                  filtering: true
+                }}
+                editable={{
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise(resolve => {
+                      setTimeout(() => {
+                        resolve();
+                        if (oldData) {
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
+                        }
+                      }, 600);
+                    }),
+                  onRowDelete: oldData =>
+                    new Promise(resolve => {
+                      setTimeout(() => {
+                        resolve();
                         setState(prevState => {
                           const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
+                          data.splice(data.indexOf(oldData), 1);
                           return { ...prevState, data };
                         });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    }, 600);
-                  })
-              }}
-            />
+                      }, 600);
+                    })
+                }}
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>

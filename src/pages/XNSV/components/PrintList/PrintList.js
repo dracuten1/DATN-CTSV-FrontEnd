@@ -15,7 +15,6 @@ import {
   Divider,
   Link,
   createMuiTheme,
-  MuiThemeProvider,
   Icon
 } from '@material-ui/core';
 import { useDispatch, useSelector, connect } from 'react-redux';
@@ -30,31 +29,9 @@ import icons from 'shared/icons';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 import Filters from '../filters/Filters';
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
-const themeTable = createMuiTheme({
-  overrides: {
-    MuiTableRow: {
-      root: {
-        '&:nth-of-type(odd)': {
-          backgroundColor: 'white !important'
-        },
-        '&:hover': {
-          backgroundColor: 'rgba(33, 150, 243, 0.5) !important'
-        },
-        '&:nth-of-type(1)': {
-          backgroundColor: 'white !important'
-        }
-      }
-    },
-    MuiTableCell: {
-      head: {
-        '&': {
-          backgroundColor: '#3274b6 !important'
-        }
-      }
-    }
-  }
-});
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -426,23 +403,23 @@ const PrintList = props => {
       {isPrintList ? (
         ''
       ) : (
-        <CardActions className={classes.actions}>
-          <Filters onFilter={handleFilter} filter={filter} />
-          <ContainedButton
-            handleClick={() => {
-              dispatch(ProgressActions.showProgres());
-              isHistoryList
-                ? dispatch(XNSVActions.getListExport(filter)).then(response =>
-                  handleUpdateStateColumn(response, false)
+          <CardActions className={classes.actions}>
+            <Filters onFilter={handleFilter} filter={filter} />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(ProgressActions.showProgres());
+                isHistoryList
+                  ? dispatch(XNSVActions.getListExport(filter)).then(response =>
+                    handleUpdateStateColumn(response, false)
                   )
-                : dispatch(
+                  : dispatch(
                     XNSVActions.getListExportByDate(filter)
                   ).then(response => handleUpdateStateColumn(response, false));
-            }}
-            label="Lọc sinh viên"
-          />
-        </CardActions>
-      )}
+              }}
+              label="Lọc sinh viên"
+            />
+          </CardActions>
+        )}
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
@@ -584,20 +561,20 @@ const PrintList = props => {
                   onClick={async () => {
                     dispatch(ProgressActions.showProgres());
                     if (valueCase && valueLanguage) {
-                      const status    = 'ChuaIn';
-                      const type      = reparseCaseToString(valueCase[0]);
-                      const language  = reparseLanguageToString(valueLanguage[0]);
-                      const response  = await XNSVHandler.PrintByType(keys, type, language);
-                      const listData  = await XNSVHandler.GetListCertificate(status);
+                      const status = 'ChuaIn';
+                      const type = reparseCaseToString(valueCase[0]);
+                      const language = reparseLanguageToString(valueLanguage[0]);
+                      const response = await XNSVHandler.PrintByType(keys, type, language);
+                      const listData = await XNSVHandler.GetListCertificate(status);
                       logger.info('XNSVAction:: PrintByType: reponse: ', response);
                       if (response.statusCode === 200 && response.body !== "Không có gì để in") {
                         setSnackBarValue(successSnackBar);
                         dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
                         handleUpdateState(listData);
-                      }else{
+                      } else {
                         setSnackBarValue(errorSnackBar);
                       }
-                    }else{
+                    } else {
                       setSnackBarValue(errorPrintByTypeSnackBar);
                     }
                     dispatch(ProgressActions.hideProgress());
@@ -613,19 +590,19 @@ const PrintList = props => {
                   onClick={async () => {
                     dispatch(ProgressActions.showProgres());
                     if (valueLanguage) {
-                      const status    = 'ChuaIn';
-                      const language  = reparseLanguageToString(valueLanguage[0]);
-                      const response  = await XNSVHandler.PrintAllCertificate(keys, language);
-                      const listData  = await XNSVHandler.GetListCertificate(status);
+                      const status = 'ChuaIn';
+                      const language = reparseLanguageToString(valueLanguage[0]);
+                      const response = await XNSVHandler.PrintAllCertificate(keys, language);
+                      const listData = await XNSVHandler.GetListCertificate(status);
                       logger.info('XNSVAction:: PrintAll: reponse: ', response);
                       if (response.statusCode === 200 && response.body !== "Không có gì để in") {
                         setSnackBarValue(successSnackBar);
                         dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
                         handleUpdateState(listData);
-                      }else{
+                      } else {
                         setSnackBarValue(errorSnackBar);
                       }
-                    }else{
+                    } else {
                       setSnackBarValue(errorPrintAllSnackBar);
                     }
                     dispatch(ProgressActions.hideProgress());
@@ -638,48 +615,48 @@ const PrintList = props => {
                 </Button>
               </>
             ) : (
-              <>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(XNSVActions.getListExport(filter)).then(response =>
-                      handleUpdateStateColumn(response, false)
-                    );
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Xem lịch sử
+                <>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => {
+                      dispatch(ProgressActions.showProgres());
+                      dispatch(XNSVActions.getListExport(filter)).then(response =>
+                        handleUpdateStateColumn(response, false)
+                      );
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Xem lịch sử
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(
-                      XNSVActions.getListExportByDate(filter)
-                    ).then(response => handleUpdateStateColumn(response, false));
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Xem lịch sử theo ngày
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => {
+                      dispatch(ProgressActions.showProgres());
+                      dispatch(
+                        XNSVActions.getListExportByDate(filter)
+                      ).then(response => handleUpdateStateColumn(response, false));
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Xem lịch sử theo ngày
                 </Button>
-                <Button
-                  style={{ marginLeft: '8px' }}
-                  onClick={() => {
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(XNSVActions.getNotPrintYet()).then(payload =>
-                      handleUpdateStateColumn(payload, true)
-                    );
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                >
-                  Danh sách in
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => {
+                      dispatch(ProgressActions.showProgres());
+                      dispatch(XNSVActions.getNotPrintYet()).then(payload =>
+                        handleUpdateStateColumn(payload, true)
+                      );
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    Danh sách in
                 </Button>
                   <Button
                     style={{ marginLeft: '8px' }}

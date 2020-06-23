@@ -28,6 +28,8 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import { AddDialog } from '../AddDialog';
 import { Filters } from '../Filters';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -421,6 +423,7 @@ const PrintList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
+          <MuiThemeProvider theme={themeTable}>
             <MaterialTable
               icons={icons}
               title={
@@ -444,6 +447,7 @@ const PrintList = props => {
               }}
               editable={editTable}
             />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>

@@ -27,31 +27,7 @@ import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
 import { Filters } from '../Filters';
-
-const themeTable = createMuiTheme({
-  overrides: {
-    MuiTableRow: {
-      root: {
-        '&:nth-of-type(odd)': {
-          backgroundColor: 'white !important'
-        },
-        '&:hover': {
-          backgroundColor: 'rgba(33, 150, 243, 0.5) !important'
-        },
-        '&:nth-of-type(1)': {
-          backgroundColor: 'white !important'
-        }
-      }
-    },
-    MuiTableCell: {
-      head: {
-        '&': {
-          backgroundColor: '#3274b6 !important'
-        }
-      }
-    }
-  }
-});
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},

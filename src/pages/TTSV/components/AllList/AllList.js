@@ -25,6 +25,8 @@ import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
 import UpdateDialog from '../AddDialog/index';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -183,26 +185,28 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  {filter.mssv !== '' ? <b>Tình Trạng Sinh Viên</b> : <b>DANH SÁCH {filter.type}</b>}
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                filtering: false
-              }}
-            />
+            <MuiThemeProvider>
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    {filter.mssv !== '' ? <b>Tình Trạng Sinh Viên</b> : <b>DANH SÁCH {filter.type}</b>}
+                  </div>
+                }
+                columns={state.columns}
+                data={state.data}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  filtering: false
+                }}
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>

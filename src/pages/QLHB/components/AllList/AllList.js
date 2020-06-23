@@ -26,6 +26,8 @@ import Types from 'reduxs/reducers/QLHB/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -125,7 +127,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   //Create Menu
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -196,30 +198,31 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  <b>{title}</b>
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                // exportButton: true,
-                filtering: false
-              }}
-              editable={
-                isCounting
-                  ? {}
-                  : {
+            <MuiThemeProvider>
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    <b>{title}</b>
+                  </div>
+                }
+                columns={state.columns}
+                data={state.data}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  },
+                  // exportButton: true,
+                  filtering: false
+                }}
+                editable={
+                  isCounting
+                    ? {}
+                    : {
                       onRowUpdate: (newData, oldData) =>
                         new Promise(resolve => {
                           setTimeout(async () => {
@@ -269,8 +272,9 @@ const AllList = props => {
                           }, 600);
                         })
                     }
-              }
-            />
+                }
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
@@ -427,8 +431,8 @@ const AllList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <ImportDialog

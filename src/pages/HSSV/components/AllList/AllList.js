@@ -23,6 +23,8 @@ import * as HSSVHandler from 'handlers/HSSVHandler';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
+import { MuiThemeProvider } from '@material-ui/core';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -424,7 +426,7 @@ const AllList = props => {
 
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const [filter, setFilter] = React.useState({
     mssv: ''
@@ -471,73 +473,75 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  <b>HỒ SƠ SINH VIÊN</b>
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              actions={[
-                {
-                  icon: icons.Print,
-                  tooltip: 'Print',
-                  onClick: async (event, rowData) => {
-                    const data = {
-                      pk: rowData.PK,
-                      sk: rowData.SK
-                    };
-                    const response = await HSSVHandler.PrintStudentInfo(data);
-                    if (response.statusCode !== 200) {
-                      setSnackBarValue(errorSnackBar);
-                      return;
-                    }
-                    setSnackBarValue(successSnackBar);
-                    const { body } = response;
-                    dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
-                  }
+            <MuiThemeProvider theme={themeTable}>
+              <MaterialTable
+                icons={icons}
+                title={
+                  <div>
+                    <b>HỒ SƠ SINH VIÊN</b>
+                  </div>
                 }
-              ]}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                }
-              }}
-              editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise(resolve => {
-                    setTimeout(async () => {
-                      resolve();
-                      if (oldData) {
-                        newData['DiaChiThuongTru']['PhuongXa'] =
-                        newData.PhuongXa;
-                        newData['DiaChiThuongTru']['QuanHuyen'] =
-                        newData.QuanHuyen;
-                        newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
-                        newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
-                        
-                        const response = await HSSVHandler.UpdateStudentInfo(newData);
-                        if (response.statusCode !== 200) {
-                          setSnackBarValue(errorSnackBar);
-                          return;
-                        }
-                        setSnackBarValue(successSnackBar);
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
+                columns={state.columns}
+                data={state.data}
+                actions={[
+                  {
+                    icon: icons.Print,
+                    tooltip: 'Print',
+                    onClick: async (event, rowData) => {
+                      const data = {
+                        pk: rowData.PK,
+                        sk: rowData.SK
+                      };
+                      const response = await HSSVHandler.PrintStudentInfo(data);
+                      if (response.statusCode !== 200) {
+                        setSnackBarValue(errorSnackBar);
+                        return;
                       }
-                    }, 600);
-                  })
-              }}
-            />
+                      setSnackBarValue(successSnackBar);
+                      const { body } = response;
+                      dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
+                    }
+                  }
+                ]}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#01579b',
+                    color: '#FFF'
+                  },
+                  rowStyle: {
+                    backgroundColor: '#EEE'
+                  }
+                }}
+                editable={{
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise(resolve => {
+                      setTimeout(async () => {
+                        resolve();
+                        if (oldData) {
+                          newData['DiaChiThuongTru']['PhuongXa'] =
+                            newData.PhuongXa;
+                          newData['DiaChiThuongTru']['QuanHuyen'] =
+                            newData.QuanHuyen;
+                          newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
+                          newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
+
+                          const response = await HSSVHandler.UpdateStudentInfo(newData);
+                          if (response.statusCode !== 200) {
+                            setSnackBarValue(errorSnackBar);
+                            return;
+                          }
+                          setSnackBarValue(successSnackBar);
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
+                        }
+                      }, 600);
+                    })
+                }}
+              />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
@@ -575,8 +579,8 @@ const AllList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Grid>
       </CardActions>
       <ImportDialog
