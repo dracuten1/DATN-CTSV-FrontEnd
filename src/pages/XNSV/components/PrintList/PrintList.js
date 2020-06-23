@@ -33,7 +33,9 @@ import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import { MuiThemeProvider } from '@material-ui/core';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import PrintIcon from '@material-ui/icons/Print';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -51,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
   },
   titleContainer: {
     display: "flex",
@@ -454,26 +456,175 @@ const PrintList = props => {
         </div>
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
-        {isPrintList ? (
-          ''
-        ) : (
-            <CardActions className={classes.actions}>
-              <Filters onFilter={handleFilter} filter={filter} />
-              <ContainedButton
-                handleClick={() => {
-                  dispatch(ProgressActions.showProgres());
-                  isHistoryList
-                    ? dispatch(XNSVActions.getListExport(filter)).then(response =>
-                      handleUpdateStateColumn(response, false)
-                    )
-                    : dispatch(
-                      XNSVActions.getListExportByDate(filter)
-                    ).then(response => handleUpdateStateColumn(response, false));
-                }}
-                label="Lọc sinh viên"
-              />
-            </CardActions>
-          )}
+
+        <CardActions className={classes.actions}>
+          {isPrintList ? (
+            <div></div>
+          ) : (
+              <div style={{ display: "flex", alignItems: "center" }} >
+
+                <Filters onFilter={handleFilter} filter={filter} />
+                <ContainedButton
+                  handleClick={() => {
+                    dispatch(ProgressActions.showProgres());
+                    isHistoryList
+                      ? dispatch(XNSVActions.getListExport(filter)).then(response =>
+                        handleUpdateStateColumn(response, false)
+                      )
+                      : dispatch(
+                        XNSVActions.getListExportByDate(filter)
+                      ).then(response => handleUpdateStateColumn(response, false));
+                  }}
+                  label="Lọc sinh viên"
+                />
+              </div>
+            )}
+          <div>
+            <div >
+              {isPrintList ? (
+                <>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => setOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    <PostAddIcon /> &nbsp;Thêm giấy xác nhận
+                  </Button>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={async () => {
+                      dispatch(ProgressActions.showProgres());
+                      if (valueCase && valueLanguage) {
+                        const status = 'ChuaIn';
+                        const type = reparseCaseToString(valueCase[0]);
+                        const language = reparseLanguageToString(valueLanguage[0]);
+                        const response = await XNSVHandler.PrintByType(keys, type, language);
+                        const listData = await XNSVHandler.GetListCertificate(status);
+                        logger.info('XNSVAction:: PrintByType: reponse: ', response);
+                        if (response.statusCode === 200 && response.body !== "Không có gì để in") {
+                          setSnackBarValue(successSnackBar);
+                          dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+                          handleUpdateState(listData);
+                        } else {
+                          setSnackBarValue(errorSnackBar);
+                        }
+                      } else {
+                        setSnackBarValue(errorPrintByTypeSnackBar);
+                      }
+                      dispatch(ProgressActions.hideProgress());
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    <PrintIcon />
+                    &nbsp;In theo trường hợp
+                </Button>
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={async () => {
+                      dispatch(ProgressActions.showProgres());
+                      if (valueLanguage) {
+                        const status = 'ChuaIn';
+                        const language = reparseLanguageToString(valueLanguage[0]);
+                        const response = await XNSVHandler.PrintAllCertificate(keys, language);
+                        const listData = await XNSVHandler.GetListCertificate(status);
+                        logger.info('XNSVAction:: PrintAll: reponse: ', response);
+                        if (response.statusCode === 200 && response.body !== "Không có gì để in") {
+                          setSnackBarValue(successSnackBar);
+                          dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
+                          handleUpdateState(listData);
+                        } else {
+                          setSnackBarValue(errorSnackBar);
+                        }
+                      } else {
+                        setSnackBarValue(errorPrintAllSnackBar);
+                      }
+                      dispatch(ProgressActions.hideProgress());
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    <PrintIcon />
+                    &nbsp;In tất cả
+                </Button>
+                </>
+              ) : (
+                  <>
+                    <Button
+                      style={{ marginLeft: '8px' }}
+                      onClick={async () => {
+                        dispatch(ProgressActions.showProgres());
+                        if (isHistoryList) {
+                          const response = await XNSVHandler.ExportWithFilter(
+                            filter
+                          );
+                          logger.info(
+                            'XNSVAction:: Exportfilter: reponse: ',
+                            response
+                          );
+                          if (
+                            response.statusCode !== 200 ||
+                            response.body.Items === 'Không có gì để export'
+                          ) {
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(errorExportSnackBar);
+                            return;
+                          }
+                          dispatch(ProgressActions.hideProgress());
+                          setSnackBarValue(successSnackBar);
+                          const { body } = response;
+                          dispatch({
+                            type: Types.ADD_LINK_EXPORT,
+                            listLink: body.Items
+                          });
+                        } else {
+                          const response = await XNSVHandler.ExportWithFilterByDate(
+                            filter
+                          );
+                          logger.info(
+                            'XNSVAction:: Exportfilter: reponse: ',
+                            response
+                          );
+                          if (
+                            response.statusCode !== 200 ||
+                            response.body.Items === 'Không có gì để export'
+                          ) {
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(errorExportSnackBar);
+                            return;
+                          }
+                          dispatch(ProgressActions.hideProgress());
+                          setSnackBarValue(successSnackBar);
+                          const { body } = response;
+                          dispatch({
+                            type: Types.ADD_LINK_EXPORT,
+                            listLink: body.Items
+                          });
+                        }
+                      }}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                    >
+                      <GetAppIcon />
+                      &nbsp;Export
+                </Button>
+                  </>
+                )}
+            </div>
+            {listLink.length > 0 ? (
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            ) : (
+                ''
+              )}
+          </div>
+        </CardActions>
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
@@ -483,7 +634,7 @@ const PrintList = props => {
                   icons={icons}
                   title={
                     <div>
-                      {isPrintList ? <b>DANH SÁCH CHƯA IN</b> : <b>LỊCH SỬ IN</b>}
+                      {isPrintList ? <h3>DANH SÁCH CHƯA IN</h3> : <h3>LỊCH SỬ IN</h3>}
                     </div>
                   }
                   columns={state.columns}
@@ -567,151 +718,6 @@ const PrintList = props => {
             </div>
           </PerfectScrollbar>
         </CardContent>
-        <Divider />
-        <CardActions className={classes.actions}>
-          <Grid container spacing={4}>
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              {isPrintList ? (
-                <>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => setOpen(true)}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    Thêm giấy xác nhận
-                </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={async () => {
-                      dispatch(ProgressActions.showProgres());
-                      if (valueCase && valueLanguage) {
-                        const status = 'ChuaIn';
-                        const type = reparseCaseToString(valueCase[0]);
-                        const language = reparseLanguageToString(valueLanguage[0]);
-                        const response = await XNSVHandler.PrintByType(keys, type, language);
-                        const listData = await XNSVHandler.GetListCertificate(status);
-                        logger.info('XNSVAction:: PrintByType: reponse: ', response);
-                        if (response.statusCode === 200 && response.body !== "Không có gì để in") {
-                          setSnackBarValue(successSnackBar);
-                          dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-                          handleUpdateState(listData);
-                        } else {
-                          setSnackBarValue(errorSnackBar);
-                        }
-                      } else {
-                        setSnackBarValue(errorPrintByTypeSnackBar);
-                      }
-                      dispatch(ProgressActions.hideProgress());
-                    }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    In theo trường hợp
-                </Button>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={async () => {
-                      dispatch(ProgressActions.showProgres());
-                      if (valueLanguage) {
-                        const status = 'ChuaIn';
-                        const language = reparseLanguageToString(valueLanguage[0]);
-                        const response = await XNSVHandler.PrintAllCertificate(keys, language);
-                        const listData = await XNSVHandler.GetListCertificate(status);
-                        logger.info('XNSVAction:: PrintAll: reponse: ', response);
-                        if (response.statusCode === 200 && response.body !== "Không có gì để in") {
-                          setSnackBarValue(successSnackBar);
-                          dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-                          handleUpdateState(listData);
-                        } else {
-                          setSnackBarValue(errorSnackBar);
-                        }
-                      } else {
-                        setSnackBarValue(errorPrintAllSnackBar);
-                      }
-                      dispatch(ProgressActions.hideProgress());
-                    }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    In tất cả
-                </Button>
-                </>
-              ) : (
-                  <>
-                    <Button
-                      style={{ marginLeft: '8px' }}
-                      onClick={async () => {
-                        dispatch(ProgressActions.showProgres());
-                        if (isHistoryList) {
-                          const response = await XNSVHandler.ExportWithFilter(
-                            filter
-                          );
-                          logger.info(
-                            'XNSVAction:: Exportfilter: reponse: ',
-                            response
-                          );
-                          if (
-                            response.statusCode !== 200 ||
-                            response.body.Items === 'Không có gì để export'
-                          ) {
-                            dispatch(ProgressActions.hideProgress());
-                            setSnackBarValue(errorExportSnackBar);
-                            return;
-                          }
-                          dispatch(ProgressActions.hideProgress());
-                          setSnackBarValue(successSnackBar);
-                          const { body } = response;
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
-                        } else {
-                          const response = await XNSVHandler.ExportWithFilterByDate(
-                            filter
-                          );
-                          logger.info(
-                            'XNSVAction:: Exportfilter: reponse: ',
-                            response
-                          );
-                          if (
-                            response.statusCode !== 200 ||
-                            response.body.Items === 'Không có gì để export'
-                          ) {
-                            dispatch(ProgressActions.hideProgress());
-                            setSnackBarValue(errorExportSnackBar);
-                            return;
-                          }
-                          dispatch(ProgressActions.hideProgress());
-                          setSnackBarValue(successSnackBar);
-                          const { body } = response;
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
-                        }
-                      }}
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                    >
-                      Export
-                </Button>
-                  </>
-                )}
-            </Grid>
-            {listLink.length > 0 ? (
-              <Grid item lg={12} md={12} xl={12} xs={12}>
-                <ListLinkDocx data={listLink} />
-              </Grid>
-            ) : (
-                ''
-              )}
-          </Grid>
-        </CardActions>
         <XNTKTDialog
           handleAdd={handleAdd}
           open={open}
