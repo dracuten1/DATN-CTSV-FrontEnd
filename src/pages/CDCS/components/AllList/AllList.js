@@ -11,19 +11,47 @@ import {
   CardContent,
   Button,
   Divider,
-  Grid
+  Grid,
+  createMuiTheme,
+  MuiThemeProvider
 } from '@material-ui/core';
 import { logger } from 'core/services/Apploger';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import * as CDCSHandler from 'handlers/CDCSHandler';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
 import { Filters } from '../Filters';
+
+const themeTable = createMuiTheme({
+  overrides: {
+    MuiTableRow: {
+      root: {
+        '&:nth-of-type(odd)': {
+          backgroundColor: 'white !important'
+        },
+        '&:hover': {
+          backgroundColor: 'rgba(33, 150, 243, 0.5) !important'
+        },
+        '&:nth-of-type(1)': {
+          backgroundColor: 'white !important'
+        }
+      }
+    },
+    MuiTableCell: {
+      head: {
+        '&': {
+          backgroundColor: '#3274b6 !important'
+        }
+      }
+    }
+  }
+});
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -107,29 +135,13 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
     dispatch(Actions.getDataFilter());
-    // dispatch(Actions.changeCountingColumnsList());
-    dispatch(Actions.countingWithFilter(filter));
+    dispatch(Actions.countingWithFilter(filter)).then(data =>
+      handleUpdateState(data)
+    );
     updateBegin += 1;
   }
-
-  if (updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: columns
-    });
-    updateBegin += 1;
-  }
-
-  // if (updateBegin === 2 && state.data.length !== dataList.length) {
-  //   setState({
-  //     ...state,
-  //     data: dataList,
-  //     columns: columns
-  //   });
-  //   updateBegin += 1;
-  // }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
@@ -137,15 +149,64 @@ const AllList = props => {
 
   const handleImport = () => {};
 
+  const handleUpdateState = response => {
+    switch (filter.typeCDCS) {
+      case 'DTTS':
+        columns = Columns.DTTS;
+        title = 'Dân Tộc Thiểu Số';
+        break;
+      case 'HTDX': 
+        columns = Columns.HTDX;
+        title = 'Hỗ Trợ DX';
+        break;
+      case 'TCXH': 
+        columns = Columns.TCXH;
+        title = 'Trợ Cấp Xã Hội';
+        break;
+      case 'MGHP': 
+        columns = Columns.MGHP;
+        title = 'Miễn Giảm Học Phí';
+        break;
+      case 'SVKT': 
+        columns = Columns.SVKT;
+        title = 'Sinh Viên Khuyết Tật';
+        break;
+      default:
+        columns = Columns.DTTS;
+        title = 'Dân Tộc Thiểu Số';
+        break;
+    }
+    setState({
+      ...state,
+      data: response,
+      columns: columns
+    });
+  };
+
+  const handleUpdateStateMSSV = (response) => {
+    columns = Columns.TKMSSV;
+    title = 'Thống Kê Theo MSSV';
+    setState({
+      ...state,
+      data: response,
+      columns: columns
+    });
+  };
+
   const successSnackBar = {
     open: true,
     type: 'success',
     message: 'Thực hiện thành công!'
   };
-  const errorSnackBar = {
+  const errorSnackBarType = {
     open: true,
     type: 'error',
-    message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
+    message: 'Vui lòng chọn loại CDCS!'
+  };
+  const errorSnackBarMSSV = {
+    open: true,
+    type: 'error',
+    message: 'Vui lòng nhập MSSV!'
   };
   const errorExportSnackBar = {
     open: true,
@@ -158,18 +219,33 @@ const AllList = props => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
+  React.useEffect(() => {
+    dispatch(ProgressActions.hideProgress());
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
         <Filters onFilter={handleFilter} isCase={isCase} filter={filter}/>
         <ContainedButton
           handleClick={() => {
+            dispatch(ProgressActions.showProgres());
             if (isCase === 6) {
-              dispatch(Actions.countingWithMSSV(filter));
+              filter.mssv === '' ?
+                setSnackBarValue(errorSnackBarMSSV)
+              :
+                dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                handleUpdateStateMSSV(data)
+                );
             } else {
-              dispatch(Actions.countingWithFilter(filter));
+              filter.typeCDCS === '' ?
+                setSnackBarValue(errorSnackBarType)
+              :
+                dispatch(Actions.countingWithFilter(filter)).then(data =>
+                handleUpdateState(data)
+                );
             }
-            updateBegin = 1;
           }}
           label="Lọc dữ liệu"
         />
@@ -178,6 +254,7 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
+          <MuiThemeProvider theme={themeTable}>
             <MaterialTable
               icons={icons}
               title={
@@ -195,10 +272,10 @@ const AllList = props => {
                 rowStyle: {
                   backgroundColor: '#EEE'
                 },
-                // exportButton: true,
                 filtering: false
               }}
             />
+            </MuiThemeProvider>
           </div>
         </PerfectScrollbar>
       </CardContent>
@@ -208,8 +285,10 @@ const AllList = props => {
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
               onClick={() => {
-                updateBegin = 1;
-                dispatch(Actions.countingWithFilter(filter));
+                dispatch(ProgressActions.showProgres());
+                dispatch(Actions.countingWithFilter(filter)).then(data =>
+                  handleUpdateState(data)
+                  );
               }}
               variant="contained"
               color="primary"
@@ -220,8 +299,8 @@ const AllList = props => {
             </Button>
             <Button
               onClick={() => {
+                dispatch(ProgressActions.showProgres());
                 dispatch(Actions.changeCountingColumnsCounting());
-                updateBegin = 1;
               }}
               variant="contained"
               color="primary"
@@ -241,35 +320,29 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
+                dispatch(ProgressActions.showProgres());
+                let response;
                 if (isCase === 6) {
-                  const response = await CDCSHandler.ExportCountingWithMSSV(
+                  response = await CDCSHandler.ExportCountingWithMSSV(
                     filter
                   );
-                  if (
-                    response.statusCode !== 200 ||
-                    response.body === 'Không có gì để export'
-                  ) {
-                    setSnackBarValue(errorExportSnackBar);
-                    return;
-                  }
-                  setSnackBarValue(successSnackBar);
-                  const { body } = response;
-                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
                 } else {
-                  const response = await CDCSHandler.ExportCountingWithFilter(
+                  response = await CDCSHandler.ExportCountingWithFilter(
                     filter
                   );
-                  if (
-                    response.statusCode !== 200 ||
-                    response.body === 'Không có gì để export'
-                  ) {
-                    setSnackBarValue(errorExportSnackBar);
-                    return;
-                  }
-                  setSnackBarValue(successSnackBar);
-                  const { body } = response;
-                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
                 }
+                if (
+                  response.statusCode !== 200 ||
+                  response.body === 'Không có gì để export'
+                ) {
+                  dispatch(ProgressActions.hideProgress());
+                  setSnackBarValue(errorExportSnackBar);
+                  return;
+                }
+                setSnackBarValue(successSnackBar);
+                const { body } = response;
+                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                dispatch(ProgressActions.hideProgress());
               }}
               variant="contained"
               color="primary"

@@ -2,6 +2,7 @@ import * as CDCSHanlder from 'handlers/CDCSHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const parseNHToNumber = nh => {
   const dt = new Date();
@@ -28,10 +29,12 @@ const parseNHToNumber = nh => {
 
 const changeCountingColumnsCounting = () => async dispatch => {
   dispatch({ type: Types.TK});
+  dispatch({ type: HIDE_PROGRESS });
 };
 
 const changeCountingColumnsList = () => async dispatch => {
   dispatch({ type: Types.DS});
+  dispatch({ type: HIDE_PROGRESS });
 };
 
 const countingWithMSSV = filter => async dispatch => {
@@ -42,7 +45,8 @@ const countingWithMSSV = filter => async dispatch => {
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   
   const { body } = response;
@@ -62,6 +66,8 @@ const countingWithMSSV = filter => async dispatch => {
   });
   dispatch({ type: Types.GET_LIST_MSSV, payload: data });
   history.push('/cdcs');
+  dispatch({ type: HIDE_PROGRESS });
+  return data;
 };
 
 const countingWithFilter = filter => async dispatch => {
@@ -93,7 +99,8 @@ const countingWithFilter = filter => async dispatch => {
       default:
         break;
     }
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
   
   const data = Object.keys(body).map(key => {
@@ -144,6 +151,8 @@ const countingWithFilter = filter => async dispatch => {
       break;
   }
   history.push('/cdcs');
+  dispatch({ type: HIDE_PROGRESS });
+  return data;
 };
 
 const getDataFilter = () => async dispatch => {

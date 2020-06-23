@@ -136,7 +136,6 @@ export default function Filters(props) {
             prop="doituong"
             defaultValue={doituong}
             label="Đối tượng"
-            helperText="Chọn loại CDCS"
             data={arrDoiTuong}
           />
           <div
