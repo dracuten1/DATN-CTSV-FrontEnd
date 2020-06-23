@@ -7,8 +7,11 @@ const themeTable = createMuiTheme({
                 '&:nth-of-type(odd)': {
                     backgroundColor: 'white !important'
                 },
+                '&[level="0"]:nth-of-type(even)': {
+                    backgroundColor: '#f7fbff !important'
+                },
                 '&[level="0"]:hover': {
-                    backgroundColor: 'rgba(33, 150, 243, 0.5) !important'
+                    backgroundColor: 'rgba(60, 163, 244, 0.3) !important'
                 },
             },
             footer: {
@@ -20,7 +23,8 @@ const themeTable = createMuiTheme({
         MuiTableCell: {
             head: {
                 '&': {
-                    backgroundColor: '#3274b6 !important'
+                    backgroundColor: 'rgba(33, 150, 243, 0.5) !important',
+                    color: "black !important",
                 }
             }
         }
