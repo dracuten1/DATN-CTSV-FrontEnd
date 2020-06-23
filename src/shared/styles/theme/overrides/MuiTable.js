@@ -7,10 +7,12 @@ const themeTable = createMuiTheme({
                 '&:nth-of-type(odd)': {
                     backgroundColor: 'white !important'
                 },
-                '&:hover': {
+                '&[level="0"]:hover': {
                     backgroundColor: 'rgba(33, 150, 243, 0.5) !important'
                 },
-                '&:nth-of-type(1)': {
+            },
+            footer: {
+                '&:hover': {
                     backgroundColor: 'white !important'
                 }
             }

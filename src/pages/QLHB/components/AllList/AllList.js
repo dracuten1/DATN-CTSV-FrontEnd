@@ -198,7 +198,7 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MuiThemeProvider>
+            <MuiThemeProvider theme={themeTable}>
               <MaterialTable
                 icons={icons}
                 title={

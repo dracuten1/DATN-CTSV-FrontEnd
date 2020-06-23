@@ -163,8 +163,7 @@ const AllList = props => {
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <MuiThemeProvider>
-
+            <MuiThemeProvider theme={themeTable}>
               <MaterialTable
                 icons={icons}
                 title={
@@ -183,7 +182,7 @@ const AllList = props => {
                     backgroundColor: '#EEE'
                   },
                   // exportButton: true,
-                  filtering: false
+                  filtering: true
                 }}
                 editable={
                   isBHYT
