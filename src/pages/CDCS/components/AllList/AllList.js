@@ -12,22 +12,24 @@ import {
   Button,
   Divider,
   Grid,
-  createMuiTheme,
-  MuiThemeProvider
+  MuiThemeProvider,
+  Typography
 } from '@material-ui/core';
-import { logger } from 'core/services/Apploger';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportIcon from '@material-ui/icons/Input';
+import Policy from '@material-ui/icons/Accessible';
 import * as CDCSHandler from 'handlers/CDCSHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
 import { Filters } from '../Filters';
-import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -45,7 +47,27 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 
@@ -131,19 +153,19 @@ const AllList = props => {
         columns = Columns.DTTS;
         title = 'Dân Tộc Thiểu Số';
         break;
-      case 'HTDX': 
+      case 'HTDX':
         columns = Columns.HTDX;
         title = 'Hỗ Trợ DX';
         break;
-      case 'TCXH': 
+      case 'TCXH':
         columns = Columns.TCXH;
         title = 'Trợ Cấp Xã Hội';
         break;
-      case 'MGHP': 
+      case 'MGHP':
         columns = Columns.MGHP;
         title = 'Miễn Giảm Học Phí';
         break;
-      case 'SVKT': 
+      case 'SVKT':
         columns = Columns.SVKT;
         title = 'Sinh Viên Khuyết Tật';
         break;
@@ -159,7 +181,7 @@ const AllList = props => {
     });
   };
 
-  const handleUpdateStateMSSV = (response) => {
+  const handleUpdateStateMSSV = response => {
     columns = Columns.TKMSSV;
     title = 'Thống Kê Theo MSSV';
     setState({
@@ -167,6 +189,18 @@ const AllList = props => {
       data: response,
       columns: columns
     });
+  };
+
+  const handleShowDataWithFilter = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.countingWithFilter(filter)).then(data =>
+      handleUpdateState(data)
+    );
+  };
+
+  const handleShowDataWithMSSV = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.changeCountingColumnsCounting());
   };
 
   const successSnackBar = {
@@ -201,90 +235,62 @@ const AllList = props => {
   }, []);
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} isCase={isCase} filter={filter}/>
-        <ContainedButton
-          handleClick={() => {
-            dispatch(ProgressActions.showProgres());
-            if (isCase === 6) {
-              filter.mssv === '' ?
-                setSnackBarValue(errorSnackBarMSSV)
-              :
-                dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                handleUpdateStateMSSV(data)
-                );
-            } else {
-              filter.typeCDCS === '' ?
-                setSnackBarValue(errorSnackBarType)
-              :
-                dispatch(Actions.countingWithFilter(filter)).then(data =>
-                handleUpdateState(data)
-                );
-            }
-          }}
-          label="Lọc dữ liệu"
-        />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-          <MuiThemeProvider theme={themeTable}>
-            <MaterialTable
-              icons={icons}
-              title={
-                <div>
-                  <b>{title}</b>
-                </div>
-              }
-              columns={state.columns}
-              data={state.data}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#01579b',
-                  color: '#FFF'
-                },
-                rowStyle: {
-                  backgroundColor: '#EEE'
-                },
-                filtering: false
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Policy style={{ marginRight: '5px' }} /> CHẾ ĐỘ CHÍNH SÁCH
+        </Typography>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+            onClick={handleShowDataWithFilter}
+          >
+            Danh sách theo loại CDCS
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+            onClick={handleShowDataWithMSSV}
+          >
+            Danh sách theo MSSV
+          </Button>
+        </div>
+      </Card>
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <CardActions className={classes.actions}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters onFilter={handleFilter} isCase={isCase} filter={filter} />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(ProgressActions.showProgres());
+                if (isCase === 6) {
+                  filter.mssv === ''
+                    ? setSnackBarValue(errorSnackBarMSSV)
+                    : dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                        handleUpdateStateMSSV(data)
+                      );
+                } else {
+                  filter.typeCDCS === ''
+                    ? setSnackBarValue(errorSnackBarType)
+                    : dispatch(Actions.countingWithFilter(filter)).then(data =>
+                        handleUpdateState(data)
+                      );
+                }
               }}
+              label="Lọc dữ liệu"
             />
-            </MuiThemeProvider>
           </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={() => {
-                dispatch(ProgressActions.showProgres());
-                dispatch(Actions.countingWithFilter(filter)).then(data =>
-                  handleUpdateState(data)
-                  );
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Danh sách
-            </Button>
-            <Button
-              onClick={() => {
-                dispatch(ProgressActions.showProgres());
-                dispatch(Actions.changeCountingColumnsCounting());
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thống kê theo MSSV
-            </Button>
+          <div>
             <Button
               onClick={() => setImportOpen(true)}
               variant="contained"
@@ -292,20 +298,16 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Import
+              <ImportIcon />&nbsp; Import
             </Button>
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
                 let response;
                 if (isCase === 6) {
-                  response = await CDCSHandler.ExportCountingWithMSSV(
-                    filter
-                  );
+                  response = await CDCSHandler.ExportCountingWithMSSV(filter);
                 } else {
-                  response = await CDCSHandler.ExportCountingWithFilter(
-                    filter
-                  );
+                  response = await CDCSHandler.ExportCountingWithFilter(filter);
                 }
                 if (
                   response.statusCode !== 200 ||
@@ -325,29 +327,63 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Export
+             <GetAppIcon /> &nbsp; Export
             </Button>
+          </div>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      <b>{title}</b>
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    },
+                    filtering: false
+                  }}
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <Divider />
+            {listLink.length > 0 ? (
+        <CardActions className={classes.actions}>
+          <Grid container spacing={4}>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
           </Grid>
-          {listLink.length > 0 ? (
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
-            </Grid>
-          ) : (
-            ''
-          )}
-        </Grid>
-      </CardActions>
-      <ImportDialog
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={filter.typeCDCS}
-      />
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-    </Card>
+        </CardActions>
+            ) : (
+              ''
+            )}
+        <ImportDialog
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={filter.typeCDCS}
+        />
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+      </Card>
+    </div>
   );
 };
 

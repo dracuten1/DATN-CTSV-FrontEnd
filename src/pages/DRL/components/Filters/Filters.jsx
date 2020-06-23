@@ -267,7 +267,7 @@ export default function Filters(props) {
       );
     default:
       return (
-        <>
+        <div className={classes.container}>
           <Filter
             clickFilter={onFilter}
             label="Học kỳ"
@@ -291,7 +291,7 @@ export default function Filters(props) {
               `${year - 6}-${year - 5}`
             ]}
           />
-        </>
+        </div>
       );
   };
 
