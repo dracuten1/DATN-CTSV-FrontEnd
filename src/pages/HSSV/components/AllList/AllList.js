@@ -11,6 +11,8 @@ import {
   CardContent,
   Button,
   Divider,
+  MuiThemeProvider,
+  Typography,
   Grid
 } from '@material-ui/core';
 
@@ -20,11 +22,12 @@ import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import * as HSSVHandler from 'handlers/HSSVHandler';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
+import ImportIcon from '@material-ui/icons/Input';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
-import { MuiThemeProvider } from '@material-ui/core';
-import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -463,8 +466,13 @@ const AllList = props => {
         <Filters onFilter={handleFilter} />
         <ContainedButton
           handleClick={() => {
-            dispatch(Actions.getInfoStudent(filter.mssv));
-            updateBegin = 1;
+            dispatch(ProgressActions.showProgres());
+            dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
+              setState({
+                ...state,
+                data: [body]
+              })
+            );
           }}
           label="Tìm kiếm"
         />
@@ -488,6 +496,7 @@ const AllList = props => {
                     icon: icons.Print,
                     tooltip: 'Print',
                     onClick: async (event, rowData) => {
+                      dispatch(ProgressActions.showProgres());
                       const data = {
                         pk: rowData.PK,
                         sk: rowData.SK
@@ -500,6 +509,7 @@ const AllList = props => {
                       setSnackBarValue(successSnackBar);
                       const { body } = response;
                       dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
+                      dispatch(ProgressActions.hideProgress());
                     }
                   }
                 ]}
@@ -515,6 +525,7 @@ const AllList = props => {
                 editable={{
                   onRowUpdate: (newData, oldData) =>
                     new Promise(resolve => {
+                      dispatch(ProgressActions.showProgres());
                       setTimeout(async () => {
                         resolve();
                         if (oldData) {
@@ -538,6 +549,7 @@ const AllList = props => {
                           });
                         }
                       }, 600);
+                      dispatch(ProgressActions.hideProgress());
                     })
                 }}
               />

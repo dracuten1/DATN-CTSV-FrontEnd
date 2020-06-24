@@ -2,6 +2,7 @@ import * as QLBHHandler from 'handlers/QLBHHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const parseNHToNumber = nh => {
   const dt = new Date();
@@ -27,12 +28,13 @@ const parseNHToNumber = nh => {
 };
 const changeCountingColumns = () => async dispatch => {
   dispatch({ type: Types.TK });
-
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlbh');
 };
 
 const getNullData = () => async dispatch => {
   dispatch({ type: Types.NO_DATA });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlbh');
 };
 
@@ -42,12 +44,14 @@ const getListWithFilter = (filter, type) => async dispatch => {
   const { statusCode, body } = response;
   if (statusCode !== 200 || body === 'Không có dữ liệu') {
     dispatch({ type: Types.NO_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
 
   const { Items } = body;
+  let data;
   if (type === 'YT') {
-    const data = Object.keys(Items).map(key => {
+    data = Object.keys(Items).map(key => {
       Items[key].HoTen = Items[key].DuLieu.HoTen;
       Items[key].MSSV = Items[key].DuLieu.MSSV;
       Items[key].NTNS = Items[key].DuLieu.NTNS;
@@ -68,7 +72,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
     });
     dispatch({ type: Types.GET_DATA_BHYT, payload: data });
   } else if (type === 'TN') {
-    const data = Object.keys(Items).map(key => {
+    data = Object.keys(Items).map(key => {
       Items[key].HoTen = Items[key].DuLieu.HoTen;
       Items[key].MSSV = Items[key].DuLieu.MSSV;
       Items[key].NTNS = Items[key].DuLieu.NTNS;
@@ -81,7 +85,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
     });
     dispatch({ type: Types.GET_DATA_BHTN, payload: data });
   } else {
-    const data = Object.keys(Items).map(key => {
+    data = Object.keys(Items).map(key => {
       Items[key].HoTen = Items[key].DuLieu.HoTen;
       Items[key].MSSV = Items[key].DuLieu.MSSV;
       Items[key].CongTyBH = Items[key].DuLieu.CongTyBH;
@@ -94,7 +98,9 @@ const getListWithFilter = (filter, type) => async dispatch => {
     dispatch({ type: Types.GET_DATA_TTBT, payload: data });
   }
 
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlbh');
+  return data;
 };
 
 const exportWithFilter = (filter, type) => async dispatch => {
@@ -125,7 +131,8 @@ const countingWithMSSV = filter => async dispatch => {
   const { statusCode, body } = response;
   if (statusCode !== 200 || body === 'Không có dữ liệu') {
     dispatch({ type: Types.NO_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
 
   const data = Object.keys(body).map(key => {
@@ -142,7 +149,9 @@ const countingWithMSSV = filter => async dispatch => {
   });
 
   dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlbh');
+  return data;
 };
 
 const exportCountingWithFilter = filter => async dispatch => {

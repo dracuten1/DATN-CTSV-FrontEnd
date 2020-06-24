@@ -83,7 +83,6 @@ const year = dt.getFullYear();
 let valueCase = null;
 let valueType = null;
 let updateBegin = 0;
-let isPrint = false;
 let typeColumns = [];
 
 const PrintList = props => {
@@ -256,33 +255,9 @@ const PrintList = props => {
   });
 
   if (updateBegin === 0) {
-    // dispatch({ type: Types.GET_NULL_DATA });
-    dispatch(DRLActions.getListWithStatus(filter));
+    handleShowDataPrint();
     dispatch(DRLActions.getUser());
     updateBegin += 1;
-  }
-
-  if (updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataPrint,
-      columns: typeColumns
-    });
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 2 && state.data.length !== dataPrint.length) {
-    setState({
-      ...state,
-      data: dataPrint,
-      columns: typeColumns
-    });
-    updateBegin += 1;
-  }
-
-  if (isPrint) {
-    setState({ ...state, data: dataPrint });
-    isPrint = !isPrint;
   }
 
   const reparseCase = tmpcase => {

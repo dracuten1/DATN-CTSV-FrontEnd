@@ -2,6 +2,7 @@ import * as QLLTHandler from 'handlers/QLLTHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const parseNHToNumber = nh => {
   const dt = new Date();
@@ -28,6 +29,7 @@ const parseNHToNumber = nh => {
 
 const getNullData = () => async dispatch => {
   dispatch({ type: Types.GET_NULL_DATA });
+  dispatch({ type: HIDE_PROGRESS });
 };
 
 const getAllListWithFilter = filter => async dispatch => {
@@ -44,7 +46,8 @@ const getAllListWithFilter = filter => async dispatch => {
   const { statusCode, body } = response;
   if (statusCode !== 200 || body.length === 0) {
     dispatch({ type: Types.GET_NULL_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
   const data = Object.keys(body).map(key => {
     body[key].ktx = body[key]['Nội trú']['KTX'];
@@ -54,7 +57,9 @@ const getAllListWithFilter = filter => async dispatch => {
     return body[key];
   });
   dispatch({ type: Types.GET_ALLLIST, payload: data });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qllt');
+  return data;
 };
 
 const getKtxListWithFilter = filter => async dispatch => {
@@ -70,14 +75,17 @@ const getKtxListWithFilter = filter => async dispatch => {
   const { statusCode, body } = response;
   if (statusCode !== 200 || body.length === 0) {
     dispatch({ type: Types.GET_NULL_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
     return body[key];
   });
   dispatch({ type: Types.GET_KTX_LIST, payload: data });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qllt');
+  return data;
 };
 
 const updateOneStudentByType = (data, type) => async dispatch => {

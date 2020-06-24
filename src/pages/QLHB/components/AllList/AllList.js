@@ -11,6 +11,8 @@ import {
   CardContent,
   Button,
   Divider,
+  MuiThemeProvider,
+  Typography,
   Grid
 } from '@material-ui/core';
 import { logger } from 'core/services/Apploger';
@@ -19,15 +21,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as QLHBHandler from 'handlers/QLHBHandler';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/QLHB/actionTypes';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
-import { MuiThemeProvider } from '@material-ui/core';
-import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -99,27 +101,11 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
     dispatch(Actions.getDataFilter());
-    // dispatch({type: Types.HBKK});
-    dispatch(Actions.getListWithFilter(filter, type));
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: columns
-    });
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 2 && state.data.length !== dataList.length) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: columns
-    });
+    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+      handleUpdateStateFilter(data)
+    );
     updateBegin += 1;
   }
 
@@ -138,6 +124,34 @@ const AllList = props => {
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleUpdateState = (response) => {
+    switch (type) {
+      case 'KK':
+        columns = Columns.HBKK;
+        title = 'Học Bổng Khuyến Khích';
+        break;
+      case 'TT':
+        columns = Columns.HBTT;
+        title = 'Học Bổng Tài Trợ';
+        break;
+      default:
+        columns = Columns.COUNTING;
+        title = 'Thống Kê';
+    }
+    setState({
+      ...state,
+      data: response,
+      columns: columns
+    });
+  };
+
+  const handleUpdateStateFilter = (response) => {
+    setState({
+      ...state,
+      data: response
+    });
   };
 
   const successSnackBar = {
@@ -172,24 +186,34 @@ const AllList = props => {
         />
         <ContainedButton
           handleClick={() => {
+            dispatch(ProgressActions.showProgres());
             if (isCounting) {
               switch (isCase) {
                 case 1:
-                  dispatch(Actions.countingWithMSSV(filter));
+                  dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
                   break;
                 case 2:
-                  dispatch(Actions.countingWithLoaiHB(filter));
+                  dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
                   break;
                 case 3:
-                  dispatch(Actions.countingWithDoiTuong(filter));
+                  dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
                   break;
                 default:
-                  dispatch(Actions.countingWithDVTT(filter));
+                  dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
               }
             } else {
-              dispatch(Actions.getListWithFilter(filter, type));
+              dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                handleUpdateStateFilter(data)
+              );
             }
-            updateBegin = 1;
           }}
           label="Lọc dữ liệu"
         />
@@ -225,6 +249,7 @@ const AllList = props => {
                     : {
                       onRowUpdate: (newData, oldData) =>
                         new Promise(resolve => {
+                          dispatch(ProgressActions.showProgres());
                           setTimeout(async () => {
                             resolve();
                             if (oldData) {
@@ -235,6 +260,7 @@ const AllList = props => {
                               );
                               if (response.statusCode !== 200) {
                                 setSnackBarValue(errorSnackBar);
+                                dispatch(ProgressActions.hideProgress());
                                 return;
                               }
                               setSnackBarValue(successSnackBar);
@@ -245,10 +271,12 @@ const AllList = props => {
                               });
                             }
                           }, 600);
+                          dispatch(ProgressActions.hideProgress());
                         }),
 
                       onRowDelete: oldData =>
                         new Promise(resolve => {
+                          dispatch(ProgressActions.showProgres());
                           setTimeout(async () => {
                             resolve();
                             logger.info('Olddata: ', oldData);
@@ -261,6 +289,7 @@ const AllList = props => {
                             );
                             if (response.statusCode !== 200) {
                               setSnackBarValue(errorSnackBar);
+                              dispatch(ProgressActions.hideProgress());
                               return;
                             }
                             setSnackBarValue(successSnackBar);
@@ -270,6 +299,7 @@ const AllList = props => {
                               return { ...prevState, data };
                             });
                           }, 600);
+                          dispatch(ProgressActions.hideProgress());
                         })
                     }
                 }
@@ -286,9 +316,10 @@ const AllList = props => {
               onClick={() => {
                 type = 'KK';
                 isCase = 0;
-                updateBegin = 1;
-                // dispatch({type: Types.HBKK});
-                dispatch(Actions.getListWithFilter(filter, type));
+                dispatch(ProgressActions.showProgres());
+                dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                  handleUpdateState(data)
+                );
               }}
               variant="contained"
               color="primary"
@@ -301,9 +332,10 @@ const AllList = props => {
               onClick={() => {
                 type = 'TT';
                 isCase = 0;
-                updateBegin = 1;
-                // dispatch({type: Types.HBTT});
-                dispatch(Actions.getListWithFilter(filter, type));
+                dispatch(ProgressActions.showProgres());
+                dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                  handleUpdateState(data)
+                );
               }}
               variant="contained"
               color="primary"
@@ -323,6 +355,7 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
+                dispatch(ProgressActions.showProgres());
                 let response;
                 if (isCounting) {
                   switch (isCase) {
@@ -355,11 +388,13 @@ const AllList = props => {
                   response.body === 'Không có gì để export'
                 ) {
                   setSnackBarValue(errorExportSnackBar);
+                  dispatch(ProgressActions.hideProgress());
                   return;
                 }
                 setSnackBarValue(successSnackBar);
                 const { body } = response;
                 dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                dispatch(ProgressActions.hideProgress());
               }}
               variant="contained"
               color="primary"
@@ -387,8 +422,11 @@ const AllList = props => {
               <MenuItem
                 onClick={() => {
                   isCase = 1;
-                  updateBegin = 1;
-                  dispatch(Actions.countingWithMSSV(filter));
+                  type = 'TK';
+                  dispatch(ProgressActions.showProgres());
+                  dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                    handleUpdateState(data)
+                  );
                   handleCloseMenu();
                 }}
               >
@@ -397,8 +435,11 @@ const AllList = props => {
               <MenuItem
                 onClick={() => {
                   isCase = 2;
-                  updateBegin = 1;
-                  dispatch(Actions.countingWithLoaiHB(filter));
+                  type = 'TK';
+                  dispatch(ProgressActions.showProgres());
+                  dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                    handleUpdateState(data)
+                  );
                   handleCloseMenu();
                 }}
               >
@@ -407,8 +448,11 @@ const AllList = props => {
               <MenuItem
                 onClick={() => {
                   isCase = 3;
-                  updateBegin = 1;
-                  dispatch(Actions.countingWithDoiTuong(filter));
+                  type = 'TK';
+                  dispatch(ProgressActions.showProgres());
+                  dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
+                    handleUpdateState(data)
+                  );
                   handleCloseMenu();
                 }}
               >
@@ -417,8 +461,11 @@ const AllList = props => {
               <MenuItem
                 onClick={() => {
                   isCase = 4;
-                  updateBegin = 1;
-                  dispatch(Actions.countingWithDVTT(filter));
+                  type = 'TK';
+                  dispatch(ProgressActions.showProgres());
+                  dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                    handleUpdateState(data)
+                  );
                   handleCloseMenu();
                 }}
               >

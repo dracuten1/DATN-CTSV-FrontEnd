@@ -5,23 +5,6 @@ import history from 'historyConfig';
 import Types from './actionTypes';
 import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
-// const parseGradeToInt = grade => {
-//   switch (grade) {
-//     case 'Xuất sắc':
-//       return 1;
-//     case 'Tốt':
-//       return 2;
-//     case 'Khá':
-//       return 3;
-//     case 'Trung bình':
-//       return 4;
-//     case 'Yếu':
-//       return 5;
-//     default:
-//       return 6;
-//   }
-// };
-
 const handleAllList = () => async dispatch => {
   dispatch({ type: Types.ALL_LIST });
   history.push('/drl');

@@ -2,6 +2,7 @@ import * as QLHBHandler from 'handlers/QLHBHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const parseNHToNumber = nh => {
   const dt = new Date();
@@ -37,7 +38,8 @@ const getListWithFilter = (filter, type) => async dispatch => {
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   const { body } = response;
   const data = Object.keys(body).map(key => {
@@ -50,7 +52,9 @@ const getListWithFilter = (filter, type) => async dispatch => {
   else
     dispatch({ type: Types.GET_DATA_HBTT, payload: data });
 
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlhb');
+  return data;
 };
 
 const exportWithFilter = (filter, type) => async dispatch => {
@@ -81,7 +85,8 @@ const countingWithMSSV = (filter) => async dispatch => {
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   
   const { body } = response;
@@ -92,18 +97,20 @@ const countingWithMSSV = (filter) => async dispatch => {
   });
 
   dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlhb');
+  return data;
 };
 
 const countingWithLoaiHB = (filter) => async dispatch => {
-  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
 
   const response = await QLHBHandler.CountingWithLoaiHB(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   
   const { body } = response;
@@ -115,20 +122,20 @@ const countingWithLoaiHB = (filter) => async dispatch => {
   });
 
   dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-
-
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlhb');
+  return data;
 };
 
 const countingWithDoiTuong = (filter) => async dispatch => {
-  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
 
   const response = await QLHBHandler.CountingWithDoiTuong(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   
   const { body } = response;
@@ -140,9 +147,9 @@ const countingWithDoiTuong = (filter) => async dispatch => {
   });
 
   dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-
-
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlhb');
+  return data;
 };
 
 const countingWithDVTT = (filter) => async dispatch => {
@@ -153,7 +160,8 @@ const countingWithDVTT = (filter) => async dispatch => {
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }  
   
   const { body } = response;
@@ -165,8 +173,9 @@ const countingWithDVTT = (filter) => async dispatch => {
   });
 
   dispatch({ type: Types.GET_DATA_COUNTING, payload: data });
-
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/qlhb');
+  return data;
 };
 
 const exportCountingWithMSSV = (filter) => async dispatch => {

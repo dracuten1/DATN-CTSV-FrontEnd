@@ -11,6 +11,8 @@ import {
   CardContent,
   Button,
   Divider,
+  MuiThemeProvider,
+  Typography,
   Grid
 } from '@material-ui/core';
 import { logger } from 'core/services/Apploger';
@@ -19,13 +21,13 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as QLLTHandler from 'handlers/QLLTHandler';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/QLLT/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
-import { MuiThemeProvider } from '@material-ui/core';
-import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -73,19 +75,20 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    // dispatch(Actions.getNullData());
-    dispatch(Actions.getAllListWithFilter(filter));
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getAllListWithFilter(filter)).then(data =>
+      handleUpdateState(data, true)
+    );
     updateBegin += 1;
   }
 
-  if (updateBegin === 1) {
+  const handleUpdateState = (response, bool) => {
     setState({
       ...state,
-      data: dataList,
-      columns: isAlllist ? Columns.ALL : Columns.KTX
+      data: response,
+      columns: bool ? Columns.ALL : Columns.KTX
     });
-    updateBegin += 1;
-  }
+  };
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
@@ -139,9 +142,14 @@ const AllList = props => {
         <Filters onFilter={handleFilter} filter={filter} />
         <ContainedButton
           handleClick={() => {
+            dispatch(ProgressActions.showProgres());
             if (filter.type === 'All' || filter.type === 'all')
-              dispatch(Actions.getAllListWithFilter(filter));
-            else dispatch(Actions.getKtxListWithFilter(filter));
+              dispatch(Actions.getAllListWithFilter(filter)).then(data =>
+                handleUpdateState(data, true)
+              );
+            else dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
+              handleUpdateState(data, false)
+            );
             updateBegin = 1;
           }}
           label="Lọc sinh viên"
@@ -175,6 +183,7 @@ const AllList = props => {
                 editable={{
                   onRowUpdate: (newData, oldData) =>
                     new Promise(resolve => {
+                      dispatch(ProgressActions.showProgres());
                       setTimeout(async () => {
                         resolve();
                         if (oldData) {
@@ -199,6 +208,7 @@ const AllList = props => {
                           );
                           if (response.statusCode !== 200) {
                             setSnackBarValue(errorSnackBar);
+                            dispatch(ProgressActions.hideProgress());
                             return;
                           }
                           setSnackBarValue(successSnackBar);
@@ -209,6 +219,7 @@ const AllList = props => {
                           });
                         }
                       }, 600);
+                      dispatch(ProgressActions.hideProgress());
                     })
                 }}
               />
@@ -231,6 +242,7 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
+                dispatch(ProgressActions.showProgres());
                 const response = await QLLTHandler.ExportWithFilter(filter);
                 if (
                   response.statusCode !== 200 ||
@@ -242,6 +254,7 @@ const AllList = props => {
                 setSnackBarValue(successSnackBar);
                 const { body } = response;
                 dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                dispatch(ProgressActions.hideProgress());
               }}
               variant="contained"
               color="primary"

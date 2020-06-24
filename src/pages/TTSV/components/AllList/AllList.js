@@ -11,6 +11,8 @@ import {
   CardContent,
   Button,
   Divider,
+  MuiThemeProvider,
+  Typography,
   Grid
 } from '@material-ui/core';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
@@ -19,14 +21,14 @@ import { logger } from 'core/services/Apploger';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
+import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/TTSV/actionTypes';
 import * as TTSVHandler from 'handlers/TTSVHandler';
+import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
 import UpdateDialog from '../AddDialog/index';
-import { MuiThemeProvider } from '@material-ui/core';
-import themeTable from 'shared/styles/theme/overrides/MuiTable';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -49,7 +51,6 @@ const useStyles = makeStyles(theme => ({
 }));
 const dt = new Date();
 const year = dt.getFullYear();
-
 let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
@@ -112,7 +113,6 @@ const AllList = props => {
   });
 
   if (updateBegin === 0) {
-    // dispatch({ type: Types.NO_DATA });
     dispatch(Actions.getListWithFilter(filter));
     updateBegin += 1;
   }

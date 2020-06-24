@@ -35,7 +35,6 @@ export default function Filters(props) {
             defaultValue={mssv}
             onChange={handleChange}
             style={{ marginTop: '8px', width: '80%' }}
-            helperText="BHYT and BHTN need MSSV"
             inputProps={{
               style: {
                 marginBottom: '-6px'
@@ -109,7 +108,6 @@ export default function Filters(props) {
             label="Loại"
             prop="type"
             defaultValue={type}
-            helperText="BT can export"
             data={['BHYT', 'BHTN', 'Bồi thường']}
           />
         </>

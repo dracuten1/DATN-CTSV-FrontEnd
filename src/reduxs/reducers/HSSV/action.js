@@ -2,16 +2,18 @@ import * as HSSVHandler from 'handlers/HSSVHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const getInfoStudent = (mssv) => async dispatch => {
   const payload       = await HSSVHandler.GetInfoStudent(mssv);
 
   const {statusCode, body} = payload;
+  logger.info('HSSVAction:: updateStudentInfo: reponse: ', body);
 
   if (statusCode !== 200 || body === "Không tìm thấy học sinh này !")
   {
     dispatch({ type: Types.GET_NULL});
-    return;
+    return null;
   }
 
   body.mssv        = body.SK.replace("SV#", '');
@@ -34,7 +36,9 @@ const getInfoStudent = (mssv) => async dispatch => {
   body.TinHoc      = body.NguoiLienLac.TinHoc;
 
   dispatch({ type: Types.GET_INFO, payload: body });
+  dispatch({ type: HIDE_PROGRESS });
   history.push('/hssv');
+  return body;
 };
 
 const updateStudentInfo = (data) => async dispatch => {
