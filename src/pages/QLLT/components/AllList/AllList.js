@@ -74,14 +74,6 @@ const AllList = props => {
     columns: Columns.ALL
   });
 
-  if (updateBegin === 0) {
-    dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getAllListWithFilter(filter)).then(data =>
-      handleUpdateState(data, true)
-    );
-    updateBegin += 1;
-  }
-
   const handleUpdateState = (response, bool) => {
     setState({
       ...state,
@@ -114,6 +106,14 @@ const AllList = props => {
         return `${convert}-${convert + 1}`;
     }
   };
+
+  if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getAllListWithFilter(filter)).then(data =>
+      handleUpdateState(data, true)
+    );
+    updateBegin += 1;
+  }
 
   const successSnackBar = {
     open: true,

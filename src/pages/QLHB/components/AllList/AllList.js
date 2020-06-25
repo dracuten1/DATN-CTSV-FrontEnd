@@ -100,15 +100,6 @@ const AllList = props => {
     columns: columns
   });
 
-  if (updateBegin === 0) {
-    dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter());
-    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-      handleUpdateStateFilter(data)
-    );
-    updateBegin += 1;
-  }
-
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
@@ -153,6 +144,15 @@ const AllList = props => {
       data: response
     });
   };
+
+  if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getDataFilter());
+    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+      handleUpdateStateFilter(data)
+    );
+    updateBegin += 1;
+  }
 
   const successSnackBar = {
     open: true,

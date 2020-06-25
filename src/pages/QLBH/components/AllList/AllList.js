@@ -97,11 +97,6 @@ const AllList = props => {
     columns: columns
   });
 
-  if (updateBegin === 0) {
-    handleDataWithFilter();
-    updateBegin += 1;
-  }
-
   const handleUpdateState = response => {
     switch (type) {
       case 'YT':
@@ -129,7 +124,7 @@ const AllList = props => {
 
   const handleDataWithFilter = () => {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.filterListInfoDRL(filter)).then(data =>
+    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
       handleUpdateState(data)
     );
   };
@@ -142,6 +137,11 @@ const AllList = props => {
   };
 
   const handleImport = () => {};
+
+  if (updateBegin === 0) {
+    handleDataWithFilter();
+    updateBegin += 1;
+  }
 
   const successSnackBar = {
     open: true,
@@ -220,7 +220,7 @@ const AllList = props => {
                     backgroundColor: '#EEE'
                   },
                   // exportButton: true,
-                  filtering: true
+                  filtering: false
                 }}
                 editable={
                   isBHYT
