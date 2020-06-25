@@ -106,7 +106,7 @@ const PrintList = props => {
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
@@ -146,6 +146,34 @@ const PrintList = props => {
       )
     }
   ];
+
+  const handleShowDataInfoDRL = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(DRLActions.filterListInfoDRL(filter)).then(payload =>
+      handleUpdateState(payload, 1)
+    );
+  };
+
+  const handleShowDataPrint = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(DRLActions.getListWithStatus(filter)).then(payload =>
+      handleUpdateState(payload, 2)
+    );
+  };
+
+  const handleShowDataHistory = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(DRLActions.getListPrintByDate(filter)).then(payload =>
+      handleUpdateState(payload, 3)
+    );
+  };
+
+  const handleShowDataHistoryImport = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(DRLActions.getListHistoryImport(filter)).then(payload =>
+      handleUpdateState(payload, 4)
+    );
+  };
 
   const PrintColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
@@ -363,33 +391,7 @@ const PrintList = props => {
     });
   };
 
-  const handleShowDataInfoDRL = () => {
-    dispatch(ProgressActions.showProgres());
-    dispatch(DRLActions.filterListInfoDRL(filter)).then(payload =>
-      handleUpdateState(payload, 1)
-    );
-  };
 
-  const handleShowDataPrint = () => {
-    dispatch(ProgressActions.showProgres());
-    dispatch(DRLActions.getListWithStatus(filter)).then(payload =>
-      handleUpdateState(payload, 2)
-    );
-  };
-
-  const handleShowDataHistory = () => {
-    dispatch(ProgressActions.showProgres());
-    dispatch(DRLActions.getListPrintByDate(filter)).then(payload =>
-      handleUpdateState(payload, 3)
-    );
-  };
-
-  const handleShowDataHistoryImport = () => {
-    dispatch(ProgressActions.showProgres());
-    dispatch(DRLActions.getListHistoryImport(filter)).then(payload =>
-      handleUpdateState(payload, 4)
-    );
-  };
 
   React.useEffect(() => {
     dispatch(ProgressActions.hideProgress());
@@ -627,56 +629,56 @@ const PrintList = props => {
                     </Button>
                   </>
                 ) : (
-                  <>
+                    <>
+                      <Button
+                        style={{ marginLeft: '8px' }}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={async () => {
+                          if (filter.status === 'Đã In') {
+                            dispatch(ProgressActions.showProgres());
+                            const response = await DRLHandler.ExportWithFilter(
+                              filter
+                            );
+                            const { statusCode, body } = response;
+
+                            if (statusCode !== 200 || body.Items === '') {
+                              setSnackBarValue(errorSnackBar);
+                              dispatch(ProgressActions.hideProgress());
+                              return;
+                            }
+                            setSnackBarValue(printSuccessSnackBar);
+                            dispatch({
+                              type: Types.ADD_LINK_EXPORT,
+                              listLink: body.Items
+                            });
+                            dispatch(ProgressActions.hideProgress());
+                          }
+                        }}
+                      >
+                        <GetAppIcon /> &nbsp;Export
+                    </Button>
+                    </>
+                  )}
+              </>
+            ) : (
+                <>
+                  {isAllList ? (
                     <Button
                       style={{ marginLeft: '8px' }}
+                      onClick={() => setImportOpen(true)}
                       variant="contained"
                       color="primary"
                       size="small"
-                      onClick={async () => {
-                        if (filter.status === 'Đã In') {
-                          dispatch(ProgressActions.showProgres());
-                          const response = await DRLHandler.ExportWithFilter(
-                            filter
-                          );
-                          const { statusCode, body } = response;
-
-                          if (statusCode !== 200 || body.Items === '') {
-                            setSnackBarValue(errorSnackBar);
-                            dispatch(ProgressActions.hideProgress());
-                            return;
-                          }
-                          setSnackBarValue(printSuccessSnackBar);
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
-                          dispatch(ProgressActions.hideProgress());
-                        }
-                      }}
                     >
-                      <GetAppIcon /> &nbsp;Export
+                      <ImportIcon /> &nbsp;Import
                     </Button>
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                {isAllList ? (
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => setImportOpen(true)}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    <ImportIcon /> &nbsp;Import
-                  </Button>
-                ) : (
-                  ''
-                )}
-              </>
-            )}
+                  ) : (
+                      ''
+                    )}
+                </>
+              )}
           </div>
         </CardActions>
 
@@ -722,8 +724,8 @@ const PrintList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <AddDialog
           open={open}
           handleClose={() => setOpen(false)}

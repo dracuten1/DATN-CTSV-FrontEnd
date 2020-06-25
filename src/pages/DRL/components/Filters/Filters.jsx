@@ -75,7 +75,7 @@ export default function Filters(props) {
     case 1:
       return (
         <>
-        <InputDateWithLabel
+          <InputDateWithLabel
             prop="from"
             clickFilter={onFilter}
             label="Từ ngày"
@@ -154,3 +154,4 @@ export default function Filters(props) {
         </div>
       );
   };
+}
