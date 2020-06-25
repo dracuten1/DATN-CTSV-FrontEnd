@@ -26,6 +26,18 @@ const themeTable = createMuiTheme({
                     backgroundColor: 'rgba(33, 150, 243, 0.5) !important',
                     color: "black !important",
                 }
+            },
+            body: {
+                '&': {
+                    padding: '0px !important'
+                }
+            }
+        },
+        MuiInputBase: {
+            root: {
+                '&': {
+                    margin: "5px 0px !important"
+                }
             }
         }
     }

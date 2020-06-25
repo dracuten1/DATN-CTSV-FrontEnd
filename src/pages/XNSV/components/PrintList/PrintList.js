@@ -454,7 +454,7 @@ const PrintList = props => {
         <Typography className={classes.title}>
           <InboxIcon style={{ marginRight: '5px' }} /> XÁC NHẬN SINH VIÊN
         </Typography>
-        <div>
+        <div style={{ display: "flex" }}>
           <Button
             variant="contained"
             color="primary"
@@ -486,27 +486,27 @@ const PrintList = props => {
           {isPrintList ? (
             <div />
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Filters onFilter={handleFilter} filter={filter} />
-              <ContainedButton
-                handleClick={() => {
-                  dispatch(ProgressActions.showProgres());
-                  isHistoryList
-                    ? dispatch(
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Filters onFilter={handleFilter} filter={filter} />
+                <ContainedButton
+                  handleClick={() => {
+                    dispatch(ProgressActions.showProgres());
+                    isHistoryList
+                      ? dispatch(
                         XNSVActions.getListExport(filter)
                       ).then(response =>
                         handleUpdateStateColumn(response, false)
                       )
-                    : dispatch(
+                      : dispatch(
                         XNSVActions.getListExportByDate(filter)
                       ).then(response =>
                         handleUpdateStateColumn(response, false)
                       );
-                }}
-                label="Lọc sinh viên"
-              />
-            </div>
-          )}
+                  }}
+                  label="Lọc sinh viên"
+                />
+              </div>
+            )}
           <div>
             <div>
               {isPrintList ? (
@@ -616,67 +616,67 @@ const PrintList = props => {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Button
-                    style={{ marginLeft: '8px' }}
-                    onClick={async () => {
-                      dispatch(ProgressActions.showProgres());
-                      if (isHistoryList) {
-                        const response = await XNSVHandler.ExportWithFilter(
-                          filter
-                        );
-                        logger.info(
-                          'XNSVAction:: Exportfilter: reponse: ',
-                          response
-                        );
-                        if (
-                          response.statusCode !== 200 ||
-                          response.body.Items === 'Không có gì để export'
-                        ) {
+                  <>
+                    <Button
+                      style={{ marginLeft: '8px' }}
+                      onClick={async () => {
+                        dispatch(ProgressActions.showProgres());
+                        if (isHistoryList) {
+                          const response = await XNSVHandler.ExportWithFilter(
+                            filter
+                          );
+                          logger.info(
+                            'XNSVAction:: Exportfilter: reponse: ',
+                            response
+                          );
+                          if (
+                            response.statusCode !== 200 ||
+                            response.body.Items === 'Không có gì để export'
+                          ) {
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(errorExportSnackBar);
+                            return;
+                          }
                           dispatch(ProgressActions.hideProgress());
-                          setSnackBarValue(errorExportSnackBar);
-                          return;
-                        }
-                        dispatch(ProgressActions.hideProgress());
-                        setSnackBarValue(successSnackBar);
-                        const { body } = response;
-                        dispatch({
-                          type: Types.ADD_LINK_EXPORT,
-                          listLink: body.Items
-                        });
-                      } else {
-                        const response = await XNSVHandler.ExportWithFilterByDate(
-                          filter
-                        );
-                        logger.info(
-                          'XNSVAction:: Exportfilter: reponse: ',
-                          response
-                        );
-                        if (
-                          response.statusCode !== 200 ||
-                          response.body.Items === 'Không có gì để export'
-                        ) {
+                          setSnackBarValue(successSnackBar);
+                          const { body } = response;
+                          dispatch({
+                            type: Types.ADD_LINK_EXPORT,
+                            listLink: body.Items
+                          });
+                        } else {
+                          const response = await XNSVHandler.ExportWithFilterByDate(
+                            filter
+                          );
+                          logger.info(
+                            'XNSVAction:: Exportfilter: reponse: ',
+                            response
+                          );
+                          if (
+                            response.statusCode !== 200 ||
+                            response.body.Items === 'Không có gì để export'
+                          ) {
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(errorExportSnackBar);
+                            return;
+                          }
                           dispatch(ProgressActions.hideProgress());
-                          setSnackBarValue(errorExportSnackBar);
-                          return;
+                          setSnackBarValue(successSnackBar);
+                          const { body } = response;
+                          dispatch({
+                            type: Types.ADD_LINK_EXPORT,
+                            listLink: body.Items
+                          });
                         }
-                        dispatch(ProgressActions.hideProgress());
-                        setSnackBarValue(successSnackBar);
-                        const { body } = response;
-                        dispatch({
-                          type: Types.ADD_LINK_EXPORT,
-                          listLink: body.Items
-                        });
-                      }
-                    }}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                  >
-                    <GetAppIcon /> &nbsp; Export
+                      }}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                    >
+                      <GetAppIcon /> &nbsp; Export
                   </Button>
-                </>
-              )}
+                  </>
+                )}
             </div>
           </div>
         </CardActions>
@@ -692,8 +692,8 @@ const PrintList = props => {
                       {isPrintList ? (
                         <h3>DANH SÁCH CHƯA IN</h3>
                       ) : (
-                        <h3>LỊCH SỬ IN</h3>
-                      )}
+                          <h3>LỊCH SỬ IN</h3>
+                        )}
                     </div>
                   }
                   columns={state.columns}
@@ -701,34 +701,34 @@ const PrintList = props => {
                   actions={
                     isPrintList
                       ? [
-                          {
-                            icon: icons.Print,
-                            tooltip: 'Print',
-                            onClick: async (event, rowData) => {
-                              dispatch(ProgressActions.showProgres());
-                              const data = {
-                                pk: rowData.pk,
-                                sk: rowData.sk,
-                                type: reparseCaseToString(rowData.case)
-                              };
-                              const response = await XNSVHandler.PrintOneStudent(
-                                data
-                              );
-                              if (response.statusCode !== 200) {
-                                dispatch(ProgressActions.hideProgress());
-                                setSnackBarValue(errorSnackBar);
-                                return;
-                              }
-                              handlePrintOne(rowData);
-                              dispatch({
-                                type: Types.ADD_LINK_PRINT_HANDLER,
-                                listLink: response.body
-                              });
+                        {
+                          icon: icons.Print,
+                          tooltip: 'Print',
+                          onClick: async (event, rowData) => {
+                            dispatch(ProgressActions.showProgres());
+                            const data = {
+                              pk: rowData.pk,
+                              sk: rowData.sk,
+                              type: reparseCaseToString(rowData.case)
+                            };
+                            const response = await XNSVHandler.PrintOneStudent(
+                              data
+                            );
+                            if (response.statusCode !== 200) {
                               dispatch(ProgressActions.hideProgress());
-                              setSnackBarValue(successSnackBar);
+                              setSnackBarValue(errorSnackBar);
+                              return;
                             }
+                            handlePrintOne(rowData);
+                            dispatch({
+                              type: Types.ADD_LINK_PRINT_HANDLER,
+                              listLink: response.body
+                            });
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(successSnackBar);
                           }
-                        ]
+                        }
+                      ]
                       : []
                   }
                   options={{
@@ -746,30 +746,30 @@ const PrintList = props => {
                   editable={
                     isPrintList
                       ? {
-                          onRowDelete: oldData =>
-                            new Promise(resolve => {
-                              setTimeout(async () => {
-                                resolve();
-                                const { pk, sk } = oldData;
-                                const response = await XNSVHandler.DeleteOneCertificate(
-                                  pk,
-                                  sk
-                                );
-                                if (response.statusCode !== 200) {
-                                  dispatch(ProgressActions.hideProgress());
-                                  setSnackBarValue(errorSnackBar);
-                                  return;
-                                }
+                        onRowDelete: oldData =>
+                          new Promise(resolve => {
+                            setTimeout(async () => {
+                              resolve();
+                              const { pk, sk } = oldData;
+                              const response = await XNSVHandler.DeleteOneCertificate(
+                                pk,
+                                sk
+                              );
+                              if (response.statusCode !== 200) {
                                 dispatch(ProgressActions.hideProgress());
-                                setSnackBarValue(successSnackBar);
-                                setState(prevState => {
-                                  const data = [...prevState.data];
-                                  data.splice(data.indexOf(oldData), 1);
-                                  return { ...prevState, data };
-                                });
-                              }, 600);
-                            })
-                        }
+                                setSnackBarValue(errorSnackBar);
+                                return;
+                              }
+                              dispatch(ProgressActions.hideProgress());
+                              setSnackBarValue(successSnackBar);
+                              setState(prevState => {
+                                const data = [...prevState.data];
+                                data.splice(data.indexOf(oldData), 1);
+                                return { ...prevState, data };
+                              });
+                            }, 600);
+                          })
+                      }
                       : {}
                   }
                 />
@@ -787,8 +787,8 @@ const PrintList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <XNTKTDialog
           handleAdd={handleAdd}
           open={open}
