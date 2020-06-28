@@ -14,10 +14,10 @@ const useStyles = makeStyles(() => ({
 
 export default function Filters(props) {
   const classes = useStyles();
-  const { onFilter, filter } = props;
+  const { onFilter, filter, isCase } = props;
   const dt = new Date();
   const year = dt.getFullYear();
-  const {hk, nh, type, mssv} = filter;
+  const { hk, nh, type, mssv } = filter;
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -48,37 +48,39 @@ export default function Filters(props) {
           `${year - 6}-${year - 5}`
         ]}
       />
-      <Filter
-        clickFilter={onFilter}
-        prop="type"
-        label="Tình trạng"
-        defaultValue={type}
-        data={[
-          'BẢO LƯU',
-          'ĐANG HỌC',
-          'SINH VIÊN NƯỚC NGOÀI',
-          'TỐT NGHIỆP',
-          'HOÀN TẤT CHƯƠNG TRÌNH',
-          'BUỘC THÔI HỌC',
-          'CẢNH CÁO HỌC VỤ',
-          'ĐĂNG KÝ HỌC PHẦN',
-          // 'ĐIỂM TRUNG BÌNH'
-        ]}
-      />
-      <TextField
-        id="outlined-basic"
-        label="MSSV"
-        variant="outlined"
-        onChange={handleChange}
-        defaultValue={mssv}
-        style={{marginTop: '8px'}}
-        helperText="Ưu tiên"
-        inputProps={{
-          style: {
-            marginBottom: '-6px'
-          }
-        }}
-      />
+      {isCase !== 10 ? (
+        <Filter
+          clickFilter={onFilter}
+          prop="type"
+          label="Tình trạng"
+          defaultValue={type}
+          data={[
+            'BẢO LƯU',
+            'ĐANG HỌC',
+            'SINH VIÊN NƯỚC NGOÀI',
+            'TỐT NGHIỆP',
+            'HOÀN TẤT CHƯƠNG TRÌNH',
+            'BUỘC THÔI HỌC',
+            'CẢNH CÁO HỌC VỤ',
+            'ĐĂNG KÝ HỌC PHẦN'
+            // 'ĐIỂM TRUNG BÌNH'
+          ]}
+        />
+      ) : (
+        <TextField
+          id="outlined-basic"
+          label="MSSV"
+          variant="outlined"
+          onChange={handleChange}
+          defaultValue={mssv}
+          style={{ marginTop: '8px' }}
+          inputProps={{
+            style: {
+              marginBottom: '-6px'
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

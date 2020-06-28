@@ -52,6 +52,7 @@ const useStyles = makeStyles(theme => ({
 const dt = new Date();
 const year = dt.getFullYear();
 let updateBegin = 0;
+
 const AllList = props => {
   const { className, ...rest } = props;
   const TTSVState = useSelector(state => state.TTSVState);
@@ -97,7 +98,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => { };
+  const handleImport = () => {};
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -112,20 +113,6 @@ const AllList = props => {
     columns: arrColumns
   });
 
-  if (updateBegin === 0) {
-    dispatch(Actions.getListWithFilter(filter));
-    updateBegin += 1;
-  }
-
-  if (updateBegin === 1) {
-    setState({
-      ...state,
-      data: dataList,
-      columns: arrColumns
-    });
-    updateBegin += 1;
-  }
-
   // eslint-disable-next-line
   const handleAdd = newData => {
     setState(prevState => {
@@ -136,6 +123,72 @@ const AllList = props => {
       return { ...prevState, data };
     });
   };
+
+  const handleUpdateState = response => {
+    switch (filter.type) {
+      case 'SINH VIÊN NƯỚC NGOÀI': //SV nuoc ngoai
+        arrColumns = Columns.SVNN;
+        break;
+      case 'TỐT NGHIỆP': //Danh sach tot nghiep
+        arrColumns = Columns.DSTN;
+        break;
+      case 'HOÀN TẤT CHƯƠNG TRÌNH': //Hoan thanh tin chi
+        arrColumns = Columns.HTCT;
+        break;
+      case 'ĐANG HỌC': //Dang hoc
+        arrColumns = Columns.HTCT;
+        break;
+      case 'CẢNH CÁO HỌC VỤ': //Canh cao hoc vu
+        arrColumns = Columns.CCHV;
+        break;
+      case 'BUỘC THÔI HỌC': //Bi thoi hoc
+        arrColumns = Columns.CCHV;
+        break;
+      case 'BẢO LƯU': //Bảo lưu
+        arrColumns = Columns.BL;
+        break;
+      case 'ĐĂNG KÝ HỌC PHẦN':
+        //Dang ky hoc phan
+        arrColumns = Columns.DKHP;
+        break;
+      default:
+        break;
+    }
+    setState({
+      ...state,
+      data: response,
+      columns: arrColumns
+    });
+  };
+
+  const handleUpdateStateMSSV = response => {
+    arrColumns = Columns.MSSV;
+    setState({
+      ...state,
+      data: response,
+      columns: arrColumns
+    });
+  };
+
+  const handleShowListData = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getListWithFilter(filter)).then(data =>
+      handleUpdateState(data)
+    );
+  };
+
+  const handleShowDataMSSV = () => {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getListWithMSSV(filter)).then(data =>
+      handleUpdateStateMSSV(data)
+    );
+  };
+
+  if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
+    handleShowListData();
+    updateBegin += 1;
+  }
 
   const successSnackBar = {
     open: true,
@@ -160,24 +213,21 @@ const AllList = props => {
   const [updateDialogStage, setUpdateDialogStage] = useState(false);
   const handleCloseUpdateDialog = () => {
     setUpdateDialogStage(false);
-  }
+  };
   const handleOpenUpdateDialog = () => {
     setUpdateDialogStage(true);
-  }
+  };
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <UpdateDialog open={updateDialogStage} handleClose={handleCloseUpdateDialog} />
+      <UpdateDialog
+        open={updateDialogStage}
+        handleClose={handleCloseUpdateDialog}
+      />
       <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} filter={filter} />
+        <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
         <ContainedButton
-          handleClick={() => {
-            if (filter.mssv.length > 0)
-              dispatch(Actions.getListWithMSSV(filter));
-            else
-              dispatch(Actions.getListWithFilter(filter));
-            updateBegin = 1;
-          }}
+          handleClick={isCase === 10 ? handleShowDataMSSV : handleShowListData}
           label="Lọc sinh viên"
         />
       </CardActions>
@@ -190,7 +240,11 @@ const AllList = props => {
                 icons={icons}
                 title={
                   <div>
-                    {filter.mssv !== '' ? <b>Tình Trạng Sinh Viên</b> : <b>DANH SÁCH {filter.type}</b>}
+                    {isCase === 10 ? (
+                      <b>Tình Trạng Sinh Viên</b>
+                    ) : (
+                      <b>DANH SÁCH {filter.type}</b>
+                    )}
                   </div>
                 }
                 columns={state.columns}
@@ -215,6 +269,26 @@ const AllList = props => {
         <Grid container spacing={4}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <Button
+              onClick={handleShowListData}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Danh sách tình trạng
+            </Button>
+            <Button
+              onClick={() => dispatch(Actions.changeColumnMSSV()).then(data =>
+                handleUpdateStateMSSV([])
+              )}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              Thông tin sinh viên
+            </Button>
+            <Button
               onClick={handleOpenUpdateDialog}
               variant="contained"
               color="primary"
@@ -234,14 +308,19 @@ const AllList = props => {
             </Button>
             <Button
               onClick={async () => {
+                dispatch(ProgressActions.showProgres());
                 const response = await TTSVHandler.ExportWithFilter(filter);
-                if (response.statusCode !== 200 || response.body === 'Không có gì để export') {
+                if (
+                  response.statusCode !== 200 ||
+                  response.body === 'Không có gì để export'
+                ) {
                   setSnackBarValue(errorExportSnackBar);
                   return;
                 }
                 setSnackBarValue(successSnackBar);
                 const { body } = response;
                 dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                dispatch(ProgressActions.hideProgress());
               }}
               variant="contained"
               color="primary"
@@ -256,8 +335,8 @@ const AllList = props => {
               <ListLinkDocx data={listLink} />
             </Grid>
           ) : (
-              ''
-            )}
+            ''
+          )}
         </Grid>
       </CardActions>
       <CustomizedSnackbars

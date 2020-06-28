@@ -11,23 +11,25 @@ const ttsvReducer = (state = INIT_STATE, action) => {
     case ActionTypes.NO_DATA:
       return { ...state, dataList: [] };
     case ActionTypes.SVNN:
-      return { ...state, isCase: 1 };
+      return { ...state, isCase: 1, dataList: [] };
     case ActionTypes.DTB:
-      return { ...state, isCase: 2 };
+      return { ...state, isCase: 2, dataList: [] };
     case ActionTypes.DSTN:
-      return { ...state, isCase: 3 };
+      return { ...state, isCase: 3, dataList: [] };
     case ActionTypes.HTCT:
-      return { ...state, isCase: 4 };
+      return { ...state, isCase: 4, dataList: [] };
     case ActionTypes.DH:
-      return { ...state, isCase: 5 };
+      return { ...state, isCase: 5, dataList: [] };
     case ActionTypes.CCHV:
-      return { ...state, isCase: 6 };
+      return { ...state, isCase: 6, dataList: [] };
     case ActionTypes.BTH:
-      return { ...state, isCase: 7 };
+      return { ...state, isCase: 7, dataList: [] };
     case ActionTypes.BL:
-      return { ...state, isCase: 8 };
+      return { ...state, isCase: 8, dataList: [] };
     case ActionTypes.DKHP:
-      return { ...state, isCase: 9 };
+      return { ...state, isCase: 9, dataList: [] };
+    case ActionTypes.MSSV:
+      return { ...state, isCase: 10, dataList: [] };
     case ActionTypes.GET_LIST_SVNN:
       return {
         ...state,

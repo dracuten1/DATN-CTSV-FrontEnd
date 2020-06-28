@@ -2,6 +2,7 @@ import * as TTSVHandler from 'handlers/TTSVHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
 const parseNHToNumber = nh => {
   const dt = new Date();
@@ -26,14 +27,20 @@ const parseNHToNumber = nh => {
   }
 };
 
+
+const changeColumnMSSV = () => async dispatch => {
+    dispatch({ type: Types.MSSV });
+}
+
 const getListWithMSSV = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: filter: ', filter);
-  const response = await TTSVHandler.GetListWithFilter(filter);
+  const response = await TTSVHandler.GetListWithMSSV(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const {statusCode, body} = response;
   if (statusCode !== 200 || body === "Không có dữ liệu"){
     dispatch({ type: Types.NO_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   } 
 
   const data = Object.keys(body).map(key => {
@@ -43,6 +50,8 @@ const getListWithMSSV = filter => async dispatch => {
   });
   dispatch({ type: Types.GET_TTSV_WITH_MSSV, payload: data });
   history.push('/ttsv');
+  dispatch({ type: HIDE_PROGRESS });
+  return data;
 };
 
 const getListWithFilter = filter => async dispatch => {
@@ -52,7 +61,8 @@ const getListWithFilter = filter => async dispatch => {
   const {statusCode, body} = response;
   if (statusCode !== 200 || body === "Không có dữ liệu"){
     dispatch({ type: Types.NO_DATA });
-    return;
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   } 
   const { type } = filter;
   const data = Object.keys(body).map(key => {
@@ -126,6 +136,8 @@ const getListWithFilter = filter => async dispatch => {
       break;
   }
   history.push('/ttsv');
+  dispatch({ type: HIDE_PROGRESS });
+  return data;
 };
 
 // const updateOneStudentByType = (data, type) => async dispatch => {
@@ -150,6 +162,7 @@ const exportWithFilter = (filter) => async dispatch => {
 export default {
   getListWithFilter,
   getListWithMSSV,
+  changeColumnMSSV,
   // updateOneStudentByType
   exportWithFilter
 };

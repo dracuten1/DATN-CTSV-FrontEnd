@@ -9,6 +9,7 @@ const ActionTypes = {
   BTH: 'BTH',
   DKHP: 'DKHP',
   BL: 'BL',
+  MSSV: 'MSSV',
   GET_LIST_SVNN: 'GET_LIST_SVNN',
   GET_LIST_DTB: 'GET_LIST_DTB',
   GET_LIST_DSTN: 'GET_LIST_DSTN',

@@ -52,10 +52,19 @@ const convertType = type => {
 };
 
 export const GetListWithFilter = async filter => {
-  const { type, hk, nh, mssv } = filter;
+  const { type, hk, nh } = filter;
   const cvNH = convertNamHoc(nh);
   const cvType = convertType(type);
-  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}&mssv=${mssv}`;
+  const url = `xnsv/ttsv?type=${cvType}&hk=${hk}&nh=${cvNH}`;
+  logger.info('TTSVAction:: getListAll: url: ', url);
+  const response = await HttpClient.sendPutGetStatus(url);
+  return response;
+};
+
+export const GetListWithMSSV = async filter => {
+  const {  hk, nh, mssv } = filter;
+  const cvNH = convertNamHoc(nh);
+  const url = `xnsv/ttsv?hk=${hk}&nh=${cvNH}&mssv=${mssv}`;
   logger.info('TTSVAction:: getListAll: url: ', url);
   const response = await HttpClient.sendPutGetStatus(url);
   return response;
