@@ -24,19 +24,6 @@ const DashboardQLLT = () => {
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Title url="/drl" title="Quản Lý Lưu Trú" />
-        </Grid>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Export many={20} />
-        </Grid>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Import many={20} />
-        </Grid>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
-          <Print many={20} />
-        </Grid>
-
         <Grid item lg={12} md={12} xl={12} xs={12}>
           <AllList />
         </Grid>

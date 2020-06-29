@@ -21,6 +21,9 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import icons from 'shared/icons';
 import * as QLBHHandler from 'handlers/QLBHHandler';
+import Hospital from '@material-ui/icons/LocalHospital';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportIcon from '@material-ui/icons/Input';
 import ImportDialogNewHost from 'shared/components/importDialogNewHost/ImportDialogNewHost';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
@@ -45,7 +48,27 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 
@@ -131,7 +154,7 @@ const AllList = props => {
 
   const handleDataWithMSSV = () => {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getListWithStatus(filter)).then(data =>
+    dispatch(Actions.countingWithMSSV(filter)).then(data =>
       handleUpdateState(data)
     );
   };
@@ -174,171 +197,80 @@ const AllList = props => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters
-          onFilter={handleFilter}
-          isCounting={isCounting}
-          filter={filter}
-        />
-        <ContainedButton
-          handleClick={() => {
-            if (isCounting) {
-              if (
-                (filter.type === 'BHYT' || filter.type === 'BHYT') &&
-                filter.mssv === ''
-              )
-                setSnackBarValue(errorFilterSnackBar);
-              else handleDataWithMSSV();
-            } else {
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Hospital style={{ marginRight: '5px' }} /> QUẢN LÝ BẢO HIỂM
+        </Typography>
+        <div>
+          <Button
+            onClick={() => {
+              type = 'YT';
               handleDataWithFilter();
-            }
-          }}
-          label="Lọc dữ liệu"
-        />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <MuiThemeProvider theme={themeTable}>
-              <MaterialTable
-                icons={icons}
-                title={
-                  <div>
-                    <b>{title}</b>
-                  </div>
-                }
-                columns={state.columns}
-                data={state.data}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#01579b',
-                    color: '#FFF'
-                  },
-                  rowStyle: {
-                    backgroundColor: '#EEE'
-                  },
-                  // exportButton: true,
-                  filtering: false
-                }}
-                editable={
-                  isBHYT
-                    ? {
-                        onRowUpdate: (newData, oldData) =>
-                          new Promise(resolve => {
-                            dispatch(ProgressActions.showProgres());
-                            setTimeout(async () => {
-                              resolve();
-                              if (oldData) {
-                                newData.DuLieu.PK = newData.PK;
-                                newData.DuLieu.SK = newData.SK;
-                                newData.DuLieu.type = 'YT';
-                                newData.DuLieu.MaSo.MaTinh = newData.MaTinh;
-                                newData.DuLieu.MaSo.MaBHXH = newData.MaBHXH;
-                                newData.DuLieu.MaSo.DoiTuong = newData.DoiTuong;
-                                newData.DuLieu.NoiDKKCB.MaBV = newData.MaBV;
-                                newData.DuLieu.NoiDKKCB.TenBV = newData.TenBV;
-                                newData.DuLieu.TinhTrangNhanThe.DaNhan =
-                                  newData.DaNhan;
-                                newData.DuLieu.TinhTrangNhanThe.Ngay =
-                                  newData.NgayNhanThe;
-                                newData.DuLieu.HSD.Tu = newData.HSDTu;
-                                newData.DuLieu.HSD.Den = newData.HSDDen;
-                                logger.info('Newdata: ', newData);
-                                const response = await QLBHHandler.UpdateOneStudentByType(
-                                  newData.DuLieu
-                                );
-                                if (response.statusCode !== 200) {
-                                  setSnackBarValue(errorSnackBar);
-                                  dispatch(ProgressActions.hideProgress());
-                                  return;
-                                }
-                                setSnackBarValue(successSnackBar);
-                                dispatch(ProgressActions.hideProgress());
-                                setState(prevState => {
-                                  const data = [...prevState.data];
-                                  data[data.indexOf(oldData)] = newData;
-                                  return { ...prevState, data };
-                                });
-                              }
-                            }, 600);
-                          }),
+            }}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            BHYT
+          </Button>
+          <Button
+            onClick={() => {
+              type = 'TN';
+              handleDataWithFilter();
+            }}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            BHTN
+          </Button>
+          <Button
+            onClick={() => {
+              type = 'BT';
+              handleDataWithMSSV();
+            }}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            Thống kê
+          </Button>
+        </div>
+      </Card>
 
-                        onRowDelete: oldData =>
-                          new Promise(resolve => {
-                            dispatch(ProgressActions.showProgres());
-                            setTimeout(async () => {
-                              resolve();
-                              logger.info('Olddata: ', oldData);
-                              const { PK, SK } = oldData;
-                              const response = await QLBHHandler.DeleteOneCertificate(
-                                PK,
-                                SK,
-                                'YT'
-                              );
-                              if (response.statusCode !== 200) {
-                                dispatch(ProgressActions.hideProgress());
-                                setSnackBarValue(errorSnackBar);
-                                return;
-                              }
-                              setSnackBarValue(successSnackBar);
-                              dispatch(ProgressActions.hideProgress());
-                              setState(prevState => {
-                                const data = [...prevState.data];
-                                data.splice(data.indexOf(oldData), 1);
-                                return { ...prevState, data };
-                              });
-                            }, 600);
-                          })
-                      }
-                    : {}
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <CardActions className={classes.actions}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters
+              onFilter={handleFilter}
+              isCounting={isCounting}
+              filter={filter}
+            />
+            <ContainedButton
+              handleClick={() => {
+                if (isCounting) {
+                  if (
+                    (filter.type === 'BHYT' || filter.type === 'BHYT') &&
+                    filter.mssv === ''
+                  )
+                    setSnackBarValue(errorFilterSnackBar);
+                  else handleDataWithMSSV();
+                } else {
+                  handleDataWithFilter();
                 }
-              />
-            </MuiThemeProvider>
+              }}
+              label="Lọc dữ liệu"
+            />
           </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={() => {
-                type = 'YT';
-                handleDataWithFilter();
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              BHYT
-            </Button>
-            <Button
-              onClick={() => {
-                type = 'TN';
-                handleDataWithFilter();
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              BHTN
-            </Button>
-            <Button
-              onClick={() => {
-                type = 'BT';
-                handleDataWithMSSV();
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thống kê
-            </Button>
+          <div>
             {isCounting ? (
               ''
             ) : (
@@ -349,7 +281,7 @@ const AllList = props => {
                 size="small"
                 style={{ marginLeft: '8px' }}
               >
-                Import
+                <ImportIcon /> &nbsp;Import
               </Button>
             )}
             {isBHTN ? (
@@ -382,30 +314,138 @@ const AllList = props => {
                 size="small"
                 style={{ marginLeft: '8px' }}
               >
-                Export
+                <GetAppIcon /> &nbsp;Export
               </Button>
             )}
+          </div>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      <b>{title}</b>
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    },
+                    // exportButton: true,
+                    filtering: false
+                  }}
+                  editable={
+                    isBHYT
+                      ? {
+                          onRowUpdate: (newData, oldData) =>
+                            new Promise(resolve => {
+                              dispatch(ProgressActions.showProgres());
+                              setTimeout(async () => {
+                                resolve();
+                                if (oldData) {
+                                  newData.DuLieu.PK = newData.PK;
+                                  newData.DuLieu.SK = newData.SK;
+                                  newData.DuLieu.type = 'YT';
+                                  newData.DuLieu.MaSo.MaTinh = newData.MaTinh;
+                                  newData.DuLieu.MaSo.MaBHXH = newData.MaBHXH;
+                                  newData.DuLieu.MaSo.DoiTuong =
+                                    newData.DoiTuong;
+                                  newData.DuLieu.NoiDKKCB.MaBV = newData.MaBV;
+                                  newData.DuLieu.NoiDKKCB.TenBV = newData.TenBV;
+                                  newData.DuLieu.TinhTrangNhanThe.DaNhan =
+                                    newData.DaNhan;
+                                  newData.DuLieu.TinhTrangNhanThe.Ngay =
+                                    newData.NgayNhanThe;
+                                  newData.DuLieu.HSD.Tu = newData.HSDTu;
+                                  newData.DuLieu.HSD.Den = newData.HSDDen;
+                                  logger.info('Newdata: ', newData);
+                                  const response = await QLBHHandler.UpdateOneStudentByType(
+                                    newData.DuLieu
+                                  );
+                                  if (response.statusCode !== 200) {
+                                    setSnackBarValue(errorSnackBar);
+                                    dispatch(ProgressActions.hideProgress());
+                                    return;
+                                  }
+                                  setSnackBarValue(successSnackBar);
+                                  dispatch(ProgressActions.hideProgress());
+                                  setState(prevState => {
+                                    const data = [...prevState.data];
+                                    data[data.indexOf(oldData)] = newData;
+                                    return { ...prevState, data };
+                                  });
+                                }
+                              }, 600);
+                            }),
+
+                          onRowDelete: oldData =>
+                            new Promise(resolve => {
+                              dispatch(ProgressActions.showProgres());
+                              setTimeout(async () => {
+                                resolve();
+                                logger.info('Olddata: ', oldData);
+                                const { PK, SK } = oldData;
+                                const response = await QLBHHandler.DeleteOneCertificate(
+                                  PK,
+                                  SK,
+                                  'YT'
+                                );
+                                if (response.statusCode !== 200) {
+                                  dispatch(ProgressActions.hideProgress());
+                                  setSnackBarValue(errorSnackBar);
+                                  return;
+                                }
+                                setSnackBarValue(successSnackBar);
+                                dispatch(ProgressActions.hideProgress());
+                                setState(prevState => {
+                                  const data = [...prevState.data];
+                                  data.splice(data.indexOf(oldData), 1);
+                                  return { ...prevState, data };
+                                });
+                              }, 600);
+                            })
+                        }
+                      : {}
+                  }
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <Divider />
+        <CardActions className={classes.actions}>
+          <Grid container spacing={4}>
+            {listLink.length > 0 ? (
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            ) : (
+              ''
+            )}
           </Grid>
-          {listLink.length > 0 ? (
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
-            </Grid>
-          ) : (
-            ''
-          )}
-        </Grid>
-      </CardActions>
-      <ImportDialogNewHost
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={isBHYT ? 'YT' : 'TN'}
-      />
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-    </Card>
+        </CardActions>
+        <ImportDialogNewHost
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={isBHYT ? 'YT' : 'TN'}
+        />
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+      </Card>
+    </div>
   );
 };
 

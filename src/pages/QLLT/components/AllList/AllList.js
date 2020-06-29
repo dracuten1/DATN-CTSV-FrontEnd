@@ -20,6 +20,9 @@ import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import icons from 'shared/icons';
+import Home from '@material-ui/icons/Home';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportIcon from '@material-ui/icons/Input';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as QLLTHandler from 'handlers/QLLTHandler';
@@ -45,7 +48,27 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 
@@ -86,7 +109,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const parseNHToString = nh => {
     switch (nh) {
@@ -137,100 +160,41 @@ const AllList = props => {
   };
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} filter={filter} />
-        <ContainedButton
-          handleClick={() => {
-            dispatch(ProgressActions.showProgres());
-            if (filter.type === 'All' || filter.type === 'all')
-              dispatch(Actions.getAllListWithFilter(filter)).then(data =>
-                handleUpdateState(data, true)
-              );
-            else dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
-              handleUpdateState(data, false)
-            );
-            updateBegin = 1;
-          }}
-          label="Lọc sinh viên"
-        />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <MuiThemeProvider theme={themeTable}>
-              <MaterialTable
-                icons={icons}
-                title={
-                  <div>
-                    {isAlllist ? <b>DANH SÁCH NGOẠI TRÚ</b> : <b>DANH SÁCH KTX</b>}
-                  </div>
-                }
-                columns={state.columns}
-                data={state.data}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#01579b',
-                    color: '#FFF'
-                  },
-                  rowStyle: {
-                    backgroundColor: '#EEE'
-                  },
-                  // exportButton: true,
-                  filtering: false
-                }}
-                editable={{
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise(resolve => {
-                      dispatch(ProgressActions.showProgres());
-                      setTimeout(async () => {
-                        resolve();
-                        if (oldData) {
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            if (isAlllist) {
-                              newData['Nội trú']['Cập nhật Portal'] =
-                                newData.portal;
-                              newData['Nội trú']['KTX'] =
-                                newData.ktx;
-                              newData['Xác nhận ngoại trú'] = newData.xnnt;
-                            }
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Home style={{ marginRight: '5px' }} /> QUẢN LÝ LƯU TRÚ
+        </Typography>
+      </Card>
 
-                            data[data.indexOf(oldData)] = newData;
-                            return { ...prevState, data };
-                          });
-                          newData.NH = parseNHToString(newData.nh);
-                          const type = isAlllist ? 'all' : 'ktx';
-                          logger.info('Newdata: ', newData);
-                          const response = await QLLTHandler.UpdateOneStudentByType(
-                            newData, type
-                          );
-                          if (response.statusCode !== 200) {
-                            setSnackBarValue(errorSnackBar);
-                            dispatch(ProgressActions.hideProgress());
-                            return;
-                          }
-                          setSnackBarValue(successSnackBar);
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data[data.indexOf(oldData)] = newData;
-                            return { ...prevState, data };
-                          });
-                        }
-                      }, 600);
-                      dispatch(ProgressActions.hideProgress());
-                    })
-                }}
-              />
-            </MuiThemeProvider>
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <CardActions className={classes.actions}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters onFilter={handleFilter} filter={filter} />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(ProgressActions.showProgres());
+                if (filter.type === 'All' || filter.type === 'all')
+                  dispatch(Actions.getAllListWithFilter(filter)).then(data =>
+                    handleUpdateState(data, true)
+                  );
+                else
+                  dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
+                    handleUpdateState(data, false)
+                  );
+                updateBegin = 1;
+              }}
+              label="Lọc sinh viên"
+            />
           </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
+          <div>
             <Button
               onClick={() => setImportOpen(true)}
               variant="contained"
@@ -238,7 +202,7 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Import
+              <ImportIcon /> &nbsp;Import
             </Button>
             <Button
               onClick={async () => {
@@ -261,29 +225,110 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Export
+              <GetAppIcon /> &nbsp;Export
             </Button>
-          </Grid>
-          {listLink.length > 0 ? (
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
-            </Grid>
-          ) : (
+          </div>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      {isAlllist ? (
+                        <b>DANH SÁCH NGOẠI TRÚ</b>
+                      ) : (
+                        <b>DANH SÁCH KTX</b>
+                      )}
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    },
+                    // exportButton: true,
+                    filtering: false
+                  }}
+                  editable={{
+                    onRowUpdate: (newData, oldData) =>
+                      new Promise(resolve => {
+                        dispatch(ProgressActions.showProgres());
+                        setTimeout(async () => {
+                          resolve();
+                          if (oldData) {
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              if (isAlllist) {
+                                newData['Nội trú']['Cập nhật Portal'] =
+                                  newData.portal;
+                                newData['Nội trú']['KTX'] = newData.ktx;
+                                newData['Xác nhận ngoại trú'] = newData.xnnt;
+                              }
+
+                              data[data.indexOf(oldData)] = newData;
+                              return { ...prevState, data };
+                            });
+                            newData.NH = parseNHToString(newData.nh);
+                            const type = isAlllist ? 'all' : 'ktx';
+                            logger.info('Newdata: ', newData);
+                            const response = await QLLTHandler.UpdateOneStudentByType(
+                              newData,
+                              type
+                            );
+                            if (response.statusCode !== 200) {
+                              setSnackBarValue(errorSnackBar);
+                              dispatch(ProgressActions.hideProgress());
+                              return;
+                            }
+                            setSnackBarValue(successSnackBar);
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data[data.indexOf(oldData)] = newData;
+                              return { ...prevState, data };
+                            });
+                          }
+                        }, 600);
+                        dispatch(ProgressActions.hideProgress());
+                      })
+                  }}
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <Divider />
+        <CardActions className={classes.actions}>
+          <Grid container spacing={4}>
+            {listLink.length > 0 ? (
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            ) : (
               ''
             )}
-        </Grid>
-      </CardActions>
-      <ImportDialog
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={filter.type === 'KTX' ? 2 : 3}
-      />
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-    </Card>
+          </Grid>
+        </CardActions>
+        <ImportDialog
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={filter.type === 'KTX' ? 2 : 3}
+        />
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+      </Card>
+    </div>
   );
 };
 

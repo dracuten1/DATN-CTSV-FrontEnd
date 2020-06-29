@@ -298,7 +298,8 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              <ImportIcon />&nbsp; Import
+              <ImportIcon />
+              &nbsp; Import
             </Button>
             <Button
               onClick={async () => {
@@ -327,7 +328,7 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-             <GetAppIcon /> &nbsp; Export
+              <GetAppIcon /> &nbsp; Export
             </Button>
           </div>
         </CardActions>
@@ -361,17 +362,17 @@ const AllList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-            {listLink.length > 0 ? (
-        <CardActions className={classes.actions}>
-          <Grid container spacing={4}>
+        {listLink.length > 0 ? (
+          <CardActions className={classes.actions}>
+            <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <ListLinkDocx data={listLink} />
               </Grid>
-          </Grid>
-        </CardActions>
-            ) : (
-              ''
-            )}
+            </Grid>
+          </CardActions>
+        ) : (
+          ''
+        )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

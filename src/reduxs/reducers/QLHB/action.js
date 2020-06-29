@@ -26,6 +26,11 @@ const parseNHToNumber = nh => {
       return 7;
   }
 };
+
+const formatNumber = num => {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+};
+
 const changeCountingColumns = () => async dispatch => {
     dispatch({type: Types.TK});
 
@@ -43,6 +48,12 @@ const getListWithFilter = (filter, type) => async dispatch => {
   }  
   const { body } = response;
   const data = Object.keys(body).map(key => {
+    if (type === 'KK') {
+      const { SoTienMoiThang, SoThang } = body[key];
+      const money = SoTienMoiThang.split('.').join('');
+      body[key].SoTienMoiThang = formatNumber(SoTienMoiThang);
+      body[key].TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
+    }
     body[key].nh = parseNHToNumber(body[key].NH);
     body[key].id = body[key].id ? body[key].id : '';
     return body[key];
@@ -92,6 +103,7 @@ const countingWithMSSV = (filter) => async dispatch => {
   const { body } = response;
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].TongSoTien = formatNumber(body[key].TongSoTien);
     body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
     return body[key];
   });
@@ -103,7 +115,6 @@ const countingWithMSSV = (filter) => async dispatch => {
 };
 
 const countingWithLoaiHB = (filter) => async dispatch => {
-
   const response = await QLHBHandler.CountingWithLoaiHB(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
@@ -117,6 +128,7 @@ const countingWithLoaiHB = (filter) => async dispatch => {
 
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].TongSoTien = formatNumber(body[key].TongSoTien);
     body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
     return body[key];
   });
@@ -128,7 +140,6 @@ const countingWithLoaiHB = (filter) => async dispatch => {
 };
 
 const countingWithDoiTuong = (filter) => async dispatch => {
-
   const response = await QLHBHandler.CountingWithDoiTuong(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
@@ -142,6 +153,7 @@ const countingWithDoiTuong = (filter) => async dispatch => {
 
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].TongSoTien = formatNumber(body[key].TongSoTien);
     body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
     return body[key];
   });
@@ -153,8 +165,6 @@ const countingWithDoiTuong = (filter) => async dispatch => {
 };
 
 const countingWithDVTT = (filter) => async dispatch => {
-  const {LoaiHB, DoiTuong, DonViTaiTro}  = filter;
-
   const response = await QLHBHandler.CountingWithDVTT(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
@@ -168,6 +178,7 @@ const countingWithDVTT = (filter) => async dispatch => {
 
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
+    body[key].TongSoTien = formatNumber(body[key].TongSoTien);
     body[key].type = body[key].type === 'TT' ? 'Tài trợ' : 'Khuyến khích';
     return body[key];
   });

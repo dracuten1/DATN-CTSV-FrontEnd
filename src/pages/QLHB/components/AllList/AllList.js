@@ -23,6 +23,9 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as QLHBHandler from 'handlers/QLHBHandler';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportIcon from '@material-ui/icons/Input';
+import Scholarship from '@material-ui/icons/School';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/QLHB/actionTypes';
@@ -47,7 +50,27 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 
@@ -104,7 +127,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   //Create Menu
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -117,7 +140,7 @@ const AllList = props => {
     setAnchorEl(null);
   };
 
-  const handleUpdateState = (response) => {
+  const handleUpdateState = response => {
     switch (type) {
       case 'KK':
         columns = Columns.HBKK;
@@ -138,7 +161,7 @@ const AllList = props => {
     });
   };
 
-  const handleUpdateStateFilter = (response) => {
+  const handleUpdateStateFilter = response => {
     setState({
       ...state,
       data: response
@@ -176,183 +199,117 @@ const AllList = props => {
   };
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters
-          onFilter={handleFilter}
-          isCounting={isCounting}
-          filter={filter}
-          isCase={isCase}
-        />
-        <ContainedButton
-          handleClick={() => {
-            dispatch(ProgressActions.showProgres());
-            if (isCounting) {
-              switch (isCase) {
-                case 1:
-                  dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                    handleUpdateStateFilter(data)
-                  );
-                  break;
-                case 2:
-                  dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                    handleUpdateStateFilter(data)
-                  );
-                  break;
-                case 3:
-                  dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
-                    handleUpdateStateFilter(data)
-                  );
-                  break;
-                default:
-                  dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                    handleUpdateStateFilter(data)
-                  );
-              }
-            } else {
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Scholarship style={{ marginRight: '5px' }} /> QUẢN LÝ HỌC BỔNG
+        </Typography>
+        <div>
+          <Button
+            onClick={() => {
+              type = 'KK';
+              isCase = 0;
+              dispatch(ProgressActions.showProgres());
               dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                handleUpdateStateFilter(data)
+                handleUpdateState(data)
               );
-            }
-          }}
-          label="Lọc dữ liệu"
-        />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <MuiThemeProvider theme={themeTable}>
-              <MaterialTable
-                icons={icons}
-                title={
-                  <div>
-                    <b>{title}</b>
-                  </div>
-                }
-                columns={state.columns}
-                data={state.data}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#01579b',
-                    color: '#FFF'
-                  },
-                  rowStyle: {
-                    backgroundColor: '#EEE'
-                  },
-                  // exportButton: true,
-                  filtering: false
-                }}
-                editable={
-                  isCounting
-                    ? {}
-                    : {
-                      onRowUpdate: (newData, oldData) =>
-                        new Promise(resolve => {
-                          dispatch(ProgressActions.showProgres());
-                          setTimeout(async () => {
-                            resolve();
-                            if (oldData) {
-                              logger.info('Newdata: ', newData);
-                              const response = await QLHBHandler.UpdateOneStudentByType(
-                                newData,
-                                type
-                              );
-                              if (response.statusCode !== 200) {
-                                setSnackBarValue(errorSnackBar);
-                                dispatch(ProgressActions.hideProgress());
-                                return;
-                              }
-                              setSnackBarValue(successSnackBar);
-                              setState(prevState => {
-                                const data = [...prevState.data];
-                                data[data.indexOf(oldData)] = newData;
-                                return { ...prevState, data };
-                              });
-                            }
-                          }, 600);
-                          dispatch(ProgressActions.hideProgress());
-                        }),
+            }}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            HBKK
+          </Button>
+          <Button
+            onClick={() => {
+              type = 'TT';
+              isCase = 0;
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                handleUpdateState(data)
+              );
+            }}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            HBTT
+          </Button>
+          <Button
+            onClick={handleOpenMenu}
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
+          >
+            Thống kê
+          </Button>
+        </div>
+      </Card>
 
-                      onRowDelete: oldData =>
-                        new Promise(resolve => {
-                          dispatch(ProgressActions.showProgres());
-                          setTimeout(async () => {
-                            resolve();
-                            logger.info('Olddata: ', oldData);
-                            const { PK, SK, id } = oldData;
-                            const response = await QLHBHandler.DeleteOneCertificate(
-                              PK,
-                              SK,
-                              type,
-                              id
-                            );
-                            if (response.statusCode !== 200) {
-                              setSnackBarValue(errorSnackBar);
-                              dispatch(ProgressActions.hideProgress());
-                              return;
-                            }
-                            setSnackBarValue(successSnackBar);
-                            setState(prevState => {
-                              const data = [...prevState.data];
-                              data.splice(data.indexOf(oldData), 1);
-                              return { ...prevState, data };
-                            });
-                          }, 600);
-                          dispatch(ProgressActions.hideProgress());
-                        })
-                    }
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <CardActions className={classes.actions}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters
+              onFilter={handleFilter}
+              isCounting={isCounting}
+              filter={filter}
+              isCase={isCase}
+            />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(ProgressActions.showProgres());
+                if (isCounting) {
+                  switch (isCase) {
+                    case 1:
+                      dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                        handleUpdateStateFilter(data)
+                      );
+                      break;
+                    case 2:
+                      dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                        handleUpdateStateFilter(data)
+                      );
+                      break;
+                    case 3:
+                      dispatch(
+                        Actions.countingWithDoiTuong(filter)
+                      ).then(data => handleUpdateStateFilter(data));
+                      break;
+                    default:
+                      dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                        handleUpdateStateFilter(data)
+                      );
+                  }
+                } else {
+                  dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
                 }
-              />
-            </MuiThemeProvider>
+              }}
+              label="Lọc dữ liệu"
+            />
           </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={() => {
-                type = 'KK';
-                isCase = 0;
-                dispatch(ProgressActions.showProgres());
-                dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                  handleUpdateState(data)
-                );
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              HBKK
-            </Button>
-            <Button
-              onClick={() => {
-                type = 'TT';
-                isCase = 0;
-                dispatch(ProgressActions.showProgres());
-                dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                  handleUpdateState(data)
-                );
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              HBTT
-            </Button>
-            <Button
-              onClick={() => setImportOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Import
-            </Button>
+          <div>
+            {isCounting ? (
+              <div/>
+            ) : (
+              <Button
+                onClick={() => setImportOpen(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                <ImportIcon /> &nbsp;Import
+              </Button>
+            )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -401,98 +358,186 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              Export
+              <GetAppIcon /> &nbsp;Export
             </Button>
-            <Button
-              onClick={handleOpenMenu}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thống kê
-            </Button>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleCloseMenu}
-            >
-              <MenuItem
-                onClick={() => {
-                  isCase = 1;
-                  type = 'TK';
-                  dispatch(ProgressActions.showProgres());
-                  dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                    handleUpdateState(data)
-                  );
-                  handleCloseMenu();
-                }}
-              >
-                Theo MSSV
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  isCase = 2;
-                  type = 'TK';
-                  dispatch(ProgressActions.showProgres());
-                  dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                    handleUpdateState(data)
-                  );
-                  handleCloseMenu();
-                }}
-              >
-                Theo Loại Học Bổng
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  isCase = 3;
-                  type = 'TK';
-                  dispatch(ProgressActions.showProgres());
-                  dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
-                    handleUpdateState(data)
-                  );
-                  handleCloseMenu();
-                }}
-              >
-                Theo Đối Tượng
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  isCase = 4;
-                  type = 'TK';
-                  dispatch(ProgressActions.showProgres());
-                  dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                    handleUpdateState(data)
-                  );
-                  handleCloseMenu();
-                }}
-              >
-                Theo Đơn Vị Tài Trợ
-              </MenuItem>
-            </Menu>
-          </Grid>
-          {listLink.length > 0 ? (
+          </div>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      <b>{title}</b>
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    },
+                    // exportButton: true,
+                    filtering: false
+                  }}
+                  editable={
+                    isCounting
+                      ? {}
+                      : {
+                          onRowUpdate: (newData, oldData) =>
+                            new Promise(resolve => {
+                              dispatch(ProgressActions.showProgres());
+                              setTimeout(async () => {
+                                resolve();
+                                if (oldData) {
+                                  logger.info('Newdata: ', newData);
+                                  const response = await QLHBHandler.UpdateOneStudentByType(
+                                    newData,
+                                    type
+                                  );
+                                  if (response.statusCode !== 200) {
+                                    setSnackBarValue(errorSnackBar);
+                                    dispatch(ProgressActions.hideProgress());
+                                    return;
+                                  }
+                                  setSnackBarValue(successSnackBar);
+                                  setState(prevState => {
+                                    const data = [...prevState.data];
+                                    data[data.indexOf(oldData)] = newData;
+                                    return { ...prevState, data };
+                                  });
+                                }
+                              }, 600);
+                              dispatch(ProgressActions.hideProgress());
+                            }),
+
+                          onRowDelete: oldData =>
+                            new Promise(resolve => {
+                              dispatch(ProgressActions.showProgres());
+                              setTimeout(async () => {
+                                resolve();
+                                logger.info('Olddata: ', oldData);
+                                const { PK, SK, id } = oldData;
+                                const response = await QLHBHandler.DeleteOneCertificate(
+                                  PK,
+                                  SK,
+                                  type,
+                                  id
+                                );
+                                if (response.statusCode !== 200) {
+                                  setSnackBarValue(errorSnackBar);
+                                  dispatch(ProgressActions.hideProgress());
+                                  return;
+                                }
+                                setSnackBarValue(successSnackBar);
+                                setState(prevState => {
+                                  const data = [...prevState.data];
+                                  data.splice(data.indexOf(oldData), 1);
+                                  return { ...prevState, data };
+                                });
+                              }, 600);
+                              dispatch(ProgressActions.hideProgress());
+                            })
+                        }
+                  }
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <Divider />
+        <CardActions className={classes.actions}>
+          <Grid container spacing={4}>
             <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+              >
+                <MenuItem
+                  onClick={() => {
+                    isCase = 1;
+                    type = 'TK';
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                      handleUpdateState(data)
+                    );
+                    handleCloseMenu();
+                  }}
+                >
+                  Theo MSSV
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    isCase = 2;
+                    type = 'TK';
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                      handleUpdateState(data)
+                    );
+                    handleCloseMenu();
+                  }}
+                >
+                  Theo Loại Học Bổng
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    isCase = 3;
+                    type = 'TK';
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
+                      handleUpdateState(data)
+                    );
+                    handleCloseMenu();
+                  }}
+                >
+                  Theo Đối Tượng
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    isCase = 4;
+                    type = 'TK';
+                    dispatch(ProgressActions.showProgres());
+                    dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                      handleUpdateState(data)
+                    );
+                    handleCloseMenu();
+                  }}
+                >
+                  Theo Đơn Vị Tài Trợ
+                </MenuItem>
+              </Menu>
             </Grid>
-          ) : (
+            {listLink.length > 0 ? (
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            ) : (
               ''
             )}
-        </Grid>
-      </CardActions>
-      <ImportDialog
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={isHBKK ? 'KK' : 'TT'}
-      />
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-    </Card>
+          </Grid>
+        </CardActions>
+        <ImportDialog
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={isHBKK ? 'KK' : 'TT'}
+        />
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+      </Card>
+    </div>
   );
 };
 

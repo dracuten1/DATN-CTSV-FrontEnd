@@ -53,7 +53,7 @@ export default function Filters(props) {
     switch (isCase) {
       case 1:
         return (
-          <>
+          <div className={classes.container}>
             <TextField
               id="outlined-basic"
               label="MSSV"
@@ -133,11 +133,11 @@ export default function Filters(props) {
                 `${year - 6}-${year - 5}`
               ]}
             />
-          </>
+          </div>
         );
       case 2:
         return (
-          <>
+          <div className={classes.container}>
             <Filter
               clickFilter={onFilter}
               prop="LoaiHB"
@@ -211,11 +211,11 @@ export default function Filters(props) {
                 `${year - 6}-${year - 5}`
               ]}
             />
-          </>
+          </div>
         );
       case 3:
         return (
-          <>
+          <div className={classes.container}>
             <Filter
               clickFilter={onFilter}
               prop="DoiTuong"
@@ -289,11 +289,11 @@ export default function Filters(props) {
                 `${year - 6}-${year - 5}`
               ]}
             />
-          </>
+          </div>
         );
       default:
         return (
-          <>
+          <div className={classes.container}>
             <Filter
               clickFilter={onFilter}
               prop="DonViTaiTro"
@@ -367,7 +367,7 @@ export default function Filters(props) {
                 `${year - 6}-${year - 5}`
               ]}
             />
-          </>
+          </div>
         );
     }
   } else {

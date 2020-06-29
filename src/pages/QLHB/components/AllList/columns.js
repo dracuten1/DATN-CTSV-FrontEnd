@@ -74,21 +74,21 @@ const HBKK = [
     title: 'Số TK',
     field: 'STK',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
     title: 'Ngân hàng',
     field: 'NganHang',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
     title: 'Chi nhánh',
     field: 'ChiNhanh',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
@@ -157,7 +157,7 @@ const HBTT = [
     title: 'Tên học bổng',
     field: 'TenHocBong',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
@@ -171,7 +171,7 @@ const HBTT = [
     title: 'Loại HB',
     field: 'LoaiHB',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
@@ -254,28 +254,28 @@ const COUNTING = [
     title: 'Học bổng',
     field: 'type',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '200px'
     }
   },
   {
     title: 'Loại HB',
     field: 'LoaiHB',
     cellStyle: {
-      minWidth: '200px'
+      minWidth: '300px'
     }
   },
   {
     title: 'Đối tượng',
     field: 'DoiTuong',
     cellStyle: {
-      minWidth: '200px'
+      minWidth: '300px'
     }
   },
   {
     title: 'Đơn vị tài trợ',
     field: 'DonViTaiTro',
     cellStyle: {
-      minWidth: '200px'
+      minWidth: '300px'
     }
   },
   {
