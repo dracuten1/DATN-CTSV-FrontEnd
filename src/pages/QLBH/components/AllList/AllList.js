@@ -423,17 +423,17 @@ const AllList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        <CardActions className={classes.actions}>
-          <Grid container spacing={4}>
-            {listLink.length > 0 ? (
+        {listLink.length > 0 ? (
+          <CardActions className={classes.actions}>
+            <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <ListLinkDocx data={listLink} />
               </Grid>
-            ) : (
-              ''
-            )}
-          </Grid>
-        </CardActions>
+            </Grid>
+          </CardActions>
+        ) : (
+          ''
+        )}
         <ImportDialogNewHost
           open={importOpen}
           handleClose={() => setImportOpen(false)}
