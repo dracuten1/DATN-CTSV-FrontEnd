@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -35,7 +35,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { HIDE_PROGRESS } from 'reduxs/reducers/LinearProgress/ActionTypes';
 
-const drawerWidth = 240;
+let drawerWidth = 250;
+let drawerWidthHide = 90;
 const appStage = process.env.REACT_APP_STAGE.trim();
 
 const isProduction =
@@ -48,7 +49,15 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
+      transition: 'all ease-in-out 0.3s',
+    }
+  },
+  drawerHide: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidthHide,
+      flexShrink: 0,
+      transition: 'all ease-in-out 0.3s',
     }
   },
   appBar: {
@@ -65,7 +74,13 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    transition: 'all ease-in-out 0.3s',
+
+  },
+  drawerPaperHide: {
+    width: drawerWidthHide,
+    transition: 'all ease-in-out 0.3s',
   },
   content: {
     flexGrow: 1,
@@ -135,7 +150,7 @@ function ResponsiveDrawer(props) {
       <List>
         <Divider />
         <ListItem onClick={handleMyAccountClick}>
-          <ListItemText primary="MY ACCOUNT" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="TÀI KHOẢN" />
           {myAccountCollapse ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={myAccountCollapse} timeout="auto" unmountOnExit>
@@ -146,20 +161,20 @@ function ResponsiveDrawer(props) {
                   <ListItemIcon>
                     <SupervisorAccountIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Quản lý người dùng" />
+                  <ListItemText style={{ whiteSpace: "nowrap" }} primary="Quản lý người dùng" />
                 </ListItem>
                 <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
                   <ListItemIcon>
                     <BorderColorIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Quản lý người ký" />
+                  <ListItemText style={{ whiteSpace: "nowrap" }} primary="Quản lý người ký" />
                 </ListItem>
               </div> : <div />}
             <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
-              <ListItemText primary="Đổi mật khẩu" />
+              <ListItemText style={{ whiteSpace: "nowrap" }} primary="Đổi mật khẩu" />
             </ListItem>
             <ListItem button className={classes.nested} onClick={() => {
               dispatch(AuthActions.logout());
@@ -168,19 +183,19 @@ function ResponsiveDrawer(props) {
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Đăng xuất" />
+              <ListItemText style={{ whiteSpace: "nowrap" }} primary="Đăng xuất" />
             </ListItem>
           </List>
         </Collapse>
 
         <Divider />
-        <ListSubheader>MAIN</ListSubheader>
+        <ListSubheader style={{ whiteSpace: "nowrap" }}>CHỨC NĂNG</ListSubheader>
         {!isProduction &&
           <ListItem button className={classes.nested} onClick={copyToken}>
             <ListItemIcon>
               <SupervisorAccountIcon />
             </ListItemIcon>
-            <ListItemText primary="Console log token" />
+            <ListItemText style={{ whiteSpace: "nowrap" }} primary="Console log token" />
           </ListItem>
         }
         <ListItem
@@ -195,7 +210,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
-          <ListItemText primary="Xác nhận sinh viên" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Xác nhận sinh viên" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -209,7 +224,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>
-          <ListItemText primary="Điểm rèn luyện" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Điểm rèn luyện" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -223,7 +238,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Status />
           </ListItemIcon>
-          <ListItemText primary="Tình trạng sinh viên" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Tình trạng sinh viên" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -237,7 +252,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Home />
           </ListItemIcon>
-          <ListItemText primary="Quản lý lưu trú" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Quản lý lưu trú" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -251,7 +266,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Activity />
           </ListItemIcon>
-          <ListItemText primary="Sinh hoạt công dân" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Sinh hoạt công dân" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -265,7 +280,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <BlockIcon />
           </ListItemIcon>
-          <ListItemText primary="Khen thưởng - Kỷ luật" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Khen thưởng - Kỷ luật" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -279,7 +294,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Scholarship />
           </ListItemIcon>
-          <ListItemText primary="Quản lý học bổng" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Quản lý học bổng" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -293,7 +308,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Hospital />
           </ListItemIcon>
-          <ListItemText primary="Quản lý bảo hiểm" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Quản lý bảo hiểm" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -307,7 +322,7 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Policy />
           </ListItemIcon>
-          <ListItemText primary="Chế độ chính sách" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Chế độ chính sách" />
         </ListItem>
         <ListItem
           className={classes.nested}
@@ -321,46 +336,217 @@ function ResponsiveDrawer(props) {
           <ListItemIcon>
             <Description />
           </ListItemIcon>
-          <ListItemText primary="Hồ sơ sinh viên" />
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Hồ sơ sinh viên" />
         </ListItem>
       </List>
     </div>
   );
 
+  const drawerIcon = (
+    <div>
+      <div className={classes.userinfo}>
+        <Avatar className={classes.avatar} />
+      </div>
+      <List>
+        <Divider />
+        <ListItem onClick={handleMyAccountClick}>
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="TK" />
+          {myAccountCollapse ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={myAccountCollapse} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {props.group === 'Admins' ?
+              <div>
+                <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
+                  <ListItemIcon>
+                    <SupervisorAccountIcon />
+                  </ListItemIcon>
+                </ListItem>
+                <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
+                  <ListItemIcon>
+                    <BorderColorIcon />
+                  </ListItemIcon>
+                </ListItem>
+              </div> : <div />}
+            <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
+              <ListItemIcon>
+                <LockIcon />
+              </ListItemIcon>
+            </ListItem>
+            <ListItem button className={classes.nested} onClick={() => {
+              dispatch(AuthActions.logout());
+              history.push('/');
+            }}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+            </ListItem>
+          </List>
+        </Collapse>
+
+        <Divider />
+        {!isProduction &&
+          <ListItem button className={classes.nested} onClick={copyToken}>
+            <ListItemIcon>
+              <SupervisorAccountIcon />
+            </ListItemIcon>
+          </ListItem>
+        }
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/xnsv');
+          }}
+        >
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/drl');
+          }}
+        >
+          <ListItemIcon>
+            <MailIcon />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/ttsv');
+          }}
+        >
+          <ListItemIcon>
+            <Status />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qllt');
+          }}
+        >
+          <ListItemIcon>
+            <Home />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/shcd');
+          }}
+        >
+          <ListItemIcon>
+            <Activity />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/ktkl');
+          }}
+        >
+          <ListItemIcon>
+            <BlockIcon />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qlhb');
+          }}
+        >
+          <ListItemIcon>
+            <Scholarship />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/qlbh');
+          }}
+        >
+          <ListItemIcon>
+            <Hospital />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/cdcs');
+          }}
+        >
+          <ListItemIcon>
+            <Policy />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/hssv');
+          }}
+        >
+          <ListItemIcon>
+            <Description />
+          </ListItemIcon>
+        </ListItem>
+      </List>
+    </div>
+  );
+
+  const [checked, setChecked] = useState(false)
+
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar} />
-      <nav className={classes.drawer} aria-label="mailbox folders">
+      <nav className={checked ? classes.drawerHide : classes.drawerPaper} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper
-            }}
-            ModalProps={{
-              keepMounted: true // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper
-            }}
-            variant="permanent"
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
+        <Drawer
+          classes={{
+            paper: checked ? classes.drawerPaperHide : classes.drawerPaper
+          }}
+          variant="permanent"
+          open
+        >
+          <input id="sidebar" type="checkbox" value={checked} onClick={() => {
+            setChecked(!checked); drawerWidth = checked ? 250 : 90;
+          }} />
+          <label htmlFor="sidebar">Check test</label>
+          {checked ? drawerIcon : drawer}
+        </Drawer>
       </nav>
       <main className={classes.content}>
         <Routers />
