@@ -40,7 +40,7 @@ const changeCountingColumns = () => async dispatch => {
 const getListWithFilter = (filter, type) => async dispatch => {
   const response = await QLHBHandler.GetListWithFilter(filter, type);
   logger.info('QLHBAction:: getListAll: reponse: ', response);
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
     dispatch({ type: HIDE_PROGRESS });
@@ -93,9 +93,9 @@ const countingWithMSSV = (filter) => async dispatch => {
   const response = await QLHBHandler.CountingWithMSSV(filter);
 
   logger.info('QLHBAction:: CountingWithMSSV: reponse: ', response);
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null || response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.GET_NULL_DATA});
+    dispatch({ type: Types.TK});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -117,9 +117,9 @@ const countingWithMSSV = (filter) => async dispatch => {
 const countingWithLoaiHB = (filter) => async dispatch => {
   const response = await QLHBHandler.CountingWithLoaiHB(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.GET_NULL_DATA});
+    dispatch({ type: Types.TK});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -142,9 +142,9 @@ const countingWithLoaiHB = (filter) => async dispatch => {
 const countingWithDoiTuong = (filter) => async dispatch => {
   const response = await QLHBHandler.CountingWithDoiTuong(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.GET_NULL_DATA});
+    dispatch({ type: Types.TK});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -167,9 +167,9 @@ const countingWithDoiTuong = (filter) => async dispatch => {
 const countingWithDVTT = (filter) => async dispatch => {
   const response = await QLHBHandler.CountingWithDVTT(filter);
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.GET_NULL_DATA});
+    dispatch({ type: Types.TK});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -244,6 +244,7 @@ const getDataFilter = () => async dispatch => {
 
   dispatch({ type: Types.GET_DATA_FILTER, payload });
   history.push('/qlhb');
+  return payload;
 };
 
 export default {

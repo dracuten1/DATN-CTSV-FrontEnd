@@ -86,7 +86,7 @@ let isCase = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const QLHBState = useSelector(state => state.QLHBState);
-  const { dataList, isHBKK, isCounting, listLink } = QLHBState;
+  const { dataList, isHBKK, isCounting, listLink, listDoiTuong, listDonViTaiTro } = QLHBState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -112,7 +112,7 @@ const AllList = props => {
     toHK: '2',
     toNH: `${year - 1}-${year}`,
     mssv: '',
-    LoaiHB: '',
+    LoaiHB: 'HBKK',
     DoiTuong: '',
     DonViTaiTro: ''
   });
@@ -170,7 +170,14 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter());
+    dispatch(Actions.getDataFilter()).then(payload => {
+      const { DoiTuong, DonViTaiTro } = payload;
+      setfilter({
+        ...filter,
+        DoiTuong: DoiTuong.length > 0 ? DoiTuong[0] : '',
+        DonViTaiTro: DonViTaiTro.length > 0 ? DonViTaiTro[0] : ''
+      })
+    });
     dispatch(Actions.getListWithFilter(filter, type)).then(data =>
       handleUpdateStateFilter(data)
     );

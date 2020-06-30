@@ -129,8 +129,10 @@ export const CountingWithLoaiHB = async filter => {
   } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
-
-  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${LoaiHB}`;
+  let cvLoaiHB = '';
+  if (LoaiHB !== '')
+    cvLoaiHB = LoaiHB === 'HBKK' ? 'KK' : 'TT';
+  const url = `hb/thongke?fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&LoaiHB=${cvLoaiHB}`;
   logger.info('QLHBHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendGetData(url);
