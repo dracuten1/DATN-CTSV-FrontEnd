@@ -17,7 +17,7 @@ const HBKK = [
     title: 'Họ tên',
     field: 'HoVaTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     }
     , editable: false 
   },
@@ -149,7 +149,7 @@ const HBTT = [
     title: 'Họ tên',
     field: 'HoVaTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     }
     , editable: false 
   },
@@ -246,7 +246,7 @@ const COUNTING = [
     title: 'Họ tên',
     field: 'HoVaTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     }
     , editable: false 
   },

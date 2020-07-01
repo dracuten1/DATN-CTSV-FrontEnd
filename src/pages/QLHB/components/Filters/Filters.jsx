@@ -53,20 +53,21 @@ export default function Filters(props) {
         return (
           <>
             <div className={classes.container}>
-              <div />
-              <TextField
-                id="outlined-basic"
-                label="MSSV"
-                variant="outlined"
-                defaultValue={mssv}
-                onChange={handleChange}
-                style={{ marginTop: '8px' }}
-                inputProps={{
-                  style: {
-                    marginBottom: '-6px'
-                  }
-                }}
-              />
+              <>
+                <TextField
+                  id="outlined-basic"
+                  label="MSSV"
+                  variant="outlined"
+                  defaultValue={mssv}
+                  onChange={handleChange}
+                  style={{ marginTop: '8px' }}
+                  inputProps={{
+                    style: {
+                      marginBottom: '-6px'
+                    }
+                  }}
+                />
+              </>
               <div
                 style={{
                   display: 'flex',
@@ -138,9 +139,8 @@ export default function Filters(props) {
         );
       case 2:
         return (
-          <>
             <div className={classes.container}>
-              <>
+              <div>
                 <Filter
                   clickFilter={onFilter}
                   prop="LoaiHB"
@@ -148,7 +148,7 @@ export default function Filters(props) {
                   label="Loại học bổng"
                   data={['HBKK', 'HBTT']}
                 />
-              </>
+              </div>
               <div
                 style={{
                   display: 'flex',
@@ -216,19 +216,21 @@ export default function Filters(props) {
                 ]}
               />
             </div>
-          </>
         );
       case 3:
         return (
           <>
             <div className={classes.container}>
+              <>
                 <Filter
                   clickFilter={onFilter}
                   prop="DoiTuong"
                   defaultValue={DoiTuong}
                   label="Đối tượng"
                   data={arrDoiTuong}
+                  multiple
                 />
+              </>
               <div
                 style={{
                   display: 'flex',
@@ -300,17 +302,18 @@ export default function Filters(props) {
         );
       default:
         return (
-          <>
+          // <>
             <div className={classes.container}>
-              <>
+              <div>
                 <Filter
                   clickFilter={onFilter}
                   prop="DonViTaiTro"
                   defaultValue={DonViTaiTro}
                   label="Đơn vị tài trợ"
                   data={arrDVTT}
+                  multiple
                 />
-              </>
+              </div>
               <div
                 style={{
                   display: 'flex',
@@ -378,7 +381,7 @@ export default function Filters(props) {
                 ]}
               />
             </div>
-          </>
+          // </>
         );
     }
   } else {

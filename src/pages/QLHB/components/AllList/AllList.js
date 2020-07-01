@@ -113,8 +113,8 @@ const AllList = props => {
     toNH: `${year - 1}-${year}`,
     mssv: '',
     LoaiHB: 'HBKK',
-    DoiTuong: '',
-    DonViTaiTro: ''
+    DoiTuong: [],
+    DonViTaiTro: []
   });
 
   const [state, setState] = useState({
@@ -174,8 +174,8 @@ const AllList = props => {
       const { DoiTuong, DonViTaiTro } = payload;
       setfilter({
         ...filter,
-        DoiTuong: DoiTuong.length > 0 ? DoiTuong[0] : '',
-        DonViTaiTro: DonViTaiTro.length > 0 ? DonViTaiTro[0] : ''
+        DoiTuong: DoiTuong.length > 0 ? [DoiTuong[0]] : [],
+        DonViTaiTro: DonViTaiTro.length > 0 ? [DonViTaiTro[0]] : []
       })
     });
     dispatch(Actions.getListWithFilter(filter, type)).then(data =>
@@ -321,6 +321,7 @@ const AllList = props => {
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
                 let response;
+                console.log("isCaseeee:", isCase);
                 if (isCounting) {
                   switch (isCase) {
                     case 1:
@@ -343,7 +344,6 @@ const AllList = props => {
                         filter
                       );
                   }
-                  response = await QLHBHandler.ExportCountingWithMSSV(filter);
                 } else {
                   response = await QLHBHandler.ExportWithFilter(filter, type);
                 }
