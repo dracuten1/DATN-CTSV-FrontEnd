@@ -9,8 +9,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
-    // minWidth: 'fit-content'
-    minWidth: 120
+    minWidth: 120,
+    maxWidth: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing(2)

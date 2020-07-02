@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-let arrDoiTuong = ['None'];
+let arrDoiTuong = [];
 export default function Filters(props) {
   const classes = useStyles();
   const { onFilter, isCase, filter } = props;
@@ -23,8 +23,8 @@ export default function Filters(props) {
 
   const CDCSState = useSelector(state => state.CDCSState);
   const { listDoiTuong } = CDCSState;
-  const { fromHK, fromNH, toHK, toNH, mssv, typeCDCS, doituong } = filter;
-  if (arrDoiTuong.length === 1) arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
+  const { fromHK, fromNH, toHK, toNH, mssv, typeCDCS, DoiTuong } = filter;
+  if (arrDoiTuong.length === 0) arrDoiTuong = arrDoiTuong.concat(listDoiTuong);
 
   const handleChange = event => {
     onFilter('mssv', event.target.value);
@@ -49,10 +49,11 @@ export default function Filters(props) {
           />
           <FilterCDCS
             clickFilter={onFilter}
-            prop="doituong"
+            prop="DoiTuong"
             label="Đối tượng"
-            defaultValue={doituong}
+            defaultValue={DoiTuong}
             data={arrDoiTuong}
+            multiple
           />
           <div
             style={{
@@ -133,10 +134,11 @@ export default function Filters(props) {
           />
           <FilterCDCS
             clickFilter={onFilter}
-            prop="doituong"
-            defaultValue={doituong}
+            prop="DoiTuong"
+            defaultValue={DoiTuong}
             label="Đối tượng"
             data={arrDoiTuong}
+            multiple
           />
           <div
             style={{

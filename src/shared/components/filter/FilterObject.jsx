@@ -9,8 +9,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
-    // minWidth: 'fit-content'
-    minWidth: 120
+    minWidth: 120,
+    maxWidth: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
@@ -21,16 +21,27 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export default function SimpleSelectObject(props) {
   const classes = useStyles();
-  const [selectItem, setSelectItem] = React.useState(null);
+  const { label, prop, clickFilter, helperText, defaultValue, multiple } = props;
+  const [selectItem, setSelectItem] = React.useState(Array.isArray(defaultValue) ? defaultValue : []);
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const { label, prop, clickFilter, helperText, defaultValue } = props;
   const handleChange = event => {
     setSelectItem(event.target.value);
     clickFilter(prop, event.target.value);
@@ -72,8 +83,10 @@ export default function SimpleSelectObject(props) {
           value={selectItem}
           onChange={handleChange}
           defaultValue={defaultValue}
+          MenuProps={MenuProps}
           labelWidth={labelWidth}
           inputProps={{ className: classes.select }}
+          multiple
         >
           {drawData()}
         </Select>

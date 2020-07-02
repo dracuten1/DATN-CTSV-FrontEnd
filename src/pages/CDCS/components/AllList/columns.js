@@ -7,7 +7,7 @@ const DTTS = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },
@@ -131,7 +131,7 @@ const HTDX = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },
@@ -194,7 +194,7 @@ const MGHP = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },
@@ -272,7 +272,7 @@ const SVKT = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },
@@ -382,7 +382,7 @@ const TCXH = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },
@@ -492,7 +492,7 @@ const TKMSSV = [
     title: 'Họ tên',
     field: 'HoTen',
     cellStyle: {
-      minWidth: '150px'
+      minWidth: '250px'
     },
     filtering: false
   },

@@ -42,7 +42,7 @@ const countingWithMSSV = filter => async dispatch => {
   const response = await CDCSHanlder.CountingWithMSSV(filter);
   logger.info('CDCSAction:: getListAll: reponse: ', response);
 
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     dispatch({ type: Types.GET_NULL_DATA});
     dispatch({ type: HIDE_PROGRESS });
@@ -76,9 +76,8 @@ const countingWithFilter = filter => async dispatch => {
   logger.info('CDCSAction:: getListAll: reponse: ', response);
   
   const { typeCDCS }  = filter;
-  const { body }      = response;
 
-  if (response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
     switch (typeCDCS) {
       case 'DTTS':
@@ -102,6 +101,8 @@ const countingWithFilter = filter => async dispatch => {
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }
+
+  const { body }      = response;
   
   const data = Object.keys(body).map(key => {
     body[key].nh              = parseNHToNumber(body[key]["DuLieu"].NH);
@@ -162,6 +163,7 @@ const getDataFilter = () => async dispatch => {
 
   dispatch({ type: Types.GET_DATA_FILTER, payload });
   history.push('/cdcs');
+  return payload;
 };
 
 

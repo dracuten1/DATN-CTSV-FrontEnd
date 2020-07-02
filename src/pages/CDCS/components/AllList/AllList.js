@@ -123,7 +123,7 @@ const AllList = props => {
     toNH: `${year - 1}-${year}`,
     mssv: '',
     typeCDCS: 'DTTS',
-    doituong: ''
+    DoiTuong: []
   });
 
   const [state, setState] = useState({
@@ -131,15 +131,6 @@ const AllList = props => {
     data: dataList,
     columns: columns
   });
-
-  if (updateBegin === 0) {
-    dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter());
-    dispatch(Actions.countingWithFilter(filter)).then(data =>
-      handleUpdateState(data)
-    );
-    updateBegin += 1;
-  }
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
@@ -202,6 +193,21 @@ const AllList = props => {
     dispatch(ProgressActions.showProgres());
     dispatch(Actions.changeCountingColumnsCounting());
   };
+
+  if (updateBegin === 0) {
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.getDataFilter()).then(payload => {
+      const { DoiTuongCDCS } = payload;
+      setfilter({
+        ...filter,
+        DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0]] : [],
+      });
+    });;
+    dispatch(Actions.countingWithFilter(filter)).then(data =>
+      handleUpdateState(data)
+    );
+    updateBegin += 1;
+  }
 
   const successSnackBar = {
     open: true,

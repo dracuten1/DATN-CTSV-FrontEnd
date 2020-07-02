@@ -86,7 +86,14 @@ let isCase = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const QLHBState = useSelector(state => state.QLHBState);
-  const { dataList, isHBKK, isCounting, listLink, listDoiTuong, listDonViTaiTro } = QLHBState;
+  const {
+    dataList,
+    isHBKK,
+    isCounting,
+    listLink,
+    listDoiTuong,
+    listDonViTaiTro
+  } = QLHBState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -176,7 +183,7 @@ const AllList = props => {
         ...filter,
         DoiTuong: DoiTuong.length > 0 ? [DoiTuong[0]] : [],
         DonViTaiTro: DonViTaiTro.length > 0 ? [DonViTaiTro[0]] : []
-      })
+      });
     });
     dispatch(Actions.getListWithFilter(filter, type)).then(data =>
       handleUpdateStateFilter(data)
@@ -305,7 +312,7 @@ const AllList = props => {
           </div>
           <div>
             {isCounting ? (
-              <div/>
+              <div />
             ) : (
               <Button
                 onClick={() => setImportOpen(true)}
@@ -321,7 +328,7 @@ const AllList = props => {
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
                 let response;
-                console.log("isCaseeee:", isCase);
+                console.log('isCaseeee:', isCase);
                 if (isCounting) {
                   switch (isCase) {
                     case 1:
@@ -460,79 +467,77 @@ const AllList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        <CardActions className={classes.actions}>
-          <Grid container spacing={4}>
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleCloseMenu}
-              >
-                <MenuItem
-                  onClick={() => {
-                    isCase = 1;
-                    type = 'TK';
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                      handleUpdateState(data)
-                    );
-                    handleCloseMenu();
-                  }}
-                >
-                  Theo MSSV
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    isCase = 2;
-                    type = 'TK';
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                      handleUpdateState(data)
-                    );
-                    handleCloseMenu();
-                  }}
-                >
-                  Theo Loại Học Bổng
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    isCase = 3;
-                    type = 'TK';
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
-                      handleUpdateState(data)
-                    );
-                    handleCloseMenu();
-                  }}
-                >
-                  Theo Đối Tượng
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    isCase = 4;
-                    type = 'TK';
-                    dispatch(ProgressActions.showProgres());
-                    dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                      handleUpdateState(data)
-                    );
-                    handleCloseMenu();
-                  }}
-                >
-                  Theo Đơn Vị Tài Trợ
-                </MenuItem>
-              </Menu>
-            </Grid>
-            {listLink.length > 0 ? (
+        {listLink.length > 0 ? (
+          <CardActions className={classes.actions}>
+            <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <ListLinkDocx data={listLink} />
               </Grid>
-            ) : (
-              ''
-            )}
-          </Grid>
-        </CardActions>
+            </Grid>
+          </CardActions>
+        ) : (
+          ''
+        )}
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+        >
+          <MenuItem
+            onClick={() => {
+              isCase = 1;
+              type = 'TK';
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                handleUpdateState(data)
+              );
+              handleCloseMenu();
+            }}
+          >
+            Theo MSSV
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              isCase = 2;
+              type = 'TK';
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                handleUpdateState(data)
+              );
+              handleCloseMenu();
+            }}
+          >
+            Theo Loại Học Bổng
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              isCase = 3;
+              type = 'TK';
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
+                handleUpdateState(data)
+              );
+              handleCloseMenu();
+            }}
+          >
+            Theo Đối Tượng
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              isCase = 4;
+              type = 'TK';
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                handleUpdateState(data)
+              );
+              handleCloseMenu();
+            }}
+          >
+            Theo Đơn Vị Tài Trợ
+          </MenuItem>
+        </Menu>
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

@@ -31,40 +31,69 @@ const formatNumber = num => {
 };
 
 export const CountingWithFilter = async filter => {
-  const { fromHK, fromNH, toHK, toNH, typeCDCS, doituong } = filter;
+  const { fromHK, fromNH, toHK, toNH, typeCDCS, DoiTuong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
+  let cvDoiTuong  = DoiTuong;
+  if (!Array.isArray(DoiTuong)){
+    cvDoiTuong    = [DoiTuong];
+  }
 
-  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
+  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
-  const response = await HttpClient2.sendGetData(url);
+  const response = await HttpClient2.sendPatchWithBody(url, {DoiTuong: cvDoiTuong});
 
   return response;
 };
 
 export const ExportCountingWithFilter = async filter => {
-  const { fromHK, fromNH, toHK, toNH, typeCDCS, doituong } = filter;
+  const { fromHK, fromNH, toHK, toNH, typeCDCS, DoiTuong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
+  let cvDoiTuong  = DoiTuong;
+  if (!Array.isArray(DoiTuong)){
+    cvDoiTuong    = [DoiTuong];
+  }
 
-  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
+  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
-  const response = await HttpClient2.sendPutGetStatus(url);
+  const response = await HttpClient2.sendPutWithBodyGetStatus(url, {DoiTuong: cvDoiTuong});;
 
   return response;
 };
 
 export const CountingWithMSSV = async filter => {
-  const { fromHK, fromNH, toHK, toNH, mssv, doituong } = filter;
+  const { fromHK, fromNH, toHK, toNH, mssv, DoiTuong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
+  let cvDoiTuong  = DoiTuong;
+  if (!Array.isArray(DoiTuong)){
+    cvDoiTuong    = [DoiTuong];
+  }
 
-  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
+  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
-  const response = await HttpClient2.sendGetData(url);
+  const response = await HttpClient2.sendPatchWithBody(url, {DoiTuong: cvDoiTuong});
+
+  return response;
+};
+
+export const ExportCountingWithMSSV = async filter => {
+  const { fromHK, fromNH, toHK, toNH, mssv, DoiTuong } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+  const cvToNH = convertNamHoc(toNH);
+  let cvDoiTuong  = DoiTuong;
+  if (!Array.isArray(DoiTuong)){
+    cvDoiTuong    = [DoiTuong];
+  }
+
+  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}`;
+  logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutWithBodyGetStatus(url, {DoiTuong: cvDoiTuong});
 
   return response;
 };
@@ -73,19 +102,6 @@ export const GetDataFilter = async () => {
   const url = `hb/common`;
 
   const response = await HttpClient2.sendGetData(url);
-
-  return response;
-};
-
-export const ExportCountingWithMSSV = async filter => {
-  const { fromHK, fromNH, toHK, toNH, mssv, doituong } = filter;
-  const cvFromNH = convertNamHoc(fromNH);
-  const cvToNH = convertNamHoc(toNH);
-
-  const url = `chinhsach/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&doituong=${doituong}`;
-  logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
-
-  const response = await HttpClient2.sendPutGetStatus(url);
 
   return response;
 };
