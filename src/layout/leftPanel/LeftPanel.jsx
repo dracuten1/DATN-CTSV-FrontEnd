@@ -74,17 +74,25 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: drawerWidth,
+    width: "250px !important",
     transition: 'all ease-in-out 0.3s',
-
+    flexShrink: 0,
   },
   drawerPaperHide: {
-    width: drawerWidthHide,
+    width: 90,
     transition: 'all ease-in-out 0.3s',
+    flexShrink: 0,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
+    transition: 'all ease-in-out 0.3s',
+  },
+  showSideBarContent: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    // paddingLeft: 250,
+    transition: 'all ease-in-out 0.3s',
   },
   icon: {
     marginRight: 10
@@ -103,7 +111,16 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 25,
     width: theme.spacing(7),
     height: theme.spacing(7)
-  }
+  },
+  toggleSideBar: {
+    fontSize: 25,
+    display: 'block',
+    textAlign: 'right',
+    paddingRight: 10,
+    "&:hover": {
+      cursor: 'pointer',
+    }
+  },
 }));
 
 function ResponsiveDrawer(props) {
@@ -532,7 +549,7 @@ function ResponsiveDrawer(props) {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar} />
-      <nav className={checked ? classes.drawerHide : classes.drawerPaper} aria-label="mailbox folders">
+      <nav className={!checked ? classes.drawerPaper : classes.drawerHide} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           classes={{
@@ -541,14 +558,16 @@ function ResponsiveDrawer(props) {
           variant="permanent"
           open
         >
-          <input id="sidebar" type="checkbox" value={checked} onClick={() => {
-            setChecked(!checked); drawerWidth = checked ? 250 : 90;
-          }} />
-          <label htmlFor="sidebar">Check test</label>
-          {checked ? drawerIcon : drawer}
+          <div >
+            <input id="sidebar" type="checkbox" hidden value={checked} onClick={() => {
+              setChecked(!checked);
+            }} />
+            <label htmlFor="sidebar" className={classes.toggleSideBar}>{checked ? `››` : `‹‹`}</label>
+            {checked ? drawerIcon : drawer}
+          </div>
         </Drawer>
       </nav>
-      <main className={classes.content}>
+      <main className={checked ? classes.content : classes.showSideBarContent}>
         <Routers />
       </main>
     </div>
