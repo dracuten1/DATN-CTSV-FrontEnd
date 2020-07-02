@@ -292,6 +292,7 @@ const AllList = props => {
                         handleUpdateState(data)
                       );
                 }
+                dispatch(ProgressActions.hideProgress());
               }}
               label="Lọc dữ liệu"
             />
