@@ -50,13 +50,15 @@ class Routers extends React.PureComponent {
               <DashboardQLLT />
             </Route>
             <Route exact path="/shcd">
-              <DashboardSHCD />
+              <Dashboard />
+              {/* <DashboardSHCD /> */}
             </Route>
             <Route exact path="/ttsv">
               <DashboardTTSV />
             </Route>
             <Route exact path="/ktkl">
-              <DashboardKTKL />
+              <Dashboard />
+              {/* <DashboardKTKL /> */}
             </Route>
             <Route exact path="/cdcs">
               <DashboardCDCS />
