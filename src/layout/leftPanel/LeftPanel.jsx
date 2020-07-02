@@ -98,7 +98,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: 10
   },
   userinfo: {
-    paddingTop: 30,
+    paddingTop: 15,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -161,7 +161,7 @@ function ResponsiveDrawer(props) {
           {props.username.toUpperCase()}
         </Typography>
         <Typography variant="h5" gutterBottom>
-          Admin
+          {props.group === 'Admins' ? 'Quản trị viên' : 'Người dùng'}
         </Typography>
       </div>
       <List>
