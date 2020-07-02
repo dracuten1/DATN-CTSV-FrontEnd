@@ -32,7 +32,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { ListSubheader, Collapse, Typography, TextField } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import { HIDE_PROGRESS } from 'reduxs/reducers/LinearProgress/ActionTypes';
 
 let drawerWidth = 250;
@@ -374,30 +374,38 @@ function ResponsiveDrawer(props) {
           <List component="div" disablePadding>
             {props.group === 'Admins' ?
               <div>
-                <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
-                  <ListItemIcon>
-                    <SupervisorAccountIcon />
-                  </ListItemIcon>
-                </ListItem>
-                <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
-                  <ListItemIcon>
-                    <BorderColorIcon />
-                  </ListItemIcon>
-                </ListItem>
+                <Tooltip title="Quản lý người dùng" placement="right">
+                  <ListItem button className={classes.nested} onClick={navigatePage('/admin')}>
+                    <ListItemIcon>
+                      <SupervisorAccountIcon />
+                    </ListItemIcon>
+                  </ListItem>
+                </Tooltip>
+                <Tooltip title="Quản lý người ký" placement="right">
+                  <ListItem button className={classes.nested} onClick={navigatePage('/signers')}>
+                    <ListItemIcon>
+                      <BorderColorIcon />
+                    </ListItemIcon>
+                  </ListItem>
+                </Tooltip>
               </div> : <div />}
-            <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
-              <ListItemIcon>
-                <LockIcon />
-              </ListItemIcon>
-            </ListItem>
-            <ListItem button className={classes.nested} onClick={() => {
-              dispatch(AuthActions.logout());
-              history.push('/');
-            }}>
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-            </ListItem>
+            <Tooltip title="Đổi mật khẩu" placement="right">
+              <ListItem button className={classes.nested} onClick={navigatePage('/changepassword')}>
+                <ListItemIcon>
+                  <LockIcon />
+                </ListItemIcon>
+              </ListItem>
+            </Tooltip>
+            <Tooltip title="Đăng xuất" placement="right">
+              <ListItem button className={classes.nested} onClick={() => {
+                dispatch(AuthActions.logout());
+                history.push('/');
+              }}>
+                <ListItemIcon >
+                  <ExitToAppIcon />
+                </ListItemIcon>
+              </ListItem>
+            </Tooltip>
           </List>
         </Collapse>
 
@@ -409,141 +417,161 @@ function ResponsiveDrawer(props) {
             </ListItemIcon>
           </ListItem>
         }
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/xnsv');
-          }}
-        >
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/drl');
-          }}
-        >
-          <ListItemIcon>
-            <MailIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/ttsv');
-          }}
-        >
-          <ListItemIcon>
-            <Status />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/qllt');
-          }}
-        >
-          <ListItemIcon>
-            <Home />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/shcd');
-          }}
-        >
-          <ListItemIcon>
-            <Activity />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/ktkl');
-          }}
-        >
-          <ListItemIcon>
-            <BlockIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/qlhb');
-          }}
-        >
-          <ListItemIcon>
-            <Scholarship />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/qlbh');
-          }}
-        >
-          <ListItemIcon>
-            <Hospital />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/cdcs');
-          }}
-        >
-          <ListItemIcon>
-            <Policy />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem
-          className={classes.nested}
-          button
-          component="a"
-          onClick={() => {
-            dispatch({ type: HIDE_PROGRESS });
-            history.push('/hssv');
-          }}
-        >
-          <ListItemIcon>
-            <Description />
-          </ListItemIcon>
-        </ListItem>
+        <Tooltip title="Xác nhận sinh viên" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/xnsv');
+            }}
+          >
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Điểm rèn luyện" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/drl');
+            }}
+          >
+            <ListItemIcon>
+              <MailIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Tình trạng sinh viên" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/ttsv');
+            }}
+          >
+            <ListItemIcon>
+              <Status />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Quản lý lưu trú" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/qllt');
+            }}
+          >
+            <ListItemIcon>
+              <Home />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Sinh hoạt công dân" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/shcd');
+            }}
+          >
+            <ListItemIcon>
+              <Activity />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Khen thưởng - Kỷ luật" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/ktkl');
+            }}
+          >
+            <ListItemIcon>
+              <BlockIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Quản lý học bổng" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/qlhb');
+            }}
+          >
+            <ListItemIcon>
+              <Scholarship />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Quản lý bảo hiểm" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/qlbh');
+            }}
+          >
+            <ListItemIcon>
+              <Hospital />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Chế độ chính sách" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/cdcs');
+            }}
+          >
+            <ListItemIcon>
+              <Policy />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Hồ sơ sinh viên" placement="right">
+          <ListItem
+            className={classes.nested}
+            button
+            component="a"
+            onClick={() => {
+              dispatch({ type: HIDE_PROGRESS });
+              history.push('/hssv');
+            }}
+          >
+            <ListItemIcon>
+              <Description />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
       </List>
     </div>
   );
 
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(true)
 
   return (
     <div className={classes.root}>
