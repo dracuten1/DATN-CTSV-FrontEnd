@@ -2,7 +2,7 @@ import * as actionTypes from './actionTypes';
 import { updateObject } from './utility';
 
 const initialState = {
-    cognitoUser:null,
+    cognitoUser: null,
     userName: null,
     error: null,
     loading: false,
@@ -24,13 +24,14 @@ const authStart = (state) => {
 };
 
 const resetPassword = (state, action) => {
-    return updateObject(state, { error: null, loading: false, resetPassword: true, forgotPassword:false, userName: action.userName });
+    return updateObject(state, { error: null, loading: false, resetPassword: true, forgotPassword: false, userName: action.userName });
 };
 
 const authSuccess = (state, action) => {
     return updateObject(state, {
         error: null,
         loading: false,
+        resetPassword: false,
         cognitoUser: action.cognitoUser,
     });
 };
@@ -43,11 +44,11 @@ const authFail = (state, action) => {
 };
 
 const authLogout = (state) => {
-    return updateObject(state, { token: null, userId: null, cognitoUser:null });
+    return updateObject(state, { token: null, userId: null, cognitoUser: null });
 };
 
 const changPassSuccess = (state) => {
-    return updateObject(state, { error: false, loading: false, token: null, userId: null, cognitoUser:null });
+    return updateObject(state, { error: false, loading: false, token: null, userId: null, cognitoUser: null });
 };
 
 const setAuthRedirectPath = (state, action) => {

@@ -79,6 +79,7 @@ class Auth extends Component {
       const { onSetNewPassword, onAuth } = this.props;
       onSetNewPassword(newpassword);
       onAuth(username, newpassword);
+      
     }
   };
 
@@ -110,16 +111,16 @@ class Auth extends Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Reset password
+              Đổi mật khẩu
           </Typography>
-            <form className="form" noValidate>
+            <form className="form" noValidate style={{ whiteSpace: "normal" }}>
               <TextField
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
                 id="newpassword"
-                label="New Password"
+                label="Mật khẩu mới"
                 type="password"
                 autoFocus
                 value={this.state.newpassword || ''}
@@ -133,7 +134,7 @@ class Auth extends Component {
                 required
                 fullWidth
                 name="confirm-password"
-                label="Confirm password"
+                label="Nhập lại mật khẩu mới"
                 type="password"
                 id="confirm-password"
                 value={this.state.confirmPassword}
@@ -155,7 +156,7 @@ class Auth extends Component {
                 className="submit"
                 onClick={this.resetPassword}
               >
-                Reset password
+                Đổi mật khẩu
             </Button>
             </form>
           </div>
@@ -187,7 +188,7 @@ class Auth extends Component {
           <Typography component="h1" variant="h3" style={{ fontWeight: 600 }}>
             ĐĂNG NHẬP
           </Typography>
-          <form className="form" noValidate>
+          <form className="form" noValidate style={{ whiteSpace: 'normal' }}>
             <TextField
               variant="outlined"
               margin="normal"
