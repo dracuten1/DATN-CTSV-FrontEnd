@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, CardMedia } from '@material-ui/core';
 import history from 'historyConfig';
 import { Redirect } from 'react-router-dom';
 
@@ -25,7 +25,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import './Auth.css';
 
 function Copyright() {
@@ -167,7 +166,7 @@ class Auth extends Component {
       )
     }
     return (
-      <Container component="main" maxWidth="xs" style={{ marginTop: '20vh' }}>
+      <Container component="main" maxWidth="xs" style={{ marginTop: '10vh' }}>
         <div
           style={{
             height: 10,
@@ -183,11 +182,10 @@ class Auth extends Component {
         </div>
         <CssBaseline />
         <div className="paper">
-          <Avatar className="avatar">
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <CardMedia src={`https://i.ibb.co/SmtZZc6/logo-khtn.png`} style={{ marginBottom: 20 }} component="img">
+          </CardMedia>
+          <Typography component="h1" variant="h3" style={{ fontWeight: 600 }}>
+            ĐĂNG NHẬP
           </Typography>
           <form className="form" noValidate>
             <TextField
@@ -196,7 +194,7 @@ class Auth extends Component {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Tên đăng nhập"
               name="email"
               autoComplete="email"
               autoFocus
@@ -210,7 +208,7 @@ class Auth extends Component {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mật khẩu"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -232,7 +230,7 @@ class Auth extends Component {
               className="submit"
               onClick={this.handleClick}
             >
-              Sign In
+              Đăng nhập
             </Button>
             <Grid container>
               <Grid item lg={12} md={12} xl={12} xs={12} style={{ textAlign: "center" }}>
@@ -241,7 +239,7 @@ class Auth extends Component {
                   onForgotPass();
                   history.push('/forgotpass');
                 }}>
-                  Forgot password?
+                  Quên mật khẩu?
                 </Link>
               </Grid>
             </Grid>
