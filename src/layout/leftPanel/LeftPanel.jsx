@@ -571,7 +571,7 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-  const [checked, setChecked] = useState(true)
+  const [checked, setChecked] = useState(false)
 
   return (
     <div className={classes.root}>
