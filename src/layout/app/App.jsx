@@ -11,7 +11,7 @@ class App extends React.PureComponent {
         const { hiddenProgressStatus } = this.props;
         return (
             <div >
-                <div style={{ height: 10 }}>
+                <div style={{ height: 10, position: 'sticky', zIndex: '999999', top: 0, width: '100vw' }}>
                     <LinearProgress color="primary" hidden={hiddenProgressStatus} />
                 </div>
                 <RootRouter />
