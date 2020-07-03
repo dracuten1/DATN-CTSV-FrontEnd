@@ -135,7 +135,7 @@ export default function Dashboard() {
           <h5 className={classes.description}>
             Tham mưu và giúp Hiệu trưởng xây dựng các kế hoạch, biện pháp tổ
             chức thực hiện các hoạt động nhằm giáo dục về chính trị, tư tưởng
-            cho sinh viên; xây dựng các quy chế, quy định và kế hoạch tổ chức
+            cho sinh viên; <br/> xây dựng các quy chế, quy định và kế hoạch tổ chức
             quản lý sinh viên; phục vụ quyền lợi chính đáng của sinh viên; tổ
             chức giám sát, kiểm tra, đánh giá kết quả thực hiện công tác sinh
             viên theo nhiệm vụ được giao.

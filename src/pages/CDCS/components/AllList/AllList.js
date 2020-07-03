@@ -200,9 +200,9 @@ const AllList = props => {
       const { DoiTuongCDCS } = payload;
       setfilter({
         ...filter,
-        DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0]] : [],
+        DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0]] : []
       });
-    });;
+    });
     dispatch(Actions.countingWithFilter(filter)).then(data =>
       handleUpdateState(data)
     );
@@ -280,19 +280,20 @@ const AllList = props => {
               handleClick={() => {
                 dispatch(ProgressActions.showProgres());
                 if (isCase === 6) {
-                  filter.mssv === ''
-                    ? setSnackBarValue(errorSnackBarMSSV)
-                    : dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                        handleUpdateStateMSSV(data)
-                      );
-                } else {
-                  filter.typeCDCS === ''
-                    ? setSnackBarValue(errorSnackBarType)
-                    : dispatch(Actions.countingWithFilter(filter)).then(data =>
-                        handleUpdateState(data)
-                      );
-                }
-                dispatch(ProgressActions.hideProgress());
+                  if (filter.mssv === '') {
+                    setSnackBarValue(errorSnackBarMSSV);
+                    dispatch(ProgressActions.hideProgress());
+                  } else
+                    dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                      handleUpdateStateMSSV(data)
+                    );
+                } else if (filter.typeCDCS === '') {
+                  setSnackBarValue(errorSnackBarMSSV);
+                  dispatch(ProgressActions.hideProgress());
+                } else
+                  dispatch(Actions.countingWithFilter(filter)).then(data =>
+                    handleUpdateState(data)
+                  );
               }}
               label="Lọc dữ liệu"
             />
