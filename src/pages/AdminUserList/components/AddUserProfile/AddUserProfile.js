@@ -62,6 +62,12 @@ function AddDialog(props) {
         />
         <TextField
           className={classes.textField}
+          label="Họ và tên"
+          margin="normal"
+          onBlur={onLostFocus('fullname')}
+        />
+        <TextField
+          className={classes.textField}
           label="Email"
           margin="normal"
           onBlur={onLostFocus('email')}
