@@ -34,6 +34,13 @@ const themeTable = createMuiTheme({
                     margin: "5px 0px !important"
                 }
             }
+        },
+        MuiPaper: {
+            root: {
+                '&': {
+                    width: '100% !important',
+                }
+            }
         }
     }
 });

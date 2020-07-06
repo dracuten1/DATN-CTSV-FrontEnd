@@ -507,29 +507,7 @@ const PrintList = props => {
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
         <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
-        <Divider />
         <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters
-              valueType={valueType}
-              onFilter={handleFilter}
-              filter={filter}
-            />
-            <ContainedButton
-              handleClick={() => {
-                if (isAllList) {
-                  handleShowDataInfoDRL();
-                } else if (isPrintList) {
-                  handleShowDataPrint();
-                } else if (isHistoryList) {
-                  handleShowDataHistory();
-                } else {
-                  handleShowDataHistoryImport();
-                }
-              }}
-              label="Lọc dữ liệu"
-            />
-          </div>
           <div>
             {isPrintList ? (
               <>
@@ -679,6 +657,30 @@ const PrintList = props => {
                     )}
                 </>
               )}
+          </div>
+        </CardActions>
+        <Divider />
+        <CardActions className={classes.actions}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters
+              valueType={valueType}
+              onFilter={handleFilter}
+              filter={filter}
+            />
+            <ContainedButton
+              handleClick={() => {
+                if (isAllList) {
+                  handleShowDataInfoDRL();
+                } else if (isPrintList) {
+                  handleShowDataPrint();
+                } else if (isHistoryList) {
+                  handleShowDataHistory();
+                } else {
+                  handleShowDataHistoryImport();
+                }
+              }}
+              label="Lọc dữ liệu"
+            />
           </div>
         </CardActions>
 

@@ -87,12 +87,14 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: 'all ease-in-out 0.3s',
+    width: '60%',
   },
   showSideBarContent: {
     flexGrow: 1,
     padding: theme.spacing(3),
     // paddingLeft: 250,
     transition: 'all ease-in-out 0.3s',
+    width: '60%',
   },
   icon: {
     marginRight: 10
