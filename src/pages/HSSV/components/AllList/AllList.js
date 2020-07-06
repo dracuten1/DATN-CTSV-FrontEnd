@@ -28,6 +28,7 @@ import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
+import Description from '@material-ui/icons/Description';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -46,6 +47,26 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     justifyContent: 'flex-start'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 
@@ -461,151 +482,165 @@ const AllList = props => {
   };
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} />
-        <ContainedButton
-          handleClick={() => {
-            dispatch(ProgressActions.showProgres());
-            dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
-              setState({
-                ...state,
-                data: [body]
-              })
-            );
-          }}
-          label="Tìm kiếm"
-        />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <MuiThemeProvider theme={themeTable}>
-              <MaterialTable
-                icons={icons}
-                title={
-                  <div>
-                    <b>HỒ SƠ SINH VIÊN</b>
-                  </div>
-                }
-                columns={state.columns}
-                data={state.data}
-                actions={[
-                  {
-                    icon: icons.Print,
-                    tooltip: 'Print',
-                    onClick: async (event, rowData) => {
-                      dispatch(ProgressActions.showProgres());
-                      const data = {
-                        pk: rowData.PK,
-                        sk: rowData.SK
-                      };
-                      const response = await HSSVHandler.PrintStudentInfo(data);
-                      if (response.statusCode !== 200) {
-                        setSnackBarValue(errorSnackBar);
-                        return;
-                      }
-                      setSnackBarValue(successSnackBar);
-                      const { body } = response;
-                      dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
-                      dispatch(ProgressActions.hideProgress());
-                    }
-                  }
-                ]}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#01579b',
-                    color: '#FFF'
-                  },
-                  rowStyle: {
-                    backgroundColor: '#EEE'
-                  }
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Description style={{ marginRight: '5px' }} /> HỒ SƠ SINH VIÊN
+        </Typography>
+        <div style={{ display: "flex" }}>
+        </div>
+      </Card>
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <CardActions className={classes.actions}>
+          <Filters onFilter={handleFilter} />
+          <ContainedButton
+            handleClick={() => {
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
+                setState({
+                  ...state,
+                  data: [body]
+                })
+              );
+            }}
+            label="Tìm kiếm"
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px" }}>
+            <div >
+              <Button
+                onClick={() => {
+                  isImportDTB = false;
+                  setImportOpen(true);
                 }}
-                editable={{
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise(resolve => {
-                      dispatch(ProgressActions.showProgres());
-                      setTimeout(async () => {
-                        resolve();
-                        if (oldData) {
-                          newData['DiaChiThuongTru']['PhuongXa'] =
-                            newData.PhuongXa;
-                          newData['DiaChiThuongTru']['QuanHuyen'] =
-                            newData.QuanHuyen;
-                          newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
-                          newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
-
-                          const response = await HSSVHandler.UpdateStudentInfo(newData);
-                          if (response.statusCode !== 200) {
-                            setSnackBarValue(errorSnackBar);
-                            return;
-                          }
-                          setSnackBarValue(successSnackBar);
-                          setState(prevState => {
-                            const data = [...prevState.data];
-                            data[data.indexOf(oldData)] = newData;
-                            return { ...prevState, data };
-                          });
-                        }
-                      }, 600);
-                      dispatch(ProgressActions.hideProgress());
-                    })
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Import HSSV
+            </Button>
+              <Button
+                onClick={() => {
+                  isImportDTB = true;
+                  setImportOpen(true);
                 }}
-              />
-            </MuiThemeProvider>
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Import ĐTB
+            </Button>
+            </div>
+            {listLink.length > 0 ? (
+              <div>
+                <ListLinkDocx data={listLink} />
+              </div>
+            ) : (
+                ''
+              )}
           </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={() => {
-                isImportDTB = false;
-                setImportOpen(true);
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Import HSSV
-            </Button>
-            <Button
-              onClick={() => {
-                isImportDTB = true;
-                setImportOpen(true);
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Import ĐTB
-            </Button>
-          </Grid>
-          {listLink.length > 0 ? (
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
-            </Grid>
-          ) : (
-              ''
-            )}
-        </Grid>
-      </CardActions>
-      <ImportDialog
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={isImportDTB ? 'DiemTB' : 'import-hssv'}
-      />
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-    </Card>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      <b>HỒ SƠ SINH VIÊN</b>
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  actions={[
+                    {
+                      icon: icons.Print,
+                      tooltip: 'Print',
+                      onClick: async (event, rowData) => {
+                        dispatch(ProgressActions.showProgres());
+                        const data = {
+                          pk: rowData.PK,
+                          sk: rowData.SK
+                        };
+                        const response = await HSSVHandler.PrintStudentInfo(data);
+                        if (response.statusCode !== 200) {
+                          setSnackBarValue(errorSnackBar);
+                          return;
+                        }
+                        setSnackBarValue(successSnackBar);
+                        const { body } = response;
+                        dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
+                        dispatch(ProgressActions.hideProgress());
+                      }
+                    }
+                  ]}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    }
+                  }}
+                  editable={{
+                    onRowUpdate: (newData, oldData) =>
+                      new Promise(resolve => {
+                        dispatch(ProgressActions.showProgres());
+                        setTimeout(async () => {
+                          resolve();
+                          if (oldData) {
+                            newData['DiaChiThuongTru']['PhuongXa'] =
+                              newData.PhuongXa;
+                            newData['DiaChiThuongTru']['QuanHuyen'] =
+                              newData.QuanHuyen;
+                            newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
+                            newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
+
+                            const response = await HSSVHandler.UpdateStudentInfo(newData);
+                            if (response.statusCode !== 200) {
+                              setSnackBarValue(errorSnackBar);
+                              return;
+                            }
+                            setSnackBarValue(successSnackBar);
+                            setState(prevState => {
+                              const data = [...prevState.data];
+                              data[data.indexOf(oldData)] = newData;
+                              return { ...prevState, data };
+                            });
+                          }
+                        }, 600);
+                        dispatch(ProgressActions.hideProgress());
+                      })
+                  }}
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+
+        <ImportDialog
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={isImportDTB ? 'DiemTB' : 'import-hssv'}
+        />
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+      </Card>
+    </div>
   );
 };
 

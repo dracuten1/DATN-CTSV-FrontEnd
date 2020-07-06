@@ -29,6 +29,7 @@ import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import { Filters } from '../Filters';
 import UpdateDialog from '../AddDialog/index';
+import Status from '@material-ui/icons/BusinessCenter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -47,6 +48,26 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     justifyContent: 'flex-start'
+  },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    border: '1px solid #f0f2f4',
+    background: 'white',
+    marginBottom: '20px',
+    borderRadius: '3px',
+    alignItems: 'center',
+    padding: '20px'
+  },
+  title: {
+    fontSize: '25px',
+    fontWeight: 'bold',
+    color: '#1088e7',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  ml5px: {
+    marginLeft: '5px'
   }
 }));
 const dt = new Date();
@@ -98,7 +119,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => {};
+  const handleImport = () => { };
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -219,138 +240,152 @@ const AllList = props => {
   };
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
-      <UpdateDialog
-        open={updateDialogStage}
-        handleClose={handleCloseUpdateDialog}
-      />
-      <CardActions className={classes.actions}>
-        <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
-        <ContainedButton
-          handleClick={isCase === 10 ? handleShowDataMSSV : handleShowListData}
-          label="Lọc sinh viên"
+    <div>
+      <Card
+        item
+        lg={12}
+        sm={12}
+        xl={12}
+        xs={12}
+        className={classes.titleContainer}
+      >
+        <Typography className={classes.title}>
+          <Status style={{ marginRight: '5px' }} /> TÌNH TRẠNG SINH VIÊN
+        </Typography>
+        <div style={{ display: "flex" }}>
+          <Button
+            onClick={handleShowListData}
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '8px' }}
+          >
+            Danh sách tình trạng
+            </Button>
+          <Button
+            onClick={() => dispatch(Actions.changeColumnMSSV()).then(data =>
+              handleUpdateStateMSSV([])
+            )}
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '8px' }}
+          >
+            Thông tin sinh viên
+            </Button>
+        </div>
+      </Card>
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <UpdateDialog
+          open={updateDialogStage}
+          handleClose={handleCloseUpdateDialog}
         />
-      </CardActions>
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <MuiThemeProvider theme={themeTable}>
-              <MaterialTable
-                icons={icons}
-                title={
-                  <div>
-                    {isCase === 10 ? (
-                      <b>Tình Trạng Sinh Viên</b>
-                    ) : (
-                      <b>DANH SÁCH {filter.type}</b>
-                    )}
-                  </div>
-                }
-                columns={state.columns}
-                data={state.data}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#01579b',
-                    color: '#FFF'
-                  },
-                  rowStyle: {
-                    backgroundColor: '#EEE'
-                  },
-                  filtering: false
+        <CardActions className={classes.actions}>
+          <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
+          <ContainedButton
+            handleClick={isCase === 10 ? handleShowDataMSSV : handleShowListData}
+            label="Lọc sinh viên"
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px" }}>
+            <div >
+
+              <Button
+                onClick={handleOpenUpdateDialog}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Cập nhật TTSV
+            </Button>
+              <Button
+                onClick={() => setImportOpen(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Import
+            </Button>
+              <Button
+                onClick={async () => {
+                  dispatch(ProgressActions.showProgres());
+                  const response = await TTSVHandler.ExportWithFilter(filter);
+                  if (
+                    response.statusCode !== 200 ||
+                    response.body === 'Không có gì để export'
+                  ) {
+                    setSnackBarValue(errorExportSnackBar);
+                    return;
+                  }
+                  setSnackBarValue(successSnackBar);
+                  const { body } = response;
+                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                  dispatch(ProgressActions.hideProgress());
                 }}
-              />
-            </MuiThemeProvider>
-          </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-      <CardActions className={classes.actions}>
-        <Grid container spacing={4}>
-          <Grid item lg={12} md={12} xl={12} xs={12}>
-            <Button
-              onClick={handleShowListData}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Danh sách tình trạng
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                Export
             </Button>
-            <Button
-              onClick={() => dispatch(Actions.changeColumnMSSV()).then(data =>
-                handleUpdateStateMSSV([])
+            </div>
+            {listLink.length > 0 ? (
+              <div >
+                <ListLinkDocx data={listLink} />
+              </div>
+            ) : (
+                ''
               )}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Thông tin sinh viên
-            </Button>
-            <Button
-              onClick={handleOpenUpdateDialog}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Cập nhật TTSV
-            </Button>
-            <Button
-              onClick={() => setImportOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Import
-            </Button>
-            <Button
-              onClick={async () => {
-                dispatch(ProgressActions.showProgres());
-                const response = await TTSVHandler.ExportWithFilter(filter);
-                if (
-                  response.statusCode !== 200 ||
-                  response.body === 'Không có gì để export'
-                ) {
-                  setSnackBarValue(errorExportSnackBar);
-                  return;
-                }
-                setSnackBarValue(successSnackBar);
-                const { body } = response;
-                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                dispatch(ProgressActions.hideProgress());
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              Export
-            </Button>
-          </Grid>
-          {listLink.length > 0 ? (
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListLinkDocx data={listLink} />
-            </Grid>
-          ) : (
-            ''
-          )}
-        </Grid>
-      </CardActions>
-      <CustomizedSnackbars
-        value={snackBarValue}
-        handleClose={handleSnackBarClose}
-      />
-      <ImportDialog
-        open={importOpen}
-        handleClose={() => setImportOpen(false)}
-        handleImport={handleImport}
-        importCase={4}
-        ttsvCase={filter.type}
-      />
-    </Card>
+          </div>
+        </CardActions>
+        <Divider />
+        <CardContent className={classes.content}>
+          <PerfectScrollbar>
+            <div className={classes.inner}>
+              <MuiThemeProvider theme={themeTable}>
+                <MaterialTable
+                  icons={icons}
+                  title={
+                    <div>
+                      {isCase === 10 ? (
+                        <b>Tình Trạng Sinh Viên</b>
+                      ) : (
+                          <b>DANH SÁCH {filter.type}</b>
+                        )}
+                    </div>
+                  }
+                  columns={state.columns}
+                  data={state.data}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#01579b',
+                      color: '#FFF'
+                    },
+                    rowStyle: {
+                      backgroundColor: '#EEE'
+                    },
+                    filtering: false
+                  }}
+                />
+              </MuiThemeProvider>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <CustomizedSnackbars
+          value={snackBarValue}
+          handleClose={handleSnackBarClose}
+        />
+        <ImportDialog
+          open={importOpen}
+          handleClose={() => setImportOpen(false)}
+          handleImport={handleImport}
+          importCase={4}
+          ttsvCase={filter.type}
+        />
+      </Card>
+    </div>
   );
 };
 
