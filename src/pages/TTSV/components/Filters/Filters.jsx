@@ -73,7 +73,7 @@ export default function Filters(props) {
           variant="outlined"
           onChange={handleChange}
           defaultValue={mssv}
-          style={{ marginTop: '8px' }}
+          style={{ marginTop: '8px', width: '80%' }}
           inputProps={{
             style: {
               marginBottom: '-6px'

@@ -25,11 +25,14 @@ import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/TTSV/actionTypes';
 import * as TTSVHandler from 'handlers/TTSVHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
+import Status from '@material-ui/icons/BusinessCenter';
+import UpdateIcon from '@material-ui/icons/Update';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportIcon from '@material-ui/icons/Input';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
-import { Filters } from '../Filters';
 import UpdateDialog from '../AddDialog/index';
-import Status from '@material-ui/icons/BusinessCenter';
+import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -47,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   actions: {
-    justifyContent: 'flex-start'
+    justifyContent: 'space-between'
   },
   titleContainer: {
     display: 'flex',
@@ -119,7 +122,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => { };
+  const handleImport = () => {};
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -252,7 +255,7 @@ const AllList = props => {
         <Typography className={classes.title}>
           <Status style={{ marginRight: '5px' }} /> TÌNH TRẠNG SINH VIÊN
         </Typography>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: 'flex' }}>
           <Button
             onClick={handleShowListData}
             variant="contained"
@@ -261,18 +264,20 @@ const AllList = props => {
             style={{ marginLeft: '8px' }}
           >
             Danh sách tình trạng
-            </Button>
+          </Button>
           <Button
-            onClick={() => dispatch(Actions.changeColumnMSSV()).then(data =>
-              handleUpdateStateMSSV([])
-            )}
+            onClick={() =>
+              dispatch(Actions.changeColumnMSSV()).then(data =>
+                handleUpdateStateMSSV([])
+              )
+            }
             variant="contained"
             color="primary"
             size="small"
             style={{ marginLeft: '8px' }}
           >
             Thông tin sinh viên
-            </Button>
+          </Button>
         </div>
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
@@ -281,63 +286,63 @@ const AllList = props => {
           handleClose={handleCloseUpdateDialog}
         />
         <CardActions className={classes.actions}>
-          <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
-          <ContainedButton
-            handleClick={isCase === 10 ? handleShowDataMSSV : handleShowListData}
-            label="Lọc sinh viên"
-          />
-          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px" }}>
-            <div >
-
-              <Button
-                onClick={handleOpenUpdateDialog}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Cập nhật TTSV
-            </Button>
-              <Button
-                onClick={() => setImportOpen(true)}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Import
-            </Button>
-              <Button
-                onClick={async () => {
-                  dispatch(ProgressActions.showProgres());
-                  const response = await TTSVHandler.ExportWithFilter(filter);
-                  if (
-                    response.statusCode !== 200 ||
-                    response.body === 'Không có gì để export'
-                  ) {
-                    setSnackBarValue(errorExportSnackBar);
-                    return;
-                  }
-                  setSnackBarValue(successSnackBar);
-                  const { body } = response;
-                  dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                  dispatch(ProgressActions.hideProgress());
-                }}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Export
-            </Button>
-            </div>
-            {listLink.length > 0 ? (
-              <div >
-                <ListLinkDocx data={listLink} />
-              </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
+            <ContainedButton
+              handleClick={
+                isCase === 10 ? handleShowDataMSSV : handleShowListData
+              }
+              label="Lọc sinh viên"
+            />
+          </div>
+          <div>
+            {isCase !== 10 ? (
+              <>
+                <Button
+                  onClick={handleOpenUpdateDialog}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '8px' }}
+                >
+                  <UpdateIcon /> Cập nhật TTSV
+                </Button>
+                <Button
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '8px' }}
+                >
+                  <ImportIcon /> &nbsp;Import
+                </Button>
+              </>
             ) : (
-                ''
-              )}
+              <div />
+            )}
+            <Button
+              onClick={async () => {
+                dispatch(ProgressActions.showProgres());
+                const response = await TTSVHandler.ExportWithFilter(filter);
+                if (
+                  response.statusCode !== 200 ||
+                  response.body === 'Không có gì để export'
+                ) {
+                  setSnackBarValue(errorExportSnackBar);
+                  return;
+                }
+                setSnackBarValue(successSnackBar);
+                const { body } = response;
+                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                dispatch(ProgressActions.hideProgress());
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              <GetAppIcon /> &nbsp;Export
+            </Button>
           </div>
         </CardActions>
         <Divider />
@@ -352,8 +357,8 @@ const AllList = props => {
                       {isCase === 10 ? (
                         <b>Tình Trạng Sinh Viên</b>
                       ) : (
-                          <b>DANH SÁCH {filter.type}</b>
-                        )}
+                        <b>DANH SÁCH {filter.type}</b>
+                      )}
                     </div>
                   }
                   columns={state.columns}
@@ -373,6 +378,18 @@ const AllList = props => {
             </div>
           </PerfectScrollbar>
         </CardContent>
+        <Divider />
+        {listLink.length > 0 ? (
+          <CardActions className={classes.actions}>
+            <Grid container spacing={4}>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <ListLinkDocx data={listLink} />
+              </Grid>
+            </Grid>
+          </CardActions>
+        ) : (
+          ''
+        )}
         <CustomizedSnackbars
           value={snackBarValue}
           handleClose={handleSnackBarClose}

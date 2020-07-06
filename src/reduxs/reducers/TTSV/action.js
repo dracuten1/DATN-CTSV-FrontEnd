@@ -38,7 +38,7 @@ const getListWithMSSV = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: reponse: ', response);
   const {statusCode, body} = response;
   if (statusCode !== 200 || body === "Không có dữ liệu"){
-    dispatch({ type: Types.NO_DATA });
+    dispatch({ type: Types.GET_TTSV_WITH_MSSV, payload: [] });
     dispatch({ type: HIDE_PROGRESS });
     return [];
   } 
@@ -58,13 +58,43 @@ const getListWithFilter = filter => async dispatch => {
   logger.info('TTSVAction:: getListAll: filter: ', filter);
   const response = await TTSVHandler.GetListWithFilter(filter);
   logger.info('TTSVAction:: getListAll: reponse: ', response);
+  const { type } = filter;
   const {statusCode, body} = response;
   if (statusCode !== 200 || body === "Không có dữ liệu"){
-    dispatch({ type: Types.NO_DATA });
+    switch (type) {
+      case 'SINH VIÊN NƯỚC NGOÀI':
+        dispatch({ type: Types.GET_LIST_SVNN, payload: [] });
+        break;
+      case 'ĐIỂM TRUNG BÌNH':
+        dispatch({ type: Types.GET_LIST_DTB, payload: [] });
+        break;
+      case 'TỐT NGHIỆP':
+        dispatch({ type: Types.GET_LIST_DSTN, payload: [] });
+        break;
+      case 'HOÀN TẤT CHƯƠNG TRÌNH':
+        dispatch({ type: Types.GET_LIST_HTCT, payload: [] });
+        break;
+      case 'ĐANG HỌC':
+        dispatch({ type: Types.GET_LIST_DH, payload: [] });
+        break;
+      case 'CẢNH CÁO HỌC VỤ':
+        dispatch({ type: Types.GET_LIST_CCHV, payload: [] });
+        break;
+      case 'BUỘC THÔI HỌC':
+        dispatch({ type: Types.GET_LIST_BTH, payload: [] });
+        break;
+      case 'ĐĂNG KÝ HỌC PHẦN':
+        dispatch({ type: Types.GET_LIST_DKHP, payload: [] });
+        break;
+      case 'BẢO LƯU':
+        dispatch({ type: Types.GET_LIST_BL, payload: [] });
+        break;  
+      default:
+        break;
+    }
     dispatch({ type: HIDE_PROGRESS });
     return [];
   } 
-  const { type } = filter;
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NamHoc);
     body[key].type = body[key]["data"].LoaiTotNghiep;

@@ -27,10 +27,6 @@ const convertNamHoc = nh => {
   }
 };
 
-const formatNumber = num => {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-};
-
 export const GetListWithFilter = async (filter, type) => {
   const cvNH = convertNamHoc(filter.nh);
   const url = `hb/list?type=${type}&nh=${cvNH}&hk=${filter.hk}`;
@@ -45,10 +41,13 @@ export const UpdateOneStudentByType = async (data, type) => {
   if (type === 'KK') {
     const { SoTienMoiThang, SoThang } = data;
     const money = SoTienMoiThang.split('.').join('');
-    // data.TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
-    // data.SoTienMoiThang = formatNumber(SoTienMoiThang);
     data.TongSoTien = parseFloat(money) * parseInt(SoThang);
-    data.SoTienMoiThang = SoTienMoiThang;
+    data.SoTienMoiThang = money;
+  }
+  else{
+    const { GiaTri } = data;
+    const money = GiaTri.split('.').join('');
+    data.GiaTri = money;
   }
 
   data.type = type;

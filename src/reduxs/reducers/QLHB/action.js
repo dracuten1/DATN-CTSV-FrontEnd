@@ -48,11 +48,16 @@ const getListWithFilter = (filter, type) => async dispatch => {
   }  
   const { body } = response;
   const data = Object.keys(body).map(key => {
-    if (type === 'KK') {
+    if (body[key].type === 'KK') {
       const { SoTienMoiThang, SoThang } = body[key];
       const money = SoTienMoiThang.split('.').join('');
       body[key].SoTienMoiThang = formatNumber(SoTienMoiThang);
       body[key].TongSoTien = formatNumber(parseFloat(money)*parseInt(SoThang));
+    }
+    else {
+      const { GiaTri } = body[key];
+      const money = GiaTri.split('.').join('');
+      body[key].GiaTri = formatNumber(GiaTri);
     }
     body[key].nh = parseNHToNumber(body[key].NH);
     body[key].id = body[key].id ? body[key].id : '';
