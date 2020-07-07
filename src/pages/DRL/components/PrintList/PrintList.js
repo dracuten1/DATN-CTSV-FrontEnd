@@ -34,6 +34,7 @@ import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import { AddDialog } from '../AddDialog';
 import { Filters } from '../Filters';
 
@@ -508,6 +509,30 @@ const PrintList = props => {
       <Card {...rest} className={clsx(classes.root, className)}>
         <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
         <CardActions className={classes.actions}>
+          <MuiThemeProvider theme={themeFilter}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Filters
+                valueType={valueType}
+                onFilter={handleFilter}
+                filter={filter}
+                username={'ngocvu'}
+              />
+              <ContainedButton
+                handleClick={() => {
+                  if (isAllList) {
+                    handleShowDataInfoDRL();
+                  } else if (isPrintList) {
+                    handleShowDataPrint();
+                  } else if (isHistoryList) {
+                    handleShowDataHistory();
+                  } else {
+                    handleShowDataHistoryImport();
+                  }
+                }}
+                label="Lọc dữ liệu"
+              />
+            </div>
+          </MuiThemeProvider>
           <div>
             {isPrintList ? (
               <>
@@ -657,30 +682,6 @@ const PrintList = props => {
                     )}
                 </>
               )}
-          </div>
-        </CardActions>
-        <Divider />
-        <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters
-              valueType={valueType}
-              onFilter={handleFilter}
-              filter={filter}
-            />
-            <ContainedButton
-              handleClick={() => {
-                if (isAllList) {
-                  handleShowDataInfoDRL();
-                } else if (isPrintList) {
-                  handleShowDataPrint();
-                } else if (isHistoryList) {
-                  handleShowDataHistory();
-                } else {
-                  handleShowDataHistoryImport();
-                }
-              }}
-              label="Lọc dữ liệu"
-            />
           </div>
         </CardActions>
 
