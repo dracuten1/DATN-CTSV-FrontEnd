@@ -13,6 +13,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Filters(props) {
+  logger.info("FILTER");
   const classes = useStyles();
   const { onFilter, isCounting, filter } = props;
   const dt = new Date();

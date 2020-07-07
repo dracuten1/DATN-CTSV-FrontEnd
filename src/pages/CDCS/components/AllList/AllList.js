@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 
 const dt = new Date();
 const year = dt.getFullYear();
-const convert = year % 100;
+// const convert = year % 100;
 
 let updateBegin = 0;
 let columns = [];
@@ -214,11 +214,11 @@ const AllList = props => {
     type: 'success',
     message: 'Thực hiện thành công!'
   };
-  const errorSnackBarType = {
-    open: true,
-    type: 'error',
-    message: 'Vui lòng chọn loại CDCS!'
-  };
+  // const errorSnackBarType = {
+  //   open: true,
+  //   type: 'error',
+  //   message: 'Vui lòng chọn loại CDCS!'
+  // };
   const errorSnackBarMSSV = {
     open: true,
     type: 'error',

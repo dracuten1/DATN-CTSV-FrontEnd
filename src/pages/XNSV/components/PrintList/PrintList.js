@@ -160,6 +160,7 @@ const PrintList = props => {
         }
 
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.language;
         }
         return rowData;
@@ -204,6 +205,7 @@ const PrintList = props => {
           valueCase = term;
         }
         if (term.length !== 0) {
+          // eslint-disable-next-line
           return term == rowData.case;
         }
         return rowData;
@@ -440,7 +442,7 @@ const PrintList = props => {
     );
   };
 
-  const { isLoadding } = props;
+  // const { isLoadding } = props;
   return (
     <div>
       <Card

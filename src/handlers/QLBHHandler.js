@@ -82,7 +82,7 @@ export const CountingWithMSSV = async (filter) => {
 };
 
 export const ExportCountingWithMSSV = async (filter) => {
-  const {fromHK, fromNH, toHK, toNH, mssv, type}  = filter;
+  const {fromHK, fromNH, toHK, toNH, mssv, /*type*/}  = filter;
   const cvFromNH = convertNamHoc(fromNH);
   const cvToNH = convertNamHoc(toNH);
   const url = `bh/thongke?mssv=${mssv}&fromHK=${fromHK}&fromNH=${cvFromNH}&toHK=${toHK}&toNH=${cvToNH}&type=BT`;

@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
 
 let arrDoiTuong = [];
 export default function Filters(props) {
+  logger.info("Filter:: log");
   const classes = useStyles();
   const { onFilter, isCase, filter } = props;
   const dt = new Date();

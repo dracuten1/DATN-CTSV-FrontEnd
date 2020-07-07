@@ -412,7 +412,7 @@ const PrintList = props => {
             rowData.PK,
             rowData.SK
           );
-          const status = 'ChuaIn';
+          // const status = 'ChuaIn';
           logger.info('DRLAction:: exporttodocx: reponse: ', response);
           if (response.statusCode !== 200) {
             setSnackBarValue(errorSnackBar);

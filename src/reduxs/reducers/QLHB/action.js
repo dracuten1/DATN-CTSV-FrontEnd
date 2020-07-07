@@ -56,7 +56,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
     }
     else {
       const { GiaTri } = body[key];
-      const money = GiaTri.split('.').join('');
+      // const money = GiaTri.split('.').join('');
       body[key].GiaTri = formatNumber(GiaTri);
     }
     body[key].nh = parseNHToNumber(body[key].NH);

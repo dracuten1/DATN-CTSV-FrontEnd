@@ -3,7 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
+// import Hidden from '@material-ui/core/Hidden';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import Home from '@material-ui/icons/Home';
 import Status from '@material-ui/icons/BusinessCenter';
@@ -20,7 +20,7 @@ import Policy from '@material-ui/icons/Accessible';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Routers from 'layout/router/Router';
 import { useDispatch, connect } from 'react-redux';
 
@@ -29,7 +29,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import history from 'historyConfig';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Avatar from '@material-ui/core/Avatar';
-import { ListSubheader, Collapse, Typography, TextField } from '@material-ui/core';
+import { ListSubheader, Collapse, Typography } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -126,16 +126,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ResponsiveDrawer(props) {
-  const { container } = props;
+  // const { container } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  // const theme = useTheme();
+  // const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  // const handleDrawerToggle = () => {
+  //   setMobileOpen(!mobileOpen);
+  // };
 
   const [myAccountCollapse, setMyAccountCollapse] = React.useState(false);
 
@@ -143,7 +143,7 @@ function ResponsiveDrawer(props) {
     setMyAccountCollapse(!myAccountCollapse);
   };
 
-  let textArea;
+  // let textArea;
 
   const copyToken = (event) => {
     console.log(props.token);

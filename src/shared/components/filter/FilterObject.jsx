@@ -34,7 +34,7 @@ const MenuProps = {
 
 export default function SimpleSelectObject(props) {
   const classes = useStyles();
-  const { label, prop, clickFilter, helperText, defaultValue, multiple } = props;
+  const { label, prop, clickFilter, helperText, defaultValue, /*multiple*/ } = props;
   const [selectItem, setSelectItem] = React.useState(Array.isArray(defaultValue) ? defaultValue : []);
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
@@ -54,10 +54,10 @@ export default function SimpleSelectObject(props) {
           {val}
         </MenuItem>
       ) : (
-        <MenuItem key={ind} value={val.SK}>
-          {val.Ten}
-        </MenuItem>
-      );
+          <MenuItem key={ind} value={val.SK}>
+            {val.Ten}
+          </MenuItem>
+        );
     });
   };
   return (
@@ -90,7 +90,7 @@ export default function SimpleSelectObject(props) {
         >
           {drawData()}
         </Select>
-        {helperText ? <FormHelperText>{helperText}</FormHelperText> : <div/>}
+        {helperText ? <FormHelperText>{helperText}</FormHelperText> : <div />}
       </FormControl>
     </div>
   );

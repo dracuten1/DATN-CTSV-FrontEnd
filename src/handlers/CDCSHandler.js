@@ -26,9 +26,9 @@ const convertNamHoc = nh => {
   }
 };
 
-const formatNumber = num => {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-};
+// const formatNumber = num => {
+//   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+// };
 
 export const CountingWithFilter = async filter => {
   const { fromHK, fromNH, toHK, toNH, typeCDCS, DoiTuong } = filter;

@@ -7,11 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
-import * as DRLHandler from 'handlers/DRLHandler';
 import * as TTSVHandler from 'handlers/TTSVHandler';
 import * as XNSVHandler from 'handlers/XNSVHandler';
 import { logger } from 'core/services/Apploger';
-import { valueOrEmpty } from 'core/ultis/stringUtil';
 import { FormControl, InputLabel, Select, Divider, LinearProgress } from '@material-ui/core';
 import moment from 'moment';
 
@@ -55,7 +53,7 @@ const useStyles = makeStyles(theme => ({
 const UpdateDialog = props => {
   const classes = useStyles();
 
-  const { open, handleClose, handleUpdate } = props;
+  const { open, handleClose, /*handleUpdate*/ } = props;
 
   const [values, setValues] = React.useState({
     studentid: '',

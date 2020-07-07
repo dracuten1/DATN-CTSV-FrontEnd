@@ -108,7 +108,7 @@ const ImportDialog = props => {
     };
     reader.readAsDataURL(tfile);
   };
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
   const [importDisable, setImportDisable] = useState(true);
   const [hiddenProgress, setHiddenProgress] = useState(true);
   const [file, setFile] = useState(undefined);

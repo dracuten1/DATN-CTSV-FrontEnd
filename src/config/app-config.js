@@ -1,8 +1,6 @@
 import prod from "./app-config-prod";
 import dev from "./app-config-dev";
 import local from "./app-config-local";
-import { getOperatingSystem } from 'core/DetectOSAndBrowser/index';
-
 
 const appStage = process.env.REACT_APP_STAGE.trim();
 

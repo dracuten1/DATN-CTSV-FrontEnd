@@ -13,18 +13,6 @@ import { connect } from 'react-redux';
 import * as actions from 'reduxs/reducers/Authentication/action';
 import { LinearProgress, CardMedia } from '@material-ui/core';
 import history from 'historyConfig';
-import { Redirect } from 'react-router-dom';
-
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import './Auth.css';
 
 function Copyright() {
@@ -79,7 +67,7 @@ class Auth extends Component {
       const { onSetNewPassword, onAuth } = this.props;
       onSetNewPassword(newpassword);
       onAuth(username, newpassword);
-      
+
     }
   };
 

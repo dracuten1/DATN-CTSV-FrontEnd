@@ -87,7 +87,7 @@ const XNTruocKhiThemDialog = props => {
   const [values, setValues] = React.useState(defaultValue);
   const [progress, setProgress] = React.useState(true);
   const [signer, setSigner] = React.useState({});
-  const [signerObj, setSignerObj] = React.useState({});
+  // const [signerObj, setSignerObj] = React.useState({});
   const [newCertificate, setCertificate] = React.useState({});
 
 
@@ -105,7 +105,7 @@ const XNTruocKhiThemDialog = props => {
     });
     logger.info("DRL:: Add dialog:: signerEnum: ", SignerEnum);
     setSigner(SignerEnum);
-    setSignerObj(SignerObj);
+    // setSignerObj(SignerObj);
     return SignerEnum;
   };
 
@@ -166,6 +166,7 @@ const XNTruocKhiThemDialog = props => {
               NgonNgu: `${tmp.language}`,
               NgayCongBoKetQua: `${moment(tmp.expectedPublicationDate).format('DD/MM/YYYY')}`,
             }
+            break;
           default:
             break;
         }
@@ -190,7 +191,8 @@ const XNTruocKhiThemDialog = props => {
             break;
           default:
         }
-
+        break;
+      default:
         break;
     }
 
@@ -293,15 +295,15 @@ const XNTruocKhiThemDialog = props => {
     });
   };
 
-  const drawDataObject = data => {
-    return Object.keys(data).map((val, ind) => {
-      return (
-        <MenuItem key={ind} value={val}>
-          {data[val]}
-        </MenuItem>
-      );
-    });
-  };
+  // const drawDataObject = data => {
+  //   return Object.keys(data).map((val, ind) => {
+  //     return (
+  //       <MenuItem key={ind} value={val}>
+  //         {data[val]}
+  //       </MenuItem>
+  //     );
+  //   });
+  // };
 
   const closeDialog = () => {
     setValues(defaultValue);
@@ -325,13 +327,13 @@ const XNTruocKhiThemDialog = props => {
       } else {
         // TO DO: SHOW ERROR
         handleAdd({}, false);
-        
-      }  
+
+      }
     } catch (error) {
       handleAdd({}, false);
-      
+
     }
-    
+
     setProgress(true);
     handleClose();
   };

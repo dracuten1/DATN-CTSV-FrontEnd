@@ -18,6 +18,7 @@ let arrDoiTuong = [];
 let arrDVTT = [];
 
 export default function Filters(props) {
+  logger.info("FILTER");
   const classes = useStyles();
   const { onFilter, filter, isCounting, isCase } = props;
   const dt = new Date();

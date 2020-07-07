@@ -1,6 +1,3 @@
-import React from 'react';
-import icons from 'shared/icons';
-
 const dt = new Date();
 const year = dt.getFullYear();
 

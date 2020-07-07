@@ -4,10 +4,6 @@ import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
 import {
-  Export,
-  Import,
-  Print,
-  Title,
   PrintList,
 } from 'pages/DRL/components';
 

@@ -13,7 +13,6 @@ import {
   Divider,
   MuiThemeProvider,
   Typography,
-  Grid
 } from '@material-ui/core';
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
@@ -23,7 +22,6 @@ import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import * as HSSVHandler from 'handlers/HSSVHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
-import ImportIcon from '@material-ui/icons/Input';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
@@ -470,11 +468,11 @@ const AllList = props => {
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
-  const nullSnackBar = {
-    open: true,
-    type: 'error',
-    message: 'Không tìm thấy thông tin!'
-  };
+  // const nullSnackBar = {
+  //   open: true,
+  //   type: 'error',
+  //   message: 'Không tìm thấy thông tin!'
+  // };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
   const handleSnackBarClose = current => event => {

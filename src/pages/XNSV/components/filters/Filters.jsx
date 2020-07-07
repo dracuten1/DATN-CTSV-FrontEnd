@@ -17,6 +17,7 @@ const useStyles = makeStyles(() => ({
 let tempArr = ['None'];
 
 export default function Filters(props) {
+  logger.info("FILTER");
   const classes = useStyles();
   const { onFilter, filter } = props;
 

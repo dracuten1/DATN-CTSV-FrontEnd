@@ -16,7 +16,7 @@ export const GetXNSVByType = async (type) => {
 
   const url = `xnsv/listCertificateByType?type=${type}`;
 
-  const response = await HttpClient.sendGet(url); 
+  const response = await HttpClient.sendGet(url);
 
   return response;
 };
@@ -73,9 +73,9 @@ export const GetListCertificate = async (status) => {
 
   const response = await HttpClient.sendPutGetStatus(url);
 
-  const {statusCode, body} = response;
+  const { statusCode, body } = response;
 
-  if (statusCode !== 200 || body.length === 0){
+  if (statusCode !== 200 || body.length === 0) {
     return [];
   }
 
@@ -89,7 +89,7 @@ export const GetListCertificate = async (status) => {
     item.date = moment(item.NgayThemGXN).format('DD/MM/YYYY');
     item.pk = item.PK;
     item.sk = item.SK;
-    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY')  : null;
+    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY') : null;
     item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
     return item;
   });
@@ -155,7 +155,7 @@ export const GetCompany = async () => {
 };
 
 export const ExportWithFilter = async (filter) => {
-  const {nh, hk, type, username} = filter;
+  const { nh, hk, type, username } = filter;
   const cvNH = convertNamHoc(nh);
   const url = `xnsv/exportExcelXNSVPrinted?nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
 
@@ -165,7 +165,7 @@ export const ExportWithFilter = async (filter) => {
 };
 
 export const ExportWithFilterByDate = async (filter) => {
-  const {username, fromDate, toDate} = filter;
+  const { username, fromDate, toDate } = filter;
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&username=${username}`;
 
   const response = await HttpClient.sendPatch(url);
@@ -174,16 +174,16 @@ export const ExportWithFilterByDate = async (filter) => {
 };
 
 export const GetListExport = async (filter) => {
-  const {nh, hk, type, fromDate, toDate, username} = filter;
+  const { nh, hk, type, /*fromDate, toDate,*/ username } = filter;
   const cvNH = convertNamHoc(nh);
   const url = `xnsv/exportExcelXNSVPrinted?nh=${cvNH}&hk=${hk}&type=${type}&username=${username}`;
   logger.info("XNSVhandler:: GetListExport: url: ", url);
 
   const response = await HttpClient.sendPutGetStatus(url);
   logger.info("XNSVhandler:: GetListExport: response: ", response);
-  const {statusCode,body} = response;
+  const { statusCode, body } = response;
 
-  if (statusCode !== 200 || body.length === 0){
+  if (statusCode !== 200 || body.length === 0) {
     return [];
   }
   const payload = body.map((item, index) => {
@@ -196,7 +196,7 @@ export const GetListExport = async (filter) => {
     item.date = moment(item.NgayThemGXN).format('DD/MM/YYYY');
     item.pk = item.PK;
     item.sk = item.SK;
-    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY')  : null;
+    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY') : null;
     item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
     return item;
   });
@@ -204,15 +204,15 @@ export const GetListExport = async (filter) => {
 };
 
 export const GetListExportByDate = async (filter) => {
-  const {fromDate, toDate, username} = filter;
+  const { fromDate, toDate, username } = filter;
   const url = `xnsv/exportExcelXNSVPrinted?fromDate=${fromDate}&toDate=${toDate}&username=${username}`;
   logger.info("XNSVhandler:: GetListExport: url: ", url);
 
   const response = await HttpClient.sendPutGetStatus(url);
   logger.info("XNSVhandler:: GetListExport: response: ", response);
-  const {statusCode,body} = response;
+  const { statusCode, body } = response;
 
-  if (statusCode !== 200 || body.length === 0){
+  if (statusCode !== 200 || body.length === 0) {
     return [];
   }
   const payload = body.map((item, index) => {
@@ -225,7 +225,7 @@ export const GetListExportByDate = async (filter) => {
     item.date = moment(item.NgayThemGXN).format('DD/MM/YYYY');
     item.pk = item.PK;
     item.sk = item.SK;
-    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY')  : null;
+    item.ngayin = item.NgayIn ? moment(item.NgayIn).format('DD/MM/YYYY') : null;
     item.link = item.linkDownloadPrint ? item.linkDownloadPrint : null;
     return item;
   });
