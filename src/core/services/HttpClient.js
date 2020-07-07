@@ -32,17 +32,18 @@ const loggerInterceptor = (configuration) => {
 httpClient.interceptors.request.use(
     (configuration) => {
 
-        const poolData = {
-            UserPoolId: 'ap-southeast-1_6pX9mWgjh',
-            ClientId: '32gh8i178tatha2f01gps8k014'
-        };
-        const userPool = new CognitoUserPool(poolData);
-        const cognitoUser = new CognitoUser({
-            Username: store.getState().auth.cognitoUser.signInUserSession.username,
-            Pool: userPool
-        });
+
         const refresh_token = store.getState().auth.cognitoUser.signInUserSession.refreshToken.token;
-        if (AWS.config.credentials.needsRefresh()) {
+        if (AWS.config.credentials && AWS.config.credentials.needsRefresh()) {
+            const poolData = {
+                UserPoolId: 'ap-southeast-1_6pX9mWgjh',
+                ClientId: '32gh8i178tatha2f01gps8k014'
+            };
+            const userPool = new CognitoUserPool(poolData);
+            const cognitoUser = new CognitoUser({
+                Username: store.getState().auth.cognitoUser.signInUserSession.username,
+                Pool: userPool
+            });
             cognitoUser.refreshSession(refresh_token, (err, session) => {
                 if (err) {
                     console.log(err);
