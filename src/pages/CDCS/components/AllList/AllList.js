@@ -182,6 +182,14 @@ const AllList = props => {
     });
   };
 
+  const handleUpdateFilter = response => {
+    const { DoiTuongCDCS } = response;
+    setfilter({
+      ...filter,
+      DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0].SK] : []
+    });
+  };
+
   const handleShowDataWithFilter = () => {
     dispatch(ProgressActions.showProgres());
     dispatch(Actions.countingWithFilter(filter)).then(data =>
@@ -196,13 +204,9 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter()).then(payload => {
-      const { DoiTuongCDCS } = payload;
-      setfilter({
-        ...filter,
-        DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0]] : []
-      });
-    });
+    dispatch(Actions.getDataFilter()).then(payload =>
+      handleUpdateFilter(payload)
+    );
     dispatch(Actions.countingWithFilter(filter)).then(data =>
       handleUpdateState(data)
     );

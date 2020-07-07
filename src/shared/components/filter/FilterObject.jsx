@@ -31,13 +31,13 @@ const MenuProps = {
     },
   },
 };
-
 export default function SimpleSelectObject(props) {
   const classes = useStyles();
   const { label, prop, clickFilter, helperText, defaultValue, /*multiple*/ } = props;
-  const [selectItem, setSelectItem] = React.useState(Array.isArray(defaultValue) ? defaultValue : []);
+  const [selectItem, setSelectItem] = React.useState(Array.isArray(defaultValue) ? defaultValue : [defaultValue]);
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
+  console.log("aaaaa: ", defaultValue)
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
@@ -46,6 +46,7 @@ export default function SimpleSelectObject(props) {
     setSelectItem(event.target.value);
     clickFilter(prop, event.target.value);
   };
+
   const drawData = () => {
     const { data } = props;
     return data.map((val, ind) => {
@@ -82,7 +83,6 @@ export default function SimpleSelectObject(props) {
           id="demo-simple-select-outlined"
           value={selectItem}
           onChange={handleChange}
-          defaultValue={defaultValue}
           MenuProps={MenuProps}
           labelWidth={labelWidth}
           inputProps={{ className: classes.select }}
