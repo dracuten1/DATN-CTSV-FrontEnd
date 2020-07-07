@@ -49,7 +49,7 @@ httpClient.interceptors.request.use(
                     console.log(err);
                 } else {
                     AWS.config.credentials.params.Logins[
-                        'cognito-idp.<YOUR-REGION>.amazonaws.com/<YOUR_USER_POOL_ID>'
+                        'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh'
                     ] = session.getIdToken().getJwtToken();
                     AWS.config.credentials.refresh(err => {
                         if (err) {
