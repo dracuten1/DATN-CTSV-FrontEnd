@@ -183,14 +183,6 @@ const AllList = props => {
     });
   };
 
-  const handleUpdateFilter = response => {
-    const { DoiTuongCDCS } = response;
-    setfilter({
-      ...filter,
-      DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0].SK] : []
-    });
-  };
-
   const handleShowDataWithFilter = () => {
     dispatch(ProgressActions.showProgres());
     dispatch(Actions.countingWithFilter(filter)).then(data =>
@@ -205,9 +197,13 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter()).then(payload =>
-      handleUpdateFilter(payload)
-    );
+    dispatch(Actions.getDataFilter()).then(payload =>{
+      const { DoiTuongCDCS } = payload;
+      setfilter({
+        ...filter,
+        DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0].SK] : []
+      });
+    });
     dispatch(Actions.countingWithFilter(filter)).then(data =>
       handleUpdateState(data)
     );
@@ -219,11 +215,11 @@ const AllList = props => {
     type: 'success',
     message: 'Thực hiện thành công!'
   };
-  // const errorSnackBarType = {
-  //   open: true,
-  //   type: 'error',
-  //   message: 'Vui lòng chọn loại CDCS!'
-  // };
+  const errorSnackBarType = {
+    open: true,
+    type: 'error',
+    message: 'Vui lòng chọn loại Đối Tượng!'
+  };
   const errorSnackBarMSSV = {
     open: true,
     type: 'error',
@@ -293,8 +289,8 @@ const AllList = props => {
                       dispatch(Actions.countingWithMSSV(filter)).then(data =>
                         handleUpdateStateMSSV(data)
                       );
-                  } else if (filter.typeCDCS === '') {
-                    setSnackBarValue(errorSnackBarMSSV);
+                  } else if (filter.DoiTuong.length === 0) {
+                    setSnackBarValue(errorSnackBarType);
                     dispatch(ProgressActions.hideProgress());
                   } else
                     dispatch(Actions.countingWithFilter(filter)).then(data =>

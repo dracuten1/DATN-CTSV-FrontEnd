@@ -4,7 +4,6 @@ import FilterCDCS from 'shared/components/filter/FilterObject';
 import TextField from '@material-ui/core/TextField';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { logger } from 'core/services/Apploger';
 import './Filters.scss';
 
 const useStyles = makeStyles(() => ({
