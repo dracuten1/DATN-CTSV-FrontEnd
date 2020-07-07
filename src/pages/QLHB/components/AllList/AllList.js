@@ -91,8 +91,8 @@ const AllList = props => {
     isHBKK,
     isCounting,
     listLink,
-    listDoiTuong,
-    listDonViTaiTro
+    // listDoiTuong,
+    // listDonViTaiTro
   } = QLHBState;
 
   const classes = useStyles();

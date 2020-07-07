@@ -94,4 +94,6 @@ export const UpdateStudentStatus = async (body) => {
   const url = `xnsv/updateTTHV`;
   logger.info('TTSVHandler:: update status:: body: ', body);
   const response = await HttpClient.sendPutWithBody(url, body);
+  logger.info('TTSVHandler:: update status:: response: ', response);
+
 }

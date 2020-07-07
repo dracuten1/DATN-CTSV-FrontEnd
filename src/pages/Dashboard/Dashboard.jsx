@@ -135,7 +135,7 @@ export default function Dashboard() {
           <h5 className={classes.description}>
             Tham mưu và giúp Hiệu trưởng xây dựng các kế hoạch, biện pháp tổ
             chức thực hiện các hoạt động nhằm giáo dục về chính trị, tư tưởng
-            cho sinh viên; <br/> xây dựng các quy chế, quy định và kế hoạch tổ chức
+            cho sinh viên; <br /> xây dựng các quy chế, quy định và kế hoạch tổ chức
             quản lý sinh viên; phục vụ quyền lợi chính đáng của sinh viên; tổ
             chức giám sát, kiểm tra, đánh giá kết quả thực hiện công tác sinh
             viên theo nhiệm vụ được giao.
@@ -144,9 +144,9 @@ export default function Dashboard() {
       </Grid>
       <div>
         <Grid container>
-          {data.map(item => {
+          {data.map((item, index) => {
             return (
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={4} key={`${index}ind`}>
                 <InfoArea
                   title={item.title}
                   description={item.description}

@@ -3,7 +3,11 @@ import axios from "axios";
 import { logger } from 'core/services/Apploger';
 import appConfig from "../../config/app-config";
 import store from '../../store';
-
+import * as AWS from 'aws-sdk/global';
+import {
+    CognitoUserPool,
+    CognitoUser
+} from 'amazon-cognito-identity-js';
 /**
  * Axios basic configuration
  * Some general configuration can be added like timeout, headers, params etc. More details can be found on https://github.com/axios/axios
@@ -28,6 +32,36 @@ const loggerInterceptor = (configuration) => {
 /** Adding the request interceptors */
 httpClient.interceptors.request.use(
     (configuration) => {
+
+        const poolData = {
+            UserPoolId: 'ap-southeast-1_6pX9mWgjh',
+            ClientId: '32gh8i178tatha2f01gps8k014'
+        };
+        const userPool = new CognitoUserPool(poolData);
+        const cognitoUser = new CognitoUser({
+            Username: store.getState().auth.cognitoUser.signInUserSession.username,
+            Pool: userPool
+        });
+        const refresh_token = store.getState().auth.cognitoUser.signInUserSession.refreshToken.token;
+        if (AWS.config.credentials.needsRefresh()) {
+            cognitoUser.refreshSession(refresh_token, (err, session) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    AWS.config.credentials.params.Logins[
+                        'cognito-idp.<YOUR-REGION>.amazonaws.com/<YOUR_USER_POOL_ID>'
+                    ] = session.getIdToken().getJwtToken();
+                    AWS.config.credentials.refresh(err => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('TOKEN SUCCESSFULLY UPDATED');
+                        }
+                    });
+                }
+            });
+        }
+
 
         const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.idToken;
 
@@ -171,7 +205,7 @@ export const sendDeleteWithStatusCode = async (url, requestBody) => {
 
 export const sendPatch = async (url) => {
     const response = await httpClient.patch(url);
-    
+
     return response.data;
 };
 
