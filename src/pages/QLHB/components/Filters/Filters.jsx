@@ -91,7 +91,6 @@ export default function Filters(props) {
                 prop="fromNH"
                 defaultValue={fromNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -125,7 +124,6 @@ export default function Filters(props) {
                 prop="toNH"
                 defaultValue={toNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -172,7 +170,6 @@ export default function Filters(props) {
                 prop="fromNH"
                 defaultValue={fromNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -206,7 +203,6 @@ export default function Filters(props) {
                 prop="toNH"
                 defaultValue={toNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -254,7 +250,6 @@ export default function Filters(props) {
                 prop="fromNH"
                 defaultValue={fromNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -288,7 +283,6 @@ export default function Filters(props) {
                 prop="toNH"
                 defaultValue={toNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -337,7 +331,6 @@ export default function Filters(props) {
                 prop="fromNH"
                 defaultValue={fromNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -371,7 +364,6 @@ export default function Filters(props) {
                 prop="toNH"
                 defaultValue={toNH}
                 data={[
-                  'None',
                   `${year}-${year + 1}`,
                   `${year - 1}-${year}`,
                   `${year - 2}-${year - 1}`,
@@ -402,7 +394,6 @@ export default function Filters(props) {
             prop="nh"
             defaultValue={nh}
             data={[
-              'None',
               `${year}-${year + 1}`,
               `${year - 1}-${year}`,
               `${year - 2}-${year - 1}`,

@@ -26,11 +26,11 @@ import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
 import { Filters } from '../Filters';
-import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
