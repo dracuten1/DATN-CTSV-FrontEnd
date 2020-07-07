@@ -84,8 +84,10 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <MuiThemeProvider theme={themeFilter}>
+          <Filters />
+          <ContainedButton label="Lọc sinh viên" />
+        </MuiThemeProvider>
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>

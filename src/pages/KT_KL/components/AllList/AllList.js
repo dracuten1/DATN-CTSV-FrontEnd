@@ -21,6 +21,7 @@ import { Filters } from '../Filters';
 import { AddDialog } from '../AddDialog';
 import { MuiThemeProvider } from '@material-ui/core';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -179,8 +180,11 @@ const AllList = props => {
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardActions className={classes.actions}>
-        <Filters />
-        <ContainedButton label="Lọc sinh viên" />
+        <MuiThemeProvider theme={themeFilter}>
+          <Filters />
+          <ContainedButton label="Lọc sinh viên" />
+        </MuiThemeProvider>
+
       </CardActions>
       <Divider />
       <CardContent className={classes.content}>

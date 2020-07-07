@@ -33,6 +33,7 @@ import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -134,7 +135,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   //Create Menu
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -269,61 +270,63 @@ const AllList = props => {
 
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters
-              onFilter={handleFilter}
-              isCounting={isCounting}
-              filter={filter}
-              isCase={isCase}
-            />
-            <ContainedButton
-              handleClick={() => {
-                dispatch(ProgressActions.showProgres());
-                if (isCounting) {
-                  switch (isCase) {
-                    case 1:
-                      dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                        handleUpdateStateFilter(data)
-                      );
-                      break;
-                    case 2:
-                      dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                        handleUpdateStateFilter(data)
-                      );
-                      break;
-                    case 3:
-                      dispatch(
-                        Actions.countingWithDoiTuong(filter)
-                      ).then(data => handleUpdateStateFilter(data));
-                      break;
-                    default:
-                      dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                        handleUpdateStateFilter(data)
-                      );
+          <MuiThemeProvider theme={themeFilter}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Filters
+                onFilter={handleFilter}
+                isCounting={isCounting}
+                filter={filter}
+                isCase={isCase}
+              />
+              <ContainedButton
+                handleClick={() => {
+                  dispatch(ProgressActions.showProgres());
+                  if (isCounting) {
+                    switch (isCase) {
+                      case 1:
+                        dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                          handleUpdateStateFilter(data)
+                        );
+                        break;
+                      case 2:
+                        dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
+                          handleUpdateStateFilter(data)
+                        );
+                        break;
+                      case 3:
+                        dispatch(
+                          Actions.countingWithDoiTuong(filter)
+                        ).then(data => handleUpdateStateFilter(data));
+                        break;
+                      default:
+                        dispatch(Actions.countingWithDVTT(filter)).then(data =>
+                          handleUpdateStateFilter(data)
+                        );
+                    }
+                  } else {
+                    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+                      handleUpdateStateFilter(data)
+                    );
                   }
-                } else {
-                  dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                    handleUpdateStateFilter(data)
-                  );
-                }
-              }}
-              label="Lọc dữ liệu"
-            />
-          </div>
+                }}
+                label="Lọc dữ liệu"
+              />
+            </div>
+          </MuiThemeProvider>
           <div>
             {isCounting ? (
               <div />
             ) : (
-              <Button
-                onClick={() => setImportOpen(true)}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                <ImportIcon /> &nbsp;Import
-              </Button>
-            )}
+                <Button
+                  onClick={() => setImportOpen(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '8px' }}
+                >
+                  <ImportIcon /> &nbsp;Import
+                </Button>
+              )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -405,45 +408,16 @@ const AllList = props => {
                     isCounting
                       ? {}
                       : {
-                          onRowUpdate: (newData, oldData) =>
-                            new Promise(resolve => {
-                              dispatch(ProgressActions.showProgres());
-                              setTimeout(async () => {
-                                resolve();
-                                if (oldData) {
-                                  logger.info('Newdata: ', newData);
-                                  const response = await QLHBHandler.UpdateOneStudentByType(
-                                    newData,
-                                    type
-                                  );
-                                  if (response.statusCode !== 200) {
-                                    setSnackBarValue(errorSnackBar);
-                                    dispatch(ProgressActions.hideProgress());
-                                    return;
-                                  }
-                                  setSnackBarValue(successSnackBar);
-                                  setState(prevState => {
-                                    const data = [...prevState.data];
-                                    data[data.indexOf(oldData)] = newData;
-                                    return { ...prevState, data };
-                                  });
-                                }
-                              }, 600);
-                              dispatch(ProgressActions.hideProgress());
-                            }),
-
-                          onRowDelete: oldData =>
-                            new Promise(resolve => {
-                              dispatch(ProgressActions.showProgres());
-                              setTimeout(async () => {
-                                resolve();
-                                logger.info('Olddata: ', oldData);
-                                const { PK, SK, id } = oldData;
-                                const response = await QLHBHandler.DeleteOneCertificate(
-                                  PK,
-                                  SK,
-                                  type,
-                                  id
+                        onRowUpdate: (newData, oldData) =>
+                          new Promise(resolve => {
+                            dispatch(ProgressActions.showProgres());
+                            setTimeout(async () => {
+                              resolve();
+                              if (oldData) {
+                                logger.info('Newdata: ', newData);
+                                const response = await QLHBHandler.UpdateOneStudentByType(
+                                  newData,
+                                  type
                                 );
                                 if (response.statusCode !== 200) {
                                   setSnackBarValue(errorSnackBar);
@@ -453,13 +427,42 @@ const AllList = props => {
                                 setSnackBarValue(successSnackBar);
                                 setState(prevState => {
                                   const data = [...prevState.data];
-                                  data.splice(data.indexOf(oldData), 1);
+                                  data[data.indexOf(oldData)] = newData;
                                   return { ...prevState, data };
                                 });
-                              }, 600);
-                              dispatch(ProgressActions.hideProgress());
-                            })
-                        }
+                              }
+                            }, 600);
+                            dispatch(ProgressActions.hideProgress());
+                          }),
+
+                        onRowDelete: oldData =>
+                          new Promise(resolve => {
+                            dispatch(ProgressActions.showProgres());
+                            setTimeout(async () => {
+                              resolve();
+                              logger.info('Olddata: ', oldData);
+                              const { PK, SK, id } = oldData;
+                              const response = await QLHBHandler.DeleteOneCertificate(
+                                PK,
+                                SK,
+                                type,
+                                id
+                              );
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                dispatch(ProgressActions.hideProgress());
+                                return;
+                              }
+                              setSnackBarValue(successSnackBar);
+                              setState(prevState => {
+                                const data = [...prevState.data];
+                                data.splice(data.indexOf(oldData), 1);
+                                return { ...prevState, data };
+                              });
+                            }, 600);
+                            dispatch(ProgressActions.hideProgress());
+                          })
+                      }
                   }
                 />
               </MuiThemeProvider>
@@ -476,8 +479,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}

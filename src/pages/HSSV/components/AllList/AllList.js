@@ -14,6 +14,7 @@ import {
   MuiThemeProvider,
   Typography,
 } from '@material-ui/core';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter2';
 
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
@@ -497,20 +498,23 @@ const AllList = props => {
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
-          <Filters onFilter={handleFilter} />
-          <ContainedButton
-            handleClick={() => {
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
-                setState({
-                  ...state,
-                  data: [body]
-                })
-              );
-            }}
-            label="Tìm kiếm"
-          />
-          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px" }}>
+          <MuiThemeProvider theme={themeFilter}>
+            <Filters onFilter={handleFilter} />
+            <ContainedButton
+              handleClick={() => {
+                dispatch(ProgressActions.showProgres());
+                dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
+                  setState({
+                    ...state,
+                    data: [body]
+                  })
+                );
+              }}
+              label="Tìm kiếm"
+            />
+          </MuiThemeProvider>
+
+          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px", marginTop: '8px' }}>
             <div >
               <Button
                 onClick={() => {

@@ -33,6 +33,7 @@ import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import UpdateDialog from '../AddDialog/index';
 import { Filters } from '../Filters';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -122,7 +123,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => {};
+  const handleImport = () => { };
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -286,15 +287,17 @@ const AllList = props => {
           handleClose={handleCloseUpdateDialog}
         />
         <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
-            <ContainedButton
-              handleClick={
-                isCase === 10 ? handleShowDataMSSV : handleShowListData
-              }
-              label="Lọc sinh viên"
-            />
-          </div>
+          <MuiThemeProvider theme={themeFilter}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
+              <ContainedButton
+                handleClick={
+                  isCase === 10 ? handleShowDataMSSV : handleShowListData
+                }
+                label="Lọc sinh viên"
+              />
+            </div>
+          </MuiThemeProvider>
           <div>
             {isCase !== 10 ? (
               <>
@@ -318,8 +321,8 @@ const AllList = props => {
                 </Button>
               </>
             ) : (
-              <div />
-            )}
+                <div />
+              )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -357,8 +360,8 @@ const AllList = props => {
                       {isCase === 10 ? (
                         <b>Tình Trạng Sinh Viên</b>
                       ) : (
-                        <b>DANH SÁCH {filter.type}</b>
-                      )}
+                          <b>DANH SÁCH {filter.type}</b>
+                        )}
                     </div>
                   }
                   columns={state.columns}
@@ -388,8 +391,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <CustomizedSnackbars
           value={snackBarValue}
           handleClose={handleSnackBarClose}
