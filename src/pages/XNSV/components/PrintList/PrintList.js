@@ -34,6 +34,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 import Filters from '../filters/Filters';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -488,26 +489,28 @@ const PrintList = props => {
           {isPrintList ? (
             <div />
           ) : (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Filters onFilter={handleFilter} filter={filter} />
-                <ContainedButton
-                  handleClick={() => {
-                    dispatch(ProgressActions.showProgres());
-                    isHistoryList
-                      ? dispatch(
-                        XNSVActions.getListExport(filter)
-                      ).then(response =>
-                        handleUpdateStateColumn(response, false)
-                      )
-                      : dispatch(
-                        XNSVActions.getListExportByDate(filter)
-                      ).then(response =>
-                        handleUpdateStateColumn(response, false)
-                      );
-                  }}
-                  label="Lọc sinh viên"
-                />
-              </div>
+              <MuiThemeProvider theme={themeFilter}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Filters onFilter={handleFilter} filter={filter} />
+                  <ContainedButton
+                    handleClick={() => {
+                      dispatch(ProgressActions.showProgres());
+                      isHistoryList
+                        ? dispatch(
+                          XNSVActions.getListExport(filter)
+                        ).then(response =>
+                          handleUpdateStateColumn(response, false)
+                        )
+                        : dispatch(
+                          XNSVActions.getListExportByDate(filter)
+                        ).then(response =>
+                          handleUpdateStateColumn(response, false)
+                        );
+                    }}
+                    label="Lọc sinh viên"
+                  />
+                </div>
+              </MuiThemeProvider>
             )}
           <div>
             <div>

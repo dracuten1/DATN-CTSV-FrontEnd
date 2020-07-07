@@ -533,7 +533,7 @@ const PrintList = props => {
               />
             </div>
           </MuiThemeProvider>
-          <div>
+          <div style={{ marginTop: '8px' }}>
             {isPrintList ? (
               <>
                 {filter.status === 'Chưa In' ? (

@@ -32,6 +32,21 @@ const themeFilter = createMuiTheme({
                     width: 'fit-content'
                 }
             }
+        },
+        MuiButton: {
+            root: {
+                '&': {
+                    padding: '4px 16px !important',
+                    marginTop: '15px !important'
+                }
+            }
+        },
+        MuiInputLabel: {
+            outlined: {
+                '&': {
+                    transform: 'translate(8px, 8px) scale(1)'
+                }
+            }
         }
     }
 });

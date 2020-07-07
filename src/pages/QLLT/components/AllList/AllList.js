@@ -31,6 +31,7 @@ import Types from 'reduxs/reducers/QLLT/actionTypes';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -109,7 +110,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const parseNHToString = nh => {
     switch (nh) {
@@ -176,24 +177,26 @@ const AllList = props => {
 
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters onFilter={handleFilter} filter={filter} />
-            <ContainedButton
-              handleClick={() => {
-                dispatch(ProgressActions.showProgres());
-                if (filter.type === 'All' || filter.type === 'all')
-                  dispatch(Actions.getAllListWithFilter(filter)).then(data =>
-                    handleUpdateState(data, true)
-                  );
-                else
-                  dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
-                    handleUpdateState(data, false)
-                  );
-                updateBegin = 1;
-              }}
-              label="Lọc sinh viên"
-            />
-          </div>
+          <MuiThemeProvider theme={themeFilter}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Filters onFilter={handleFilter} filter={filter} />
+              <ContainedButton
+                handleClick={() => {
+                  dispatch(ProgressActions.showProgres());
+                  if (filter.type === 'All' || filter.type === 'all')
+                    dispatch(Actions.getAllListWithFilter(filter)).then(data =>
+                      handleUpdateState(data, true)
+                    );
+                  else
+                    dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
+                      handleUpdateState(data, false)
+                    );
+                  updateBegin = 1;
+                }}
+                label="Lọc sinh viên"
+              />
+            </div>
+          </MuiThemeProvider>
           <div>
             <Button
               onClick={() => setImportOpen(true)}
@@ -241,8 +244,8 @@ const AllList = props => {
                       {isAlllist ? (
                         <b>DANH SÁCH NGOẠI TRÚ</b>
                       ) : (
-                        <b>DANH SÁCH KTX</b>
-                      )}
+                          <b>DANH SÁCH KTX</b>
+                        )}
                     </div>
                   }
                   columns={state.columns}
@@ -315,8 +318,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

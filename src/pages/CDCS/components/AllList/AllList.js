@@ -30,6 +30,7 @@ import Types from 'reduxs/reducers/CDCS/actionTypes';
 import Actions from 'reduxs/reducers/CDCS/action';
 import Columns from './columns';
 import { Filters } from '../Filters';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -136,7 +137,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => {};
+  const handleImport = () => { };
 
   const handleUpdateState = response => {
     switch (filter.typeCDCS) {
@@ -274,30 +275,32 @@ const AllList = props => {
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Filters onFilter={handleFilter} isCase={isCase} filter={filter} />
-            <ContainedButton
-              handleClick={() => {
-                dispatch(ProgressActions.showProgres());
-                if (isCase === 6) {
-                  if (filter.mssv === '') {
+          <MuiThemeProvider theme={themeFilter}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Filters onFilter={handleFilter} isCase={isCase} filter={filter} />
+              <ContainedButton
+                handleClick={() => {
+                  dispatch(ProgressActions.showProgres());
+                  if (isCase === 6) {
+                    if (filter.mssv === '') {
+                      setSnackBarValue(errorSnackBarMSSV);
+                      dispatch(ProgressActions.hideProgress());
+                    } else
+                      dispatch(Actions.countingWithMSSV(filter)).then(data =>
+                        handleUpdateStateMSSV(data)
+                      );
+                  } else if (filter.typeCDCS === '') {
                     setSnackBarValue(errorSnackBarMSSV);
                     dispatch(ProgressActions.hideProgress());
                   } else
-                    dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                      handleUpdateStateMSSV(data)
+                    dispatch(Actions.countingWithFilter(filter)).then(data =>
+                      handleUpdateState(data)
                     );
-                } else if (filter.typeCDCS === '') {
-                  setSnackBarValue(errorSnackBarMSSV);
-                  dispatch(ProgressActions.hideProgress());
-                } else
-                  dispatch(Actions.countingWithFilter(filter)).then(data =>
-                    handleUpdateState(data)
-                  );
-              }}
-              label="Lọc dữ liệu"
-            />
-          </div>
+                }}
+                label="Lọc dữ liệu"
+              />
+            </div>
+          </MuiThemeProvider>
           <div>
             <Button
               onClick={() => setImportOpen(true)}
@@ -379,8 +382,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-          ''
-        )}
+            ''
+          )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}
