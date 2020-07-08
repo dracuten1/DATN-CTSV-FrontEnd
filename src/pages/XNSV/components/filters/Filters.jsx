@@ -22,9 +22,10 @@ export default function Filters(props) {
   const { onFilter, filter } = props;
 
   const XNSVState = useSelector(state => state.XNSVState);
+  const AuthState = useSelector(state => state.auth);
   const { listUser, isHistoryList } = XNSVState;
-  const {hk, nh, type, username} = filter;
-
+  const {hk, nh, type} = filter;
+  const { username } = AuthState.cognitoUser;
   if (tempArr.length === 1) tempArr = tempArr.concat(listUser);
 
   const dt = new Date();
@@ -56,6 +57,7 @@ export default function Filters(props) {
               `${year - 6}-${year - 5}`
             ]}
           />
+          <div>
           <Filter
             clickFilter={onFilter}
             prop="type"
@@ -73,6 +75,7 @@ export default function Filters(props) {
               'Vay vốn'
             ]}
           />
+          </div>
           <Filter
             clickFilter={onFilter}
             prop="username"
@@ -93,6 +96,7 @@ export default function Filters(props) {
             clickFilter={onFilter}
             label="Đến ngày"
           />
+          <>
           <Filter
             clickFilter={onFilter}
             prop="username"
@@ -100,6 +104,7 @@ export default function Filters(props) {
             label="User"
             data={tempArr}
           />
+          </>
         </>
       )}
     </div>
