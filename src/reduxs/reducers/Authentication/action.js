@@ -183,8 +183,10 @@ export const auth = (email, password) => {
                 dispatch(authResetPassword());
             }
         });
+
     };
 };
+
 export const handleNewPassword = (newPassword) => {
     return dispatch => {
         dispatch(authStart());
