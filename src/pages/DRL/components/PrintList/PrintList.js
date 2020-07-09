@@ -92,6 +92,7 @@ const PrintList = props => {
   const dispatch = useDispatch();
 
   const DRLState = useSelector(state => state.DRLState);
+  const AuthState = useSelector(state => state.auth);
 
   const {
     listLink,
@@ -100,6 +101,7 @@ const PrintList = props => {
     isHistoryList,
     isAllList
   } = DRLState;
+  const { username } = AuthState.cognitoUser;
 
   logger.info('dataPrint: ', dataPrint);
   const [open, setOpen] = React.useState(false);
@@ -278,7 +280,7 @@ const PrintList = props => {
     time: `${year - 1}-${year}`,
     xeploai: 'Giỏi',
     status: 'Chưa In',
-    username: '',
+    username: username,
     from: new Date(),
     to: new Date()
   });

@@ -30,11 +30,11 @@ import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import PrintIcon from '@material-ui/icons/Print';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import XNTKTDialog from '../XNTruockhiThemDialog/XNTruocKhiThemDialog';
 import Filters from '../filters/Filters';
-import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -90,7 +90,9 @@ const PrintList = props => {
   const dispatch = useDispatch();
 
   const XNSVState = useSelector(state => state.XNSVState);
+  const AuthState = useSelector(state => state.auth);
   const { dataList, listLink, isPrintList, isHistoryList } = XNSVState;
+  const { username } = AuthState.cognitoUser;
 
   const Print = [
     { title: 'SCN', field: 'scn', editable: 'never', filtering: false },
@@ -253,7 +255,7 @@ const PrintList = props => {
     hk: '1',
     nh: `${year - 1}-${year}`,
     type: 'Đang học',
-    username: '',
+    username: username,
     fromDate: moment(new Date()).format('YYYY-MM-DD'),
     toDate: moment(new Date()).format('YYYY-MM-DD')
   });

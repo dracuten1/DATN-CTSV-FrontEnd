@@ -21,13 +21,17 @@ export default function Filters(props) {
   const { onFilter, valueType, filter } = props;
 
   const DRLState = useSelector(state => state.DRLState);
+  const AuthState = useSelector(state => state.auth);
+
   const { listUser } = DRLState;
+  const { username } = AuthState.cognitoUser;
+
   if (tempArr.length === 1) tempArr = tempArr.concat(listUser);
 
   const dt = new Date();
   const year = dt.getFullYear();
 
-  const { nh, hk, type, time, xeploai, status, username, from, to } = filter;
+  const { nh, hk, type, time, xeploai, status, from, to } = filter;
 
   switch (valueType) {
     case 0:
