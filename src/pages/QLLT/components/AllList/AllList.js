@@ -28,10 +28,10 @@ import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as QLLTHandler from 'handlers/QLLTHandler';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Types from 'reduxs/reducers/QLLT/actionTypes';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLLT/action';
 import { Filters } from '../Filters';
-import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -91,11 +91,11 @@ const AllList = props => {
   const [filter, setfilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
-    type: 'All'
+    type: 'KTX'
   });
   const [state, setState] = useState({
     data: dataList,
-    columns: Columns.ALL
+    columns: Columns.KTX
   });
 
   const handleUpdateState = (response, bool) => {
@@ -133,8 +133,8 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getAllListWithFilter(filter)).then(data =>
-      handleUpdateState(data, true)
+    dispatch(Actions.getKtxListWithFilter(filter)).then(data =>
+      handleUpdateState(data, false)
     );
     updateBegin += 1;
   }
