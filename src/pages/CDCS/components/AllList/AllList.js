@@ -197,7 +197,7 @@ const AllList = props => {
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter()).then(payload =>{
+    dispatch(Actions.getDataFilter()).then(payload => {
       const { DoiTuongCDCS } = payload;
       setfilter({
         ...filter,
@@ -276,7 +276,7 @@ const AllList = props => {
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
               <Filters onFilter={handleFilter} isCase={isCase} filter={filter} />
               <ContainedButton
                 handleClick={() => {

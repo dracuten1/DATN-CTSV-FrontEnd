@@ -25,6 +25,7 @@ import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
 import * as XNSVHandler from 'handlers/XNSVHandler';
 import * as AdminHandler from 'handlers/AdminHandler';
+import Creatable from 'shared/components/creatableSelect';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -75,6 +76,8 @@ const defaultValue = {
   CMND: '',
   NoiCapCMND: '',
   NgayCapCMND: date,
+  company: '',
+  NgayGiaTri: date,
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -87,9 +90,22 @@ const XNTruocKhiThemDialog = props => {
   const [values, setValues] = React.useState(defaultValue);
   const [progress, setProgress] = React.useState(true);
   const [signer, setSigner] = React.useState({});
+  const [company, setCompany] = React.useState({});
   // const [signerObj, setSignerObj] = React.useState({});
   const [newCertificate, setCertificate] = React.useState({});
 
+
+  const getCompany = async () => {
+    const response = await XNSVHandler.GetCompany();
+    logger.info("XNSV:: Get company response: ", response);
+    const { companies } = response;
+    const tmpCompany = []
+    companies.forEach(element => {
+      tmpCompany.push({ title: element });
+    });
+    setCompany(tmpCompany);
+    logger.info("XNSV:: Get company: ", companies);
+  }
 
   const getSignerEnum = async () => {
 
@@ -111,6 +127,7 @@ const XNTruocKhiThemDialog = props => {
 
   React.useEffect(() => {
     getSignerEnum();
+    getCompany();
   }, []);
 
   const fetchCertificate = (prop) => event => {
@@ -165,6 +182,12 @@ const XNTruocKhiThemDialog = props => {
             Data = {
               NgonNgu: `${tmp.language}`,
               NgayCongBoKetQua: `${moment(tmp.expectedPublicationDate).format('DD/MM/YYYY')}`,
+            }
+            break;
+          case 'Giấy giới thiệu':
+            Data = {
+              TenCongTy: `${tmp.company}`,
+              NgayGiaTri: `${moment(tmp.NgayGiaTri).format('DD/MM/YYYY')}`,
             }
             break;
           default:
@@ -268,6 +291,7 @@ const XNTruocKhiThemDialog = props => {
 
 
   const handleChange = prop => event => {
+    logger.info(event)
     const value = event.target ? event.target.value : event;
     setValues({ ...values, [prop]: value });
     if (value === "Vay vốn") setIsOpenVayVonDialog(true)
@@ -633,6 +657,33 @@ const XNTruocKhiThemDialog = props => {
                   <MenuItem value="2020">2020</MenuItem>
                 </Select>
               </FormControl>
+            </div>
+          )}
+          {values.language === 'Tiếng Việt' && values.case === 'Giấy giới thiệu' && (
+            <div className={classes.container}>
+              <FormControl margin="normal">
+                <Creatable option={company} passNewValueToParent={event => {
+                  handleChange('company')(event);
+                  fetchCertificate('company')(event);
+                }} />
+              </FormControl>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  margin="normal"
+                  id="date-picker-dialog"
+                  label="Ngày hiệu lực"
+                  format="dd/MM/yyyy"
+                  value={values.NgayGiaTri}
+                  style={{ width: '400px', marginLeft: '8px' }}
+                  onChange={event => {
+                    handleChange('NgayGiaTri')(event);
+                    fetchCertificate('NgayGiaTri')(event);
+                  }}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </MuiPickersUtilsProvider>
             </div>
           )}
           {values.case === 'Chờ xét tốt nghiệp' && (

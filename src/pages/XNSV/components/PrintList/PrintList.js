@@ -492,7 +492,7 @@ const PrintList = props => {
             <div />
           ) : (
               <MuiThemeProvider theme={themeFilter}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
                   <Filters onFilter={handleFilter} filter={filter} />
                   <ContainedButton
                     handleClick={() => {

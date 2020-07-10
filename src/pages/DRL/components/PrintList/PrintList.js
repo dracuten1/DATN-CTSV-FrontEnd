@@ -512,7 +512,7 @@ const PrintList = props => {
         <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
               <Filters
                 valueType={valueType}
                 onFilter={handleFilter}
