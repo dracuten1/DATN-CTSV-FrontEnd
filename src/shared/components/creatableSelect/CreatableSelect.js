@@ -26,23 +26,32 @@ const useStyles = makeStyles(theme => ({
 export default function FreeSoloCreateOption(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState(null);
-
+    const { passNewValueToParent } = props;
     return (
         <Autocomplete
             value={value}
             onChange={(event, newValue) => {
+
+                let tmpvalue;
                 if (typeof newValue === 'string') {
-                    setValue({
+                    tmpvalue = {
                         title: newValue,
-                    });
+                    };
                 } else if (newValue && newValue.inputValue) {
                     // Create a new value from the user input
-                    setValue({
+                    tmpvalue = {
                         title: newValue.inputValue,
-                    });
+                    }
                 } else {
-                    setValue(newValue);
+                    tmpvalue = newValue;
                 }
+
+                setValue(tmpvalue)
+                passNewValueToParent({
+                    target: {
+                        value: tmpvalue.title,
+                    }
+                });
             }}
             filterOptions={(options, params) => {
                 const filtered = filter(options, params);
@@ -51,7 +60,7 @@ export default function FreeSoloCreateOption(props) {
                 if (params.inputValue !== '') {
                     filtered.push({
                         inputValue: params.inputValue,
-                        title: `Add "${params.inputValue}"`,
+                        title: `Thêm "${params.inputValue}"`,
                     });
                 }
 

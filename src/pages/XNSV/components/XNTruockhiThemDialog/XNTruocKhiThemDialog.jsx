@@ -77,7 +77,7 @@ const defaultValue = {
   NoiCapCMND: '',
   NgayCapCMND: date,
   company: '',
-  NgayHieuLuc: date,
+  NgayGiaTri: date,
 };
 
 const XNTruocKhiThemDialog = props => {
@@ -186,7 +186,8 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Giấy giới thiệu':
             Data = {
-
+              TenCongTy: `${tmp.company}`,
+              NgayGiaTri: `${moment(tmp.NgayGiaTri).format('DD/MM/YYYY')}`,
             }
             break;
           default:
@@ -290,6 +291,7 @@ const XNTruocKhiThemDialog = props => {
 
 
   const handleChange = prop => event => {
+    logger.info(event)
     const value = event.target ? event.target.value : event;
     setValues({ ...values, [prop]: value });
     if (value === "Vay vốn") setIsOpenVayVonDialog(true)
@@ -660,7 +662,10 @@ const XNTruocKhiThemDialog = props => {
           {values.language === 'Tiếng Việt' && values.case === 'Giấy giới thiệu' && (
             <div className={classes.container}>
               <FormControl margin="normal">
-                <Creatable option={company} />
+                <Creatable option={company} passNewValueToParent={event => {
+                  handleChange('company')(event);
+                  fetchCertificate('company')(event);
+                }} />
               </FormControl>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -668,11 +673,11 @@ const XNTruocKhiThemDialog = props => {
                   id="date-picker-dialog"
                   label="Ngày hiệu lực"
                   format="dd/MM/yyyy"
-                  value={values.NgayHieuLuc}
+                  value={values.NgayGiaTri}
                   style={{ width: '400px', marginLeft: '8px' }}
                   onChange={event => {
-                    handleChange('NgayHieuLuc')(event);
-                    fetchCertificate('NgayHieuLuc')(event);
+                    handleChange('NgayGiaTri')(event);
+                    fetchCertificate('NgayGiaTri')(event);
                   }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date'
