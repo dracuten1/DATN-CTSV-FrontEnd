@@ -5,7 +5,7 @@ const themeFilter = createMuiTheme({
         MuiOutlinedInput: {
             root: {
                 '&': {
-                    width: 'min-content',
+                    width: 'auto',
                 }
             },
             input: {
@@ -20,7 +20,7 @@ const themeFilter = createMuiTheme({
                 '&': {
                     width: 'fit-content !important',
                     marginBottom: '0px !important',
-                    minWidth: '0px !important'
+                    // minWidth: '0px !important'
                 }
             }
         },

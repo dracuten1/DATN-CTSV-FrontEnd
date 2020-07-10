@@ -288,7 +288,7 @@ const AllList = props => {
         />
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
               <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
               <ContainedButton
                 handleClick={
