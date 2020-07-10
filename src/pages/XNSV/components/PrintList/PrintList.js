@@ -117,7 +117,7 @@ const PrintList = props => {
         8: 'Hoàn tất chương trình'
       },
       filterCellStyle: {
-        paddingTop: 1
+        // paddingTop: 1
       },
       customFilterAndSearch: (term, rowData) => {
         if (valueCase !== term) {

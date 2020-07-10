@@ -40,6 +40,25 @@ const themeTable = createMuiTheme({
                 '&': {
                     width: '100% !important',
                 }
+            },
+            rounded: {
+                '&': {
+                    width: 'auto !important',
+                }
+            }
+        },
+        MuiCheckbox: {
+            colorSecondary: {
+                '&$checked': {
+                    color: "#2979ff !important"
+                },
+            }
+        },
+        MuiIconButton: {
+            colorSecondary: {
+                '&:hover': {
+                    backgroundColor: "#2979ff0a !important"
+                }
             }
         }
     }
