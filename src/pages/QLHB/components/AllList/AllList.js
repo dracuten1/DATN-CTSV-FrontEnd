@@ -30,10 +30,10 @@ import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/QLHB/actionTypes';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/QLHB/action';
 import { Filters } from '../Filters';
-import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
