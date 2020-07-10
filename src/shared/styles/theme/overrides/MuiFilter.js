@@ -29,7 +29,7 @@ const themeFilter = createMuiTheme({
                 '&': {
                     paddingTop: '6.5px !important',
                     paddingBottom: '6.5px !important',
-                    width: 'fit-content'
+                    width: '100%'
                 }
             }
         },
