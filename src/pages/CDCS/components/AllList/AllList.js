@@ -137,7 +137,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const handleUpdateState = response => {
     switch (filter.typeCDCS) {
@@ -215,10 +215,15 @@ const AllList = props => {
     type: 'success',
     message: 'Thực hiện thành công!'
   };
+  const errorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Thực hiện thất bại!'
+  };
   const errorSnackBarType = {
     open: true,
     type: 'error',
-    message: 'Vui lòng chọn loại Đối Tượng!'
+    message: 'Vui lòng chọn Đối Tượng!'
   };
   const errorSnackBarMSSV = {
     open: true,
@@ -276,8 +281,18 @@ const AllList = props => {
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
-              <Filters onFilter={handleFilter} isCase={isCase} filter={filter} />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                overflow: 'auto'
+              }}
+            >
+              <Filters
+                onFilter={handleFilter}
+                isCase={isCase}
+                filter={filter}
+              />
               <ContainedButton
                 handleClick={() => {
                   dispatch(ProgressActions.showProgres());
@@ -367,6 +382,30 @@ const AllList = props => {
                     },
                     filtering: false
                   }}
+                  editable={{
+                    onRowDelete: oldData =>
+                      new Promise(resolve => {
+                        setTimeout(async () => {
+                          resolve();
+                          const { PK, SK } = oldData;
+                          const response = await CDCSHandler.DeleteData(
+                            PK, SK
+                          );
+                          if (response.statusCode !== 200) {
+                            dispatch(ProgressActions.hideProgress());
+                            setSnackBarValue(errorSnackBar);
+                            return;
+                          }
+                          dispatch(ProgressActions.hideProgress());
+                          setSnackBarValue(successSnackBar);
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data.splice(data.indexOf(oldData), 1);
+                            return { ...prevState, data };
+                          });
+                        }, 600);
+                      })
+                  }}
                 />
               </MuiThemeProvider>
             </div>
@@ -382,8 +421,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-            ''
-          )}
+          ''
+        )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

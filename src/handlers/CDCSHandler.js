@@ -105,3 +105,14 @@ export const GetDataFilter = async () => {
 
   return response;
 };
+
+export const DeleteData = async (PK, SK) => {
+  const url = `chinhsach/thongke`;
+
+  logger.info('CDCSHanlder:: DeleteData: URL: ', url);
+
+  const response = await HttpClient2.sendDeleteWithStatusCode(url, { data: { PK, SK } });
+
+  logger.info('CDCSHanlder:: DeleteData: response: ', response);
+  return response;
+};
