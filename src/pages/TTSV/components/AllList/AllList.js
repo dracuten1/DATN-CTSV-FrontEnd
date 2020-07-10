@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -29,11 +29,11 @@ import Status from '@material-ui/icons/BusinessCenter';
 import UpdateIcon from '@material-ui/icons/Update';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ImportIcon from '@material-ui/icons/Input';
+import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import Columns from './columns';
 import Actions from '../../../../reduxs/reducers/TTSV/action';
 import UpdateDialog from '../AddDialog/index';
 import { Filters } from '../Filters';
-import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {},

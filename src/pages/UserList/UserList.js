@@ -1,8 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { UsersTable } from './components';
+import { makeStyles } from '@material-ui/core/styles';
 import * as SignersHandler from 'handlers/SignersHandler';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import { UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {

@@ -8,12 +8,11 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as ImportHandler from 'handlers/ImportHandler';
 import { logger } from 'core/services/Apploger';
 import { LinearProgress } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { withStyles } from '@material-ui/styles';
 import CustomizedSnackbars from '../snackBar/SnackBar';
 
 const useStyles = makeStyles(theme => ({

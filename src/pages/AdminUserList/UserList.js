@@ -1,8 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { UsersTable } from './components';
+import { makeStyles } from '@material-ui/core/styles';
 import * as AdminUsersHandler from 'handlers/AdminUserHandler';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import { UsersTable } from './components';
 
 const useStyles = makeStyles(theme => ({
   root: {
