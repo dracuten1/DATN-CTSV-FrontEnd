@@ -71,7 +71,7 @@ export default function Filters(props) {
               'Chờ xét tốt nghiệp',
               'Hoàn tất chương trình',
               'Thời gian học',
-              'Giới thiệu',
+              'Giấy giới thiệu',
               'Vay vốn'
             ]}
           />
