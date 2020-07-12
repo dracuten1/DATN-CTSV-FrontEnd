@@ -60,8 +60,18 @@ class Auth extends Component {
     });
     const { username, newpassword, confirmPassword } = this.state;
     if (newpassword !== confirmPassword) {
-      this.setState({ errorMsg: 'New passwords do not match.' });
-    } else {
+      this.setState({ 
+        errorMsg: 'Mật khẩu mới không khớp.',
+        resetpasswordloading: false,
+      });
+    }
+    else if (newpassword.length<8) {
+      this.setState({ 
+        errorMsg: 'Mật khẩu phải dài tối thiểu 8 ký tự.',
+        resetpasswordloading: false,
+      });
+    }
+    else {
 
       this.setState({ errorMsg: '' });
       const { onSetNewPassword, onAuth } = this.props;
