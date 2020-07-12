@@ -186,6 +186,7 @@ const XNTruocKhiThemDialog = props => {
             break;
           case 'Giấy giới thiệu':
             Data = {
+              NgonNgu: `${tmp.language}`,
               TenCongTy: `${tmp.company}`,
               NgayGiaTri: `${moment(tmp.NgayGiaTri).format('DD/MM/YYYY')}`,
             }
