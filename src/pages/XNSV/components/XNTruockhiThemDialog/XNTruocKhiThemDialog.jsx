@@ -727,7 +727,7 @@ const XNTruocKhiThemDialog = props => {
           )}
           <Divider className={classes.divider} />
           <FormControl className={classes.textField} margin="normal">
-            <InputLabel id="demo-simple-select-helper-label">
+            <InputLabel id="demo-simple-select-helper-label" disabled>
               Tình trạng
             </InputLabel>
             <Select
@@ -735,6 +735,7 @@ const XNTruocKhiThemDialog = props => {
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
               value={values.status}
+              disabled
               onChange={event => {
                 handleChange('status')(event)
                 fetchCertificate();
