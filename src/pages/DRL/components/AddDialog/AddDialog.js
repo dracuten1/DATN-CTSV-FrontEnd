@@ -17,7 +17,7 @@ import * as DRLHandler from 'handlers/DRLHandler';
 import * as AdminHandler from 'handlers/AdminHandler';
 import { logger } from 'core/services/Apploger';
 import { valueOrEmpty } from 'core/ultis/stringUtil';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, FormHelperText } from '@material-ui/core';
 import { CaseEnum, SemesterEnum } from './DRLEnum';
 
 const useStyles = makeStyles(theme => ({
@@ -40,8 +40,20 @@ const AddDialog = props => {
   const classes = useStyles();
 
   const { open, handleClose, handleAdd } = props;
-
-  const [values, setValues] = React.useState({
+  const defaultError = {
+    stt: false,
+    name: false,
+    mssv: false,
+    dob: false,
+    faculty: false,
+    case: false,
+    year: false,
+    semester: false,
+    isPrint: false,
+    signer: false,
+  }
+  const [errors, setErrors] = React.useState(defaultError);
+  const defaultValue = {
     stt: null,
     name: '',
     mssv: '',
@@ -54,7 +66,17 @@ const AddDialog = props => {
     signer: null,
     // pk: '',
     // sk: ''
-  });
+  }
+  const [values, setValues] = React.useState(defaultValue);
+
+  const validate = prop => event => {
+    const value = event.target ? event.target.value : event;
+    logger.info(`Validate ${prop}:${value}`);
+    if (value === '' || value === null || value === undefined)
+      setErrors({ ...errors, [prop]: true });
+    else
+      setErrors({ ...errors, [prop]: false });
+  }
 
   const handleChange = prop => event => {
     logger.info(event.target.value);
@@ -90,7 +112,7 @@ const AddDialog = props => {
         return `${(year - 5)}-${(year - 4)}`;
       case 1:
         return `${(year - 6)}-${(year - 5)}`;
-      default: 
+      default:
         return `${(year - 3)}-${(year - 2)}`;
     }
   }
@@ -160,7 +182,7 @@ const AddDialog = props => {
             Data[newTime] = { ...item };
           break;
         case CaseEnum.hk:
-          
+
           const semester = parseSemester(tmp.semester);
           const year = parseYear(tmp.year);
           logger.info("ADD DRL::: in caseEnum hk: ", semester);
@@ -274,8 +296,6 @@ const AddDialog = props => {
     setValues(studentInfo);
   };
 
-
-
   const drawMenuItem = data => {
     logger.info("DRL:: Add dialog:: drawMenuItem data: ", data);
     return Object.keys(data).map(key => {
@@ -286,6 +306,32 @@ const AddDialog = props => {
       );
     });
   };
+
+  const validateAddDialog = () => {
+    let valid = {}
+    //Loop lv1 
+    Object.keys(values).forEach(elem => {
+      if (['', null, undefined].includes(values[elem]))
+        valid = { ...valid, [elem]: true };
+      else if (Object.keys(values[elem]).length !== 0) {
+        //Loop lv2
+        Object.keys(values[elem]).forEach(subElem => {
+          if (['', null, undefined].includes(values[elem][subElem]))
+            valid = { ...valid, [subElem]: true };
+        })
+      }
+    });
+    setErrors({ ...errors, ...valid });
+    return Object.keys(valid).length === 0;
+  }
+
+  const handleSubmit = () => {
+    if (validateAddDialog()) {
+      addData();
+      setErrors(defaultError);
+      setValues(defaultValue);
+    }
+  }
 
   return (
     <div>
@@ -300,42 +346,65 @@ const AddDialog = props => {
           <TextField
             className={classes.textField}
             label="MSSV"
+            error={errors.mssv}
             value={values.mssv}
-            onChange={handleChange('mssv')}
-            onBlur={findStudentInfoById}
+            onChange={event => {
+              handleChange('mssv')(event);
+              validate('mssv')(event);
+            }}
+            onBlur={event => {
+              findStudentInfoById(event);
+              validate('mssv')(event);
+            }}
             margin="normal"
+            helperText={errors.mssv ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
             label="Họ tên"
             margin="normal"
+            error={errors.name}
             value={values.name}
-            onChange={handleChange('name')}
-            InputProps={{
-              readOnly: true
+            onChange={event => {
+              handleChange('name')
+              validate('name')(event);
             }}
+            onBlur={event => {
+              validate('name')(event);
+            }}
+            helperText={errors.name ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
             label="Ngày sinh"
             margin="normal"
+            error={errors.dob}
             value={values.dob}
-            onChange={handleChange('dob')}
-            InputProps={{
-              readOnly: true
+            onChange={event => {
+              handleChange('dob')(event);
+              validate('dob')(event);
             }}
+            onBlur={event => {
+              validate('dob')(event);
+            }}
+            helperText={errors.dob ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
             label="Khoa"
             margin="normal"
+            error={errors.faculty}
             value={values.faculty}
-            onChange={handleChange('faculty')}
-            InputProps={{
-              readOnly: true
+            onChange={event => {
+              handleChange('faculty')(event);
+              validate('faculty')(event);
             }}
+            onBlur={event => {
+              validate('faculty')(event);
+            }}
+            helperText={errors.faculty ? "Bắt buộc" : ""}
           />
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} error={errors.signer}>
             <InputLabel id="demo-simple-select-helper-label">
               Người kí
             </InputLabel>
@@ -345,13 +414,18 @@ const AddDialog = props => {
               onChange={event => {
                 handleChange('signer')(event);
                 fetchCertificate('signer')(event);
+                validate('signer')(event);
+              }}
+              onBlur={event => {
+                validate('signer')(event);
               }}
               value={values.signer}
             >
               {drawMenuItem(signer)}
             </Select>
+            {errors.signer ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} error={errors.case}>
             <InputLabel id="demo-simple-select-helper-label">
               Loại xác nhận
             </InputLabel>
@@ -361,14 +435,19 @@ const AddDialog = props => {
               onChange={event => {
                 handleChange('case')(event);
                 fetchCertificate('case')(event);
+                validate('case')(event);
+              }}
+              onBlur={event => {
+                validate('case')(event);
               }}
               value={values.case}
             >
               {drawMenuItem(CaseEnum)}
             </Select>
+            {errors.case ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
           {values.case === CaseEnum.nh && (
-            <FormControl className={classes.textField}>
+            <FormControl className={classes.textField} error={errors.year}>
               <InputLabel id="demo-simple-select-helper-label">
                 Năm học
               </InputLabel>
@@ -378,6 +457,10 @@ const AddDialog = props => {
                 onChange={event => {
                   handleChange('year')(event);
                   fetchCertificate('year')(event);
+                  validate('year')(event);
+                }}
+                onBlur={event => {
+                  validate('year')(event);
                 }}
                 defaultValue={4}
               >
@@ -389,11 +472,12 @@ const AddDialog = props => {
                 <MenuItem value={2}>{(year - 5)}-{(year - 4)}</MenuItem>
                 <MenuItem value={1}>{(year - 6)}-{(year - 5)}</MenuItem>
               </Select>
+              {errors.year ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
             </FormControl>
           )}
           {values.case === CaseEnum.hk && (
             <>
-              <FormControl className={classes.textField}>
+              <FormControl className={classes.textField} error={errors.year}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Năm học
                 </InputLabel>
@@ -403,6 +487,10 @@ const AddDialog = props => {
                   onChange={event => {
                     handleChange('year')(event);
                     fetchCertificate('year')(event);
+                    validate('year')(event);
+                  }}
+                  onBlur={event => {
+                    validate('year')(event);
                   }}
                   defaultValue={4}
                 >
@@ -414,8 +502,9 @@ const AddDialog = props => {
                   <MenuItem value={2}>{(year - 5)}-{(year - 4)}</MenuItem>
                   <MenuItem value={1}>{(year - 6)}-{(year - 5)}</MenuItem>
                 </Select>
+                {errors.year ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
               </FormControl>
-              <FormControl className={classes.textField}>
+              <FormControl className={classes.textField} error={errors.semester}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Học kỳ
                 </InputLabel>
@@ -425,21 +514,30 @@ const AddDialog = props => {
                   onChange={event => {
                     handleChange('semester')(event);
                     fetchCertificate('semester')(event);
+                    validate('semester')(event);
+                  }}
+                  onBlur={event => {
+                    validate('semester')(event);
                   }}
                   defaultValue={SemesterEnum.hk1}
                 >
                   {drawMenuItem(SemesterEnum)}
                 </Select>
+                {errors.semester ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
               </FormControl>
             </>
           )}
           <div style={{ display: missingDataError ? "block" : "none", color: "red", marginLeft: 10 }}>Không có dữ liệu điểm rèn luyện!</div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={() => {
+            handleClose();
+            setErrors(defaultError);
+            setValues(defaultValue);
+          }} color="primary">
             Huỷ
           </Button>
-          <Button onClick={addData} color="primary" disabled={disableAdd}>
+          <Button onClick={handleSubmit} color="primary" disabled={disableAdd}>
             Thêm
           </Button>
         </DialogActions>

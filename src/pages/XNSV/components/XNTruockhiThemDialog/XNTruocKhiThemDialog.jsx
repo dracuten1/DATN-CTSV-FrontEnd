@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Divider } from '@material-ui/core';
+import { Divider, FormHelperText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -26,6 +26,7 @@ import { valueOrEmpty } from 'core/ultis/stringUtil';
 import * as XNSVHandler from 'handlers/XNSVHandler';
 import * as AdminHandler from 'handlers/AdminHandler';
 import Creatable from 'shared/components/creatableSelect';
+import { is } from 'date-fns/locale';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -45,6 +46,40 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const date = new Date();
+
+const defaultError = {
+  stt: false,
+  name: false,
+  mssv: false,
+  city: false,
+  district: false,
+  ward: false,
+  address: false,
+  language: false,
+  status: false,
+  reason: false,
+  case: false,
+  semester: false,
+  year: false,
+  isPrint: false,
+  note: false,
+  signer: false,
+  studentEndYear: false,
+  studingBeginDate: date,
+  studingEndDate: date,
+  expectedPublicationDate: date,
+  dien: false,
+  doituong: false,
+  date: date,
+  addSemester: false,
+  addYear: ``,
+  startDateBaoLuu: date,
+  CMND: false,
+  NoiCapCMND: false,
+  NgayCapCMND: date,
+  company: false,
+  NgayGiaTri: date,
+}
 
 const defaultValue = {
   stt: null,
@@ -80,6 +115,25 @@ const defaultValue = {
   NgayGiaTri: date,
 };
 
+const defaultCertificate = {
+  Data: {},
+  HoVaTenNguoiKy: undefined,
+  NgonNgu: undefined,
+  LoaiGiayXN: undefined,
+  LyDoXN: undefined,
+  ThoiGian: '-',
+  ThongTinSinhVien: {
+    DiaChiThuongTru: {
+      PhuongXa: undefined,
+      QuanHuyen: undefined,
+      SoNha: undefined,
+      TinhTP: undefined,
+    },
+    MSSV: undefined,
+    Ten: undefined,
+  }
+};
+
 const XNTruocKhiThemDialog = props => {
   const classes = useStyles();
 
@@ -88,11 +142,12 @@ const XNTruocKhiThemDialog = props => {
   const [isOpenVayVonDialog, setIsOpenVayVonDialog] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [values, setValues] = React.useState(defaultValue);
+  const [errors, setErrors] = React.useState(defaultError);
   const [progress, setProgress] = React.useState(true);
   const [signer, setSigner] = React.useState({});
   const [company, setCompany] = React.useState({});
   // const [signerObj, setSignerObj] = React.useState({});
-  const [newCertificate, setCertificate] = React.useState({});
+  const [newCertificate, setCertificate] = React.useState(defaultCertificate);
 
 
   const getCompany = async () => {
@@ -135,7 +190,7 @@ const XNTruocKhiThemDialog = props => {
     const value = event.target ? event.target.value : event;
     let tmp = { ...values };
     tmp[prop] = value;
-    let Data;
+    let Data = {};
     logger.info("FECTCH DATA:: ", tmp);
     switch (tmp.language) {
       case 'Tiếng Việt':
@@ -192,7 +247,8 @@ const XNTruocKhiThemDialog = props => {
             }
             break;
           default:
-            break;
+            Data = {
+            }
         }
         break;
       case 'Tiếng Anh':
@@ -217,7 +273,8 @@ const XNTruocKhiThemDialog = props => {
         }
         break;
       default:
-        break;
+        Data = {
+        }
     }
 
     const tmpCertificate = {
@@ -239,6 +296,7 @@ const XNTruocKhiThemDialog = props => {
       }
     };
     logger.info("Fetch: ", tmpCertificate);
+    logger.info("Error: ", errors);
 
     setCertificate(tmpCertificate);
   };
@@ -290,9 +348,18 @@ const XNTruocKhiThemDialog = props => {
     'Đăng ký học phần',
   ]
 
+  const validate = prop => event => {
+    const value = event.target ? event.target.value : event;
+    logger.info(`Validate ${prop}:${value}`);
+    if (value === '' || value === null || value === undefined)
+      setErrors({ ...errors, [prop]: true });
+    else
+      setErrors({ ...errors, [prop]: false });
+  }
 
   const handleChange = prop => event => {
     logger.info(event)
+    logger.info("ERROR:: ", errors);
     const value = event.target ? event.target.value : event;
     setValues({ ...values, [prop]: value });
     if (value === "Vay vốn") setIsOpenVayVonDialog(true)
@@ -332,35 +399,105 @@ const XNTruocKhiThemDialog = props => {
 
   const closeDialog = () => {
     setValues(defaultValue);
+    setErrors(defaultError);
     setIsOpen(false);
     handleClose();
   };
 
   const validateCertificate = (certificate) => {
-    return !Object.values(certificate).every(prop => prop === null || prop === {} || prop === '')
+    const keys = Object.keys(certificate);
+    let valid = {};
+    keys.forEach(elem => {
+      logger.info(`TEST VALIDATE:: ${elem}:${certificate[elem]} `, ['', null, undefined].includes(certificate[elem]));
+      if (['', null, undefined].includes(certificate[elem])) {
+        switch (elem) {
+          case 'HoVaTenNguoiKy':
+            valid = { ...valid, signer: true };
+            break;
+          case 'NgonNgu':
+            valid = { ...valid, language: true };
+            break;
+          case 'LoaiGiayXN':
+            valid = { ...valid, case: true };
+            break;
+          case 'LyDoXN':
+            valid = { ...valid, reason: true };
+            break;
+          default:
+        }
+      }
+      if (elem === 'ThoiGian') {
+        if (certificate[elem] === '-') valid = { ...valid, addSemester: true, addYear: true };
+        else if (['HK1-', 'HK2-', 'HK3-'].includes(certificate[elem])) valid = { ...valid, addYear: true };
+        else if (certificate[elem].indexOf('HK1') < 0 && certificate[elem].includes('HK2') < 0 && certificate[elem].includes('HK3') < 0) valid = { ...valid, addSemester: true };
+      }
+      else if (elem === 'ThongTinSinhVien') {
+        if (['', null, undefined].includes(certificate[elem].MSSV)) valid = { ...valid, mssv: true, status: true, name: true, city: true, ward: true, district: true, address: true }
+      }
+      else if (elem === 'Data') {
+        logger.info("TEST VALIDATE:: DATA: ", certificate[elem]);
+        const subkeys = Object.keys(certificate[elem]);
+        subkeys.forEach(subitem => {
+          if (['', null, undefined].includes(certificate[elem][subitem]))
+            switch (subitem) {
+              case 'HocKy':
+                valid = { ...valid, semester: true, };
+                break;
+              case 'NamHoc':
+                valid = { ...valid, year: true };
+                break;
+              case 'NgonNgu':
+                valid = { ...valid, language: true };
+                break;
+              case 'NamKetThucHoc':
+                valid = { ...valid, studentEndYear: true }
+                break;
+              case 'ThuocDien':
+                valid = { ...valid, dien: true };
+                break;
+              case 'ThuocDoiTuong':
+                valid = { ...valid, doituong: true };
+                break;
+              case 'TenCongTy':
+                valid = { ...valid, company: true };
+                break;
+              default:
+            }
+        });
+      }
+    })
+    logger.info("TEST VALIDATE: ", valid);
+    setErrors({ ...errors, ...valid })
+    logger.info(Object.keys(valid).length === 0);
+    return Object.keys(valid).length === 0;
   }
 
   const addData = async () => {
-    logger.info("THEM XAC NHAN SINH VIEN:: ", newCertificate)
-    logger.info("THEM XAC NHAN SINH VIEN:: ", validateCertificate(newCertificate));
 
-    setProgress(false);
-    const res = await XNSVHandler.AddCertificate(newCertificate);
-    try {
-      if (res.statusCode === 200) {
-        handleAdd(values, true);
-      } else {
-        // TO DO: SHOW ERROR
+    const isValid = validateCertificate(newCertificate);
+    logger.info("TEST VALIDATE:: isValid", isValid);
+
+    if (isValid) {
+      setProgress(false);
+      const res = await XNSVHandler.AddCertificate(newCertificate);
+      try {
+        if (res.statusCode === 200) {
+          handleAdd(values, true);
+        } else {
+          // TO DO: SHOW ERROR
+          handleAdd({}, false);
+
+        }
+      } catch (error) {
         handleAdd({}, false);
 
       }
-    } catch (error) {
-      handleAdd({}, false);
-
+      setProgress(true);
+      setValues(defaultValue);
+      setErrors(defaultError);
+      handleClose();
     }
 
-    setProgress(true);
-    handleClose();
   };
 
   const info = [
@@ -430,6 +567,7 @@ const XNTruocKhiThemDialog = props => {
 
     logger.info("findStudentInfoById: ", studentInfo);
     setValues({ ...values, ...studentInfo });
+    setErrors({ ...errors, mssv: false, ward: false, city: false, district: false, address: false, name: false, status: false })
   };
 
   return (
@@ -439,7 +577,7 @@ const XNTruocKhiThemDialog = props => {
           <LinearProgress color="secondary" hidden={progress} />
         </div>
         <DialogTitle id="form-dialog-title">
-          <b>Xác Nhận Trước Khi In</b>
+          <b>XÁC NHẬN TRƯỚC KHI IN</b>
         </DialogTitle>
         <DialogContent className={classes.container}>
           {info.map(item => {
@@ -452,11 +590,16 @@ const XNTruocKhiThemDialog = props => {
                   className={classes.textField}
                   label="MSSV"
                   value={values.mssv}
+                  error={errors.mssv}
+                  helperText={errors.mssv ? "Bắt buộc" : ""}
                   onChange={event => {
                     handleChange('mssv')(event);
-                    // fetchCertificate();
+                    fetchCertificate('mssv')(event);
                   }}
-                  onBlur={findStudentInfoById}
+                  onBlur={event => {
+                    findStudentInfoById(event);
+                    validate('mssv')(event);
+                  }}
                   margin="normal"
                 />
               );
@@ -468,10 +611,15 @@ const XNTruocKhiThemDialog = props => {
                   label="Họ tên"
                   value={values.name}
                   onChange={handleChange('name')}
+                  error={errors.name}
+                  helperText={errors.name ? "Bắt buộc" : ""}
                   disabled
                   margin="normal"
                   InputProps={{
                     readOnly: true
+                  }}
+                  onChange={event => {
+                    validate('name')(event);
                   }}
                 />
               );
@@ -481,14 +629,20 @@ const XNTruocKhiThemDialog = props => {
                 className={classes.textField}
                 label={item.label}
                 value={item.value}
+                error={errors[item.state]}
+                helperText={errors[item.state] ? "Bắt buộc" : ""}
+                onChange={event => {
+                  handleChange(item.state)(event);
+                  validate(item.state)(event);
+                }}
                 onBlur={handleChange(item.state)}
                 margin="normal"
               />
             );
           })}
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField} margin="normal">
-            <InputLabel id="demo-simple-select-helper-label">
+          <FormControl className={classes.textField} margin="normal" error={errors.language}>
+            <InputLabel id="demo-simple-select-helper-label" >
               Ngôn ngữ
             </InputLabel>
             <Select
@@ -499,15 +653,20 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('language')(event)
                 fetchCertificate('language')(event);
+                validate('language')(event);
+              }}
+              onBlur={event => {
+                validate('language')(event);
               }}
             >
               <MenuItem value="Tiếng Việt">Tiếng Việt</MenuItem>
               <MenuItem value="Tiếng Anh">Tiếng Anh</MenuItem>
             </Select>
+            {errors.language ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
 
           {values.language === 'Tiếng Việt' && (
-            <FormControl className={classes.textField} margin="normal">
+            <FormControl className={classes.textField} margin="normal" error={errors.case}>
               <InputLabel id="demo-simple-select-helper-label">
                 Loại xác nhận
               </InputLabel>
@@ -519,15 +678,19 @@ const XNTruocKhiThemDialog = props => {
                 onChange={event => {
                   handleChange('case')(event);
                   fetchCertificate('case')(event);
-
+                  validate('case')(event);
+                }}
+                onBlur={event => {
+                  validate('case')(event);
                 }}
               >
                 {drawData(dataLXNTV)}
               </Select>
+              {errors.case ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
             </FormControl>
           )}
           {values.language === 'Tiếng Anh' && (
-            <FormControl className={classes.textField} margin="normal">
+            <FormControl className={classes.textField} margin="normal" error={errors.case}>
               <InputLabel id="demo-simple-select-helper-label">
                 Loại xác nhận
               </InputLabel>
@@ -539,10 +702,15 @@ const XNTruocKhiThemDialog = props => {
                 onChange={event => {
                   handleChange('case')(event);
                   fetchCertificate('case')(event);
+                  validate('case')(event);
+                }}
+                onBlur={event => {
+                  validate('case')(event);
                 }}
               >
                 {drawData(dataLXNTA)}
               </Select>
+              {errors.case ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
             </FormControl>
           )}
           {values.case === 'Vay vốn' && (
@@ -575,7 +743,7 @@ const XNTruocKhiThemDialog = props => {
           )}
           {values.language === 'Tiếng Việt' && values.case === 'Bảo lưu' && (
             <div className={classes.container}>
-              <FormControl className={classes.textField} margin="normal">
+              <FormControl className={classes.textField} margin="normal" error={errors.year}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Năm học
                 </InputLabel>
@@ -587,6 +755,10 @@ const XNTruocKhiThemDialog = props => {
                   onChange={event => {
                     handleChange('year')(event);
                     fetchCertificate('year')(event);
+                    validate('year')(event);
+                  }}
+                  onBlur={event => {
+                    validate('year')(event);
                   }}
                 >
                   <MenuItem selected value={"2019-2020"}>
@@ -595,8 +767,9 @@ const XNTruocKhiThemDialog = props => {
                   <MenuItem value={"2018-2019"}>2018-2019</MenuItem>
                   <MenuItem value={"2017-2018"}>2017-2018</MenuItem>
                 </Select>
+                {errors.year ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
               </FormControl>
-              <FormControl className={classes.textField} margin="normal">
+              <FormControl className={classes.textField} margin="normal" error={errors.semester}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Học kỳ
                 </InputLabel>
@@ -608,11 +781,16 @@ const XNTruocKhiThemDialog = props => {
                   onChange={event => {
                     handleChange('semester')(event);
                     fetchCertificate('semester')(event);
+                    validate('semester')(event);
+                  }}
+                  onBlur={event => {
+                    validate('semester')(event);
                   }}
                 >
                   <MenuItem value={"1"}>Học kỳ 1</MenuItem>
                   <MenuItem value={"2"}>Học kỳ 2</MenuItem>
                 </Select>
+                {errors.semester ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
               </FormControl>
             </div>
           )}
@@ -637,7 +815,7 @@ const XNTruocKhiThemDialog = props => {
           )}
           {values.language === 'Tiếng Việt' && values.case === 'Thời gian học' && (
             <div className={classes.container}>
-              <FormControl className={classes.textField} margin="normal">
+              <FormControl className={classes.textField} margin="normal" error={errors.studentEndYear}>
                 <InputLabel id="demo-simple-select-helper-label">
                   Đến năm
                 </InputLabel>
@@ -649,6 +827,10 @@ const XNTruocKhiThemDialog = props => {
                   onChange={event => {
                     handleChange('studentEndYear')(event);
                     fetchCertificate('studentEndYear')(event);
+                    validate('studentEndYear')(event);
+                  }}
+                  onBlur={event => {
+                    validate('studentEndYear')(event);
                   }}
                 >
                   <MenuItem value="2024">2024</MenuItem>
@@ -657,6 +839,7 @@ const XNTruocKhiThemDialog = props => {
                   <MenuItem value="2021">2021</MenuItem>
                   <MenuItem value="2020">2020</MenuItem>
                 </Select>
+                {errors.studentEndYear ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
               </FormControl>
             </div>
           )}
@@ -726,7 +909,7 @@ const XNTruocKhiThemDialog = props => {
             </MuiPickersUtilsProvider>
           )}
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField} margin="normal">
+          <FormControl className={classes.textField} margin="normal" error={errors.status}>
             <InputLabel id="demo-simple-select-helper-label" disabled>
               Tình trạng
             </InputLabel>
@@ -739,10 +922,15 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('status')(event)
                 fetchCertificate();
+                validate('status')(event);
+              }}
+              onBlur={event => {
+                validate('status')(event);
               }}
             >
               {drawData(dataTT)}
             </Select>
+            {errors.status ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
           {values.status === 'Đang học' && (
             <div className={classes.container}>
@@ -772,7 +960,7 @@ const XNTruocKhiThemDialog = props => {
               />
             </div>
           )}
-          <FormControl className={classes.textField} margin="normal">
+          <FormControl className={classes.textField} margin="normal" error={errors.reason}>
             <InputLabel id="demo-simple-select-helper-label">Lý do</InputLabel>
             <Select
               // variant="outlined"
@@ -782,14 +970,19 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('reason')(event);
                 fetchCertificate('reason')(event);
+                validate('reason')(event)
+              }}
+              onBlur={event => {
+                validate('reason')(event)
               }}
             >
               {drawData(dataReason)}
             </Select>
+            {errors.reason ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
 
           <Divider className={classes.divider} />
-          <FormControl className={classes.textField} margin="normal">
+          <FormControl className={classes.textField} margin="normal" error={errors.addSemester}>
             <InputLabel id="demo-simple-select-helper-label">
               Học kỳ thêm
               </InputLabel>
@@ -801,12 +994,17 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('addSemester')(event);
                 fetchCertificate('addSemester')(event);
+                validate('addSemester')(event);
+              }}
+              onBlur={event => {
+                validate('addSemester')(event);
               }}
             >
               {drawData(dataSemester)}
             </Select>
+            {errors.addSemester ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
-          <FormControl className={classes.textField} margin="normal">
+          <FormControl className={classes.textField} margin="normal" error={errors.addYear}>
             <InputLabel id="demo-simple-select-helper-label">
               Năm học thêm
               </InputLabel>
@@ -818,12 +1016,17 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('addYear')(event);
                 fetchCertificate('addYear')(event);
+                validate('addYear')(event);
+              }}
+              onBlur={event => {
+                validate('addYear')(event);
               }}
             >
               {drawData(gernerateYearData())}
             </Select>
+            {errors.addYear ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} error={errors.signer}>
             <InputLabel id="demo-simple-select-helper-label">
               Người kí
             </InputLabel>
@@ -833,11 +1036,16 @@ const XNTruocKhiThemDialog = props => {
               onChange={event => {
                 handleChange('signer')(event);
                 fetchCertificate('signer')(event);
+                validate('signer')(event);
+              }}
+              onBlur={event => {
+                validate('signer')(event);
               }}
               value={values.signer}
             >
               {drawMenuItem(signer)}
             </Select>
+            {errors.signer ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
         </DialogContent>
         <DialogActions>
