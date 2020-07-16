@@ -309,10 +309,12 @@ const AddDialog = props => {
 
   const validateAddDialog = () => {
     let valid = {}
+    //Loop lv1 
     Object.keys(values).forEach(elem => {
       if (['', null, undefined].includes(values[elem]))
         valid = { ...valid, [elem]: true };
       else if (Object.keys(values[elem]).length !== 0) {
+        //Loop lv2
         Object.keys(values[elem]).forEach(subElem => {
           if (['', null, undefined].includes(values[elem][subElem]))
             valid = { ...valid, [subElem]: true };
