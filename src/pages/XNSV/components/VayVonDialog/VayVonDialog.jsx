@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Divider } from '@material-ui/core';
+import { Divider, FormHelperText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   MuiPickersUtilsProvider,
@@ -19,6 +19,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
 // import { useDispatch } from 'react-redux';
 // import Actions from '../../../../reduxs/reducers/DRL/action';
+import { logger } from 'core/services/Apploger';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -43,15 +44,20 @@ const VayVonDialog = props => {
 
   const { open, handleClose, handleConfirm, CMNDInfo } = props;
   const date = new Date();
-
-  const [values, setValues] = React.useState({
+  const defaultError = {
+    dien: false,
+    doituong: false,
+  }
+  const [errors, setErrors] = React.useState(defaultError);
+  const defaultValue = {
     cmnd: '',
     address: '',
     dien: '',
     doituong: '',
     thoigianratruong: date,
     date: moment(date).format('DD/MM/YYYY')
-  });
+  }
+  const [values, setValues] = React.useState(defaultValue);
 
   const dataThuocDien = ['Không miễn giảm', 'Giảm học phí', 'Miễn học phí'];
   const dataDoiTuong = ['Mồ côi', 'Không mồ côi'];
@@ -60,6 +66,14 @@ const VayVonDialog = props => {
     const value = event.target ? event.target.value : event;
     setValues({ ...values, [prop]: value });
   };
+  const validate = prop => event => {
+    const value = event.target ? event.target.value : event;
+    logger.info(`Validate ${prop}:${value}`);
+    if (value === '' || value === null || value === undefined)
+      setErrors({ ...errors, [prop]: true });
+    else
+      setErrors({ ...errors, [prop]: false });
+  }
 
   const drawData = data => {
     return data.map((val, ind) => {
@@ -70,6 +84,25 @@ const VayVonDialog = props => {
       );
     });
   };
+  const validateVayvon = () => {
+    let valid = {}
+    Object.keys(values).forEach(elem => {
+      if (['dien', 'doituong'].includes(elem) && ['', null, undefined].includes(values[elem])) {
+        valid = { ...valid, [elem]: true };
+      }
+    })
+    setErrors({ ...errors, ...valid })
+    return Object.keys(valid).length === 0
+  }
+
+  const handleSubmit = () => {
+    const isValid = validateVayvon();
+    if (isValid) {
+      handleConfirm(values);
+      setErrors(defaultError);
+      setValues(defaultValue);
+    }
+  }
 
   return (
     <div>
@@ -123,39 +156,55 @@ const VayVonDialog = props => {
             </MuiPickersUtilsProvider>
           </FormControl>
 
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} error={errors.dien}>
             <InputLabel id="demo-simple-select-helper-label">
               Thuộc diện
             </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('dien')}
+              onChange={event => {
+                handleChange('dien')(event);
+                validate('dien')(event);
+              }}
+              onBlur={event => {
+                validate('dien')(event);
+              }}
             >
               {drawData(dataThuocDien)}
             </Select>
+            {errors.dien ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
 
-          <FormControl className={classes.textField}>
+          <FormControl className={classes.textField} error={errors.doituong}>
             <InputLabel id="demo-simple-select-helper-label">
               Thuộc đối tượng
             </InputLabel>
             <Select
               labelId="demo-simple-select-helper-label"
               id="demo-simple-select-helper"
-              onChange={handleChange('doituong')}
+              onChange={event => {
+                handleChange('doituong')(event);
+                validate('doituong')(event);
+              }}
+              onBlur={event => {
+                validate('doituong')(event);
+              }}
             >
               {drawData(dataDoiTuong)}
             </Select>
+            {errors.doituong ? <FormHelperText>Bắt buộc</FormHelperText> : <></>}
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={() => {
+            handleClose();
+            setErrors(defaultError);
+            setValues(defaultValue);
+          }} color="primary">
             Huỷ
           </Button>
-          <Button onClick={() => {
-            handleConfirm(values);
-          }}
+          <Button onClick={handleSubmit}
             color="primary">Xác nhận</Button>
         </DialogActions>
       </Dialog>

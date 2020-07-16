@@ -631,10 +631,11 @@ const XNTruocKhiThemDialog = props => {
                 value={item.value}
                 error={errors[item.state]}
                 helperText={errors[item.state] ? "Bắt buộc" : ""}
-                onBlur={handleChange(item.state)}
                 onChange={event => {
+                  handleChange(item.state)(event);
                   validate(item.state)(event);
                 }}
+                onBlur={handleChange(item.state)}
                 margin="normal"
               />
             );
