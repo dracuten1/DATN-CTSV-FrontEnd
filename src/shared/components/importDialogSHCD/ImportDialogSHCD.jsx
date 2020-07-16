@@ -9,7 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import * as ImportHandler from 'handlers/ImportNewHostHandler';
+import * as ImportHandler from 'handlers/SHCDHandler';
 import { logger } from 'core/services/Apploger';
 import { LinearProgress } from '@material-ui/core';
 import { DropzoneArea } from 'material-ui-dropzone';
@@ -47,7 +47,7 @@ const DropZone = withStyles({
 
 const ImportDialogSHCD = props => {
   const classes = useStyles();
-  const { open, handleClose, importCase, NamHoc, HocKy } = props;
+  const { open, handleClose, NamHoc, HocKy, handleAdd } = props;
 
   const createFile = tfile => {
     const reader = new FileReader();
@@ -56,13 +56,9 @@ const ImportDialogSHCD = props => {
     };
     reader.readAsDataURL(tfile);
   };
-  const [message, setMessage] = useState('');
-  const [importDisable, setImportDisable] = useState(true);
+  // const [message, setMessage] = useState('');
   const [filter, setFilter] = useState({
-    type: 'SHCD', 
-    fileName: '', 
-    nh: NamHoc, 
-    hk: HocKy,
+    fileName: '',
     importDisable: true
   });
 
@@ -76,8 +72,14 @@ const ImportDialogSHCD = props => {
         importDisable: true
       });
       setHiddenProgress(false);
-      const response = await ImportHandler.GetUploadURL(importCase);
+      const response = await ImportHandler.GetUploadURL(filter.fileName, NamHoc, HocKy);
       logger.info('ImportDialogSHCD:: response: ', response);
+
+      if (response.message !== "ok"){
+        setSnackBarValue(errorSnackBar);
+        handleClose();
+        return;
+      }
 
       const binary = atob(file.split(',')[1]);
       const array = [];
@@ -92,58 +94,14 @@ const ImportDialogSHCD = props => {
         method: 'PUT',
         body: blobData
       });
-
-      let res;
-      let res1;
-      let statusResponse;
-      switch (importCase) {
-        case 'YT':
-        case 'TN': //QLBH
-          res = await ImportHandler.GetImportQLBHInfo({
-            type: importCase,
-            fileKey: response.key,
-            method: 'GET'
-          });
-          logger.info('ImportDialogSHCD:: res: ', res);
-
-          if (res.success === false) {
-            setSnackBarValue(wrongSnackBar);
-            handleClose();
-            break;
-          }
-
-          setMessage(res.message + '-' + res.newKey);
-
-          res1 = await ImportHandler.GetImportQLBHInfo({
-            type: importCase,
-            fileKey: res.newKey,
-            method: 'POST'
-          });
-          logger.info('ImportDialogSHCD:: res1: ', res1);
-
-          const timerIdQLBH = setInterval(async () => {
-            statusResponse = await ImportHandler.GetImportStatusQLBH(
-              res.newKey
-            );
-            logger.info('ImportDialogSHCD:: statusResponse: ', statusResponse);
-            const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
-              handleClose();
-              clearInterval(timerIdQLBH);
-            }
-          }, 3000);
-          break;
-        default:
-          break;
-      }
+      
+      handleAdd();
+      setSnackBarValue(successSnackBar);
     } catch (error) {
       logger.info(error);
       setSnackBarValue(errorSnackBar);
-      handleClose();
     }
+    handleClose();
   };
 
   const onFileChange = tfile => {
@@ -174,11 +132,6 @@ const ImportDialogSHCD = props => {
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
-  const wrongSnackBar = {
-    open: true,
-    type: 'error',
-    message: 'Import sai File!'
-  };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
   const handleSnackBarClose = current => event => {
@@ -207,7 +160,7 @@ const ImportDialogSHCD = props => {
             showFileNamesInPreview
             onChange={onFileChange}
           />
-          <div>{message}</div>
+          {/* <div>{message}</div> */}
         </DialogContent>
         <DialogActions>
           <Button

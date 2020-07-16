@@ -1,8 +1,10 @@
+/* eslint-disable no-loop-func */
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { logger } from 'core/services/Apploger';
 import MaterialTable from 'material-table';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,24 +17,24 @@ import {
   Typography,
   Grid
 } from '@material-ui/core';
-import { logger } from 'core/services/Apploger';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
+import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import icons from 'shared/icons';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
-import * as QLHBHandler from 'handlers/QLHBHandler';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import * as SHCDHandler from 'handlers/SHCDHandler';
 import ImportIcon from '@material-ui/icons/Input';
 import Scholarship from '@material-ui/icons/School';
-import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import ImportDialog from 'shared/components/importDialogSHCD/ImportDialogSHCD';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
-import Types from 'reduxs/reducers/QLHB/actionTypes';
+import Types from 'reduxs/reducers/SHCD/actionTypes';
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import RestoreIcon from '@material-ui/icons/Restore';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
-import Columns from './columns';
-import Actions from '../../../../reduxs/reducers/QLHB/action';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import Actions from '../../../../reduxs/reducers/SHCD/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({
@@ -77,116 +79,214 @@ const useStyles = makeStyles(theme => ({
 
 const dt = new Date();
 const year = dt.getFullYear();
-// const convert = year % 100;
 
 let updateBegin = 0;
-let type = 'KK';
-let columns = [];
-let isCase = 0;
+let isViewer = false;
+let pkskArr = [];
 
 const AllList = props => {
   const { className, ...rest } = props;
-  const QLHBState = useSelector(state => state.QLHBState);
-  const {
-    dataList,
-    isHBKK,
-    isCounting,
-    listLink,
-    // listDoiTuong,
-    // listDonViTaiTro
-  } = QLHBState;
+  const SHCDState = useSelector(state => state.SHCDState);
+  const { dataList, listLink } = SHCDState;
 
   const classes = useStyles();
   const dispatch = useDispatch();
-
-  let title;
-  if (isHBKK) {
-    columns = Columns.HBKK;
-    title = 'Học Bổng Khuyến Khích';
-  } else if (isCounting) {
-    columns = Columns.COUNTING;
-    title = 'Thống Kê';
-  } else {
-    columns = Columns.HBTT;
-    title = 'Học Bổng Tài Trợ';
-  }
-
-  const [importOpen, setImportOpen] = React.useState(false);
   const [filter, setfilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
-    fromHK: '1',
-    fromNH: `${year - 1}-${year}`,
-    toHK: '2',
-    toNH: `${year - 1}-${year}`,
-    mssv: '',
-    LoaiHB: 'HBKK',
-    DoiTuong: [],
-    DonViTaiTro: []
+    status: 'Đang Lưu Trữ'
   });
+  const QLDELFILE = [
+    { title: 'STT', field: 'stt', editable: 'never', filtering: false },
+    { title: 'Tên file', field: 'fileName', filtering: false },
+    {
+      title: 'Nhân viên',
+      field: 'username',
+      cellStyle: {
+        minWidth: '200px'
+      }
+    },
+    {
+      title: 'Ngày cập nhật',
+      field: 'updatedAt',
+      cellStyle: {
+        minWidth: '300px'
+      }
+    }
+  ];
+
+  const QLSAVEFILE = [
+    {
+      field: 'Actions',
+      width: 50,
+      filtering: false,
+      render: rowData => (
+        <div>
+          <Button
+            onClick={async () => {
+              try {
+                dispatch(ProgressActions.showProgres());
+                const response = await SHCDHandler.DownloadFile(rowData.keyS3);
+                if (response.statusCode !== 200) {
+                  setSnackBarValue(errorSnackBarDownload);
+                  dispatch(ProgressActions.hideProgress());
+                  return;
+                }
+                const { body } = response;
+                dispatch({
+                  type: Types.ADD_LINK_PRINT,
+                  listLink: body.link
+                });
+                setSnackBarValue(successSnackBarDownload);
+              } catch (error) {
+                setSnackBarValue(errorSnackBar);
+              }
+              dispatch(ProgressActions.hideProgress());
+            }}
+            color="primary"
+            size="small"
+          >
+            <SystemUpdateAltIcon />
+          </Button>
+          <Button
+            onClick={async () => {
+              try {
+                dispatch(ProgressActions.showProgres());
+                const response = await SHCDHandler.GetContentFile(
+                  rowData.keyS3
+                );
+
+                logger.info(
+                  'SHCDAction:: GetContentFile: GetContentFile: ',
+                  response
+                );
+
+                if (response.statusCode !== 200) {
+                  setSnackBarValue(errorViewerSnackBar);
+                  dispatch(ProgressActions.hideProgress());
+                  return;
+                }
+
+                const { body } = response;
+                const { data, headers } = body;
+
+                if (data.length === 0) {
+                  setSnackBarValue(errorNoDataSnackBar);
+                  dispatch(ProgressActions.hideProgress());
+                  return;
+                }
+
+                const arrHeader = Object.values(headers);
+                const columns = [];
+                const values = [];
+
+                arrHeader.forEach(element => {
+                  columns.push({
+                    title: `${element}`,
+                    field: `${element}`
+                  });
+                });
+
+                for (let key = 0; key < data.length; key += 1) {
+                  if (data[key] !== null) {
+                    //check data is correct
+                    let isCorrect = true;
+                    Object.keys(data[key]).forEach(elem => {
+                      if (elem === 'undefined') isCorrect = false;
+                    });
+
+                    if (!isCorrect) {
+                      setSnackBarValue(errorViewerSnackBar);
+                      dispatch(ProgressActions.hideProgress());
+                      return;
+                    }
+
+                    //Binding data in table
+                    arrHeader.forEach(element => {
+                      data[key][`${element}`] = data[key][`${element}`] || '';
+                    });
+                    values.push(data[key]);
+                  }
+                }
+
+                handleUpdateStateViewer(values, columns, rowData.fileName);
+                setSnackBarValue(successSnackBar);
+              } catch (error) {
+                setSnackBarValue(errorSnackBar);
+              }
+              dispatch(ProgressActions.hideProgress());
+            }}
+            color="primary"
+            size="small"
+            style={{ marginLeft: '8px' }}
+          >
+            <VisibilityIcon />
+          </Button>
+        </div>
+      )
+    },
+    { title: 'STT', field: 'stt' },
+    { title: 'Tên file', field: 'fileName' },
+    {
+      title: 'Nhân viên',
+      field: 'username',
+      cellStyle: {
+        minWidth: '200px'
+      }
+    },
+    {
+      title: 'Ngày cập nhật',
+      field: 'updatedAt',
+      cellStyle: {
+        minWidth: '300px'
+      }
+    }
+  ];
+
+  let title;
+  if (!isViewer) {
+    if (filter.status === 'Đang Lưu Trữ') title = 'Danh Sách File Đang Lưu Trữ';
+    else if (filter.status === 'Xóa Tạm Thời')
+      title = 'Danh Sách File Xóa Tạm Thời';
+    else title = 'Danh Sách File Đã Hủy';
+  }
+
+  const [importOpen, setImportOpen] = React.useState(false);
 
   const [state, setState] = useState({
     isTK: false,
+    title: '',
     data: dataList,
-    columns: columns
+    columns: filter.status === 'Đang Lưu Trữ' ? QLSAVEFILE : QLDELFILE
   });
 
   const handleFilter = (prop, data) => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
-  //Create Menu
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleOpenMenu = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleUpdateState = response => {
-    switch (type) {
-      case 'KK':
-        columns = Columns.HBKK;
-        title = 'Học Bổng Khuyến Khích';
-        break;
-      case 'TT':
-        columns = Columns.HBTT;
-        title = 'Học Bổng Tài Trợ';
-        break;
-      default:
-        columns = Columns.COUNTING;
-        title = 'Thống Kê';
-    }
+  const handleUpdateStateViewer = (response, arr, fileName) => {
+    isViewer = true;
     setState({
       ...state,
+      title: fileName,
       data: response,
-      columns: columns
+      columns: arr
     });
   };
 
   const handleUpdateStateFilter = response => {
     setState({
       ...state,
-      data: response
+      data: response,
+      columns: filter.status === 'Đang Lưu Trữ' ? QLSAVEFILE : QLDELFILE
     });
   };
 
   if (updateBegin === 0) {
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.getDataFilter()).then(payload => {
-      const { DoiTuong, DonViTaiTro } = payload;
-      setfilter({
-        ...filter,
-        DoiTuong: DoiTuong.length > 0 ? [DoiTuong[0]] : [],
-        DonViTaiTro: DonViTaiTro.length > 0 ? [DonViTaiTro[0]] : []
-      });
-    });
-    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
+    dispatch(Actions.getFileWithFilter(filter)).then(data =>
       handleUpdateStateFilter(data)
     );
     updateBegin += 1;
@@ -197,15 +297,30 @@ const AllList = props => {
     type: 'success',
     message: 'Thực hiện thành công!'
   };
+  const successSnackBarDownload = {
+    open: true,
+    type: 'success',
+    message: 'Thực hiện thành công. Link chỉ tồn tại 15 phút!'
+  };
+  const errorSnackBarDownload = {
+    open: true,
+    type: 'error',
+    message: 'File không tồn tại, vui lòng kiểm tra lại!'
+  };
   const errorSnackBar = {
     open: true,
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
-  const errorExportSnackBar = {
+  const errorViewerSnackBar = {
     open: true,
     type: 'error',
-    message: 'Export thất bại!'
+    message: 'Thực hiện thất bại, vui lòng download để xem file!'
+  };
+  const errorNoDataSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'File trống, vui lòng download để xem file!'
   };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
@@ -224,159 +339,155 @@ const AllList = props => {
         className={classes.titleContainer}
       >
         <Typography className={classes.title}>
-          <Scholarship style={{ marginRight: '5px' }} /> QUẢN LÝ HỌC BỔNG
+          <Scholarship style={{ marginRight: '5px' }} /> SINH HOẠT CÔNG DÂN
         </Typography>
-        <div>
-          <Button
-            onClick={() => {
-              type = 'KK';
-              isCase = 0;
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                handleUpdateState(data)
-              );
-            }}
-            variant="contained"
-            color="primary"
-            className={classes.ml5px}
-          >
-            HBKK
-          </Button>
-          <Button
-            onClick={() => {
-              type = 'TT';
-              isCase = 0;
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                handleUpdateState(data)
-              );
-            }}
-            variant="contained"
-            color="primary"
-            className={classes.ml5px}
-          >
-            HBTT
-          </Button>
-          <Button
-            onClick={handleOpenMenu}
-            variant="contained"
-            color="primary"
-            className={classes.ml5px}
-          >
-            Thống kê
-          </Button>
-        </div>
       </Card>
 
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Filters
-                onFilter={handleFilter}
-                isCounting={isCounting}
-                filter={filter}
-                isCase={isCase}
-              />
+              <Filters onFilter={handleFilter} filter={filter} />
               <ContainedButton
                 handleClick={() => {
                   dispatch(ProgressActions.showProgres());
-                  if (isCounting) {
-                    switch (isCase) {
-                      case 1:
-                        dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                          handleUpdateStateFilter(data)
-                        );
-                        break;
-                      case 2:
-                        dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                          handleUpdateStateFilter(data)
-                        );
-                        break;
-                      case 3:
-                        dispatch(
-                          Actions.countingWithDoiTuong(filter)
-                        ).then(data => handleUpdateStateFilter(data));
-                        break;
-                      default:
-                        dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                          handleUpdateStateFilter(data)
-                        );
-                    }
-                  } else {
-                    dispatch(Actions.getListWithFilter(filter, type)).then(data =>
-                      handleUpdateStateFilter(data)
-                    );
-                  }
+                  isViewer = false;
+                  dispatch(Actions.getFileWithFilter(filter)).then(data =>
+                    handleUpdateStateFilter(data)
+                  );
                 }}
                 label="Lọc dữ liệu"
               />
             </div>
           </MuiThemeProvider>
           <div>
-            {isCounting ? (
+            {isViewer ? (
               <div />
             ) : (
-                <Button
-                  onClick={() => setImportOpen(true)}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  style={{ marginLeft: '8px' }}
-                >
-                  <ImportIcon /> &nbsp;Import
-                </Button>
-              )}
-            <Button
-              onClick={async () => {
-                dispatch(ProgressActions.showProgres());
-                let response;
-                console.log('isCaseeee:', isCase);
-                if (isCounting) {
-                  switch (isCase) {
-                    case 1:
-                      response = await QLHBHandler.ExportCountingWithMSSV(
-                        filter
-                      );
-                      break;
-                    case 2:
-                      response = await QLHBHandler.ExportCountingWithLoaiHB(
-                        filter
-                      );
-                      break;
-                    case 3:
-                      response = await QLHBHandler.ExportCountingWithDoiTuong(
-                        filter
-                      );
-                      break;
-                    default:
-                      response = await QLHBHandler.ExportCountingWithDVTT(
-                        filter
-                      );
-                  }
-                } else {
-                  response = await QLHBHandler.ExportWithFilter(filter, type);
-                }
-                if (
-                  response.statusCode !== 200 ||
-                  response.body === 'Không có gì để export'
-                ) {
-                  setSnackBarValue(errorExportSnackBar);
-                  dispatch(ProgressActions.hideProgress());
-                  return;
-                }
-                setSnackBarValue(successSnackBar);
-                const { body } = response;
-                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
-                dispatch(ProgressActions.hideProgress());
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              <GetAppIcon /> &nbsp;Export
-            </Button>
+              <>
+                {filter.status === 'Đã Hủy' ? (
+                  <div />
+                ) : (
+                  <>
+                    {filter.status === 'Xóa Tạm Thời' ? (
+                      <>
+                        <Button
+                          onClick={async () => {
+                            const status = 1;
+                            try {
+                              dispatch(ProgressActions.showProgres());
+                              const response = await SHCDHandler.UpdateStatusFile(
+                                pkskArr,
+                                status
+                              );
+
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                dispatch(ProgressActions.hideProgress());
+                                return;
+                              }
+
+                              dispatch(
+                                Actions.getFileWithFilter(filter)
+                              ).then(data => handleUpdateStateFilter(data));
+
+                              setSnackBarValue(successSnackBar);
+                            } catch (error) {
+                              setSnackBarValue(errorSnackBar);
+                            }
+                            dispatch(ProgressActions.hideProgress());
+                          }}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ marginLeft: '8px' }}
+                        >
+                          <RestoreIcon /> &nbsp;Khôi phục file
+                        </Button>
+                        <Button
+                          onClick={async () => {
+                            const status = -1;
+                            try {
+                              dispatch(ProgressActions.showProgres());
+                              const response = await SHCDHandler.UpdateStatusFile(
+                                pkskArr,
+                                status
+                              );
+
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                dispatch(ProgressActions.hideProgress());
+                                return;
+                              }
+
+                              dispatch(
+                                Actions.getFileWithFilter(filter)
+                              ).then(data => handleUpdateStateFilter(data));
+
+                              setSnackBarValue(successSnackBar);
+                            } catch (error) {
+                              setSnackBarValue(errorSnackBar);
+                            }
+                            dispatch(ProgressActions.hideProgress());
+                          }}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ marginLeft: '8px' }}
+                        >
+                          <DeleteForeverIcon /> &nbsp;Xóa file vĩnh viễn
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={() => setImportOpen(true)}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ marginLeft: '8px' }}
+                        >
+                          <ImportIcon /> &nbsp;Lưu trữ file
+                        </Button>
+                        <Button
+                          onClick={async () => {
+                            const status = 0;
+                            try {
+                              dispatch(ProgressActions.showProgres());
+                              const response = await SHCDHandler.UpdateStatusFile(
+                                pkskArr,
+                                status
+                              );
+
+                              if (response.statusCode !== 200) {
+                                setSnackBarValue(errorSnackBar);
+                                dispatch(ProgressActions.hideProgress());
+                                return;
+                              }
+
+                              dispatch(
+                                Actions.getFileWithFilter(filter)
+                              ).then(data => handleUpdateStateFilter(data));
+
+                              setSnackBarValue(successSnackBar);
+                            } catch (error) {
+                              setSnackBarValue(errorSnackBar);
+                            }
+                            dispatch(ProgressActions.hideProgress());
+                          }}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          style={{ marginLeft: '8px' }}
+                        >
+                          <DeleteIcon /> &nbsp;Xóa file đã chọn
+                        </Button>
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </div>
         </CardActions>
         <Divider />
@@ -388,7 +499,7 @@ const AllList = props => {
                   icons={icons}
                   title={
                     <div>
-                      <b>{title}</b>
+                      <b>{isViewer ? state.title : title}</b>
                     </div>
                   }
                   columns={state.columns}
@@ -401,69 +512,23 @@ const AllList = props => {
                     rowStyle: {
                       backgroundColor: '#EEE'
                     },
-                    // exportButton: true,
-                    filtering: false
+                    selection: !isViewer,
+                    filtering: false,
+                    selectionProps: () => ({
+                      color: 'primary'
+                    })
                   }}
-                  editable={
-                    isCounting
-                      ? {}
-                      : {
-                        onRowUpdate: (newData, oldData) =>
-                          new Promise(resolve => {
-                            dispatch(ProgressActions.showProgres());
-                            setTimeout(async () => {
-                              resolve();
-                              if (oldData) {
-                                logger.info('Newdata: ', newData);
-                                const response = await QLHBHandler.UpdateOneStudentByType(
-                                  newData,
-                                  type
-                                );
-                                if (response.statusCode !== 200) {
-                                  setSnackBarValue(errorSnackBar);
-                                  dispatch(ProgressActions.hideProgress());
-                                  return;
-                                }
-                                setSnackBarValue(successSnackBar);
-                                setState(prevState => {
-                                  const data = [...prevState.data];
-                                  data[data.indexOf(oldData)] = newData;
-                                  return { ...prevState, data };
-                                });
-                              }
-                            }, 600);
-                            dispatch(ProgressActions.hideProgress());
-                          }),
-
-                        onRowDelete: oldData =>
-                          new Promise(resolve => {
-                            dispatch(ProgressActions.showProgres());
-                            setTimeout(async () => {
-                              resolve();
-                              logger.info('Olddata: ', oldData);
-                              const { PK, SK, id } = oldData;
-                              const response = await QLHBHandler.DeleteOneCertificate(
-                                PK,
-                                SK,
-                                type,
-                                id
-                              );
-                              if (response.statusCode !== 200) {
-                                setSnackBarValue(errorSnackBar);
-                                dispatch(ProgressActions.hideProgress());
-                                return;
-                              }
-                              setSnackBarValue(successSnackBar);
-                              setState(prevState => {
-                                const data = [...prevState.data];
-                                data.splice(data.indexOf(oldData), 1);
-                                return { ...prevState, data };
-                              });
-                            }, 600);
-                            dispatch(ProgressActions.hideProgress());
-                          })
+                  onSelectionChange={rows => {
+                    pkskArr = [];
+                    if (rows.length > 0) {
+                      for (let i = 0; i < rows.length; i += 1) {
+                        pkskArr.push({
+                          PK: rows[i].PK,
+                          SK: rows[i].SK
+                        });
                       }
-                  }
+                    }
+                  }}
                 />
               </MuiThemeProvider>
             </div>
@@ -479,73 +544,19 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-            ''
-          )}
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleCloseMenu}
-        >
-          <MenuItem
-            onClick={() => {
-              isCase = 1;
-              type = 'TK';
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                handleUpdateState(data)
-              );
-              handleCloseMenu();
-            }}
-          >
-            Theo MSSV
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              isCase = 2;
-              type = 'TK';
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.countingWithLoaiHB(filter)).then(data =>
-                handleUpdateState(data)
-              );
-              handleCloseMenu();
-            }}
-          >
-            Theo Loại Học Bổng
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              isCase = 3;
-              type = 'TK';
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.countingWithDoiTuong(filter)).then(data =>
-                handleUpdateState(data)
-              );
-              handleCloseMenu();
-            }}
-          >
-            Theo Đối Tượng
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              isCase = 4;
-              type = 'TK';
-              dispatch(ProgressActions.showProgres());
-              dispatch(Actions.countingWithDVTT(filter)).then(data =>
-                handleUpdateState(data)
-              );
-              handleCloseMenu();
-            }}
-          >
-            Theo Đơn Vị Tài Trợ
-          </MenuItem>
-        </Menu>
+          ''
+        )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}
           handleImport={handleImport}
-          importCase={isHBKK ? 'KK' : 'TT'}
+          NamHoc={filter.nh}
+          HocKy={filter.hk}
+          handleAdd={() =>
+            dispatch(Actions.getFileWithFilter(filter)).then(data =>
+              handleUpdateStateFilter(data)
+            )
+          }
         />
         <CustomizedSnackbars
           value={snackBarValue}

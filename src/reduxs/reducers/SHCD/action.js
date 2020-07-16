@@ -1,72 +1,41 @@
-import * as XNSVHandler from 'handlers/XNSVHandler';
+import * as SHCDHandler from 'handlers/SHCDHandler';
 import { logger } from 'core/services/Apploger';
 import history from 'historyConfig';
 import Types from './actionTypes';
+import { HIDE_PROGRESS } from '../LinearProgress/ActionTypes';
 
-const handleAllList = () => async dispatch => {
-  dispatch({ type: Types.ALL_LIST });
-  history.push('/xnsv');
+const getNullData = () => async dispatch => {
+  dispatch({ type: Types.GET_NULL_DATA });
+  dispatch({ type: HIDE_PROGRESS });
 };
 
-const handlePrintList = () => async dispatch => {
-  dispatch({ type: Types.PRINT_LIST });
-  history.push('/xnsv');
-};
+const getFileWithFilter = filter => async dispatch => {
+  logger.info('SHCDAction:: getListAll: filter: ', filter);
+  const response = await SHCDHandler.GetFileWithFilter(filter);
+  logger.info('SHCDAction:: getListAll: reponse: ', response);
 
-const getNotPrintYet = () => async dispatch => {
-  const status = 'ChuaIn';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_NOT_PRINT_YET, payload });
-  history.push('/xnsv');
-};
-
-const getListHistory = () => async dispatch => {
-  const status = 'In';
-  const payload = await XNSVHandler.GetListCertificate(status);
-  dispatch({ type: Types.GET_HISTORY_LIST, payload });
-};
-
-const deleteOneCertificate = (pk, sk) => async dispatch => {
-  const response = await XNSVHandler.DeleteOneCertificate(pk, sk);
-
-  logger.info('XNSVAction:: deleteOneCertificate: reponse: ', response);
-
-  dispatch({ type: Types.DELETE_ONE_CERTIFICATE, payload: null });
-  history.push('/xnsv');
-};
-
-const handlePrint = type => async dispatch => {
-  const response = await XNSVHandler.PrintByType(type);
-  const status = 'ChuaIn';
-  const listData = await XNSVHandler.GetListCertificate(status);
-  logger.info('XNSVAction:: PrintByType: reponse: ', response);
-  if (response.statusCode === 200) {
-    dispatch({ type: Types.ADD_LINK_PRINT, listLink: response.body, listData });
-    history.push('/xnsv');
+  const { statusCode, body } = response;
+  if (statusCode !== 200 || body === "Không có dữ liệu") {
+    dispatch({ type: Types.GET_LIST_FILE, payload: [] });
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
   }
-};
 
-const getCompany = () => async dispatch => {
-  const response = await XNSVHandler.GetCompany();
-  logger.info('XNSVAction:: Company: reponse: ', response);
-  history.push('/xnsv');
-};
+  const {Items} = body;
 
-const exportWithFilter = (filter) => async dispatch => {
-  logger.info('XNSVAction:: filter: filter: ', filter);
-  
-  const response = await XNSVHandler.exportWithFilter(filter);
-  logger.info('XNSVAction:: Exportfilter: reponse: ', response);
-  history.push('/xnsv');
+  const data = Object.keys(Items).map(key => {
+    Items[key].stt = parseInt(key) + 1;
+    Items[key].keyS3 = Items[key]['info']['keyS3'];
+    Items[key].fileName = Items[key]['info']['fileName'];
+    return Items[key];
+  });
+  dispatch({ type: Types.GET_LIST_FILE, payload: data });
+  dispatch({ type: HIDE_PROGRESS });
+  history.push('/shcd');
+  return data;
 };
 
 export default {
-  handleAllList,
-  handlePrintList,
-  handlePrint,
-  getNotPrintYet,
-  deleteOneCertificate,
-  getListHistory,
-  getCompany,
-  exportWithFilter
+  getFileWithFilter,
+  getNullData
 };

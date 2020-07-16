@@ -51,7 +51,9 @@
     "no-var": "off",
     "object-shorthand": "off",
     "func-names": "off",
-    "radix": "off"
+    "radix": "off",
+    "consistent-return": "off",
+    "array-callback-return": "off"
   },
   "globals": {
     "window": true,

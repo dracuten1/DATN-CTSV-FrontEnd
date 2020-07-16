@@ -1,7 +1,7 @@
 import ActionTypes from './actionTypes';
 
 const INIT_STATE = {
-  isCase: 1,
+  isFolder: true,
   dataList: [],
   listLink: []
 };
@@ -43,7 +43,7 @@ const shcdReducer = (state = INIT_STATE, action) => {
     case ActionTypes.ADD_LINK_PRINT: {
       const temp = state.listLink;
       temp.push(action.listLink);
-      return { ...state, listLink: temp, dataList: action.listData };
+      return { ...state, listLink: temp};
     }
     case ActionTypes.DELETE_ONE_CERTIFICATE:
       return { ...state };

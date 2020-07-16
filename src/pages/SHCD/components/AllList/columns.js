@@ -15,42 +15,6 @@ const QLFILE = [
     }
   },
   {
-    title: 'Năm học',
-    field: 'nh',
-    lookup: {
-      1: `${year - 6}-${year - 5}`,
-      2: `${year - 5}-${year - 4}`,
-      3: `${year - 4}-${year - 3}`,
-      4: `${year - 3}-${year - 2}`,
-      5: `${year - 2}-${year - 1}`,
-      6: `${year - 1}-${year}`,
-      7: `${year}-${year + 1}`
-    },
-    filterCellStyle: {
-      paddingTop: 1
-    },
-    cellStyle: {
-      minWidth: '150px'
-    }
-    , editable: false 
-  },
-  {
-    title: 'Học kỳ',
-    field: 'hk',
-    lookup: {
-      1: '1',
-      2: '2',
-      3: '3'
-    },
-    filterCellStyle: {
-      paddingTop: 1
-    },
-    cellStyle: {
-      minWidth: '150px'
-    }
-    , editable: false 
-  },
-  {
     title: 'Ngày cập nhật',
     field: 'updatedAt',
     cellStyle: {

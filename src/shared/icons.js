@@ -17,6 +17,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import ImportIcon from '@material-ui/icons/Input';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import PrintIcon from '@material-ui/icons/Print';
 
@@ -47,7 +48,9 @@ const tableIcons = {
   CheckBlank: forwardRef((props, ref) => (
     <CheckBoxOutlineBlankIcon {...props} ref={ref} />
   )),
-  Print: forwardRef((props, ref) => <PrintIcon {...props} ref={ref} />)
+  Print: forwardRef((props, ref) => <PrintIcon {...props} ref={ref} />),
+  Download: forwardRef((props, ref) => <SystemUpdateAltIcon {...props} ref={ref} />)
+
 };
 
 export default tableIcons;

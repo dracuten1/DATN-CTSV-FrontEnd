@@ -12,7 +12,7 @@ import DashboardQLLT from 'pages/QLLT/DashboardQLLT';
 import DashboardTTSV from 'pages/TTSV/DashboardTTSV';
 import DashboardQLHB from 'pages/QLHB/DashboardHB';
 import DashboardQLBH from 'pages/QLBH/DashboardBH';
-// import DashboardSHCD from 'pages/SHCD/DashboardSHCD';
+import DashboardSHCD from 'pages/SHCD/DashboardSHCD';
 // import DashboardKTKL from 'pages/KT_KL/DashboardKTKL';
 import DashboardCDCS from 'pages/CDCS/DashboardCDCS';
 import DashboardSigners from 'pages/UserList/index';
@@ -50,8 +50,7 @@ class Routers extends React.PureComponent {
               <DashboardQLLT />
             </Route>
             <Route exact path="/shcd">
-              <Dashboard />
-              {/* <DashboardSHCD /> */}
+              <DashboardSHCD />
             </Route>
             <Route exact path="/ttsv">
               <DashboardTTSV />
