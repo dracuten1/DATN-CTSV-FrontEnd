@@ -299,23 +299,6 @@ const AllList = props => {
               size="small"
               style={{ marginLeft: '8px' }}
             >
-              <ListAltIcon /> &nbsp;Xem toàn bộ
-        </Button>
-            <Button
-              onClick={() => setOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              <PostAddIcon /> &nbsp;Thêm sinh viên in
-        </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
               <ImportIcon /> &nbsp;Import
         </Button>
             <Button
