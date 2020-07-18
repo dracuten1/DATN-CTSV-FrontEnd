@@ -420,10 +420,11 @@ const PrintList = props => {
     setSnackBarValue({ ...current, ...hiddenSnackBar });
   };
 
-  React.useEffect(() => {
-    dispatch(ProgressActions.hideProgress());
-    // eslint-disable-next-line
-  }, []);
+  /*Run loading Progress*/
+  // React.useEffect(() => {
+  //   dispatch(ProgressActions.hideProgress());
+  //   // eslint-disable-next-line
+  // }, []);
 
   const handleShowPrintList = () => {
     dispatch(ProgressActions.showProgres());

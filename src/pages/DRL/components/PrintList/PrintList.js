@@ -394,12 +394,11 @@ const PrintList = props => {
     });
   };
 
-
-
-  React.useEffect(() => {
-    dispatch(ProgressActions.hideProgress());
-    // eslint-disable-next-line
-  }, []);
+  /*Run loading Progress*/
+  // React.useEffect(() => {
+  //   dispatch(ProgressActions.hideProgress());
+  //   // eslint-disable-next-line
+  // }, []);
 
   //set actions of table
   let actions;

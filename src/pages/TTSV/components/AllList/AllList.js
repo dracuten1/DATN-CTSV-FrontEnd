@@ -81,6 +81,7 @@ let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const TTSVState = useSelector(state => state.TTSVState);
+  const { isAdmin } = useSelector(state => state.auth);
 
   const { dataList, isCase, listLink } = TTSVState;
   const classes = useStyles();
@@ -123,7 +124,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => { };
+  const handleImport = () => {};
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -288,8 +289,18 @@ const AllList = props => {
         />
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
-              <Filters onFilter={handleFilter} filter={filter} isCase={isCase} />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                overflow: 'auto'
+              }}
+            >
+              <Filters
+                onFilter={handleFilter}
+                filter={filter}
+                isCase={isCase}
+              />
               <ContainedButton
                 handleClick={
                   isCase === 10 ? handleShowDataMSSV : handleShowListData
@@ -310,19 +321,23 @@ const AllList = props => {
                 >
                   <UpdateIcon /> Cập nhật TTSV
                 </Button>
-                <Button
-                  onClick={() => setImportOpen(true)}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  style={{ marginLeft: '8px' }}
-                >
-                  <ImportIcon /> &nbsp;Import
-                </Button>
+                {isAdmin ? (
+                  <Button
+                    onClick={() => setImportOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <ImportIcon /> &nbsp;Import
+                  </Button>
+                ) : (
+                  ''
+                )}
               </>
             ) : (
-                <div />
-              )}
+              <div />
+            )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -361,8 +376,8 @@ const AllList = props => {
                       {isCase === 10 ? (
                         <b>Tình Trạng Sinh Viên</b>
                       ) : (
-                          <b>DANH SÁCH {filter.type}</b>
-                        )}
+                        <b>DANH SÁCH {filter.type}</b>
+                      )}
                     </div>
                   }
                   columns={state.columns}
@@ -392,8 +407,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-            ''
-          )}
+          ''
+        )}
         <CustomizedSnackbars
           value={snackBarValue}
           handleClose={handleSnackBarClose}

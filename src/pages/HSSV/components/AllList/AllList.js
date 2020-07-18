@@ -12,10 +12,10 @@ import {
   Button,
   Divider,
   MuiThemeProvider,
-  Typography,
+  Typography
 } from '@material-ui/core';
 import themeFilter from 'shared/styles/theme/overrides/MuiFilter2';
-
+import ImportIcon from '@material-ui/icons/Input';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
@@ -24,10 +24,10 @@ import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import * as HSSVHandler from 'handlers/HSSVHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
+import Description from '@material-ui/icons/Description';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
 import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
-import Description from '@material-ui/icons/Description';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -75,6 +75,7 @@ let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const HSSVState = useSelector(state => state.HSSVState);
+  const { isAdmin } = useSelector(state => state.auth);
 
   const { dataInfo, listLink } = HSSVState;
   const classes = useStyles();
@@ -449,7 +450,7 @@ const AllList = props => {
 
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const [filter, setFilter] = React.useState({
     mssv: ''
@@ -457,6 +458,13 @@ const AllList = props => {
 
   const handleFilter = (prop, data) => {
     setFilter({ ...filter, [prop]: data });
+  };
+
+  const handleUpdateState = response => {
+    setState({
+      ...state,
+      data: response ? [response] : []
+    });
   };
 
   const successSnackBar = {
@@ -469,11 +477,16 @@ const AllList = props => {
     type: 'error',
     message: 'Đã xảy ra lỗi, vui lòng kiểm tra lại!'
   };
-  // const nullSnackBar = {
-  //   open: true,
-  //   type: 'error',
-  //   message: 'Không tìm thấy thông tin!'
-  // };
+  const mssvErrorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Không tìm thấy thông tin!'
+  };
+  const FillErrorSnackBar = {
+    open: true,
+    type: 'error',
+    message: 'Vui lòng nhập MSSV!'
+  };
   const hiddenSnackBar = { open: false };
   const [snackBarValue, setSnackBarValue] = React.useState(hiddenSnackBar);
   const handleSnackBarClose = current => event => {
@@ -493,61 +506,106 @@ const AllList = props => {
         <Typography className={classes.title}>
           <Description style={{ marginRight: '5px' }} /> HỒ SƠ SINH VIÊN
         </Typography>
-        <div style={{ display: "flex" }}>
-        </div>
       </Card>
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
             <Filters onFilter={handleFilter} />
             <ContainedButton
-              handleClick={() => {
+              handleClick={async () => {
                 dispatch(ProgressActions.showProgres());
-                dispatch(Actions.getInfoStudent(filter.mssv)).then(body =>
-                  setState({
-                    ...state,
-                    data: [body]
-                  })
-                );
+                if (filter.mssv !== '') {
+                  const payload = await HSSVHandler.GetInfoStudent(filter.mssv);
+
+                  const { statusCode, body } = payload;
+
+                  if (
+                    statusCode !== 200 ||
+                    body === 'Không tìm thấy học sinh này !'
+                  ) {
+                    dispatch({ type: Types.GET_INFO, payload: null });
+                    setSnackBarValue(mssvErrorSnackBar);
+                    dispatch(ProgressActions.hideProgress());
+                    return null;
+                  }
+
+                  body.mssv = body.SK.replace('SV#', '');
+                  body.Name = body.Ho + ' ' + body.Ten;
+                  body.SoNha = body.DiaChiThuongTru.SoNha;
+                  body.PhuongXa = body.DiaChiThuongTru.PhuongXa;
+                  body.TinhTP = body.DiaChiThuongTru.TinhTP;
+                  body.QuanHuyen = body.DiaChiThuongTru.QuanHuyen;
+                  body.SoTK = body.TaiKhoanNganHang.SoTK;
+                  body.NganHang = body.TaiKhoanNganHang.NganHang;
+                  body.ChiNhanh = body.TaiKhoanNganHang.ChiNhanh;
+                  body.TenNLL = body.NguoiLienLac.Ten;
+                  body.DiaChiNLL = body.NguoiLienLac.DiaChi;
+                  body.EmailNLL = body.NguoiLienLac.Email;
+                  body.TenNLL = body.NguoiLienLac.Ten;
+                  body.SDTNLL = body.NguoiLienLac.DT;
+                  body.GhiChuNLL = body.NguoiLienLac.GhiChu;
+                  body.QuanHe = body.NguoiLienLac.QuanHe;
+                  body.NgoaiNgu = body.NguoiLienLac.NgoaiNgu;
+                  body.TinHoc = body.NguoiLienLac.TinHoc;
+
+                  handleUpdateState(body);
+                  dispatch({ type: Types.GET_INFO, payload: body });
+                }
+                else setSnackBarValue(FillErrorSnackBar);
+                dispatch(ProgressActions.hideProgress());
               }}
               label="Tìm kiếm"
             />
           </MuiThemeProvider>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", paddingRight: "13px", marginTop: '8px' }}>
-            <div >
-              <Button
-                onClick={() => {
-                  isImportDTB = false;
-                  setImportOpen(true);
-                }}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Import HSSV
-            </Button>
-              <Button
-                onClick={() => {
-                  isImportDTB = true;
-                  setImportOpen(true);
-                }}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                Import ĐTB
-            </Button>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              width: '100%',
+              paddingRight: '13px',
+              marginTop: '8px'
+            }}
+          >
+            <div>
+              {isAdmin ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      isImportDTB = false;
+                      setImportOpen(true);
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <ImportIcon /> &nbsp;Import HSSV
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      isImportDTB = true;
+                      setImportOpen(true);
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <ImportIcon /> &nbsp;Import ĐTB
+                  </Button>
+                </>
+              ) : (
+                <div />
+              )}
             </div>
             {listLink.length > 0 ? (
               <div>
                 <ListLinkDocx data={listLink} />
               </div>
             ) : (
-                ''
-              )}
+              ''
+            )}
           </div>
         </CardActions>
         <Divider />
@@ -574,14 +632,19 @@ const AllList = props => {
                           pk: rowData.PK,
                           sk: rowData.SK
                         };
-                        const response = await HSSVHandler.PrintStudentInfo(data);
+                        const response = await HSSVHandler.PrintStudentInfo(
+                          data
+                        );
                         if (response.statusCode !== 200) {
                           setSnackBarValue(errorSnackBar);
                           return;
                         }
                         setSnackBarValue(successSnackBar);
                         const { body } = response;
-                        dispatch({ type: Types.ADD_LINK_PRINT, listLink: body });
+                        dispatch({
+                          type: Types.ADD_LINK_PRINT,
+                          listLink: body
+                        });
                         dispatch(ProgressActions.hideProgress());
                       }
                     }
@@ -607,9 +670,12 @@ const AllList = props => {
                             newData['DiaChiThuongTru']['QuanHuyen'] =
                               newData.QuanHuyen;
                             newData['DiaChiThuongTru']['SoNha'] = newData.SoNha;
-                            newData['DiaChiThuongTru']['TinhTP'] = newData.TinhTP;
+                            newData['DiaChiThuongTru']['TinhTP'] =
+                              newData.TinhTP;
 
-                            const response = await HSSVHandler.UpdateStudentInfo(newData);
+                            const response = await HSSVHandler.UpdateStudentInfo(
+                              newData
+                            );
                             if (response.statusCode !== 200) {
                               setSnackBarValue(errorSnackBar);
                               return;

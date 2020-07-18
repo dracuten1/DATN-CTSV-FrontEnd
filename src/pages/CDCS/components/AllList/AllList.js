@@ -82,8 +82,9 @@ let columns = [];
 const AllList = props => {
   const { className, ...rest } = props;
   const CDCSState = useSelector(state => state.CDCSState);
-  const { dataList, isCase, listLink } = CDCSState;
+  const { isAdmin } = useSelector(state => state.auth);
 
+  const { dataList, isCase, listLink } = CDCSState;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -317,16 +318,19 @@ const AllList = props => {
             </div>
           </MuiThemeProvider>
           <div>
-            <Button
-              onClick={() => setImportOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              <ImportIcon />
-              &nbsp; Import
-            </Button>
+            {isAdmin ? (
+              <Button
+                onClick={() => setImportOpen(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                <ImportIcon /> &nbsp;Import
+              </Button>
+            ) : (
+              <div />
+            )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -388,9 +392,7 @@ const AllList = props => {
                         setTimeout(async () => {
                           resolve();
                           const { PK, SK } = oldData;
-                          const response = await CDCSHandler.DeleteData(
-                            PK, SK
-                          );
+                          const response = await CDCSHandler.DeleteData(PK, SK);
                           if (response.statusCode !== 200) {
                             dispatch(ProgressActions.hideProgress());
                             setSnackBarValue(errorSnackBar);

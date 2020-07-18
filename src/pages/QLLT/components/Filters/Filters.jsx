@@ -38,7 +38,7 @@ export default function Filters(props) {
         label="Loại"
         prop="type"
         defaultValue={type}
-        data={['All', 'KTX']}
+        data={['Ngoại Trú', 'KTX']}
       />
     </div>
   );
