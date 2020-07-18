@@ -3,6 +3,7 @@ import {
     AuthenticationDetails,
     CognitoUser
 } from 'amazon-cognito-identity-js';
+import * as AWS from 'aws-sdk/global';
 import hisory from 'historyConfig';
 import { logger } from 'core/services/Apploger';
 // import * as AdminHandler from 'handlers/AdminHandler';
@@ -159,6 +160,30 @@ export const auth = (email, password) => {
         cognitoAuthUser = new CognitoUser(userData);
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
+                //POTENTIAL: Region needs to be set if not already set previously elsewhere.
+                AWS.config.region = 'ap-southeast-1';
+
+                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                    IdentityPoolId: 'ap-southeast-1:ce9f600e-f483-42b2-877d-5204e76e4a66', // your identity pool id here
+                    Logins: {
+                        // Change the key below according to the specific region your user pool is in.
+                        'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh': result
+                            .getIdToken()
+                            .getJwtToken(),
+                    },
+                });
+
+                //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
+                AWS.config.credentials.refresh(error => {
+                    if (error) {
+                        console.error(error);
+                    } else {
+                        // Instantiate aws sdk service objects now that the credentials have been updated.
+                        // example: var s3 = new AWS.S3();
+                        console.log('Successfully logged!');
+                        
+                    }
+                });
                 logger.info(result);
                 dispatch(authSuccess(cognitoAuthUser));
                 hisory.push(redirectPath);
@@ -186,7 +211,45 @@ export const auth = (email, password) => {
 
     };
 };
-
+export const refreshToken = () => {
+    return dispatch => {
+        console.log("aaa::",cognitoAuthUser);
+        cognitoAuthUser.getSession((err, session) => {
+            if (err) dispatch(logout());
+            var refresh_token = session.getRefreshToken(); 
+            if (AWS.config.credentials.needsRefresh()) {
+                cognitoAuthUser.refreshSession(refresh_token, (err, session) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        AWS.config.credentials.params.Logins[
+                            'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh'
+                        ] = session.getIdToken().getJwtToken();
+                        AWS.config.credentials.refresh(err => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                //dispatch()
+                                console.log('aaa: ',cognitoAuthUser);
+                                console.log('TOKEN SUCCESSFULLY UPDATED');
+                            }
+                        });
+                    }
+                });
+            }
+            dispatch(authSuccess(cognitoAuthUser));
+            // else {
+            //     if (session.isValid()) {
+            //         dispatch(authSuccess(cognitoAuthUser));
+            //     }
+            //     else {
+            //         dispatch(logout());
+            //     };
+            // }
+        });
+        
+    }
+}
 export const handleNewPassword = (newPassword) => {
     return dispatch => {
         dispatch(authStart());
@@ -212,13 +275,13 @@ export const setAuthRedirectPath = (path) => {
 
 export const authCheckState = () => {
     return dispatch => {
-        const cognitoUser = userPool.getCurrentUser();
-        if (cognitoUser) {
-            cognitoUser.getSession((err, session) => {
+        cognitoAuthUser = userPool.getCurrentUser();
+        if (cognitoAuthUser) {
+            cognitoAuthUser.getSession((err, session) => {
                 if (err) dispatch(logout());
                 else {
                     if (session.isValid()) {
-                        dispatch(authSuccess(cognitoUser));
+                        dispatch(authSuccess(cognitoAuthUser));
                     }
                     else {
                         dispatch(logout());
