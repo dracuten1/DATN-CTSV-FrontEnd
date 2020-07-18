@@ -8,6 +8,7 @@ const initialState = {
     loading: false,
     resetPassword: false,
     forgotPassword: false,
+    isAdmin: false,
     authRedirectPath: '/dashboard'
 };
 
@@ -28,10 +29,14 @@ const resetPassword = (state, action) => {
 };
 
 const authSuccess = (state, action) => {
+    const tmpGroup = action.cognitoUser ? action.cognitoUser.signInUserSession.idToken.payload['cognito:groups'] : '';
+    const group = tmpGroup ? tmpGroup[0] : '';
+
     return updateObject(state, {
         error: null,
         loading: false,
         resetPassword: false,
+        isAdmin: group === 'Admins',
         cognitoUser: action.cognitoUser,
     });
 };
