@@ -78,122 +78,33 @@ const AllList = props => {
   const { isKyLuat } = QLLTState;
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const kyLuatCol = [
+    { title: 'MSSV', field: 'mssv', filtering: false },
+    { title: 'Họ tên', field: 'fullname', filtering: false },
+    { title: 'Nội dung vi phạm', field: '', filtering: false },
+    { title: 'Hình thức kỷ luật', field: '', filtering: false },
+    { title: 'Số quyết định', field: '', filtering: false },
+    { title: 'Trách nhiệm pháp lý', field: '', filtering: false },
+    { title: 'Học kỳ', field: '', filtering: false },
+    { title: 'Năm học', field: '', filtering: false },
+  ]
+  const khenThuongCol = [
+    { title: 'MSSV', field: 'mssv', filtering: false },
+    { title: 'Họ tên', field: 'name', filtering: false },
+    { title: 'Thành tích', field: '', filtering: false },
+    { title: 'Cấp đạt giải', field: '', filtering: false },
+    { title: 'Số tiền', field: '', filtering: false },
+    { title: 'Loại', field: '', filtering: false },
+    { title: 'Học kỳ', field: '', filtering: false },
+    { title: 'Năm học', field: '', filtering: false },
+    { title: 'Cấp khen thưởng', field: '', filtering: false },
+    { title: 'Quyến định', field: '', filtering: false },
+    { title: 'Ngày', field: '', filtering: false },
+  ]
   const [open, setOpen] = React.useState(false);
   const [state, setState] = useState({
     data: isKyLuat ? mockData.info : mockData.importInfo,
-    columns: isKyLuat
-      ? [
-        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-        { title: 'MSSV', field: 'mssv', filtering: false },
-        { title: 'Họ tên', field: 'name', filtering: false },
-        {
-          title: 'Nội dung vi phạm',
-          field: 'ktx'
-        },
-        {
-          title: 'Hình thức kỷ luật',
-          field: 'portal'
-        },
-        {
-          title: 'Số quyết định',
-          field: 'portal'
-        },
-        {
-          title: 'Ngày quyết định',
-          field: 'portal'
-        },
-        {
-          title: 'Trách nhiệm pháp lý',
-          field: 'portal'
-        },
-        {
-          title: 'Năm học',
-          field: 'year',
-          lookup: {
-            1: '2016-2017',
-            2: '2017-2018',
-            3: '2018-2019',
-            4: '2019-2020'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Học kỳ',
-          field: 'semester',
-          lookup: {
-            1: '1',
-            2: '2'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        }
-      ]
-      : [
-        { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-        { title: 'MSSV', field: 'mssv', filtering: false },
-        { title: 'Họ tên', field: 'name', filtering: false },
-        {
-          title: 'Thành tích',
-          field: 'ktx'
-        },
-        {
-          title: 'Cấp đạt giải',
-          field: 'ktx'
-        },
-        {
-          title: 'Số tiền',
-          field: 'ktx'
-        },
-        {
-          title: 'Loại',
-          field: 'ktx'
-        },
-        {
-          title: 'Cấp khen thưởng',
-          field: 'ktx'
-        },
-        {
-          title: 'Quyết định',
-          field: 'ktx'
-        },
-        {
-          title: 'Ngày',
-          field: 'ktx'
-        },
-        {
-          title: 'Năm học',
-          field: 'year',
-          lookup: {
-            1: '2016-2017',
-            2: '2017-2018',
-            3: '2018-2019',
-            4: '2019-2020'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Học kỳ',
-          field: 'semester',
-          lookup: {
-            1: '1',
-            2: '2'
-          },
-          filterCellStyle: {
-            paddingTop: 1
-          }
-        },
-        {
-          title: 'Ghi chú',
-          field: 'note',
-          filtering: false
-        }
-      ]
+    columns: isKyLuat ? kyLuatCol : khenThuongCol,
   });
 
   const handleAdd = newData => {
