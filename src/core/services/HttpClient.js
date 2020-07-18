@@ -29,9 +29,12 @@ AWS.config.region = 'ap-southeast-1';
 /** Adding the request interceptors */
 httpClient.interceptors.request.use(
     (configuration) => {
-        store.dispatch(refreshToken());
-
+        
         const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.idToken;
+        console.log('bbb:old',jwtToken);
+        store.dispatch(refreshToken());
+        const newJwtToken = store.getState().auth.cognitoUser.signInUserSession.idToken.jwtToken;
+        console.log('bbb:new',newJwtToken);
         const contentType = 'application/json';
         const headers = {
             'Auth_Token': jwtToken,
