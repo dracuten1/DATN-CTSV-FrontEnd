@@ -13,7 +13,7 @@ export const GetUploadURL = async (type) => {
 export const GetImportQLBHInfo = async (value) => {
   const url = `bh/import-bhxh`;
 
-  const response = await HttpClient2.sendPost(url, value);;
+  const response = await HttpClient2.sendPost(url, value);
 
   return response;
 };

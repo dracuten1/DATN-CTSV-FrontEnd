@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { logger } from 'core/services/Apploger';
 import MaterialTable from 'material-table';
 import { useDispatch, useSelector } from 'react-redux';
+import Tooltip from '@material-ui/core/Tooltip';
 import {
   Card,
   CardActions,
@@ -100,7 +101,7 @@ const AllList = props => {
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
     { title: 'Tên file', field: 'fileName', filtering: false },
     {
-      title: 'Nhân viên',
+      title: 'Tài khoản',
       field: 'username',
       cellStyle: {
         minWidth: '200px'
@@ -122,113 +123,119 @@ const AllList = props => {
       filtering: false,
       render: rowData => (
         <div>
-          <Button
-            onClick={async () => {
-              try {
-                dispatch(ProgressActions.showProgres());
-                const response = await SHCDHandler.DownloadFile(rowData.keyS3);
-                if (response.statusCode !== 200) {
-                  setSnackBarValue(errorSnackBarDownload);
-                  dispatch(ProgressActions.hideProgress());
-                  return;
-                }
-                const { body } = response;
-                dispatch({
-                  type: Types.ADD_LINK_PRINT,
-                  listLink: body.link
-                });
-                setSnackBarValue(successSnackBarDownload);
-              } catch (error) {
-                setSnackBarValue(errorSnackBar);
-              }
-              dispatch(ProgressActions.hideProgress());
-            }}
-            color="primary"
-            size="small"
-          >
-            <SystemUpdateAltIcon />
-          </Button>
-          <Button
-            onClick={async () => {
-              try {
-                dispatch(ProgressActions.showProgres());
-                const response = await SHCDHandler.GetContentFile(
-                  rowData.keyS3
-                );
-
-                logger.info(
-                  'SHCDAction:: GetContentFile: GetContentFile: ',
-                  response
-                );
-
-                if (response.statusCode !== 200) {
-                  setSnackBarValue(errorViewerSnackBar);
-                  dispatch(ProgressActions.hideProgress());
-                  return;
-                }
-
-                const { body } = response;
-                const { data, headers } = body;
-
-                if (data.length === 0) {
-                  setSnackBarValue(errorNoDataSnackBar);
-                  dispatch(ProgressActions.hideProgress());
-                  return;
-                }
-
-                const arrHeader = Object.values(headers);
-                const columns = [];
-                const values = [];
-
-                arrHeader.forEach(element => {
-                  columns.push({
-                    title: `${element}`,
-                    field: `${element}`
-                  });
-                });
-
-                for (let key = 0; key < data.length; key += 1) {
-                  if (data[key] !== null) {
-                    //check data is correct
-                    let isCorrect = true;
-                    Object.keys(data[key]).forEach(elem => {
-                      if (elem === 'undefined') isCorrect = false;
-                    });
-
-                    if (!isCorrect) {
-                      setSnackBarValue(errorViewerSnackBar);
-                      dispatch(ProgressActions.hideProgress());
-                      return;
-                    }
-
-                    //Binding data in table
-                    arrHeader.forEach(element => {
-                      data[key][`${element}`] = data[key][`${element}`] || '';
-                    });
-                    values.push(data[key]);
+          <Tooltip title="Tải về" placement="bottom">
+            <Button
+              onClick={async () => {
+                try {
+                  dispatch(ProgressActions.showProgres());
+                  const response = await SHCDHandler.DownloadFile(
+                    rowData.keyS3
+                  );
+                  if (response.statusCode !== 200) {
+                    setSnackBarValue(errorSnackBarDownload);
+                    dispatch(ProgressActions.hideProgress());
+                    return;
                   }
+                  const { body } = response;
+                  dispatch({
+                    type: Types.ADD_LINK_PRINT,
+                    listLink: body.link
+                  });
+                  setSnackBarValue(successSnackBarDownload);
+                } catch (error) {
+                  setSnackBarValue(errorSnackBar);
                 }
+                dispatch(ProgressActions.hideProgress());
+              }}
+              color="primary"
+              size="small"
+            >
+              <SystemUpdateAltIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Xem File" placement="bottom">
+            <Button
+              onClick={async () => {
+                try {
+                  dispatch(ProgressActions.showProgres());
+                  const response = await SHCDHandler.GetContentFile(
+                    rowData.keyS3
+                  );
 
-                handleUpdateStateViewer(values, columns, rowData.fileName);
-                setSnackBarValue(successSnackBar);
-              } catch (error) {
-                setSnackBarValue(errorSnackBar);
-              }
-              dispatch(ProgressActions.hideProgress());
-            }}
-            color="primary"
-            size="small"
-            style={{ marginLeft: '8px' }}
-          >
-            <VisibilityIcon />
-          </Button>
+                  logger.info(
+                    'SHCDAction:: GetContentFile: GetContentFile: ',
+                    response
+                  );
+
+                  if (response.statusCode !== 200) {
+                    setSnackBarValue(errorViewerSnackBar);
+                    dispatch(ProgressActions.hideProgress());
+                    return;
+                  }
+
+                  const { body } = response;
+                  const { data, headers } = body;
+
+                  if (data.length === 0) {
+                    setSnackBarValue(errorNoDataSnackBar);
+                    dispatch(ProgressActions.hideProgress());
+                    return;
+                  }
+
+                  const arrHeader = Object.values(headers);
+                  const columns = [];
+                  const values = [];
+
+                  arrHeader.forEach(element => {
+                    columns.push({
+                      title: `${element}`,
+                      field: `${element}`
+                    });
+                  });
+
+                  for (let key = 0; key < data.length; key += 1) {
+                    if (data[key] !== null) {
+                      //check data is correct
+                      let isCorrect = true;
+                      Object.keys(data[key]).forEach(elem => {
+                        if (elem === 'undefined') isCorrect = false;
+                      });
+
+                      if (!isCorrect) {
+                        setSnackBarValue(errorViewerSnackBar);
+                        dispatch(ProgressActions.hideProgress());
+                        return;
+                      }
+
+                      //Binding data in table
+                      arrHeader.forEach(element => {
+                        data[key][`${element}`] = data[key][`${element}`] || '';
+                      });
+                      values.push(data[key]);
+                    }
+                  }
+
+                  handleUpdateStateViewer(values, columns, rowData.fileName);
+                  setSnackBarValue(successSnackBar);
+                } catch (error) {
+                  setSnackBarValue(errorSnackBar);
+                }
+                dispatch(ProgressActions.hideProgress());
+              }}
+              color="primary"
+              size="small"
+              style={{ marginLeft: '8px' }}
+            >
+              <VisibilityIcon />
+            </Button>
+          </Tooltip>
         </div>
       )
     },
     { title: 'STT', field: 'stt' },
     { title: 'Tên file', field: 'fileName' },
     {
-      title: 'Nhân viên',
+      title: 'Tài khoản',
       field: 'username',
       cellStyle: {
         minWidth: '200px'

@@ -8,11 +8,12 @@ const getInfoStudent = (mssv) => async dispatch => {
   const payload       = await HSSVHandler.GetInfoStudent(mssv);
 
   const {statusCode, body} = payload;
-  logger.info('HSSVAction:: updateStudentInfo: reponse: ', body);
+  logger.info('HSSVAction:: updateStudentInfo: reponse: ', payload);
 
   if (statusCode !== 200 || body === "Không tìm thấy học sinh này !")
   {
-    dispatch({ type: Types.GET_NULL});
+    dispatch({ type: Types.GET_INFO, payload: null });
+    dispatch({ type: HIDE_PROGRESS });
     return null;
   }
 

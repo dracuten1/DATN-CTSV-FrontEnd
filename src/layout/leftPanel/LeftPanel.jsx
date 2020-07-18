@@ -15,6 +15,7 @@ import Hospital from '@material-ui/icons/LocalHospital';
 import Scholarship from '@material-ui/icons/School';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import List from '@material-ui/core/List';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import ListItem from '@material-ui/core/ListItem';
 import Policy from '@material-ui/icons/Accessible';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -35,8 +36,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Tooltip from '@material-ui/core/Tooltip';
 import { HIDE_PROGRESS } from 'reduxs/reducers/LinearProgress/ActionTypes';
 
-let drawerWidth = 250;
-let drawerWidthHide = 90;
+const drawerWidth = 250;
+const drawerWidthHide = 90;
 const appStage = process.env.REACT_APP_STAGE.trim();
 
 const isProduction =
@@ -217,6 +218,20 @@ function ResponsiveDrawer(props) {
             <ListItemText style={{ whiteSpace: "nowrap" }} primary="Console log token" />
           </ListItem>
         }
+        <ListItem
+          className={classes.nested}
+          button
+          component="a"
+          onClick={() => {
+            dispatch({ type: HIDE_PROGRESS });
+            history.push('/dashboard');
+          }}
+        >
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText style={{ whiteSpace: "nowrap" }} primary="Dashboard" />
+        </ListItem>
         <ListItem
           className={classes.nested}
           button

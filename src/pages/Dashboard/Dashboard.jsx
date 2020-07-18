@@ -131,7 +131,7 @@ export default function Dashboard() {
     <div className={classes.section}>
       <Grid container justify="center">
         <Grid item xs={12} sm={12} md={8}>
-          <h1 className={classes.title}>Các Chức Năng Quản Lý</h1>
+          <h1 className={classes.title}>Hệ Thống Hỗ Trợ Nghiệp Vụ Phòng Công Tác Sinh Viên</h1>
           <h5 className={classes.description}>
             Tham mưu và giúp Hiệu trưởng xây dựng các kế hoạch, biện pháp tổ
             chức thực hiện các hoạt động nhằm giáo dục về chính trị, tư tưởng

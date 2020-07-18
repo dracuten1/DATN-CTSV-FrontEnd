@@ -15,7 +15,8 @@ const xnsvReducer = (state = INIT_STATE, action) => {
     }
     case ActionTypes.GET_INFO:{
       const arr = [];
-      arr.push(action.payload);
+      if (action.payload !== null)
+        arr.push(action.payload);
       return {
         ...state,
         dataInfo: arr,

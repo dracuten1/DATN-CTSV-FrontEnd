@@ -82,6 +82,7 @@ let updateBegin = 0;
 const AllList = props => {
   const { className, ...rest } = props;
   const QLLTState = useSelector(state => state.QLLTState);
+  const { isAdmin } = useSelector(state => state.auth);
 
   const { dataList, isAlllist, listLink } = QLLTState;
   const classes = useStyles();
@@ -110,7 +111,7 @@ const AllList = props => {
     setfilter({ ...filter, [prop]: data });
   };
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const parseNHToString = nh => {
     switch (nh) {
@@ -178,12 +179,18 @@ const AllList = props => {
       <Card {...rest} className={clsx(classes.root, className)}>
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                overflow: 'auto'
+              }}
+            >
               <Filters onFilter={handleFilter} filter={filter} />
               <ContainedButton
                 handleClick={() => {
                   dispatch(ProgressActions.showProgres());
-                  if (filter.type === 'All' || filter.type === 'all')
+                  if (filter.type === 'Ngoại Trú')
                     dispatch(Actions.getAllListWithFilter(filter)).then(data =>
                       handleUpdateState(data, true)
                     );
@@ -198,15 +205,19 @@ const AllList = props => {
             </div>
           </MuiThemeProvider>
           <div>
-            <Button
-              onClick={() => setImportOpen(true)}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: '8px' }}
-            >
-              <ImportIcon /> &nbsp;Import
-            </Button>
+            {isAdmin ? (
+              <Button
+                onClick={() => setImportOpen(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '8px' }}
+              >
+                <ImportIcon /> &nbsp;Import
+              </Button>
+            ) : (
+              <div />
+            )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -244,8 +255,8 @@ const AllList = props => {
                       {isAlllist ? (
                         <b>DANH SÁCH NGOẠI TRÚ</b>
                       ) : (
-                          <b>DANH SÁCH KTX</b>
-                        )}
+                        <b>DANH SÁCH KTX</b>
+                      )}
                     </div>
                   }
                   columns={state.columns}
@@ -318,8 +329,8 @@ const AllList = props => {
             </Grid>
           </CardActions>
         ) : (
-            ''
-          )}
+          ''
+        )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}
