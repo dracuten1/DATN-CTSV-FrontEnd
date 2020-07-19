@@ -33,8 +33,11 @@ const MenuProps = {
 };
 export default function SimpleSelectObject(props) {
   const classes = useStyles();
-  const { label, prop, clickFilter, helperText, defaultValue, data } = props;
+  const { label, prop, clickFilter, helperText, defaultValue, data, multiple } = props;
+  
   const [selectItem, setSelectItem] = React.useState(defaultValue);
+  const [selectItemMulti, setSelectItemMulti] = React.useState(Array.isArray(defaultValue) ? defaultValue : []);
+
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   
@@ -42,12 +45,17 @@ export default function SimpleSelectObject(props) {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  if (selectItem.length === 0 && defaultValue.length > 0){
-    setSelectItem(defaultValue);
+  if (multiple && selectItemMulti.length === 0 && defaultValue.length > 0){
+    setSelectItemMulti(defaultValue);
   }
 
   const handleChange = event => {
     setSelectItem(event.target.value);
+    clickFilter(prop, event.target.value);
+  };
+
+  const handleChangeMulti = event => {
+    setSelectItemMulti(event.target.value);
     clickFilter(prop, event.target.value);
   };
 
@@ -81,18 +89,31 @@ export default function SimpleSelectObject(props) {
         <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
           {label}
         </InputLabel>
-        <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={selectItem}
-          onChange={handleChange}
-          MenuProps={MenuProps}
-          labelWidth={labelWidth}
-          inputProps={{ className: classes.select }}
-          multiple
-        >
-          {drawData()}
-        </Select>
+        {multiple ? (
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={selectItemMulti}
+            multiple
+            onChange={handleChangeMulti}
+            labelWidth={labelWidth}
+            MenuProps={MenuProps}
+            inputProps={{ className: classes.select }}
+          >
+            {drawData()}
+          </Select>
+        ) : (
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={selectItem}
+            onChange={handleChange}
+            labelWidth={labelWidth}
+            inputProps={{ className: classes.select }}
+          >
+            {drawData()}
+          </Select>
+        )}
         {helperText ? <FormHelperText>{helperText}</FormHelperText> : <div />}
       </FormControl>
     </div>

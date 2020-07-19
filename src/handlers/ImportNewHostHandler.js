@@ -18,13 +18,29 @@ export const GetImportQLBHInfo = async (value) => {
   return response;
 };
 
+/* Import CDCS */
+export const GetImportCDCSInfo = async (value) => {
+  const url = `cdcs/import`;
 
-export const GetImportStatusQLBH = async (key) => {
+  const response = await HttpClient2.sendPost(url, value);
+
+  return response;
+};
+
+/* Import KTKL */
+export const GetImportKTKLInfo = async (value) => {
+  const url = `ktkl/import`;
+
+  const response = await HttpClient2.sendPost(url, value);
+
+  return response;
+};
+
+/* Get Status */
+export const GetImportStatus = async (key) => {
   const url = `ttluutru/getLog?key=${key}`;
  
   const response = await HttpClient2.sendGet(url);
 
   return response;
 };
-
-

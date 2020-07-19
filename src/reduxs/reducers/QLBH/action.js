@@ -26,6 +26,11 @@ const parseNHToNumber = nh => {
       return 7;
   }
 };
+
+const formatNumber = num => {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+};
+
 const changeCountingColumns = () => async dispatch => {
   dispatch({ type: Types.TK });
   dispatch({ type: HIDE_PROGRESS });
@@ -77,7 +82,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
       Items[key].MSSV = Items[key].DuLieu.MSSV;
       Items[key].NTNS = Items[key].DuLieu.NTNS;
       Items[key].CongTyBH = Items[key].DuLieu.CongTyBH;
-      Items[key].SoTienBH = Items[key].DuLieu.SoTienBH;
+      Items[key].SoTienBH = formatNumber(Items[key].DuLieu.SoTienBH);
       Items[key].HSDTu = Items[key].DuLieu.HSD.Tu;
       Items[key].HSDDen = Items[key].DuLieu.HSD.Den;
       Items[key].nh = parseNHToNumber(Items[key].DuLieu.NH);
@@ -89,7 +94,7 @@ const getListWithFilter = (filter, type) => async dispatch => {
       Items[key].HoTen = Items[key].DuLieu.HoTen;
       Items[key].MSSV = Items[key].DuLieu.MSSV;
       Items[key].CongTyBH = Items[key].DuLieu.CongTyBH;
-      Items[key].SoTienBT = Items[key].DuLieu.SoTienBH;
+      Items[key].SoTienBT = formatNumber(Items[key].DuLieu.SoTienBH);
       Items[key].BiTaiNan = Items[key].DuLieu.BiTaiNan === 'x';
       Items[key].hk = Items[key].DuLieu.HK;
       Items[key].nh = parseNHToNumber(Items[key].DuLieu.NH);
@@ -138,7 +143,7 @@ const countingWithMSSV = filter => async dispatch => {
   const data = Object.keys(body).map(key => {
     body[key].nh = parseNHToNumber(body[key].NH);
     body[key].SoTien =
-      filter.type === 'BHTN' ? body[key].SoTienBH : body[key].SoTien;
+      filter.type === 'BHTN' ? formatNumber(body[key].SoTienBH) : formatNumber(body[key].SoTien);
     body[key].CongTyBH = filter.type === 'BHYT' ? '' : body[key].CongTyBaoHiem;
 
     body[key].MaBV = filter.type === 'BHYT' ? body[key].NoiDKKCB.MaBV : '';

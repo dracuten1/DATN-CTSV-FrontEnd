@@ -26,7 +26,6 @@ import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
 import Description from '@material-ui/icons/Description';
 import Types from 'reduxs/reducers/HSSV/actionTypes';
-import Actions from 'reduxs/reducers/HSSV/action';
 import { Filters } from '../Filters';
 
 const useStyles = makeStyles(theme => ({

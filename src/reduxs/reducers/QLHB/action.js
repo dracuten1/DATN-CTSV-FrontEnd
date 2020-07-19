@@ -32,8 +32,7 @@ const formatNumber = num => {
 };
 
 const changeCountingColumns = () => async dispatch => {
-    dispatch({type: Types.TK});
-
+  dispatch({type: Types.TK});
   history.push('/qlhb');
 };
 
@@ -100,7 +99,7 @@ const countingWithMSSV = (filter) => async dispatch => {
   logger.info('QLHBAction:: CountingWithMSSV: reponse: ', response);
   if (response === null || response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.TK});
+    dispatch({ type: Types.GET_DATA_COUNTING, payload: []});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -124,7 +123,7 @@ const countingWithLoaiHB = (filter) => async dispatch => {
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.TK});
+    dispatch({ type: Types.GET_DATA_COUNTING, payload: []});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -149,7 +148,7 @@ const countingWithDoiTuong = (filter) => async dispatch => {
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.TK});
+    dispatch({ type: Types.GET_DATA_COUNTING, payload: []});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  
@@ -174,7 +173,7 @@ const countingWithDVTT = (filter) => async dispatch => {
   logger.info('QLHBAction:: CountingWithFilter: reponse: ', response);
   if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
   {
-    dispatch({ type: Types.TK});
+    dispatch({ type: Types.GET_DATA_COUNTING, payload: []});
     dispatch({ type: HIDE_PROGRESS });
     return [];
   }  

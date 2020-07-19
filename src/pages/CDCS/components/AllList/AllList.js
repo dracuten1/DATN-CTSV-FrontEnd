@@ -24,7 +24,7 @@ import Policy from '@material-ui/icons/Accessible';
 import * as CDCSHandler from 'handlers/CDCSHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
-import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import ImportDialog from 'shared/components/importDialogNewHost/ImportDialogNewHost';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import themeFilter from 'shared/styles/theme/overrides/MuiFilter';
 import Types from 'reduxs/reducers/CDCS/actionTypes';

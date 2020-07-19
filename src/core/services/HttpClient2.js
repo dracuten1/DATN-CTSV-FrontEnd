@@ -1,6 +1,4 @@
 import axios from "axios";
-// import { logger } from "./AppLogger";
-import { logger } from 'core/services/Apploger';
 import appConfig from "../../config/app-config";
 import store from '../../store';
 /**
@@ -175,6 +173,6 @@ export const sendPatch = async (url) => {
 
 export const sendPatchWithBody = async (url, requestBody) => {
     const response = await httpClient.patch(url, requestBody);
-    logger.info('QLHBHanlder:: CountingWithFilter: requestBody: ', requestBody);
+    
     return response.data;
 };

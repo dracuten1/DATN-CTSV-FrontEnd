@@ -3,7 +3,6 @@ import Filter from 'shared/components/filter/Filter';
 import TextField from '@material-ui/core/TextField';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { logger } from 'core/services/Apploger';
 import './Filters.scss';
 
 const useStyles = makeStyles(() => ({
@@ -18,7 +17,6 @@ let arrDoiTuong = [];
 let arrDVTT = [];
 
 export default function Filters(props) {
-  logger.info("FILTER");
   const classes = useStyles();
   const { onFilter, filter, isCounting, isCase } = props;
   const dt = new Date();

@@ -94,8 +94,6 @@ const AllList = props => {
     isHBKK,
     isCounting,
     listLink
-    // listDoiTuong,
-    // listDonViTaiTro
   } = QLHBState;
 
   const classes = useStyles();
@@ -345,7 +343,6 @@ const AllList = props => {
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
                 let response;
-                console.log('isCaseeee:', isCase);
                 if (isCounting) {
                   switch (isCase) {
                     case 1:

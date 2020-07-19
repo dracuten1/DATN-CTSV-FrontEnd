@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Divider, FormHelperText } from '@material-ui/core';
+import { Divider, FormHelperText, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -15,7 +15,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import moment from 'moment';
 import VayVonDialog from 'pages/XNSV/components/VayVonDialog/VayVonDialog';
 import ThucTapDialog from 'pages/XNSV/components/ThucTapDialog/ThucTapDialog';
-import { LinearProgress } from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
@@ -26,7 +25,6 @@ import { valueOrEmpty } from 'core/ultis/stringUtil';
 import * as XNSVHandler from 'handlers/XNSVHandler';
 import * as AdminHandler from 'handlers/AdminHandler';
 import Creatable from 'shared/components/creatableSelect';
-import { is } from 'date-fns/locale';
 
 const useStyles = makeStyles(theme => ({
   container: {

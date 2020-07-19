@@ -56,7 +56,6 @@ class Routers extends React.PureComponent {
               <DashboardTTSV />
             </Route>
             <Route exact path="/ktkl">
-              {/* <Dashboard /> */}
               <DashboardKTKL />
             </Route>
             <Route exact path="/cdcs">
