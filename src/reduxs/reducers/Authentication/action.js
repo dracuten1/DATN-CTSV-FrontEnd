@@ -3,14 +3,22 @@ import {
     AuthenticationDetails,
     CognitoUser
 } from 'amazon-cognito-identity-js';
+import * as AWS from 'aws-sdk/global';
 import hisory from 'historyConfig';
 import { logger } from 'core/services/Apploger';
 // import * as AdminHandler from 'handlers/AdminHandler';
 import * as actionTypes from './actionTypes';
 
+
+const _region =process.env.REACT_APP_REGION 
+console.log('ccc:',_region) ;                     //'ap-southeast-1'   //env.REGION
+const _identityPoolId =process.env.REACT_APP_IDENTITIPOOL_ID      // 'ap-southeast-1:ce9f600e-f483-42b2-877d-5204e76e4a66';  //env.IDENTITIPOOL_ID
+const _userPoolId = process.env.REACT_APP_USER_POOL_ID;
+const _pool = `cognito-idp.${_region}.amazonaws.com/${_userPoolId}`;
+const _appClientId = process.env.REACT_APP_APPCLIENT_ID           //'32gh8i178tatha2f01gps8k014';  //evn.APPCLIENTID
 const poolData = {
-    UserPoolId: 'ap-southeast-1_6pX9mWgjh',
-    ClientId: '32gh8i178tatha2f01gps8k014'
+    UserPoolId: _userPoolId, 
+    ClientId: _appClientId  
 };
 const userPool = new CognitoUserPool(poolData);
 const redirectPath = '/dashboard';
@@ -159,6 +167,40 @@ export const auth = (email, password) => {
         cognitoAuthUser = new CognitoUser(userData);
         cognitoAuthUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
+                //POTENTIAL: Region needs to be set if not already set previously elsewhere.
+                AWS.config.region = _region;
+                const awssCredentials = {
+                    IdentityPoolId: _identityPoolId,
+                };
+                const loginaws = {};
+                loginaws[_pool] = result
+                    .getIdToken()
+                    .getJwtToken();
+                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                    ...awssCredentials,
+                    ...loginaws
+                });
+                // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                //     IdentityPoolId: _identityPoolId, // your identity pool id here
+                //     Logins: {
+                //         // Change the key below according to the specific region your user pool is in.
+                //         'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh': result
+                //             .getIdToken()
+                //             .getJwtToken(),
+                //     },
+                // });
+
+                //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
+                AWS.config.credentials.refresh(error => {
+                    if (error) {
+                        console.error(error);
+                    } else {
+                        // Instantiate aws sdk service objects now that the credentials have been updated.
+                        // example: var s3 = new AWS.S3();
+                        console.log('Successfully logged!');
+
+                    }
+                });
                 logger.info(result);
                 dispatch(authSuccess(cognitoAuthUser));
                 hisory.push(redirectPath);
@@ -186,7 +228,66 @@ export const auth = (email, password) => {
 
     };
 };
+export const refreshToken = () => {
+    return dispatch => {
+        console.log("aaa::", cognitoAuthUser);
+        cognitoAuthUser.getSession((err, session) => {
+            if (err) dispatch(logout());
+            var refresh_token = session.getRefreshToken();
+            console.log('aaa::', refresh_token);
+            const awssCredentials = {
+                IdentityPoolId: _identityPoolId,
+            };
+            const loginaws = {};
+            loginaws[_pool] = cognitoAuthUser.signInUserSession
+                .idToken.jwtToken;
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                ...awssCredentials,
+                ...loginaws
+            });
+            // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            //     IdentityPoolId: _identityPoolId, // your identity pool id here
+            //     Logins: {
+            //         // Change the key below according to the specific region your user pool is in.
+            //         'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh':
+            //             cognitoAuthUser.signInUserSession
+            //                 .idToken.jwtToken,
+            //     },
+            // });
+            if (AWS.config.credentials.needsRefresh()) {
+                return dispatch => {
+                    cognitoAuthUser.refreshSession(refresh_token, (err, session) => {
+                        console.log('aaa::Refreshing')
+                        if (err) {
+                            console.log(err);
 
+                            dispatch(logout());
+                        } else {
+                            return dispatch => {
+                                AWS.config.credentials.params.Logins[
+                                    _pool
+                                    //'cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_6pX9mWgjh'
+                                ] = session.getIdToken().getJwtToken();
+                                AWS.config.credentials.refresh(err => {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        dispatch(authSuccess(cognitoAuthUser));
+                                        console.log('aaa: ', cognitoAuthUser);
+                                        console.log('TOKEN SUCCESSFULLY UPDATED');
+                                    }
+                                });
+                            }
+
+                        }
+                    });
+                }
+
+            }
+        });
+
+    }
+}
 export const handleNewPassword = (newPassword) => {
     return dispatch => {
         dispatch(authStart());
@@ -212,13 +313,13 @@ export const setAuthRedirectPath = (path) => {
 
 export const authCheckState = () => {
     return dispatch => {
-        const cognitoUser = userPool.getCurrentUser();
-        if (cognitoUser) {
-            cognitoUser.getSession((err, session) => {
+        cognitoAuthUser = userPool.getCurrentUser();
+        if (cognitoAuthUser) {
+            cognitoAuthUser.getSession((err, session) => {
                 if (err) dispatch(logout());
                 else {
                     if (session.isValid()) {
-                        dispatch(authSuccess(cognitoUser));
+                        dispatch(authSuccess(cognitoAuthUser));
                     }
                     else {
                         dispatch(logout());
