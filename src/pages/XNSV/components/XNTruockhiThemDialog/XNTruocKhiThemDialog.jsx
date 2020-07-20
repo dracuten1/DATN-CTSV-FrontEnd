@@ -608,7 +608,6 @@ const XNTruocKhiThemDialog = props => {
                   className={classes.textField}
                   label="Họ tên"
                   value={values.name}
-                  onChange={handleChange('name')}
                   error={errors.name}
                   helperText={errors.name ? "Bắt buộc" : ""}
                   disabled
@@ -617,6 +616,7 @@ const XNTruocKhiThemDialog = props => {
                     readOnly: true
                   }}
                   onChange={event => {
+                    handleChange('name')(event)
                     validate('name')(event);
                   }}
                 />
