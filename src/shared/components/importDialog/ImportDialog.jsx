@@ -141,7 +141,7 @@ const ImportDialog = props => {
           res = await ImportHandler.GetImportDRLInfo(response.key);
           logger.info('ImportDialog:: res: ', res);
 
-          setMessage(res.message + '-' + res.nh + '-' + res.hk);
+          // setMessage(res.message + '-' + res.nh + '-' + res.hk);
 
           res1 = await ImportHandler.ImportDRLInfo({
             key: res.jsonKey,
@@ -213,7 +213,7 @@ const ImportDialog = props => {
             break;
           }
 
-          setMessage(res.message + '-' + res.newKey);
+          // setMessage(res.message + '-' + res.newKey);
 
           res1 = await ImportHandler.ImportTTSVInfo({
             checkImportResult: res.checkImportResult,
@@ -259,7 +259,7 @@ const ImportDialog = props => {
             break;
           }
 
-          setMessage(res.message + '-' + res.newKey);
+          // setMessage(res.message + '-' + res.newKey);
 
           res1 = await ImportHandler.GetImportQLHBInfo({
             type: Case,
@@ -293,7 +293,7 @@ const ImportDialog = props => {
             break;
           }
 
-          setMessage(res.message + '-' + res.newKey);
+          // setMessage(res.message + '-' + res.newKey);
 
           res1 = await ImportHandler.ImportHSSVInfo({
             checkImportResult: res.checkImportResult,
