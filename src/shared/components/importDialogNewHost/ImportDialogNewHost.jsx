@@ -111,10 +111,11 @@ const ImportDialogNewHost = props => {
           logger.info('ImportDialogNewHost:: res1: ', res1);
 
           const timerIdQLBH = setInterval(async () => {
-            statusResponse = await ImportHandler.GetImportStatus(
-              res.newKey
+            statusResponse = await ImportHandler.GetImportStatus(res.newKey);
+            logger.info(
+              'ImportDialogNewHost:: statusResponse: ',
+              statusResponse
             );
-            logger.info('ImportDialogNewHost:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
             const { data } = Item;
 
@@ -125,84 +126,97 @@ const ImportDialogNewHost = props => {
             }
           }, 3000);
           break;
-          case 'SVKT': case 'MGHP': case 'TCXH': case 'HTDX': case 'DTTS':{
-            res = await ImportHandler.GetImportCDCSInfo({
-              type: importCase,
-              fileKey: response.key,
-              method: 'GET'
-            });
-            logger.info('ImportDialogNewHost:: res: ', res);
-  
-            if (res === undefined || res.success === false) {
-              setSnackBarValue(wrongSnackBar);
-              handleClose();
-              break;
-            }
-  
-            setMessage(res.message + '-' + res.newKey);
-  
-            res1 = await ImportHandler.GetImportCDCSInfo({
-              type: importCase,
-              fileKey: res.newKey,
-              method: 'POST'
-            });
-            logger.info('ImportDialogNewHost:: res1: ', res1);
-  
-            const timerIdCDCS = setInterval(async () => {
-              statusResponse = await ImportHandler.GetImportStatus(
-                res.newKey
-              );
-              logger.info('ImportDialogNewHost:: statusResponse: ', statusResponse);
-              const { Item } = statusResponse;
-              const { data } = Item;
-  
-              if (data.total === data.currentAmount) {
-                setSnackBarValue(successSnackBar);
-                handleClose();
-                clearInterval(timerIdCDCS);
-              }
-            }, 3000);
+        case 'SVKT':
+        case 'MGHP':
+        case 'TCXH':
+        case 'HTDX':
+        case 'DTTS': {
+          res = await ImportHandler.GetImportCDCSInfo({
+            type: importCase,
+            fileKey: response.key,
+            method: 'GET'
+          });
+          logger.info('ImportDialogNewHost:: res: ', res);
+
+          if (res === undefined || res.success === false) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
             break;
           }
-          case 'KT': case 'KL':{
-            res = await ImportHandler.GetImportKTKLInfo({
-              type: importCase,
-              fileKey: response.key,
-              method: 'GET'
-            });
-            logger.info('ImportDialogNewHost:: res: ', res);
-  
-            if (res.success === false) {
-              setSnackBarValue(wrongSnackBar);
+
+          setMessage(res.message + '-' + res.newKey);
+
+          res1 = await ImportHandler.GetImportCDCSInfo({
+            type: importCase,
+            fileKey: res.newKey,
+            method: 'POST'
+          });
+          logger.info('ImportDialogNewHost:: res1: ', res1);
+
+          const timerIdCDCS = setInterval(async () => {
+            statusResponse = await ImportHandler.GetImportStatus(res.newKey);
+            logger.info(
+              'ImportDialogNewHost:: statusResponse: ',
+              statusResponse
+            );
+            const { Item } = statusResponse;
+            const { data } = Item;
+
+            if (data.total === data.currentAmount) {
+              setSnackBarValue(successSnackBar);
               handleClose();
-              break;
+              clearInterval(timerIdCDCS);
             }
-  
-            setMessage(res.message + '-' + res.newKey);
-  
-            res1 = await ImportHandler.GetImportKTKLInfo({
-              type: importCase,
-              fileKey: res.newKey,
-              method: 'POST'
-            });
-            logger.info('ImportDialogNewHost:: res1: ', res1);
-  
-            const timerIdKTKL = setInterval(async () => {
-              statusResponse = await ImportHandler.GetImportStatus(
-                res.newKey
-              );
-              logger.info('ImportDialogNewHost:: statusResponse: ', statusResponse);
-              const { Item } = statusResponse;
+          }, 3000);
+          break;
+        }
+        case 'KT':
+        case 'KL': {
+          res = await ImportHandler.GetImportKTKLInfo({
+            type: importCase,
+            fileKey: response.key,
+            method: 'GET'
+          });
+          logger.info('ImportDialogNewHost:: res: ', res);
+
+          if (res.success === false) {
+            setSnackBarValue(wrongSnackBar);
+            handleClose();
+            break;
+          }
+
+          setMessage(res.message + '-' + res.newKey);
+
+          res1 = await ImportHandler.GetImportKTKLInfo({
+            type: importCase,
+            fileKey: res.newKey,
+            method: 'POST'
+          });
+          logger.info('ImportDialogNewHost:: res1: ', res1);
+
+          const timerIdKTKL = setInterval(async () => {
+            statusResponse = await ImportHandler.GetImportStatus(res.newKey);
+            logger.info(
+              'ImportDialogNewHost:: statusResponse: ',
+              statusResponse
+            );
+            const { Item } = statusResponse;
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
+              handleClose();
+              clearInterval(timerIdKTKL);
+            } else {
               const { data } = Item;
-  
+
               if (data.total === data.currentAmount) {
                 setSnackBarValue(successSnackBar);
                 handleClose();
                 clearInterval(timerIdKTKL);
               }
-            }, 3000);
-            break;
-          }
+            }
+          }, 3000);
+          break;
+        }
         default:
           break;
       }

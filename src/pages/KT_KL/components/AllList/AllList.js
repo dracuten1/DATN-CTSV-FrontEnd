@@ -26,7 +26,7 @@ import * as KTKLHandler from 'handlers/KTKLHandler';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ImportIcon from '@material-ui/icons/Input';
 import BlockIcon from '@material-ui/icons/Block';
-import ImportDialog from 'shared/components/importDialog/ImportDialog';
+import ImportDialog from 'shared/components/importDialogNewHost/ImportDialogNewHost';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import Types from 'reduxs/reducers/KT_KL/actionTypes';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';

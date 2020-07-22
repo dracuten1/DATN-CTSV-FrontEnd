@@ -31,10 +31,8 @@ httpClient.interceptors.request.use(
     (configuration) => {
         
         const { jwtToken } = store.getState().auth.cognitoUser.signInUserSession.idToken;
-        console.log('bbb:old',jwtToken);
         store.dispatch(refreshToken());
         const newJwtToken = store.getState().auth.cognitoUser.signInUserSession.idToken.jwtToken;
-        console.log('bbb:new',newJwtToken);
         const contentType = 'application/json';
         const headers = {
             'Auth_Token': jwtToken,

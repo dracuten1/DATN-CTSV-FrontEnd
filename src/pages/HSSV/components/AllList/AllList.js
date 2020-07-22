@@ -83,7 +83,7 @@ const AllList = props => {
   const [state, setState] = useState({
     data: dataInfo,
     columns: [
-      { title: 'MSSV', field: 'mssv', editable: 'never' },
+      { title: 'Mã Số SV', field: 'mssv', editable: 'never' },
       {
         title: 'Họ',
         field: 'Ho',
@@ -99,28 +99,28 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ngày sinh',
+        title: 'Ngày Sinh',
         field: 'NgaySinh',
         cellStyle: {
           minWidth: '150px'
         }
       },
       {
-        title: 'Nơi sinh',
+        title: 'Nơi Sinh',
         field: 'NoiSinh',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Nơi sinh khác',
+        title: 'Nơi Sinh Khác',
         field: 'NoiSinhKhac',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Giới tính',
+        title: 'Phái',
         field: 'GioiTinh',
         editable: 'never',
         cellStyle: {
@@ -128,7 +128,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ngày vào trường',
+        title: 'Ngày Vào Trường',
         field: 'NgayVaoTruong',
         editable: 'never',
         cellStyle: {
@@ -136,7 +136,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Khóa học',
+        title: 'Khóa Học',
         field: 'KhoaHoc',
         editable: 'never',
         cellStyle: {
@@ -144,7 +144,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Bậc đào tạo',
+        title: 'Bậc Đào Tạo',
         field: 'BacDaoTao',
         editable: 'never',
         cellStyle: {
@@ -152,7 +152,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Loại hình đào tạo',
+        title: 'Loại Hình Đào Tạo',
         field: 'HeDaoTao',
         editable: 'never',
         cellStyle: {
@@ -160,21 +160,21 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ngành',
+        title: 'Ngành Đào Tạo',
         field: 'Nganh',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Chuyên ngành',
+        title: 'Chuyên Ngành Đào Tạo',
         field: 'ChuyenNganh',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Tình trạng',
+        title: 'Tình Trạng',
         field: 'TinhTrang',
         editable: 'never',
         cellStyle: {
@@ -182,28 +182,28 @@ const AllList = props => {
         }
       },
       {
-        title: 'CMND',
+        title: 'Chứng Minh Nhân Dân',
         field: 'CMND',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Ngày cấp CMND',
+        title: 'Ngày Cấp CMND',
         field: 'NgayCapCMND',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Nơi cấp CMND',
+        title: 'Nơi Cấp CMND',
         field: 'NoiCapCMND',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Dân tộc',
+        title: 'Dân Tộc',
         field: 'DanToc',
         editable: 'never',
         cellStyle: {
@@ -211,7 +211,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Tôn giáo',
+        title: 'Tôn Giáo',
         field: 'TonGiao',
         editable: 'never',
         cellStyle: {
@@ -219,7 +219,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Quốc tịch',
+        title: 'Quốc Tịch',
         field: 'QuocTich',
         editable: 'never',
         cellStyle: {
@@ -227,35 +227,35 @@ const AllList = props => {
         }
       },
       {
-        title: 'Địa chỉ',
+        title: 'Số Nhà Đường',
         field: 'SoNha',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Phường xã',
+        title: 'Phường Xã',
         field: 'PhuongXa',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Quận huyện',
+        title: 'Quận Huyện',
         field: 'QuanHuyen',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Tỉnh/TP',
+        title: 'Tỉnh Thành',
         field: 'TinhTP',
         cellStyle: {
           minWidth: '200px'
         }
       },
       {
-        title: 'Tạm trú',
+        title: 'Địa Chỉ Tạm Trú',
         field: 'TamTru',
         editable: 'never',
         cellStyle: {
@@ -263,7 +263,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'SĐT nhà',
+        title: 'Điện Thoại Nhà',
         field: 'SDTNha',
         editable: 'never',
         cellStyle: {
@@ -271,7 +271,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'SĐT di động',
+        title: 'Điện Thoại Di Động',
         field: 'DTDD',
         editable: 'never',
         cellStyle: {
@@ -279,7 +279,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Thành phần GĐ',
+        title: 'Thành Phần Gia Đình',
         field: 'ThanhPhanGiaDinh',
         editable: 'never',
         cellStyle: {
@@ -295,7 +295,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Email cá nhân',
+        title: 'Email Cá Nhân',
         field: 'EmailCaNhan',
         editable: 'never',
         cellStyle: {
@@ -303,7 +303,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Đoàn viên',
+        title: 'Đoàn Viên',
         field: 'DoanVien',
         editable: 'never',
         type: 'boolean',
@@ -314,7 +314,7 @@ const AllList = props => {
         )
       },
       {
-        title: 'Ngày vào Đoàn',
+        title: 'Ngày Vào Đoàn',
         field: 'NgayVaoDoan',
         editable: 'never',
         cellStyle: {
@@ -322,7 +322,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Đảng viên',
+        title: 'Đảng Viên',
         field: 'DangVien',
         editable: 'never',
         type: 'boolean',
@@ -333,7 +333,7 @@ const AllList = props => {
         )
       },
       {
-        title: 'Ngày vào Đảng',
+        title: 'Ngày Vào Đảng',
         field: 'NgayVaoDang',
         editable: 'never',
         cellStyle: {
@@ -341,7 +341,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ngân hàng',
+        title: 'Ngân Hàng',
         field: 'NganHang',
         editable: 'never',
         cellStyle: {
@@ -349,7 +349,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'STK',
+        title: 'Số Tài Khoản',
         field: 'SoTK',
         editable: 'never',
         cellStyle: {
@@ -357,7 +357,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Chi nhánh',
+        title: 'Chi Nhánh',
         field: 'ChiNhanh',
         editable: 'never',
         cellStyle: {
@@ -365,7 +365,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ghi chú',
+        title: 'Ghi Chú',
         field: 'GhiChu',
         editable: 'never',
         cellStyle: {
@@ -373,7 +373,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Người liên lạc',
+        title: 'Người Liên Lạc',
         field: 'TenNLL',
         editable: 'never',
         cellStyle: {
@@ -381,7 +381,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Địa chỉ NLL',
+        title: 'Địa Chỉ Người Liên Lạc',
         field: 'DiaChiNLL',
         editable: 'never',
         cellStyle: {
@@ -389,7 +389,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Điện thoại NLL',
+        title: 'Điện Thoại Người Liên Lạc',
         field: 'SDTNLL',
         editable: 'never',
         cellStyle: {
@@ -397,7 +397,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Email NLL',
+        title: 'Email Người Liên Lạc',
         field: 'EmailNLL',
         editable: 'never',
         cellStyle: {
@@ -405,7 +405,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Quan hệ NLL',
+        title: 'Quan hệ Người Liên Lạc',
         field: 'QuanHe',
         editable: 'never',
         cellStyle: {
@@ -413,7 +413,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ghi chú NLL',
+        title: 'Ghi chú Người Liên Lạc',
         field: 'GhiChuNLL',
         editable: 'never',
         cellStyle: {
@@ -421,7 +421,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Ngoại ngữ',
+        title: 'Ngoại Ngữ',
         field: 'NgoaiNgu',
         editable: 'never',
         cellStyle: {
@@ -429,7 +429,7 @@ const AllList = props => {
         }
       },
       {
-        title: 'Tin học',
+        title: 'Tin Học',
         field: 'TinHoc',
         editable: 'never',
         cellStyle: {
@@ -549,8 +549,7 @@ const AllList = props => {
 
                   handleUpdateState(body);
                   dispatch({ type: Types.GET_INFO, payload: body });
-                }
-                else setSnackBarValue(FillErrorSnackBar);
+                } else setSnackBarValue(FillErrorSnackBar);
                 dispatch(ProgressActions.hideProgress());
               }}
               label="Tìm kiếm"
@@ -598,13 +597,6 @@ const AllList = props => {
                 <div />
               )}
             </div>
-            {listLink.length > 0 ? (
-              <div>
-                <ListLinkDocx data={listLink} />
-              </div>
-            ) : (
-              ''
-            )}
           </div>
         </CardActions>
         <Divider />
@@ -695,7 +687,13 @@ const AllList = props => {
             </div>
           </PerfectScrollbar>
         </CardContent>
-
+        {listLink.length > 0 ? (
+          <div>
+            <ListLinkDocx data={listLink} />
+          </div>
+        ) : (
+          ''
+        )}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

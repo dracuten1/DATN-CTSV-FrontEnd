@@ -11,7 +11,7 @@ import * as actionTypes from './actionTypes';
 
 
 const _region =process.env.REACT_APP_REGION 
-console.log('ccc:',_region) ;                     //'ap-southeast-1'   //env.REGION
+// console.log('ccc:',_region) ;                     //'ap-southeast-1'   //env.REGION
 const _identityPoolId =process.env.REACT_APP_IDENTITIPOOL_ID      // 'ap-southeast-1:ce9f600e-f483-42b2-877d-5204e76e4a66';  //env.IDENTITIPOOL_ID
 const _userPoolId = process.env.REACT_APP_USER_POOL_ID;
 const _pool = `cognito-idp.${_region}.amazonaws.com/${_userPoolId}`;
@@ -230,11 +230,9 @@ export const auth = (email, password) => {
 };
 export const refreshToken = () => {
     return dispatch => {
-        console.log("aaa::", cognitoAuthUser);
         cognitoAuthUser.getSession((err, session) => {
             if (err) dispatch(logout());
             var refresh_token = session.getRefreshToken();
-            console.log('aaa::', refresh_token);
             const awssCredentials = {
                 IdentityPoolId: _identityPoolId,
             };
