@@ -510,7 +510,7 @@ const PrintList = props => {
                           handleUpdateStateColumn(response, false)
                         );
                     }}
-                    label="Lọc sinh viên"
+                    label="Lọc dữ liệu"
                   />
                 </div>
               </MuiThemeProvider>

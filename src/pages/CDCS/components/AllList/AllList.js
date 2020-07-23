@@ -76,6 +76,7 @@ const dt = new Date();
 const year = dt.getFullYear();
 // const convert = year % 100;
 
+let isList = true;
 let updateBegin = 0;
 let columns = [];
 
@@ -184,7 +185,16 @@ const AllList = props => {
     });
   };
 
+  const handleShowListDataWithFilter = () => {
+    isList = true;
+    dispatch(ProgressActions.showProgres());
+    dispatch(Actions.listDataWithFilter(filter)).then(data =>
+      handleUpdateState(data)
+    );
+  };
+
   const handleShowDataWithFilter = () => {
+    isList = false;
     dispatch(ProgressActions.showProgres());
     dispatch(Actions.countingWithFilter(filter)).then(data =>
       handleUpdateState(data)
@@ -192,6 +202,7 @@ const AllList = props => {
   };
 
   const handleShowDataWithMSSV = () => {
+    isList = false;
     dispatch(ProgressActions.showProgres());
     dispatch(Actions.changeCountingColumnsCounting());
   };
@@ -205,9 +216,10 @@ const AllList = props => {
         DoiTuong: DoiTuongCDCS.length > 0 ? [DoiTuongCDCS[0].SK] : []
       });
     });
-    dispatch(Actions.countingWithFilter(filter)).then(data =>
-      handleUpdateState(data)
-    );
+    // dispatch(Actions.countingWithFilter(filter)).then(data =>
+    //   handleUpdateState(data)
+    // );
+    handleShowListDataWithFilter();
     updateBegin += 1;
   }
 
@@ -265,7 +277,7 @@ const AllList = props => {
             variant="contained"
             color="primary"
             className={classes.ml5px}
-            onClick={handleShowDataWithFilter}
+            onClick={handleShowListDataWithFilter}
           >
             Danh sách theo loại CDCS
           </Button>
@@ -273,9 +285,17 @@ const AllList = props => {
             variant="contained"
             color="primary"
             className={classes.ml5px}
+            onClick={handleShowDataWithFilter}
+          >
+            Thống kê theo loại CDCS
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.ml5px}
             onClick={handleShowDataWithMSSV}
           >
-            Danh sách theo MSSV
+            Thống kê theo MSSV
           </Button>
         </div>
       </Card>
@@ -292,26 +312,23 @@ const AllList = props => {
               <Filters
                 onFilter={handleFilter}
                 isCase={isCase}
+                isList={isList}
                 filter={filter}
               />
               <ContainedButton
                 handleClick={() => {
-                  dispatch(ProgressActions.showProgres());
                   if (isCase === 6) {
                     if (filter.mssv === '') {
                       setSnackBarValue(errorSnackBarMSSV);
                       dispatch(ProgressActions.hideProgress());
-                    } else
-                      dispatch(Actions.countingWithMSSV(filter)).then(data =>
-                        handleUpdateStateMSSV(data)
-                      );
-                  } else if (filter.DoiTuong.length === 0) {
+                    } else handleShowDataWithMSSV();
+                  } else if (!isList && filter.DoiTuong.length === 0) {
                     setSnackBarValue(errorSnackBarType);
                     dispatch(ProgressActions.hideProgress());
                   } else
-                    dispatch(Actions.countingWithFilter(filter)).then(data =>
-                      handleUpdateState(data)
-                    );
+                    isList
+                      ? handleShowListDataWithFilter()
+                      : handleShowDataWithFilter();
                 }}
                 label="Lọc dữ liệu"
               />
@@ -319,15 +336,21 @@ const AllList = props => {
           </MuiThemeProvider>
           <div>
             {isAdmin ? (
-              <Button
-                onClick={() => setImportOpen(true)}
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '8px' }}
-              >
-                <ImportIcon /> &nbsp;Import
-              </Button>
+              <>
+                {isList ? (
+                  <Button
+                    onClick={() => setImportOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '8px' }}
+                  >
+                    <ImportIcon /> &nbsp;Import
+                  </Button>
+                ) : (
+                  <div />
+                )}
+              </>
             ) : (
               <div />
             )}
@@ -338,7 +361,9 @@ const AllList = props => {
                 if (isCase === 6) {
                   response = await CDCSHandler.ExportCountingWithMSSV(filter);
                 } else {
-                  response = await CDCSHandler.ExportCountingWithFilter(filter);
+                  response = isList
+                    ? await CDCSHandler.ExportListWithFilter(filter)
+                    : await CDCSHandler.ExportCountingWithFilter(filter);
                 }
                 if (
                   response.statusCode !== 200 ||

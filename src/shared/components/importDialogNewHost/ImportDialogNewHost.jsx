@@ -117,12 +117,18 @@ const ImportDialogNewHost = props => {
               statusResponse
             );
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdQLBH);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdQLBH);
+              }
             }
           }, 3000);
           break;
@@ -160,12 +166,18 @@ const ImportDialogNewHost = props => {
               statusResponse
             );
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdCDCS);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdCDCS);
+              }
             }
           }, 3000);
           break;

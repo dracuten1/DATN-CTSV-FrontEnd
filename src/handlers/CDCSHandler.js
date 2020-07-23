@@ -26,10 +26,6 @@ const convertNamHoc = nh => {
   }
 };
 
-// const formatNumber = num => {
-//   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-// };
-
 export const CountingWithFilter = async filter => {
   const { fromHK, fromNH, toHK, toNH, typeCDCS, DoiTuong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
@@ -47,6 +43,18 @@ export const CountingWithFilter = async filter => {
   return response;
 };
 
+export const ListWithFilter = async filter => {
+  const { fromHK, fromNH, typeCDCS } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+
+  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}`;
+  logger.info('CDCSHanlder:: ListWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPatchWithBody(url);
+
+  return response;
+};
+
 export const ExportCountingWithFilter = async filter => {
   const { fromHK, fromNH, toHK, toNH, typeCDCS, DoiTuong } = filter;
   const cvFromNH = convertNamHoc(fromNH);
@@ -60,6 +68,18 @@ export const ExportCountingWithFilter = async filter => {
   logger.info('CDCSHanlder:: CountingWithFilter: url: ', url);
 
   const response = await HttpClient2.sendPutWithBodyGetStatus(url, {DoiTuong: cvDoiTuong});;
+
+  return response;
+};
+
+export const ExportListWithFilter = async filter => {
+  const { fromHK, fromNH, typeCDCS } = filter;
+  const cvFromNH = convertNamHoc(fromNH);
+
+  const url = `chinhsach/thongke?typeCDCS=${typeCDCS}&fromHK=${fromHK}&fromNH=${cvFromNH}`;
+  logger.info('CDCSHanlder:: ExportListWithFilter: url: ', url);
+
+  const response = await HttpClient2.sendPutWithBodyGetStatus(url);;
 
   return response;
 };

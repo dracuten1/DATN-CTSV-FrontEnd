@@ -160,6 +160,92 @@ const countingWithFilter = filter => async dispatch => {
   return data;
 };
 
+const listDataWithFilter = filter => async dispatch => {
+  logger.info('CDCSAction:: getListAll: filter: ', filter);
+  const response = await CDCSHanlder.ListWithFilter(filter);
+  logger.info('CDCSAction:: getListAll: reponse: ', response);
+  
+  const { typeCDCS }  = filter;
+
+  if (response === null ||response.statusCode !== 200 || response.body === "Không có dữ liệu")
+  {
+    switch (typeCDCS) {
+      case 'DTTS':
+        dispatch({ type: Types.GET_LIST_DTTS, payload: [] });
+        break;
+      case 'HTDX':
+        dispatch({ type: Types.GET_LIST_HTDX, payload: [] });
+        break;
+      case 'TCXH':
+        dispatch({ type: Types.GET_LIST_TCXH, payload: [] });
+        break;
+      case 'MGHP':
+        dispatch({ type: Types.GET_LIST_MGHP, payload: [] });
+        break;
+      case 'SVKT':
+        dispatch({ type: Types.GET_LIST_SVKT, payload: [] });
+        break;
+      default:
+        break;
+    }
+    dispatch({ type: HIDE_PROGRESS });
+    return [];
+  }
+
+  const { body }      = response;
+  
+  const data = Object.keys(body).map(key => {
+    body[key].nh              = parseNHToNumber(body[key]["DuLieu"].NH);
+    body[key].hk              = body[key]["DuLieu"].HK;
+    body[key].ChiNhanh        = body[key]["DuLieu"].ChiNhanh;
+    body[key].ChiNhanh        = body[key]["DuLieu"].ChiNhanh;
+    body[key].NTNS            = body[key]["DuLieu"].NTNS;
+    body[key].DanToc          = body[key]["DuLieu"].DanToc;
+    body[key].MucHB           = formatNumber(parseFloat(body[key]["DuLieu"].MucHB));
+    body[key].NganHang        = body[key]["DuLieu"].NganHang;
+    body[key].MucHoTroCPPT    = formatNumber(parseFloat(body[key]["DuLieu"].MucHoTroCPPT));
+    body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].TongTien));
+    body[key].MSSV            = body[key]["DuLieu"].MSSV;
+    body[key].DoiTuong        = body[key]["DuLieu"].DoiTuong;
+    body[key].SoTK            = body[key]["DuLieu"].SoTK;
+    body[key].GhiChu          = body[key]["DuLieu"].GhiChu;
+    body[key].HoTen           = body[key]["DuLieu"].HoTen;
+    body[key].CMND            = body[key]["DuLieu"].CMND;
+    body[key].SoThang         = body[key]["DuLieu"].SoThang;
+    body[key].MucHoTro        = formatNumber(parseFloat(body[key]["DuLieu"].MucHoTro));
+    body[key].KinhPhi         = formatNumber(parseFloat(body[key]["DuLieu"].KinhPhi));
+    body[key].MucGiamHP       = body[key]["DuLieu"].MucGiamHP;
+    body[key].MucTroCap       = formatNumber(parseFloat(body[key]["DuLieu"].MucTroCap));
+    body[key].ThanhTien       = formatNumber(parseFloat(body[key]["DuLieu"].ThanhTien));
+    body[key].SoTien          = formatNumber(parseFloat(body[key]["DuLieu"].SoTien));
+
+    return body[key];
+  });
+  
+  switch (typeCDCS) {
+    case 'DTTS':
+      dispatch({ type: Types.GET_LIST_DTTS, payload: data });
+      break;
+    case 'HTDX':
+      dispatch({ type: Types.GET_LIST_HTDX, payload: data });
+      break;
+    case 'TCXH':
+      dispatch({ type: Types.GET_LIST_TCXH, payload: data });
+      break;
+    case 'MGHP':
+      dispatch({ type: Types.GET_LIST_MGHP, payload: data });
+      break;
+    case 'SVKT':
+      dispatch({ type: Types.GET_LIST_SVKT, payload: data });
+      break;
+    default:
+      break;
+  }
+  history.push('/cdcs');
+  dispatch({ type: HIDE_PROGRESS });
+  return data;
+};
+
 const getDataFilter = () => async dispatch => {
   const payload = await CDCSHanlder.GetDataFilter();
 
@@ -174,6 +260,7 @@ const getDataFilter = () => async dispatch => {
 export default {
   countingWithFilter,
   countingWithMSSV,
+  listDataWithFilter,
   getDataFilter,
   changeCountingColumnsCounting,
   changeCountingColumnsList

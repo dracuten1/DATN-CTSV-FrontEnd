@@ -200,7 +200,7 @@ const AllList = props => {
                     );
                   updateBegin = 1;
                 }}
-                label="Lọc sinh viên"
+                label="Lọc dữ liệu"
               />
             </div>
           </MuiThemeProvider>

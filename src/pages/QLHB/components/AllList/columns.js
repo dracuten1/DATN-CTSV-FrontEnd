@@ -34,7 +34,7 @@ const HBKK = [
     }
   },
   {
-    title: 'Loại HB',
+    title: 'XLHB',
     field: 'LoaiHB',
     cellStyle: {
       minWidth: '150px'

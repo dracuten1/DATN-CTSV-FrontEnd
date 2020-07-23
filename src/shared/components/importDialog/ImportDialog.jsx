@@ -153,12 +153,20 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
 
+          if (res1.success === false) {
+            setSnackBarValue(errorSnackBar);
+            handleClose();
+            break;
+          }
           const timerIdDRL = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatus();
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { log } = statusResponse;
-
-            if (log.message === 'thành công') {
+            if (log === undefined) {
+              setSnackBarValue(errorSnackBar);
+              handleClose();
+              clearInterval(timerIdQLBH);
+            } else if (log.message === 'thành công') {
               setSnackBarValue(successSnackBar);
               handleClose();
               clearInterval(timerIdDRL);
@@ -194,16 +202,23 @@ const ImportDialog = props => {
             );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdQLLT);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdQLLT);
+              }
             }
           }, 3000);
           break;
-        case 4: case 'DiemTB': //TTSV
+        case 4:
+        case 'DiemTB': //TTSV
           res = await ImportHandler.GetImportTTSVInfo(Case, response.key);
           logger.info('ImportDialog:: res: ', res);
 
@@ -223,24 +238,30 @@ const ImportDialog = props => {
           });
           logger.info('ImportDialog:: res1: ', res1);
 
-          if (res1.message === "success"){
+          if (res1.message === 'success') {
             setSnackBarValue(successSnackBar);
             handleClose();
             return;
           }
-          
+
           const timerIdTTSV = setInterval(async () => {
             statusResponse = await ImportHandler.GetImportStatusTTSV(
               res.newKey
             );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdTTSV);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdTTSV);
+              }
             }
           }, 3000);
           break;
@@ -274,12 +295,18 @@ const ImportDialog = props => {
             );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdQLHB);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdQLHB);
+              }
             }
           }, 3000);
           break;
@@ -311,12 +338,18 @@ const ImportDialog = props => {
             );
             logger.info('ImportDialog:: statusResponse: ', statusResponse);
             const { Item } = statusResponse;
-            const { data } = Item;
-
-            if (data.total === data.currentAmount) {
-              setSnackBarValue(successSnackBar);
+            if (Item === undefined) {
+              setSnackBarValue(errorSnackBar);
               handleClose();
               clearInterval(timerIdHSSV);
+            } else {
+              const { data } = Item;
+
+              if (data.total === data.currentAmount) {
+                setSnackBarValue(successSnackBar);
+                handleClose();
+                clearInterval(timerIdHSSV);
+              }
             }
           }, 3000);
           break;

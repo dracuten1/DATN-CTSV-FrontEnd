@@ -305,7 +305,7 @@ const AllList = props => {
                 handleClick={
                   isCase === 10 ? handleShowDataMSSV : handleShowListData
                 }
-                label="Lọc sinh viên"
+                label="Lọc dữ liệu"
               />
             </div>
           </MuiThemeProvider>

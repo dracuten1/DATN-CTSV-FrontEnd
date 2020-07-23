@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => ({
 let tempArr = ['None'];
 
 export default function Filters(props) {
-  logger.info("FILTER");
   const classes = useStyles();
   const { onFilter, valueType, filter } = props;
 
@@ -39,7 +38,7 @@ export default function Filters(props) {
         <div className={classes.container}>
           <Filter
             clickFilter={onFilter}
-            label="Học kỳ"
+            label="Loại"
             prop="type"
             defaultValue={type}
             data={['None', 'HK1', 'HK2', 'NH']}

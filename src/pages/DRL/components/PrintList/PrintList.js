@@ -228,7 +228,7 @@ const PrintList = props => {
       filtering: false
     },
     {
-      title: 'Học kỳ',
+      title: 'Trường hợp',
       field: 'semester',
       filtering: false
     },
