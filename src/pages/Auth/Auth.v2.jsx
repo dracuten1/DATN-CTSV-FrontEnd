@@ -197,6 +197,7 @@ class Auth extends Component {
               name="email"
               autoComplete="email"
               autoFocus
+              value={this.state.username}
               onChange={event => {
                 this.setState({ username: event.target.value });
               }}
@@ -211,6 +212,7 @@ class Auth extends Component {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={this.state.password}
               onChange={event => {
                 this.setState({ password: event.target.value });
               }}
