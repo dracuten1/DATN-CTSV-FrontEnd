@@ -13,11 +13,11 @@ const initialState = {
 };
 
 const forgotPass = (state) => {
-    return updateObject(state, { error: null, loading: false, forgotPassword: true });
+    return updateObject(state, { error: null, resetPassword: false, loading: false, forgotPassword: true });
 };
 
 const forgotPassSuccess = (state) => {
-    return updateObject(state, { error: null, loading: false, forgotPassword: false });
+    return updateObject(state, { error: null, resetPassword: false, loading: false, forgotPassword: false });
 };
 
 const authStart = (state) => {
