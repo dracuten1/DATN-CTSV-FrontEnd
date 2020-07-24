@@ -202,9 +202,7 @@ const AddDialog = props => {
 
     const SinhVien = {
       Ten: tmp.name,
-      Khoa: tmp.faculty,
       MSSV: tmp.mssv,
-      NS: tmp.dob
     };
 
     const LoaiXN = addCase;
@@ -375,36 +373,6 @@ const AddDialog = props => {
               validate('name')(event);
             }}
             helperText={errors.name ? "Bắt buộc" : ""}
-          />
-          <TextField
-            className={classes.textField}
-            label="Ngày sinh"
-            margin="normal"
-            error={errors.dob}
-            value={values.dob}
-            onChange={event => {
-              handleChange('dob')(event);
-              validate('dob')(event);
-            }}
-            onBlur={event => {
-              validate('dob')(event);
-            }}
-            helperText={errors.dob ? "Bắt buộc" : ""}
-          />
-          <TextField
-            className={classes.textField}
-            label="Khoa"
-            margin="normal"
-            error={errors.faculty}
-            value={values.faculty}
-            onChange={event => {
-              handleChange('faculty')(event);
-              validate('faculty')(event);
-            }}
-            onBlur={event => {
-              validate('faculty')(event);
-            }}
-            helperText={errors.faculty ? "Bắt buộc" : ""}
           />
           <FormControl className={classes.textField} error={errors.signer}>
             <InputLabel id="demo-simple-select-helper-label">
