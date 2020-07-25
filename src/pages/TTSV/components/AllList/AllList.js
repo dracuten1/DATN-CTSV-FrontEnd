@@ -124,7 +124,7 @@ const AllList = props => {
 
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
-  const handleImport = () => {};
+  const handleImport = () => { };
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
@@ -133,6 +133,7 @@ const AllList = props => {
   });
 
   logger.info('TTSVAction:: getListAll: dataList: ', dataList);
+  const [mssv, setMssv] = useState('',)
 
   const [state, setState] = useState({
     data: dataList,
@@ -239,6 +240,7 @@ const AllList = props => {
   const [updateDialogStage, setUpdateDialogStage] = useState(false);
   const handleCloseUpdateDialog = () => {
     setUpdateDialogStage(false);
+    setMssv('');
   };
   const handleOpenUpdateDialog = () => {
     setUpdateDialogStage(true);
@@ -286,6 +288,7 @@ const AllList = props => {
         <UpdateDialog
           open={updateDialogStage}
           handleClose={handleCloseUpdateDialog}
+          mssv={mssv}
         />
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
@@ -332,12 +335,12 @@ const AllList = props => {
                     <ImportIcon /> &nbsp;Import
                   </Button>
                 ) : (
-                  ''
-                )}
+                    ''
+                  )}
               </>
             ) : (
-              <div />
-            )}
+                <div />
+              )}
             <Button
               onClick={async () => {
                 dispatch(ProgressActions.showProgres());
@@ -377,8 +380,8 @@ const AllList = props => {
                       {isCase === 10 ? (
                         <b>Tình Trạng Sinh Viên</b>
                       ) : (
-                        <b>DANH SÁCH {filter.type}</b>
-                      )}
+                          <b>DANH SÁCH {filter.type}</b>
+                        )}
                     </div>
                   }
                   localization={{
@@ -407,7 +410,9 @@ const AllList = props => {
                       icon: icons.Edit,
                       tooltip: 'Cập nhật tình trạng',
                       onClick: async (event, rowData) => {
-                      }
+                        setUpdateDialogStage(true);
+                        setMssv(rowData.MSSV);
+                      },
                     }
                   ]}
                 />
