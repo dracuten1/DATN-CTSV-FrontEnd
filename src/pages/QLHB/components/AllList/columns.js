@@ -127,7 +127,7 @@ const HBKK = [
   },
   {
     title: 'Ghi chú',
-    field: 'note',
+    field: 'GhiChu',
     cellStyle: {
       minWidth: '150px'
     }
@@ -224,7 +224,7 @@ const HBTT = [
   },
   {
     title: 'Ghi chú',
-    field: 'note',
+    field: 'GhiChu',
     cellStyle: {
       minWidth: '150px'
     }
@@ -321,7 +321,7 @@ const COUNTING = [
   },
   {
     title: 'Ghi chú',
-    field: 'note',
+    field: 'GhiChu',
     cellStyle: {
       minWidth: '150px'
     }
