@@ -204,7 +204,9 @@ const AllList = props => {
   const handleShowDataWithMSSV = () => {
     isList = false;
     dispatch(ProgressActions.showProgres());
-    dispatch(Actions.changeCountingColumnsCounting());
+    dispatch(Actions.countingWithMSSV(filter)).then(data =>
+      handleUpdateStateMSSV(data)
+    );
   };
 
   if (updateBegin === 0) {
@@ -293,7 +295,13 @@ const AllList = props => {
             variant="contained"
             color="primary"
             className={classes.ml5px}
-            onClick={handleShowDataWithMSSV}
+            onClick={() => {
+              isList = false;
+              dispatch(ProgressActions.showProgres());
+              dispatch(Actions.changeCountingColumnsCounting()).then(() =>
+                handleUpdateStateMSSV([])
+              );;
+            }}
           >
             Thống kê theo MSSV
           </Button>

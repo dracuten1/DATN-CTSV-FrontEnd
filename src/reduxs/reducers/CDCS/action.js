@@ -32,7 +32,7 @@ const formatNumber = num => {
 };
 
 const changeCountingColumnsCounting = () => async dispatch => {
-  dispatch({ type: Types.TK});
+  dispatch({ type: Types.GET_LIST_MSSV, payload: [] });
   dispatch({ type: HIDE_PROGRESS });
 };
 
@@ -59,10 +59,10 @@ const countingWithMSSV = filter => async dispatch => {
     body[key].hk              = body[key]["DuLieu"].HK;
     body[key].GhiChu = body[key]["DuLieu"].GhiChu;
     body[key].DoiTuong        = body[key]["DuLieu"].DoiTuong;
-    if (body[key]["DuLieu"].TongTien)     body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].TongTien));
-    if (body[key]["DuLieu"].KinhPhi)      body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].KinhPhi));
-    if (body[key]["DuLieu"].ThanhTien)    body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].ThanhTien));
-    if (body[key]["DuLieu"].SoTien)       body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].SoTien));
+    if (body[key]["DuLieu"].TongTien)     body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].TongTien || 0));
+    if (body[key]["DuLieu"].KinhPhi)      body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].KinhPhi|| 0));
+    if (body[key]["DuLieu"].ThanhTien)    body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].ThanhTien || 0));
+    if (body[key]["DuLieu"].SoTien)       body[key].TongTien        = formatNumber(parseFloat(body[key]["DuLieu"].SoTien || 0));
     body[key].MSSV            = body[key]["DuLieu"].MSSV;
     body[key].HoTen           = body[key]["DuLieu"].HoTen;
 
