@@ -19,6 +19,7 @@ export default function ContainedButton(props) {
   return (
     <div>
       <Button
+        tabIndex={1}
         onClick={handleClick}
         variant="contained"
         className={classes.button}
