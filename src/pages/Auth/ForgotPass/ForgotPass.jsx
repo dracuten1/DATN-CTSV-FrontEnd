@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
@@ -20,8 +20,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="https://www.fit.hcmus.edu.vn/vn/">
+        FIT@HCMUS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -69,11 +69,18 @@ class ForgotPass extends Component {
         </div>
         <CssBaseline />
         <div className="paper">
-          <Avatar className="avatar">
-            <LockOutlinedIcon />
+          <Avatar
+            style={{
+              backgroundColor: '#1e88e5',
+              height: '100px',
+              width: '100px',
+              margin: '1rem'
+            }}
+          >
+            <HelpOutlineIcon style={{ fontSize: '4.1875rem' }} />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Forgot Password
+          <Typography component="h1" variant="h1" style={{ color: '#3285af' }}>
+            Quên Mật Khẩu
           </Typography>
           <form className="form" noValidate>
             <TextField
@@ -82,7 +89,7 @@ class ForgotPass extends Component {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -91,11 +98,10 @@ class ForgotPass extends Component {
               }}
             />
             <div style={{ height: 20 }} />
-            
-            
+
             <Grid container spacing={4}>
               <Grid item lg={6} sm={6} xl={6} xs={12}>
-                  <Button
+                <Button
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -103,11 +109,11 @@ class ForgotPass extends Component {
                   className="submit"
                   onClick={this.handleClick}
                 >
-                  Send Mail
+                  Gửi Mail
                 </Button>
               </Grid>
               <Grid item lg={6} sm={6} xl={6} xs={12}>
-                  <Button
+                <Button
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -119,10 +125,10 @@ class ForgotPass extends Component {
                     history.push('/');
                   }}
                 >
-                  Sign In
+                  Đăng Nhập
                 </Button>
               </Grid>
-          </Grid>
+            </Grid>
           </form>
         </div>
         <Box mt={8}>
@@ -131,8 +137,8 @@ class ForgotPass extends Component {
         <ChangWithCode
           username={this.state.email}
           open={this.state.open}
-          handleClose={() => this.setState({open: false})}
-      />
+          handleClose={() => this.setState({ open: false })}
+        />
       </Container>
     );
   }
@@ -141,14 +147,14 @@ class ForgotPass extends Component {
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error,
+    error: state.auth.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onReset: (email) => dispatch(actions.resetPassword(email)),
-    onForgotPassSuccess: ()  => dispatch(actions.forgotPassSuccess()),
+    onReset: email => dispatch(actions.resetPassword(email)),
+    onForgotPassSuccess: () => dispatch(actions.forgotPassSuccess()),
     onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };

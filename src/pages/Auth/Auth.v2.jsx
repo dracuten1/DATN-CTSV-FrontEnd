@@ -19,8 +19,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="https://www.fit.hcmus.edu.vn/vn/">
+        FIT@HCMUS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

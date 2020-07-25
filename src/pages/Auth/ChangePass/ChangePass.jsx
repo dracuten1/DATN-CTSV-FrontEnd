@@ -34,9 +34,10 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700
   },
   avatar: {
-    backgroundColor: theme.palette.error.main,
-    height: 56,
-    width: 56
+    backgroundColor: theme.palette.info.main,
+    height: "100px",
+    width: "100px",
+    margin: theme.spacing(2),
   },
   icon: {
     height: 32,
@@ -112,11 +113,11 @@ const ChangePass = props => {
     <Container component="main" maxWidth="xs" style={{ marginTop: '20vh' }}>
       <CssBaseline />
       <div className="paper">
-        <Avatar className="avatar">
-          <LockOutlinedIcon />
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon style={{ fontSize:'3.1875rem'}}/>
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Update Password
+        <Typography component="h1" variant="h1" style={{ color: "#3285af" }}>
+          Thay Đổi Mật Khẩu
         </Typography>
         <div style={{ height: 20 }} />
         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined" style={{width: "100%"}}>
@@ -149,7 +150,7 @@ const ChangePass = props => {
           className="submit"
           onClick={handleClick}
         >
-          Update Password
+          Đổi Mật Khẩu
         </Button>
       </div>
       <CustomizedSnackbars
