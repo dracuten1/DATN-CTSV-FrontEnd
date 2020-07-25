@@ -115,17 +115,17 @@ const getListWithFilter = filter => async dispatch => {
     body[key].ThoiGianThamDu = body[key]["data"].ThoiGianThamDu;
     body[key].KinhPhi = body[key]["data"].KinhPhi;
 
-    if (type === 'BUỘC THÔI HỌC')
+    if (type === 'Buộc Thôi Học')
     {
-    body[key].DTB1 = body[key].DTB[0].Diem + ' - HK' + body[key].DTB[0].HK + '/' + body[key].DTB[0].NH;
-    body[key].DTB2 = body[key].DTB[1].Diem + ' - HK' + body[key].DTB[1].HK + '/' + body[key].DTB[1].NH;
+    body[key].DTB1 = `${body[key].DTB[0].Diem} - HK${body[key].DTB[0].HK}/${body[key].DTB[0].NH}`;
+    body[key].DTB2 = `${body[key].DTB[1].Diem} - HK${body[key].DTB[1].HK}/${body[key].DTB[1].NH}`;
     }
-    if (type === 'CẢNH CÁO HỌC VỤ')
+    if (type === 'Cảnh Cáo Học Vụ')
     {
-    body[key].DTB1 = body[key]["data"].DTB1;
-    body[key].DTB2 = body[key]["data"].DTB2;
+    body[key].DTB1 = `${body[key]["data"].DTB1}`;
+    body[key].DTB2 = `${body[key]["data"].DTB2}`;
     }
-    if (type === 'BẢO LƯU')
+    if (type === 'Bảo Lưu')
     {
       body[key].Start = 'HK' + body[key]["data"]["Tu"].HK + '/' + body[key]["data"]["Tu"].NH;
       body[key].Finish = 'HK' + body[key]["data"]["Den"].HK + '/' + body[key]["data"]["Den"].NH;

@@ -402,6 +402,14 @@ const AllList = props => {
                     },
                     filtering: false
                   }}
+                  actions={[
+                    {
+                      icon: icons.Edit,
+                      tooltip: 'Cập nhật tình trạng',
+                      onClick: async (event, rowData) => {
+                      }
+                    }
+                  ]}
                 />
               </MuiThemeProvider>
             </div>
