@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -88,7 +88,7 @@ const UpdateDialog = props => {
     note: false,
   }
   const [errors, setErrors] = React.useState(defaultError);
-
+  const { mssv } = props;
   const defaultValue = {
     studentid: '',
     fullname: '',
@@ -207,10 +207,14 @@ const UpdateDialog = props => {
   };
 
   const findStudentInfoById = async event => {
-
+    setProgress(false);
     const studentId = event.target.value;
     logger.info(studentId === "" || !studentId)
-    if (studentId === "" || !studentId) return;
+    if (studentId === "" || !studentId) {
+      setProgress(true);
+
+      return;
+    }
     const studentInfo = (await XNSVHandler.FindStudentInfoById(studentId)).Items[0];
     if (Object.keys(studentInfo).length !== 0) {
       logger.info(studentInfo)
@@ -221,6 +225,7 @@ const UpdateDialog = props => {
       const average3 = DiemTBArr[2] ? DiemTBArr[2][0] : undefined;
       logger.info(average1, average2, average3)
       const tmpStudentInfo = {
+        studentid: studentInfo.MSSV,
         fullname: studentInfo.HoVaTen,
         status: studentInfo.LatestTTHVDetails.TenTinhTrang,
         defaultstatus: studentInfo.LatestTTHVDetails.TenTinhTrang,
@@ -235,8 +240,10 @@ const UpdateDialog = props => {
         year2: average2 ? studentInfo.DiemTB[average2].NamHoc : '',
       }
       setValues({ ...values, ...tmpStudentInfo });
+      setProgress(true);
       logger.info(studentInfo);
     }
+    setProgress(true);
 
   };
 
@@ -345,7 +352,7 @@ const UpdateDialog = props => {
     logger.info(tmp);
     if (isValid) {
       handleUpdateStudentStatus();
-     
+
     }
   }
   const BaoLuuComponents = () => {
@@ -660,6 +667,13 @@ const UpdateDialog = props => {
     setValues(defaultValue);
     handleClose();
   }
+  logger.info("condition: ", (values.studentid !== mssv && progress === true) || (values.studentid === mssv && values.fullname === '' && progress === true))
+  logger.info("condition: ", values)
+  if (mssv !== '') {
+    if ((values.studentid !== mssv && progress === true) || (values.studentid === mssv && values.fullname === '' && progress === true)) {
+      findStudentInfoById({ target: { value: mssv } })
+    }
+  }
 
   return (
     <div>
@@ -717,7 +731,7 @@ const UpdateDialog = props => {
               // validate('average1')(event);
             }}
             disabled
-            // helperText={errors.average1 ? "Bắt buộc" : ""}
+          // helperText={errors.average1 ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
@@ -733,7 +747,7 @@ const UpdateDialog = props => {
               // validate('average2')(event);
             }}
             disabled
-            // helperText={errors.average2 ? "Bắt buộc" : ""}
+          // helperText={errors.average2 ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
@@ -749,7 +763,7 @@ const UpdateDialog = props => {
               // validate('average3')(event);
             }}
             disabled
-            // helperText={errors.average3 ? "Bắt buộc" : ""}
+          // helperText={errors.average3 ? "Bắt buộc" : ""}
           />
           <FormControl className={classes.textField} margin="normal" error={errors.status}>
             <InputLabel id="demo-simple-select-helper-label">
