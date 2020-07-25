@@ -202,7 +202,9 @@ const AddDialog = props => {
 
     const SinhVien = {
       Ten: tmp.name,
+      Khoa: tmp.faculty,
       MSSV: tmp.mssv,
+      NS: tmp.dob
     };
 
     const LoaiXN = addCase;
