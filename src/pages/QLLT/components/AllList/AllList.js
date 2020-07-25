@@ -227,6 +227,7 @@ const AllList = props => {
                   response.body === 'Không có gì để export'
                 ) {
                   setSnackBarValue(errorExportSnackBar);
+                  dispatch(ProgressActions.hideProgress());
                   return;
                 }
                 setSnackBarValue(successSnackBar);
