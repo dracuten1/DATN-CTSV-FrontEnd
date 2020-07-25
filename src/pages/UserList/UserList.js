@@ -16,6 +16,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 30,
     display: 'flex',
     alignItems: 'center',
+    color:"#3f51b5"
   }
 }));
 
@@ -42,7 +43,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <div className={classes.title}><BorderColorIcon fontSize='large' />QUẢN LÝ NGƯỜI KÝ</div>
+        <div className={classes.title}><BorderColorIcon color="primary" fontSize='large' />&nbsp; QUẢN LÝ NGƯỜI KÝ</div>
         <UsersTable users={signers} />
       </div>
     </div>

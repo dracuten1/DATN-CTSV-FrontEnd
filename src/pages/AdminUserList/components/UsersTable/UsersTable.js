@@ -25,6 +25,7 @@ import {
   TablePagination,
   IconButton,
   Button,
+  Tooltip
 } from '@material-ui/core';
 
 import { connect } from 'react-redux';
@@ -58,7 +59,7 @@ const UsersTable = props => {
   const [addDialog, setAddDialog] = useState(false);
   const onCloseAddDialog = event => {
     setAddDialog(false);
-  }
+  };
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -72,33 +73,34 @@ const UsersTable = props => {
     type = type === true ? 'disable' : 'enable';
     await AdminUserHandler.togleEnable({ username, type });
     rerender();
-  }
+  };
 
   const toggleGroups = (username, grName) => async event => {
-    const stament = grName ? "remove" : "add";
-    const groupName = "Admins";
+    const stament = grName ? 'remove' : 'add';
+    const groupName = 'Admins';
     await AdminUserHandler.togleGroups({ username, stament, groupName });
     rerender();
-  }
+  };
 
   const parseAttributes = user => {
     user.Attributes.forEach(attribute => {
       user[attribute.Name] = attribute.Value;
     });
-  }
+  };
 
   const handleAdd = data => {
     parseAttributes(data);
     users.push(data);
-  }
+  };
 
   return (
     <div>
-      <Card
-        {...rest}
-        className={clsx(classes.root, className)}
-      >
-        <AddDialog open={addDialog} onClose={onCloseAddDialog} handleAddUser={handleAdd} />
+      <Card {...rest} className={clsx(classes.root, className)}>
+        <AddDialog
+          open={addDialog}
+          onClose={onCloseAddDialog}
+          handleAddUser={handleAdd}
+        />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
@@ -115,41 +117,82 @@ const UsersTable = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.length === 0 ?
-                    <TableRow
-                      className={classes.tableRow}
-                    >
-                      <TableCell align='center' colSpan={7}>
+                  {users.length === 0 ? (
+                    <TableRow className={classes.tableRow}>
+                      <TableCell align="center" colSpan={7}>
                         <CircularProgress />
                       </TableCell>
-
                     </TableRow>
-                    :
-                    users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                      <TableRow
-                        className={classes.tableRow}
-                        hover
-                        key={user.id}
-                      >
-                        <TableCell >{page * rowsPerPage + index + 1}</TableCell>
-                        <TableCell>
-                          <Typography variant="body1">{user.Username}</Typography>
-                        </TableCell>
-                        <TableCell>{user.name}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>{user.UserStatus}</TableCell>
-                        <TableCell>
-                          <IconButton disabled={props.username === user.Username} onClick={toggleGroups(user.Username, user.GroupName)}  >
-                            {user.GroupName ? <SecurityIcon titleAccess="Admin" /> : <PersonIcon titleAccess="Normal User" />}
-                          </IconButton>
-                        </TableCell>
-                        <TableCell>
-                          <IconButton disabled={props.username === user.Username} onClick={toggleEnabled(user.Username, user.Enabled)}  >
-                            {user.Enabled === true ? <LockOpenIcon /> : <LockIcon />}
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  ) : (
+                    users
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((user, index) => (
+                        <TableRow
+                          className={classes.tableRow}
+                          hover
+                          key={user.id}
+                        >
+                          <TableCell>
+                            {page * rowsPerPage + index + 1}
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">
+                              {user.Username}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.UserStatus}</TableCell>
+                          <TableCell>
+                            <Tooltip
+                              title={user.GroupName ? 'Admin' : 'Normal User'}
+                              aria-label={
+                                user.GroupName ? 'Admin' : 'Normal User'
+                              }
+                            >
+                              <IconButton
+                                disabled={props.username === user.Username}
+                                onClick={toggleGroups(
+                                  user.Username,
+                                  user.GroupName
+                                )}
+                              >
+                                {user.GroupName ? (
+                                  <SecurityIcon style={{ color: "#8836f5" }}/>
+                                ) : (
+                                  <PersonIcon style={{ color: "#73b6f9" }}/>
+                                )}
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell>
+                            <Tooltip
+                              title={user.Enabled ? 'Kích hoạt' : 'Tạm khóa'}
+                              aria-label={
+                                user.Enabled ? 'Kích hoạt' : 'Tạm khóa'
+                              }
+                            >
+                              <IconButton
+                                disabled={props.username === user.Username}
+                                onClick={toggleEnabled(
+                                  user.Username,
+                                  user.Enabled
+                                )}
+                              >
+                                {user.Enabled === true ? (
+                                  <LockOpenIcon color="primary"/>
+                                ) : (
+                                  <LockIcon style={{ color: "#e24f4f" }}/>
+                                )}
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
                 </TableBody>
               </Table>
             </div>
@@ -158,6 +201,12 @@ const UsersTable = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
+            labelRowsPerPage={'Số hàng: '}
+            labelDisplayedRows={
+              ({ from, to, count }) => {
+                return `${from}-${to} trên ${count !== -1 ? count : to}`
+              }
+            }
             count={users.length}
             onChangePage={handlePageChange}
             onChangeRowsPerPage={handleRowsPerPageChange}
@@ -171,7 +220,9 @@ const UsersTable = props => {
       <Button
         color="primary"
         variant="contained"
-        onClick={() => { setAddDialog(true) }}
+        onClick={() => {
+          setAddDialog(true);
+        }}
       >
         <PersonAddIcon fontSize="small" style={{ marginRight: 10 }} />
         Thêm người dùng
@@ -189,7 +240,7 @@ const mapStateToProps = state => {
   const tmpUsername = state.auth.cognitoUser;
 
   return {
-    username: tmpUsername ? tmpUsername.username : '',
+    username: tmpUsername ? tmpUsername.username : ''
   };
 };
 

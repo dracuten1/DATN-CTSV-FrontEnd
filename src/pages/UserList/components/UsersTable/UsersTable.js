@@ -131,11 +131,11 @@ const UsersTable = props => {
                         </TableCell>
                         <TableCell>{user.KT}</TableCell>
                         <TableCell>
-                          {user.DL === 'Active' ? <LockOpenIcon /> : <LockIcon />}
+                          {user.DL === 'Active' ? <LockOpenIcon color="primary"/> : <LockIcon style={{ color: "#e24f4f" }}/>}
                         </TableCell>
                         <TableCell onClick={editSigner(user)}>
                           <IconButton  >
-                            <CreateIcon />
+                            <CreateIcon style={{ color: "#e8c546" }} />
                           </IconButton >
                         </TableCell>
                       </TableRow>
@@ -148,6 +148,12 @@ const UsersTable = props => {
         <CardActions className={classes.actions}>
           <TablePagination
             component="div"
+            labelRowsPerPage={'Số hàng: '}
+            labelDisplayedRows={
+              ({ from, to, count }) => {
+                return `${from}-${to} trên ${count !== -1 ? count : to}`
+              }
+            }
             count={users.length}
             onChangePage={handlePageChange}
             onChangeRowsPerPage={handleRowsPerPageChange}

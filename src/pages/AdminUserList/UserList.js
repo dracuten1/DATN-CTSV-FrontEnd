@@ -16,8 +16,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 30,
     display: 'flex',
     alignItems: 'center',
-  },
-  icon: {
+    color:"#3f51b5"
   }
 }));
 
@@ -54,7 +53,7 @@ const UserList = () => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <div className={classes.title}><SupervisorAccountIcon className={classes.icon} fontSize='large' />QUẢN LÝ NGƯỜI DÙNG</div>
+        <div className={classes.title}><SupervisorAccountIcon color="primary" fontSize='large' />&nbsp; QUẢN LÝ NGƯỜI DÙNG</div>
         <UsersTable users={signers} rerender={getSignerEnum} />
       </div>
     </div>

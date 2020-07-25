@@ -515,6 +515,12 @@ const AllList = props => {
                   }
                   columns={state.columns}
                   data={state.data}
+                  localization={{
+                    pagination: {
+                      labelDisplayedRows: '{from}-{to} trên {count}',
+                      labelRowsSelect: 'hàng'
+                    }
+                  }}
                   options={{
                     headerStyle: {
                       backgroundColor: '#01579b',

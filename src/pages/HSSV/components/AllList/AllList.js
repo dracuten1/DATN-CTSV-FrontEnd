@@ -616,6 +616,10 @@ const AllList = props => {
                   localization={{
                     header: {
                       actions: 'Chức năng'
+                    },
+                    pagination: {
+                      labelDisplayedRows: '{from}-{to} trên {count}',
+                      labelRowsSelect: 'hàng'
                     }
                   }}
                   actions={[
