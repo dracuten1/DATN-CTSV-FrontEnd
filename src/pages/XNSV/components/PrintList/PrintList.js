@@ -23,7 +23,7 @@ import XNSVActions from 'reduxs/reducers/XNSV/action';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
 import * as XNSVHandler from 'handlers/XNSVHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+// import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import Types from 'reduxs/reducers/XNSV/actionTypes';
 import icons from 'shared/icons';
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
@@ -91,7 +91,7 @@ const PrintList = props => {
 
   const XNSVState = useSelector(state => state.XNSVState);
   const AuthState = useSelector(state => state.auth);
-  const { dataList, listLink, isPrintList, isHistoryList } = XNSVState;
+  const { dataList, isPrintList, isHistoryList } = XNSVState;
   const { username } = AuthState.cognitoUser;
 
   const Print = [
@@ -555,6 +555,7 @@ const PrintList = props => {
                           response.body !== 'Không có gì để in'
                         ) {
                           setSnackBarValue(successSnackBar);
+                          window.open(response.body);
                           dispatch({
                             type: Types.ADD_LINK_PRINT,
                             listLink: response.body,
@@ -601,6 +602,9 @@ const PrintList = props => {
                           response.body !== 'Không có gì để in'
                         ) {
                           setSnackBarValue(successSnackBar);
+                          response.body.forEach(element => {
+                            window.open(element);
+                          });
                           dispatch({
                             type: Types.ADD_LINK_PRINT,
                             listLink: response.body,
@@ -648,10 +652,11 @@ const PrintList = props => {
                           dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(successSnackBar);
                           const { body } = response;
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
+                          window.open(body.Items);
+                          // dispatch({
+                          //   type: Types.ADD_LINK_EXPORT,
+                          //   listLink: body.Items
+                          // });
                         } else {
                           const response = await XNSVHandler.ExportWithFilterByDate(
                             filter
@@ -737,10 +742,11 @@ const PrintList = props => {
                               return;
                             }
                             handlePrintOne(rowData);
-                            dispatch({
-                              type: Types.ADD_LINK_PRINT_HANDLER,
-                              listLink: response.body
-                            });
+                            window.open(response.body);
+                            // dispatch({
+                            //   type: Types.ADD_LINK_PRINT_HANDLER,
+                            //   listLink: response.body
+                            // });
                             dispatch(ProgressActions.hideProgress());
                             setSnackBarValue(successSnackBar);
                           }
@@ -795,7 +801,7 @@ const PrintList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        {listLink.length > 0 ? (
+        {/* {listLink.length > 0 ? (
           <CardActions className={classes.actions}>
             <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -805,7 +811,7 @@ const PrintList = props => {
           </CardActions>
         ) : (
             ''
-          )}
+          )} */}
         <XNTKTDialog
           handleAdd={handleAdd}
           open={open}

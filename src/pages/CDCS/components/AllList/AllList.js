@@ -15,7 +15,7 @@ import {
   MuiThemeProvider,
   Typography
 } from '@material-ui/core';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+// import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -375,7 +375,8 @@ const AllList = props => {
                 }
                 setSnackBarValue(successSnackBar);
                 const { body } = response;
-                dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
+                window.open(body);
+                // dispatch({ type: Types.ADD_LINK_EXPORT, listLink: body });
                 dispatch(ProgressActions.hideProgress());
               }}
               variant="contained"
@@ -448,7 +449,7 @@ const AllList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        {listLink.length > 0 ? (
+        {/* {listLink.length > 0 ? (
           <CardActions className={classes.actions}>
             <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -458,7 +459,7 @@ const AllList = props => {
           </CardActions>
         ) : (
           ''
-        )}
+        )} */}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

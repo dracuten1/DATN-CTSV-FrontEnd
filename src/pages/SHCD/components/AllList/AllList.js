@@ -19,7 +19,7 @@ import {
   Grid
 } from '@material-ui/core';
 import ContainedButton from 'shared/components/containedButton/ContainedButton';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+// import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import icons from 'shared/icons';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import * as SHCDHandler from 'handlers/SHCDHandler';
@@ -157,10 +157,11 @@ const AllList = props => {
                     return;
                   }
                   const { body } = response;
-                  dispatch({
-                    type: Types.ADD_LINK_PRINT,
-                    listLink: body.link
-                  });
+                  window.open(body);
+                  // dispatch({
+                  //   type: Types.ADD_LINK_PRINT,
+                  //   listLink: body.link
+                  // });
                   setSnackBarValue(successSnackBarDownload);
                 } catch (error) {
                   setSnackBarValue(errorSnackBar);
@@ -552,7 +553,7 @@ const AllList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        {listLink.length > 0 ? (
+        {/* {listLink.length > 0 ? (
           <CardActions className={classes.actions}>
             <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -562,7 +563,7 @@ const AllList = props => {
           </CardActions>
         ) : (
           ''
-        )}
+        )} */}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

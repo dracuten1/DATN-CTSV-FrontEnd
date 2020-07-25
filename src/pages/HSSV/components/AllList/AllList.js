@@ -20,7 +20,7 @@ import ContainedButton from 'shared/components/containedButton/ContainedButton';
 import icons from 'shared/icons';
 import ImportDialog from 'shared/components/importDialog/ImportDialog';
 import CustomizedSnackbars from 'shared/components/snackBar/SnackBar';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+// import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import * as HSSVHandler from 'handlers/HSSVHandler';
 import * as ProgressActions from 'reduxs/reducers/LinearProgress/action';
 import themeTable from 'shared/styles/theme/overrides/MuiTable';
@@ -641,10 +641,11 @@ const AllList = props => {
                         }
                         setSnackBarValue(successSnackBar);
                         const { body } = response;
-                        dispatch({
-                          type: Types.ADD_LINK_PRINT,
-                          listLink: body
-                        });
+                        window.open(body);
+                        // dispatch({
+                        //   type: Types.ADD_LINK_PRINT,
+                        //   listLink: body
+                        // });
                         dispatch(ProgressActions.hideProgress());
                       }
                     }
@@ -696,13 +697,13 @@ const AllList = props => {
             </div>
           </PerfectScrollbar>
         </CardContent>
-        {listLink.length > 0 ? (
+        {/* {listLink.length > 0 ? (
           <div>
             <ListLinkDocx data={listLink} />
           </div>
         ) : (
           ''
-        )}
+        )} */}
         <ImportDialog
           open={importOpen}
           handleClose={() => setImportOpen(false)}

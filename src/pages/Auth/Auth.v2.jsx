@@ -183,7 +183,7 @@ class Auth extends Component {
         <div className="paper">
           <CardMedia src={`https://i.ibb.co/SmtZZc6/logo-khtn.png`} style={{ marginBottom: 20 }} component="img">
           </CardMedia>
-          <Typography component="h1" variant="h3" style={{ fontWeight: 600 }}>
+          <Typography component="h1" variant="h3" style={{ fontWeight: 600, color: '#3285af' }} >
             ĐĂNG NHẬP
           </Typography>
           <form className="form" noValidate style={{ whiteSpace: 'normal' }}>

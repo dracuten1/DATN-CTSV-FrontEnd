@@ -36,7 +36,7 @@ httpClient.interceptors.request.use(
         const contentType = 'application/json';
         const headers = {
             'Auth_Token': jwtToken,
-            'Content-Type': contentType,
+            'Content-Type': contentType
         };
 
         configuration.headers = headers;

@@ -15,7 +15,7 @@ import {
   Grid
 } from '@material-ui/core';
 import moment from 'moment';
-import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
+// import ListLinkDocx from 'shared/components/ListLinkDocx/ListLinkDocx';
 import Link from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
 import * as DRLHandler from 'handlers/DRLHandler';
@@ -95,7 +95,7 @@ const PrintList = props => {
   const AuthState = useSelector(state => state.auth);
 
   const {
-    listLink,
+    // listLink,
     dataPrint,
     isPrintList,
     isHistoryList,
@@ -424,6 +424,7 @@ const PrintList = props => {
           handlePrintOne(rowData);
           const { body } = response;
           const { data } = state;
+          window.open(body);
           dispatch({
             type: Types.ADD_LINK_PRINT,
             listLink: body,
@@ -573,7 +574,7 @@ const PrintList = props => {
                               dispatch(ProgressActions.hideProgress());
                               return;
                             }
-
+                            window.open(response.body);
                             dispatch({
                               type: Types.ADD_LINK_PRINT,
                               listLink: response.body,
@@ -616,6 +617,11 @@ const PrintList = props => {
                             setSnackBarValue(errorSnackBar);
                             return;
                           }
+
+                          data.body.forEach(element => {
+                            window.open(element);
+                          });
+
                           dispatch({
                             type: Types.ADD_LINK_PRINT,
                             listLink: data.body,
@@ -658,10 +664,11 @@ const PrintList = props => {
                             return;
                           }
                           setSnackBarValue(printSuccessSnackBar);
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
+                          window.open(body.Items);
+                          // dispatch({
+                          //   type: Types.ADD_LINK_EXPORT,
+                          //   listLink: body.Items
+                          // });
                           dispatch(ProgressActions.hideProgress());
                         }
                       }}
@@ -733,7 +740,7 @@ const PrintList = props => {
           </PerfectScrollbar>
         </CardContent>
         <Divider />
-        {listLink.length > 0 ? (
+        {/* {listLink.length > 0 ? (
           <CardActions className={classes.actions}>
             <Grid container spacing={4}>
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -743,7 +750,7 @@ const PrintList = props => {
           </CardActions>
         ) : (
           ''
-        )}
+        )} */}
         <AddDialog
           open={open}
           handleClose={() => setOpen(false)}
