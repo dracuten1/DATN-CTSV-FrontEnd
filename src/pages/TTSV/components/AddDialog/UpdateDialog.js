@@ -338,7 +338,7 @@ const UpdateDialog = props => {
     return valid;
 
   }
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setErrors({ ...errors, ...validateForm(values) });
     const tmp = Object.keys(validateForm(body));
     const isValid = tmp.length === 0;
@@ -707,49 +707,49 @@ const UpdateDialog = props => {
             className={classes.textField}
             label="Điểm Trung Bình 1"
             margin="normal"
-            error={errors.average1}
+            // error={errors.average1}
             value={values.average1}
             onChange={event => {
               handleChange('average1')(event);
-              validate('average1')(event);
+              // validate('average1')(event);
             }}
             onBlur={event => {
-              validate('average1')(event);
+              // validate('average1')(event);
             }}
             disabled
-            helperText={errors.average1 ? "Bắt buộc" : ""}
+            // helperText={errors.average1 ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
             label="Điểm Trung Bình 2"
             margin="normal"
-            error={errors.average2}
+            // error={errors.average2}
             value={values.average2}
             onChange={event => {
               handleChange('average2')(event);
-              validate('average2')(event);
+              // validate('average2')(event);
             }}
             onBlur={event => {
-              validate('average2')(event);
+              // validate('average2')(event);
             }}
             disabled
-            helperText={errors.average2 ? "Bắt buộc" : ""}
+            // helperText={errors.average2 ? "Bắt buộc" : ""}
           />
           <TextField
             className={classes.textField}
             label="Điểm Trung Bình 3"
             margin="normal"
-            error={errors.average3}
+            // error={errors.average3}
             value={values.average3}
             onChange={event => {
               handleChange('average3')(event);
-              validate('average3')(event);
+              // validate('average3')(event);
             }}
             onBlur={event => {
-              validate('average3')(event);
+              // validate('average3')(event);
             }}
             disabled
-            helperText={errors.average3 ? "Bắt buộc" : ""}
+            // helperText={errors.average3 ? "Bắt buộc" : ""}
           />
           <FormControl className={classes.textField} margin="normal" error={errors.status}>
             <InputLabel id="demo-simple-select-helper-label">

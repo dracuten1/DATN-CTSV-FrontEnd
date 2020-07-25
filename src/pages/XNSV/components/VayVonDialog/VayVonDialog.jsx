@@ -95,7 +95,7 @@ const VayVonDialog = props => {
     return Object.keys(valid).length === 0
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const isValid = validateVayvon();
     if (isValid) {
       handleConfirm(values);
