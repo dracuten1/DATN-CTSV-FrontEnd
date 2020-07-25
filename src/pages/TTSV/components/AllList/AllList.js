@@ -128,7 +128,7 @@ const AllList = props => {
   const [filter, setFilter] = React.useState({
     hk: '1',
     nh: `${year - 1}-${year}`,
-    type: 'TỐT NGHIỆP',
+    type: 'Tốt Nghiệp',
     mssv: ''
   });
 
@@ -152,28 +152,28 @@ const AllList = props => {
 
   const handleUpdateState = response => {
     switch (filter.type) {
-      case 'SINH VIÊN NƯỚC NGOÀI': //SV nuoc ngoai
+      case 'Sinh Viên Nước Ngoài': //SV nuoc ngoai
         arrColumns = Columns.SVNN;
         break;
-      case 'TỐT NGHIỆP': //Danh sach tot nghiep
+      case 'Tốt Nghiệp': //Danh sach tot nghiep
         arrColumns = Columns.DSTN;
         break;
-      case 'HOÀN TẤT CHƯƠNG TRÌNH': //Hoan thanh tin chi
+      case 'Hoàn Tất Chương Trình': //Hoan thanh tin chi
         arrColumns = Columns.HTCT;
         break;
-      case 'ĐANG HỌC': //Dang hoc
+      case 'Đang Học': //Dang hoc
         arrColumns = Columns.HTCT;
         break;
-      case 'CẢNH CÁO HỌC VỤ': //Canh cao hoc vu
+      case 'Cảnh Cáo Học Vụ': //Canh cao hoc vu
         arrColumns = Columns.CCHV;
         break;
-      case 'BUỘC THÔI HỌC': //Bi thoi hoc
+      case 'Buộc Thôi Học': //Bi thoi hoc
         arrColumns = Columns.CCHV;
         break;
-      case 'BẢO LƯU': //Bảo lưu
+      case 'Bảo Lưu': //Bảo lưu
         arrColumns = Columns.BL;
         break;
-      case 'ĐĂNG KÝ HỌC PHẦN':
+      case 'Đăng Ký Học Phần':
         //Dang ky hoc phan
         arrColumns = Columns.DKHP;
         break;
@@ -380,6 +380,11 @@ const AllList = props => {
                       )}
                     </div>
                   }
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   columns={state.columns}
                   data={state.data}
                   options={{

@@ -109,7 +109,7 @@ const PrintList = props => {
   //Import props
   const [importOpen, setImportOpen] = React.useState(false);
 
-  const handleImport = () => { };
+  const handleImport = () => {};
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
@@ -511,7 +511,13 @@ const PrintList = props => {
         <CustomizedSnackbars value={snackBarValue} handleClose={handleClose} />
         <CardActions className={classes.actions}>
           <MuiThemeProvider theme={themeFilter}>
-            <div style={{ display: 'flex', alignItems: 'center', overflow: 'auto' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                overflow: 'auto'
+              }}
+            >
               <Filters
                 valueType={valueType}
                 onFilter={handleFilter}
@@ -618,8 +624,7 @@ const PrintList = props => {
                           handlePrintAll();
                           setSnackBarValue(printSuccessSnackBar);
                           valueCase = null;
-                        }
-                        else {
+                        } else {
                           setSnackBarValue(errorSnackBar);
                         }
                         dispatch(ProgressActions.hideProgress());
@@ -633,56 +638,56 @@ const PrintList = props => {
                     </Button>
                   </>
                 ) : (
-                    <>
-                      <Button
-                        style={{ marginLeft: '8px' }}
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={async () => {
-                          if (filter.status === 'Đã In') {
-                            dispatch(ProgressActions.showProgres());
-                            const response = await DRLHandler.ExportWithFilter(
-                              filter
-                            );
-                            const { statusCode, body } = response;
-
-                            if (statusCode !== 200 || body.Items === '') {
-                              setSnackBarValue(errorSnackBar);
-                              dispatch(ProgressActions.hideProgress());
-                              return;
-                            }
-                            setSnackBarValue(printSuccessSnackBar);
-                            dispatch({
-                              type: Types.ADD_LINK_EXPORT,
-                              listLink: body.Items
-                            });
-                            dispatch(ProgressActions.hideProgress());
-                          }
-                        }}
-                      >
-                        <GetAppIcon /> &nbsp;Export
-                    </Button>
-                    </>
-                  )}
-              </>
-            ) : (
-                <>
-                  {isAllList ? (
+                  <>
                     <Button
                       style={{ marginLeft: '8px' }}
-                      onClick={() => setImportOpen(true)}
                       variant="contained"
                       color="primary"
                       size="small"
+                      onClick={async () => {
+                        if (filter.status === 'Đã In') {
+                          dispatch(ProgressActions.showProgres());
+                          const response = await DRLHandler.ExportWithFilter(
+                            filter
+                          );
+                          const { statusCode, body } = response;
+
+                          if (statusCode !== 200 || body.Items === '') {
+                            setSnackBarValue(errorSnackBar);
+                            dispatch(ProgressActions.hideProgress());
+                            return;
+                          }
+                          setSnackBarValue(printSuccessSnackBar);
+                          dispatch({
+                            type: Types.ADD_LINK_EXPORT,
+                            listLink: body.Items
+                          });
+                          dispatch(ProgressActions.hideProgress());
+                        }
+                      }}
                     >
-                      <ImportIcon /> &nbsp;Import
+                      <GetAppIcon /> &nbsp;Export
                     </Button>
-                  ) : (
-                      ''
-                    )}
-                </>
-              )}
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                {isAllList ? (
+                  <Button
+                    style={{ marginLeft: '8px' }}
+                    onClick={() => setImportOpen(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    <ImportIcon /> &nbsp;Import
+                  </Button>
+                ) : (
+                  ''
+                )}
+              </>
+            )}
           </div>
         </CardActions>
 
@@ -698,6 +703,11 @@ const PrintList = props => {
                       <b>{title}</b>
                     </div>
                   }
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   columns={state.columns}
                   data={state.data}
                   actions={actions}
@@ -728,8 +738,8 @@ const PrintList = props => {
             </Grid>
           </CardActions>
         ) : (
-            ''
-          )}
+          ''
+        )}
         <AddDialog
           open={open}
           handleClose={() => setOpen(false)}

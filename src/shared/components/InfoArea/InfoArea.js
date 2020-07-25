@@ -6,6 +6,7 @@ import classNames from 'classnames';
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 import history from 'historyConfig';
 
 import styles from 'shared/styles/infoStyle';
@@ -30,10 +31,12 @@ export default function InfoArea(props) {
         <props.icon className={iconClasses} />
       </div>
       <div className={classes.descriptionWrapper}>
+      <Tooltip title={description} classes={{ tooltip: classes.noMaxWidth }}>
         <Button onClick={() => history.push(link)} className={classes.title}>
           <h2>{title}</h2>
         </Button>
-        <p className={classes.description}>{description}</p>
+        </Tooltip>
+        {/* <p className={classes.description}>{description}</p> */}
       </div>
     </div>
   );

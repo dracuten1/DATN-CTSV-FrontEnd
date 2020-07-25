@@ -28,23 +28,23 @@ const convertNamHoc = nh => {
 
 const convertType = type => {
   switch (type) {
-    case 'BẢO LƯU':
+    case 'Bảo Lưu':
       return 'BaoLuu';
-    case 'ĐANG HỌC':
+    case 'Đang Học':
       return 'DangHoc';
-    case 'SINH VIÊN NƯỚC NGOÀI':
+    case 'Sinh Viên Nước Ngoài':
       return 'NN';
-    case 'TỐT NGHIỆP':
+    case 'Tốt Nghiệp':
       return 'TotNghiep';
-    case 'HOÀN TẤT CHƯƠNG TRÌNH':
+    case 'Hoàn Tất Chương Trình':
       return 'HTCT';
-    case 'BUỘC THÔI HỌC':
+    case 'Buộc Thôi Học':
       return 'BuocThoiHoc';
-    case 'CẢNH CÁO HỌC VỤ':
+    case 'Cảnh Cáo Học Vụ':
       return 'CanhCaoHV';
-    case 'ĐĂNG KÝ HỌC PHẦN':
+    case 'Đăng Ký Học Phần':
       return 'DKHP';
-    case 'ĐIỂM TRUNG BÌNH':
+    case 'Điểm Trung Bình':
       return 'DiemTB';
     default:
       return '';

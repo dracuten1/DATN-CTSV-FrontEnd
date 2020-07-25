@@ -117,12 +117,32 @@ const AllList = props => {
   ];
 
   const QLSAVEFILE = [
+    { title: 'STT', field: 'stt' },
+    { title: 'Tên file', field: 'fileName' },
     {
+      title: 'Tài khoản',
+      field: 'username',
+      cellStyle: {
+        minWidth: '200px'
+      }
+    },
+    {
+      title: 'Ngày cập nhật',
+      field: 'updatedAt',
+      cellStyle: {
+        minWidth: '300px'
+      }
+    },
+    {
+      title: 'Chức năng',
       field: 'Actions',
+      headerStyle: {
+        textAlign: 'center'
+      },
       width: 50,
       filtering: false,
       render: rowData => (
-        <div>
+        <div style={{textAlign: 'center'}}>
           <Tooltip title="Tải về" placement="bottom">
             <Button
               onClick={async () => {
@@ -231,22 +251,6 @@ const AllList = props => {
           </Tooltip>
         </div>
       )
-    },
-    { title: 'STT', field: 'stt' },
-    { title: 'Tên file', field: 'fileName' },
-    {
-      title: 'Tài khoản',
-      field: 'username',
-      cellStyle: {
-        minWidth: '200px'
-      }
-    },
-    {
-      title: 'Ngày cập nhật',
-      field: 'updatedAt',
-      cellStyle: {
-        minWidth: '300px'
-      }
     }
   ];
 

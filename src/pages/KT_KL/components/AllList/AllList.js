@@ -608,6 +608,11 @@ const AllList = props => {
                       )}
                     </div>
                   }
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   columns={state.columns}
                   data={state.data}
                   options={{

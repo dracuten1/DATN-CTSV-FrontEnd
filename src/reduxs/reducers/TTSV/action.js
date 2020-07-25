@@ -62,31 +62,31 @@ const getListWithFilter = filter => async dispatch => {
   const {statusCode, body} = response;
   if (statusCode !== 200 || body === "Không có dữ liệu"){
     switch (type) {
-      case 'SINH VIÊN NƯỚC NGOÀI':
+      case 'Sinh Viên Nước Ngoài':
         dispatch({ type: Types.GET_LIST_SVNN, payload: [] });
         break;
-      case 'ĐIỂM TRUNG BÌNH':
+      case 'Điểm Trung Bình':
         dispatch({ type: Types.GET_LIST_DTB, payload: [] });
         break;
-      case 'TỐT NGHIỆP':
+      case 'Tốt Nghiệp':
         dispatch({ type: Types.GET_LIST_DSTN, payload: [] });
         break;
-      case 'HOÀN TẤT CHƯƠNG TRÌNH':
+      case 'Hoàn Tất Chương Trình':
         dispatch({ type: Types.GET_LIST_HTCT, payload: [] });
         break;
-      case 'ĐANG HỌC':
+      case 'Đang Học':
         dispatch({ type: Types.GET_LIST_DH, payload: [] });
         break;
-      case 'CẢNH CÁO HỌC VỤ':
+      case 'Cảnh Cáo Học Vụ':
         dispatch({ type: Types.GET_LIST_CCHV, payload: [] });
         break;
-      case 'BUỘC THÔI HỌC':
+      case 'Buộc Thôi Học':
         dispatch({ type: Types.GET_LIST_BTH, payload: [] });
         break;
-      case 'ĐĂNG KÝ HỌC PHẦN':
+      case 'Đăng Ký Học Phần':
         dispatch({ type: Types.GET_LIST_DKHP, payload: [] });
         break;
-      case 'BẢO LƯU':
+      case 'Bảo Lưu':
         dispatch({ type: Types.GET_LIST_BL, payload: [] });
         break;  
       default:
@@ -135,31 +135,31 @@ const getListWithFilter = filter => async dispatch => {
   });
   
   switch (type) {
-    case 'SINH VIÊN NƯỚC NGOÀI':
+    case 'Sinh Viên Nước Ngoài':
       dispatch({ type: Types.GET_LIST_SVNN, payload: data });
       break;
-    case 'ĐIỂM TRUNG BÌNH':
+    case 'Điểm Trung Bình':
       dispatch({ type: Types.GET_LIST_DTB, payload: data });
       break;
-    case 'TỐT NGHIỆP':
+    case 'Tốt Nghiệp':
       dispatch({ type: Types.GET_LIST_DSTN, payload: data });
       break;
-    case 'HOÀN TẤT CHƯƠNG TRÌNH':
+    case 'Hoàn Tất Chương Trình':
       dispatch({ type: Types.GET_LIST_HTCT, payload: data });
       break;
-    case 'ĐANG HỌC':
+    case 'Đang Học':
       dispatch({ type: Types.GET_LIST_DH, payload: data });
       break;
-    case 'CẢNH CÁO HỌC VỤ':
+    case 'Cảnh Cáo Học Vụ':
       dispatch({ type: Types.GET_LIST_CCHV, payload: data });
       break;
-    case 'BUỘC THÔI HỌC':
+    case 'Buộc Thôi Học':
       dispatch({ type: Types.GET_LIST_BTH, payload: data });
       break;
-    case 'ĐĂNG KÝ HỌC PHẦN':
+    case 'Đăng Ký Học Phần':
       dispatch({ type: Types.GET_LIST_DKHP, payload: data });
       break;
-    case 'BẢO LƯU':
+    case 'Bảo Lưu':
       dispatch({ type: Types.GET_LIST_BL, payload: data });
       break;  
     default:

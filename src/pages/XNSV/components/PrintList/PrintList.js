@@ -706,6 +706,11 @@ const PrintList = props => {
                   }
                   columns={state.columns}
                   data={state.data}
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   actions={
                     isPrintList
                       ? [

@@ -56,14 +56,14 @@ export default function Filters(props) {
             label="Tình trạng"
             defaultValue={type}
             data={[
-              'BẢO LƯU',
-              'ĐANG HỌC',
-              'SINH VIÊN NƯỚC NGOÀI',
-              'TỐT NGHIỆP',
-              'HOÀN TẤT CHƯƠNG TRÌNH',
-              'BUỘC THÔI HỌC',
-              'CẢNH CÁO HỌC VỤ',
-              'ĐĂNG KÝ HỌC PHẦN'
+              'Bảo Lưu',
+              'Đang Học',
+              'Sinh Viên Nước Ngoài',
+              'Tốt Nghiệp',
+              'Hoàn Tất Chương Trình',
+              'Buộc Thôi Học',
+              'Cảnh Cáo Học Vụ',
+              'Đăng Ký Học Phần'
               // 'ĐIỂM TRUNG BÌNH'
             ]}
           />

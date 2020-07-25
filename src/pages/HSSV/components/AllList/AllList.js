@@ -613,6 +613,11 @@ const AllList = props => {
                   }
                   columns={state.columns}
                   data={state.data}
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   actions={[
                     {
                       icon: icons.Print,

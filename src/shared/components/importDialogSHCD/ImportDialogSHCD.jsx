@@ -150,7 +150,7 @@ const ImportDialogSHCD = props => {
         <DialogContent className={classes.container}>
           <DropZone
             dropzoneClass={classes.dropzoneInput}
-            dropzoneText="Drag and drop an file here or click."
+            dropzoneText="Kéo thả tập tin hoặc bấm vào đây để tải lên"
             acceptedFiles={[
               'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             ]}

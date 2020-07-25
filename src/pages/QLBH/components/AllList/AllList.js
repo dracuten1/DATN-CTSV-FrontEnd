@@ -351,6 +351,11 @@ const AllList = props => {
                   }
                   columns={state.columns}
                   data={state.data}
+                  localization={{
+                    header: {
+                      actions: 'Chức năng'
+                    }
+                  }}
                   options={{
                     headerStyle: {
                       backgroundColor: '#01579b',
