@@ -60,13 +60,13 @@ class Auth extends Component {
     });
     const { username, newpassword, confirmPassword } = this.state;
     if (newpassword !== confirmPassword) {
-      this.setState({ 
+      this.setState({
         errorMsg: 'Mật khẩu mới không khớp.',
         resetpasswordloading: false,
       });
     }
-    else if (newpassword.length<8) {
-      this.setState({ 
+    else if (newpassword.length < 8) {
+      this.setState({
         errorMsg: 'Mật khẩu phải dài tối thiểu 8 ký tự.',
         resetpasswordloading: false,
       });
@@ -221,7 +221,7 @@ class Auth extends Component {
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         /> */}
-            <div style={{ color: "red" }}>{this.props.error ? this.props.error.message : ""}</div>
+            <div style={{ color: "red" }}>{this.props.error ? (this.props.error.message.indexOf("Incorrect username or password") !== -1 ? "Sai tên đăng nhập hoặc mật khẩu." : this.props.error.message) : ""}</div>
             <div style={{ height: 20 }} />
             <Button
               type="submit"
