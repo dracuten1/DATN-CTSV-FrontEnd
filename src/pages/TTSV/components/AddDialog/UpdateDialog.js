@@ -338,7 +338,7 @@ const UpdateDialog = props => {
     return valid;
 
   }
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setErrors({ ...errors, ...validateForm(values) });
     const tmp = Object.keys(validateForm(body));
     const isValid = tmp.length === 0;

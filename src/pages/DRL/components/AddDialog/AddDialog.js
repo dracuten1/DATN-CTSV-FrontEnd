@@ -327,9 +327,9 @@ const AddDialog = props => {
     return Object.keys(valid).length === 0;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateAddDialog()) {
-      addData();
+      await addData();
       setErrors(defaultError);
       setValues(defaultValue);
     }
