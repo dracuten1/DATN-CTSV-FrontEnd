@@ -113,7 +113,7 @@ const PrintList = props => {
 
   const UrlsColumns = [
     { title: 'STT', field: 'stt', editable: 'never', filtering: false },
-    { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
+    // { title: 'Ngày', field: 'date', editable: 'never', filtering: false },
     {
       title: 'URL',
       field: 'url',
