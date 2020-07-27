@@ -676,6 +676,7 @@ const PrintList = props => {
                           dispatch(ProgressActions.hideProgress());
                           setSnackBarValue(successSnackBar);
                           const { body } = response;
+                          window.open(body.Items);
                           dispatch({
                             type: Types.ADD_LINK_EXPORT,
                             listLink: body.Items
