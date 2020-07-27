@@ -677,10 +677,10 @@ const PrintList = props => {
                           setSnackBarValue(successSnackBar);
                           const { body } = response;
                           window.open(body.Items);
-                          dispatch({
-                            type: Types.ADD_LINK_EXPORT,
-                            listLink: body.Items
-                          });
+                          // dispatch({
+                          //   type: Types.ADD_LINK_EXPORT,
+                          //   listLink: body.Items
+                          // });
                         }
                       }}
                       variant="contained"
