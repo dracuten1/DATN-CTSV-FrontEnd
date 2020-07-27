@@ -375,6 +375,19 @@ const PrintList = props => {
       case 2:
         typeColumns = PrintColumns;
         valueType = 1;
+        const payload = response.map((item, index) => {
+          item.stt      = index + 1;
+          item.name     = item.SinhVien.Ten;
+          item.mssv     = item.SinhVien.MSSV;
+          item.case     = item.LoaiXN;
+          item.isPrint  = item.status !== 'Chưa In';
+          item.date     = moment(item.ngayThem).format('DD/MM/YYYY');
+          item.pk       = item.PK;
+          item.sk       = item.SK;
+          return item;
+        });
+
+        response = payload;
         title = 'Danh Sách In Theo Trạng Thái';
         break;
       case 3:
